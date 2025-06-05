@@ -1,0 +1,12 @@
+---Crear entorno de Python
+python -m venv perpenv
+---Setear el entorno de Python
+perpenv\scripts\actívate
+---Instalar dependencias de Python
+pip install -r requirements.txt
+---Arrancar el backend
+uvicorn app.main:app --reload
+---Arrancar tailwindcss
+npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch
+---Arrancar el frontend
+npm run dev

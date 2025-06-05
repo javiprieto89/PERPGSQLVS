@@ -1,0 +1,5 @@
+{
+  "venv": ".perpenv",
+  "include": ["app"],
+  "reportMissingImports": false
+}
