@@ -1,7 +1,20 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== Provinces ===========
+# app/models/provinces.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .countries import Countries
+    from .clients import Clients
+    from .suppliers import Suppliers
+
+from typing import List
+
+from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint, ForeignKeyConstraint
+from sqlalchemy.orm import Mapped, relationship
+
 from app.db import Base
+
 
 class Provinces(Base):
     __tablename__ = 'Provinces'
@@ -10,12 +23,11 @@ class Provinces(Base):
         PrimaryKeyConstraint('ProvinceID', name='PK__Province__FD0A6FA3062273F9')
     )
 
-    provinceID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    countryID = Column(Integer)
-    name = Column(Unicode(100))
+    ProvinceID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    CountryID = Column(Integer)
+    Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
-    countries_ = relationship('Countries', back_populates='Provinces')
-    clients = relationship('Clients', back_populates='Provinces_')
-    suppliers = relationship('Suppliers', back_populates='Provinces_')
-
-
+    # Relaciones
+    countries_: Mapped['Countries'] = relationship('Countries', back_populates='provinces')
+    clients: Mapped[List['Clients']] = relationship('Clients', back_populates='provinces_')
+    suppliers: Mapped[List['Suppliers']] = relationship('Suppliers', back_populates='provinces_')

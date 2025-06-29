@@ -1,7 +1,20 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== SaleConditions ===========
+# app/models/saleconditions.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .creditcards import CreditCards
+    from .orders import Orders
+
+from typing import List
+
+from sqlalchemy import Column, Integer, Unicode, Date, Boolean, DECIMAL, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship
+#from .creditcards import CreditCards
+#from .orders import Orders
 from app.db import Base
+
 
 class SaleConditions(Base):
     __tablename__ = 'SaleConditions'
@@ -10,14 +23,13 @@ class SaleConditions(Base):
         PrimaryKeyConstraint('SaleConditionID', name='PK__SaleCond__22A3A655BD0A6B44')
     )
 
-    saleConditionID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    creditCardID = Column(Integer)
-    name = Column(Unicode(100))
-    dueDate = Column(Date, server_default=text('(getdate())'))
-    surcharge = Column(DECIMAL(10, 2), server_default=text('((0))'))
-    isActive = Column(Boolean, server_default=text('((1))'))
+    SaleConditionID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    CreditCardID = Column(Integer)
+    Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    DueDate = Column(Date, server_default=text('(getdate())'))
+    Surcharge = Column(DECIMAL(10, 2), server_default=text('((0))'))
+    IsActive = Column(Boolean, server_default=text('((1))'))
 
-    creditCards_ = relationship('CreditCards', back_populates='SaleConditions')
-    orders = relationship('Orders', back_populates='SaleConditions_')
-
-
+    # Relaciones
+    creditCards_: Mapped['CreditCards'] = relationship('CreditCards', back_populates='saleConditions')
+    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='saleConditions_')

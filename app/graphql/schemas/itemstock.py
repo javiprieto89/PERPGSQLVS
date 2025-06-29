@@ -5,48 +5,48 @@ from datetime import datetime
 
 @strawberry.input
 class ItemStockCreate:
-    itemID: int
-    warehouseID: int
-    companyID: Optional[int] = None
-    quantity: Optional[int] = None
-    reservedQuantity: Optional[int] = None
-    lastModified: Optional[datetime] = None
-    stockStatus: Optional[str] = None
-    minStockLevel: Optional[int] = None
-    maxStockLevel: Optional[int] = None
-    stockLocation: Optional[str] = None
-    supplierID: Optional[int] = None
-    batchNumber: Optional[str] = None
-    expiryDate: Optional[datetime] = None
+    IemID: int
+    WarehouseID: int
+    CompanyID: Optional[int] = None
+    Quantity: Optional[int] = None
+    ReservedQuantity: Optional[int] = None
+    LastModified: Optional[datetime] = None
+    StockStatus: Optional[str] = None
+    MinStockLevel: Optional[int] = None
+    MaxStockLevel: Optional[int] = None
+    StockLocation: Optional[str] = None
+    SupplierID: Optional[int] = None
+    BatchNumber: Optional[str] = None
+    ExpiryDate: Optional[datetime] = None
 
 @strawberry.input
 class ItemStockUpdate:
-    itemID: Optional[int] = None
-    warehouseID: Optional[int] = None
-    companyID: Optional[int] = None
-    quantity: Optional[int] = None
-    reservedQuantity: Optional[int] = None
-    lastModified: Optional[datetime] = None
-    stockStatus: Optional[str] = None
-    minStockLevel: Optional[int] = None
-    maxStockLevel: Optional[int] = None
-    stockLocation: Optional[str] = None
-    supplierID: Optional[int] = None
-    batchNumber: Optional[str] = None
-    expiryDate: Optional[datetime] = None
+    ItemID: Optional[int] = None
+    WarehouseID: Optional[int] = None
+    CompanyID: Optional[int] = None
+    Quantity: Optional[int] = None
+    ReservedQuantity: Optional[int] = None
+    LastModified: Optional[datetime] = None
+    StockStatus: Optional[str] = None
+    MinStockLevel: Optional[int] = None
+    MaxStockLevel: Optional[int] = None
+    StockLocation: Optional[str] = None
+    SupplierID: Optional[int] = None
+    BatchNumber: Optional[str] = None
+    ExpiryDate: Optional[datetime] = None
 
 @strawberry.type
 class ItemStockInDB:
-    itemID: int
-    warehouseID: int
-    companyID: Optional[int]
-    quantity: Optional[int]
-    reservedQuantity: Optional[int]
-    lastModified: Optional[datetime]
-    stockStatus: Optional[str]
-    minStockLevel: Optional[int]
-    maxStockLevel: Optional[int]
-    stockLocation: Optional[str]
-    supplierID: Optional[int]
-    batchNumber: Optional[str]
-    expiryDate: Optional[datetime]
+    ItemID: int
+    WarehouseID: int
+    CompanyID: Optional[int]
+    Quantity: Optional[int]
+    rRservedQuantity: Optional[int]
+    LastModified: Optional[datetime]
+    StockStatus: Optional[str]
+    MinStockLevel: Optional[int]
+    MaxStockLevel: Optional[int]
+    StockLocation: Optional[str]
+    SupplierID: Optional[int]
+    BatchNumber: Optional[str]
+    ExpiryDate: Optional[datetime]

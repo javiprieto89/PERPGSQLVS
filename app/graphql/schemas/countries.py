@@ -8,18 +8,18 @@ from typing import Optional, List
 
 @strawberry.input
 class CountriesCreate:
-    name: str
+    Name: str
 
 
 @strawberry.input
 class CountriesUpdate:
-    name: Optional[str] = None
+    Name: Optional[str] = None
 
 
 @strawberry.type
 class CountriesInDB:
-    countryID: int
-    name: str
+    CountryID: int
+    Name: str
 
     # Relaciones
     #provinces: Optional[List[ProvincesInDB]] = None

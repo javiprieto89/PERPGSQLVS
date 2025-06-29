@@ -5,54 +5,54 @@ from typing import Optional
 
 @strawberry.input
 class DocumentsCreate:
-    description: str
-    docTypeID: int
-    documentNumber: int
-    pointOfSale: int
-    isFiscal: Optional[bool] = None
-    isElectronic: Optional[bool] = None
-    isManual: Optional[bool] = None
-    isQuotation: Optional[bool] = None
+    Description: str
+    DocTypeID: int
+    DocumentNumber: int
+    PointOfSale: int
+    IsFiscal: Optional[bool] = None
+    IsElectronic: Optional[bool] = None
+    IsManual: Optional[bool] = None
+    IsQuotation: Optional[bool] = None
     Active: bool
-    testing: bool
-    maxItems: Optional[int] = None
-    relatedDocumentID: Optional[int] = None
-    shouldAccount: bool
-    movesStock: bool
+    Testing: bool
+    MaxItems: Optional[int] = None
+    RelatedDocumentID: Optional[int] = None
+    ShouldAccount: bool
+    MovesStock: bool
 
 
 @strawberry.input
 class DocumentsUpdate:
-    description: str
-    docTypeID: int
-    documentNumber: int
-    pointOfSale: int
-    isFiscal: Optional[bool] = None
-    isElectronic: Optional[bool] = None
-    isManual: Optional[bool] = None
-    isQuotation: Optional[bool] = None
+    Description: str
+    DocTypeID: int
+    DocumentNumber: int
+    PointOfSale: int
+    IsFiscal: Optional[bool] = None
+    IsElectronic: Optional[bool] = None
+    IsManual: Optional[bool] = None
+    IsQuotation: Optional[bool] = None
     Active: bool
-    testing: bool
-    maxItems: Optional[int] = None
-    relatedDocumentID: Optional[int] = None
-    shouldAccount: bool
-    movesStock: bool
+    Testing: bool
+    MaxItems: Optional[int] = None
+    RelatedDocumentID: Optional[int] = None
+    ShouldAccount: bool
+    MovesStock: bool
 
 
 @strawberry.type
 class DocumentsInDB:
-    documentID: int
-    description: str
-    docTypeID: int
-    documentNumber: int
-    pointOfSale: int
-    isFiscal: Optional[bool] = None
-    isElectronic: Optional[bool] = None
-    isManual: Optional[bool] = None
-    isQuotation: Optional[bool] = None
+    DocumentID: int
+    Description: str
+    DocTypeID: int
+    DocumentNumber: int
+    PointOfSale: int
+    IsFiscal: Optional[bool] = None
+    IsElectronic: Optional[bool] = None
+    IsManual: Optional[bool] = None
+    IsQuotation: Optional[bool] = None
     Active: bool
-    testing: bool
-    maxItems: Optional[int] = None
-    relatedDocumentID: Optional[int] = None
-    shouldAccount: bool
-    movesStock: bool
+    Testing: bool
+    MaxItems: Optional[int] = None
+    RelatedDocumentID: Optional[int] = None
+    ShouldAccount: bool
+    MovesStock: bool

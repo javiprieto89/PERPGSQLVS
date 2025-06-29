@@ -1,7 +1,19 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== StockHistory ===========
+# app/models/stockhistory.py
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.branches import Branches
+    from app.models.companydata import CompanyData
+    from app.models.items import Items
+    from app.models.users import Users
+    from app.models.warehouses import Warehouses
+
+from sqlalchemy import Column, Integer, Unicode, DateTime, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
+
 
 class StockHistory(Base):
     __tablename__ = 'StockHistory'
@@ -14,22 +26,21 @@ class StockHistory(Base):
         PrimaryKeyConstraint('StockHistoryID', name='PK__StockHis__A6CE86DBEB46B995')
     )
 
-    stockHistoryID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    itemID = Column(Integer)
-    companyID = Column(Integer)
-    branchID = Column(Integer)
-    warehouseID = Column(Integer)
-    quantityUpdate = Column(Integer)
-    quantityBefore = Column(Integer)
-    quantityAfter = Column(Integer)
-    transactionDate = Column(DateTime, server_default=text('(getdate())'))
-    userID = Column(Integer)
-    reason = Column(Unicode(200))
+    StockHistoryID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    ItemID = Column(Integer)
+    CompanyID = Column(Integer)
+    BranchID = Column(Integer)
+    WarehouseID = Column(Integer)
+    QuantityUpdate = Column(Integer)
+    QuantityBefore = Column(Integer)
+    QuantityAfter = Column(Integer)
+    TransactionDate = Column(DateTime, server_default=text('(getdate())'))
+    UserID = Column(Integer)
+    Reason = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
 
-    branches_ = relationship('Branches', back_populates='StockHistory')
-    companyData_ = relationship('CompanyData', back_populates='StockHistory')
-    items_ = relationship('Items', back_populates='StockHistory')
-    users_ = relationship('Users', back_populates='StockHistory')
-    warehouses_ = relationship('Warehouses', back_populates='StockHistory')
-
-
+    # Relaciones
+    branches_: Mapped['Branches'] = relationship('Branches', back_populates='stockHistory')
+    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='stockHistory')
+    items_: Mapped['Items'] = relationship('Items', back_populates='stockHistory')
+    users_: Mapped['Users'] = relationship('Users', back_populates='stockHistory')
+    warehouses_: Mapped['Warehouses'] = relationship('Warehouses', back_populates='stockHistory')

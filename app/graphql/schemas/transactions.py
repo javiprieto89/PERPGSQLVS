@@ -6,39 +6,39 @@ from datetime import datetime
 
 @strawberry.input
 class TransactionsCreate:
-    companyID: int
-    branchID: int
-    transactionDate: datetime
-    clientID: Optional[int] = None
-    supplierID: Optional[int] = None
-    amount: float
-    transactionType: Optional[str] = None
-    orderID: Optional[int] = None
-    notes: Optional[str] = None
+    CompanyID: int
+    BranchID: int
+    TransactionDate: datetime
+    ClientID: Optional[int] = None
+    SupplierID: Optional[int] = None
+    Amount: float
+    TransactionType: Optional[str] = None
+    OrderID: Optional[int] = None
+    Notes: Optional[str] = None
 
 
 @strawberry.input
 class TransactionsUpdate:
-    companyID: Optional[int] = None
-    branchID: Optional[int] = None
-    transactionDate: Optional[datetime] = None
-    clientID: Optional[int] = None
-    supplierID: Optional[int] = None
-    amount: Optional[float] = None
-    transactionType: Optional[str] = None
-    orderID: Optional[int] = None
-    notes: Optional[str] = None
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
+    TransactionDate: Optional[datetime] = None
+    ClientID: Optional[int] = None
+    SupplierID: Optional[int] = None
+    Amount: Optional[float] = None
+    TransactionType: Optional[str] = None
+    OrderID: Optional[int] = None
+    Notes: Optional[str] = None
 
 
 @strawberry.type
 class TransactionsInDB:
-    transactionID: int
-    companyID: Optional[int]
-    branchID: Optional[int]
-    transactionDate: Optional[datetime]
-    clientID: Optional[int]
-    supplierID: Optional[int]
-    amount: float
-    transactionType: Optional[str]
-    orderID: Optional[int]
-    notes: Optional[str]
+    TransactionID: int
+    CompanyID: Optional[int]
+    BranchID: Optional[int]
+    TransactionDate: Optional[datetime]
+    ClientID: Optional[int]
+    SupplierID: Optional[int]
+    Amount: float
+    TransactionType: Optional[str]
+    OrderID: Optional[int]
+    Notes: Optional[str]

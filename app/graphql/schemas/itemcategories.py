@@ -4,13 +4,13 @@ from typing import Optional
 
 @strawberry.input
 class ItemCategoriesCreate:
-    name: str
+    Name: str
 
 @strawberry.input
 class ItemCategoriesUpdate:
-    name: Optional[str] = None
+    Name: Optional[str] = None
 
 @strawberry.type
 class ItemCategoriesInDB:
-    categoryID: int
-    name: str
+    CategoryID: int
+    Name: str

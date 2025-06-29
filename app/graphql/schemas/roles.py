@@ -4,13 +4,13 @@ from typing import Optional
 
 @strawberry.input
 class RolesCreate:
-    roleName: str
+    RoleName: str
 
 @strawberry.input
 class RolesUpdate:
-    roleName: Optional[str] = None
+    RoleName: Optional[str] = None
 
 @strawberry.type
 class RolesInDB:
-    roleID: int
-    roleName: str
+    RoleID: int
+    RoleName: str

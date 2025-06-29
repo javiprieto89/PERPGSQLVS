@@ -1,7 +1,17 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== Roles ===========
+# app/models/roles.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .useraccess import UserAccess  
+from typing import List
+
+from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
+from sqlalchemy.orm import Mapped, relationship
+
 from app.db import Base
+
 
 class Roles(Base):
     __tablename__ = 'Roles'
@@ -9,9 +19,8 @@ class Roles(Base):
         PrimaryKeyConstraint('RoleID', name='PK__Roles__8AFACE3A6B39B353'),
     )
 
-    roleID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    roleName = Column(Unicode(50))
+    RoleID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    RoleName = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
 
-    userAccess = relationship('UserAccess', back_populates='Roles_')
-
-
+    # Relaciones
+    user_access: Mapped[List['UserAccess']] = relationship('UserAccess', back_populates='roles_')

@@ -6,27 +6,27 @@ from typing import Optional
 
 @strawberry.input
 class CreditCardsCreate:
-    cardGroupID: Optional[int] = None
-    cardName: Optional[str] = None
-    surcharge: Optional[float] = None
-    installments: Optional[int] = None
-    isActive: Optional[bool] = True
+    CardGroupID: Optional[int] = None
+    CardName: Optional[str] = None
+    Surcharge: Optional[float] = None
+    Installments: Optional[int] = None
+    IsActive: Optional[bool] = True
 
 
 @strawberry.input
 class CreditCardsUpdate:
-    cardGroupID: int
-    cardName: str
-    surcharge: Optional[float] = None
-    installments: Optional[int] = None
-    isActive: Optional[bool] = None
+    CardGroupID: int
+    CardName: str
+    Surcharge: Optional[float] = None
+    Installments: Optional[int] = None
+    IsActive: Optional[bool] = None
 
 
 @strawberry.type
 class CreditCardsInDB:
-    creditCardID: int
-    cardGroupID: int
-    cardName: str
-    surcharge: Optional[float] = None
-    installments: Optional[int] = None
-    isActive: Optional[bool] = None
+    CreditCardID: int
+    CardGroupID: int
+    CardName: str
+    Surcharge: Optional[float] = None
+    Installments: Optional[int] = None
+    IsActive: Optional[bool] = None

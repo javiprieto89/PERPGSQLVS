@@ -5,19 +5,19 @@ from typing import Optional
 
 @strawberry.input
 class ItemPriceHistoryCreate:
-    itemID: int
-    effectiveDate: datetime
-    price: float
+    ItemID: int
+    EffectiveDate: datetime
+    Price: float
 
 @strawberry.input
 class ItemPriceHistoryUpdate:
-    itemID: Optional[int] = None
-    effectiveDate: Optional[datetime] = None
-    price: Optional[float] = None
+    ItemID: Optional[int] = None
+    EffectiveDate: Optional[datetime] = None
+    Price: Optional[float] = None
 
 @strawberry.type
 class ItemPriceHistoryInDB:
-    priceHistoryID: int
-    itemID: int
-    effectiveDate: datetime
-    price: float
+    PriceHistoryID: int
+    ItemID: int
+    EffectiveDate: datetime
+    Price: float

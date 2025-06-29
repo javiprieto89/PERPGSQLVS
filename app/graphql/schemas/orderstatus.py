@@ -4,13 +4,13 @@ from typing import Optional
 
 @strawberry.input
 class OrderStatusCreate:
-    status: str
+    Status: str
 
 @strawberry.input
 class OrderStatusUpdate:
-    status: Optional[str] = None
+    Status: Optional[str] = None
 
 @strawberry.type
 class OrderStatusInDB:
-    orderStatusID: int
-    status: str
+    OrderStatusID: int
+    Status: str

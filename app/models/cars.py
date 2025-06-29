@@ -1,30 +1,41 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text, Column
-from sqlalchemy.orm import relationship
+# ========== Cars ===========
+# app/models/cars.py
+from __future__ import annotations
+from typing import List, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.carmodels import CarModels
+    from app.models.clients import Clients
+    from app.models.discounts import Discounts
+    from app.models.orders import Orders
+    from app.models.orderhistory import OrderHistory
+
+from sqlalchemy import Column, Integer, Unicode, Boolean, Identity, PrimaryKeyConstraint, ForeignKeyConstraint
+from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 
+
 class Cars(Base):
-    __tablename__ = 'cars'
+    __tablename__ = 'Cars'
     __table_args__ = (
-        ForeignKeyConstraint(['car_model_id'], ['CarModels.car_model_id'], name='FK__cars__car_model_id__571DF1D5'),
-        ForeignKeyConstraint(['client_id'], ['Clients.client_id'], name='FK_cars_clients'),
-        ForeignKeyConstraint(['discount_id'], ['Discounts.discount_id'], name='FK_cars_discounts'),
-        PrimaryKeyConstraint('car_id', name='PK__cars__68A0340E0C926E4D')
+        ForeignKeyConstraint(['CarModelID'], ['CarModels.CarModelID'], name='FK__Cars__carModelID__571DF1D5'),
+        ForeignKeyConstraint(['ClientID'], ['Clients.ClientID'], name='FK_Cars_Clients'),
+        ForeignKeyConstraint(['DiscountID'], ['Discounts.DiscountID'], name='FK_Cars_Discounts'),
+        PrimaryKeyConstraint('CarID', name='PK__Cars__68A0340E0C926E4D')
     )
 
-    car_id = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    car_model_id = Column(Integer)
-    client_id = Column(Integer)
-    license_plate = Column(Unicode(20))
-    discount_id = Column(Integer)
-    year = Column(Integer)
-    last_service_mileage = Column(Integer)
-    is_debtor = Column(Boolean)
+    CarID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    CarModelID = Column(Integer)
+    ClientID = Column(Integer)
+    LicensePlate = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
+    DiscountID = Column(Integer)
+    Year = Column(Integer)
+    LastServiceMileage = Column(Integer)
+    IsDebtor = Column(Boolean)
 
-    car_model = relationship('CarModels', back_populates='cars')
-    client = relationship('Clients', back_populates='cars')
-    discount = relationship('Discounts', back_populates='cars')
-    orders = relationship('Orders', back_populates='car')
-    order_history = relationship('OrderHistory', back_populates='car')
-
-
+    # Relaciones
+    carModels_: Mapped[CarModels] = relationship('CarModels', back_populates='cars')
+    clients_: Mapped[Clients] = relationship('Clients', back_populates='cars')
+    discounts_: Mapped[Discounts] = relationship('Discounts', back_populates='cars')
+    orders: Mapped[List[Orders]] = relationship('Orders', back_populates='cars_')
+    orderHistory: Mapped[List[OrderHistory]] = relationship('OrderHistory', back_populates='cars_')

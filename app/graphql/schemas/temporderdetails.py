@@ -5,40 +5,40 @@ from uuid import UUID
 
 @strawberry.input
 class TempOrderDetailsCreate:
-    orderSessionID: UUID
-    companyID: int
-    branchID: int
-    userID: int
-    itemID: int
-    quantity: int
-    warehouseID: int
-    priceListID: int
-    unitPrice: float
-    description: str
+    OrderSessionID: UUID
+    CompanyID: int
+    BranchID: int
+    UserID: int
+    ItemID: int
+    Quantity: int
+    WarehouseID: int
+    PriceListID: int
+    UnitPrice: float
+    Description: str
 
 @strawberry.input
 class TempOrderDetailsUpdate:
-    orderSessionID: Optional[UUID] = None
-    companyID: Optional[int] = None
-    branchID: Optional[int] = None
-    userID: Optional[int] = None
-    itemID: Optional[int] = None
-    quantity: Optional[int] = None
-    warehouseID: Optional[int] = None
-    priceListID: Optional[int] = None
-    unitPrice: Optional[float] = None
-    description: Optional[str] = None
+    OrderSessionID: Optional[UUID] = None
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
+    UserID: Optional[int] = None
+    ItemID: Optional[int] = None
+    Quantity: Optional[int] = None
+    WarehouseID: Optional[int] = None
+    PriceListID: Optional[int] = None
+    UnitPrice: Optional[float] = None
+    Description: Optional[str] = None
 
 @strawberry.type
 class TempOrderDetailsInDB:
-    tempOrderItemID: int
-    orderSessionID: UUID
-    companyID: int
-    branchID: int
-    userID: int
-    itemID: int
-    quantity: int
-    warehouseID: int
-    priceListID: int
-    unitPrice: float
-    description: str
+    TempOrderItemID: int
+    OrderSessionID: UUID
+    CompanyID: int
+    BranchID: int
+    UserID: int
+    ItemID: int
+    Quantity: int
+    WarehouseID: int
+    PriceListID: int
+    UnitPrice: float
+    Description: str

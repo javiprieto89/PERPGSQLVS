@@ -4,13 +4,13 @@ from typing import Optional
 
 @strawberry.input
 class TransactionTypesCreate:
-    typeName: str
+    TypeName: str
 
 @strawberry.input
 class TransactionTypesUpdate:
-    typeName: Optional[str] = None
+    TypeName: Optional[str] = None
 
 @strawberry.type
 class TransactionTypesInDB:
-    transactTypeID: int
-    typeName: str
+    TransactTypeID: int
+    TypeName: str

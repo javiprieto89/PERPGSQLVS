@@ -1,8 +1,30 @@
-# Auto-generado. Revisar imports si faltan.
-from typing import List, Optional
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== TempOrderDetails ===========
+# app/models/temporderdetails.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .branches import Branches
+    from .companydata import CompanyData
+    from .items import Items
+    from .orders import Orders
+    from .pricelists import PriceLists
+    from .users import Users
+    from .warehouses import Warehouses
+
+from typing import Optional
+
+from sqlalchemy import Column, Integer, Unicode, DECIMAL, Uuid, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship
+#from .branches import Branches
+#from .companydata import CompanyData
+#from .items import Items
+#from .orders import Orders
+#from .pricelists import PriceLists
+#from .users import Users
+#from .warehouses import Warehouses
 from app.db import Base
+
 
 class TempOrderDetails(Base):
     __tablename__ = 'TempOrderDetails'
@@ -17,26 +39,25 @@ class TempOrderDetails(Base):
         PrimaryKeyConstraint('TempOrderItemID', name='PK__TempOrde__AC4DF55EB1F17B71')
     )
 
-    tempOrderItemID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    orderSessionID = Column(Uuid, server_default=text('(newid())'))
-    companyID = Column(Integer)
-    branchID = Column(Integer)
-    userID = Column(Integer)
-    itemID = Column(Integer)
-    quantity = Column(Integer)
-    warehouseID = Column(Integer)
-    priceListID = Column(Integer)
-    unitPrice = Column(DECIMAL(10, 2))
-    description = Column(Unicode(200))
-    orderDetailsID = Column(Integer)
-    orderID = Column(Integer)
+    TempOrderItemID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    OrderSessionID = Column(Uuid, server_default=text('(newid())'))
+    CompanyID = Column(Integer)
+    BranchID = Column(Integer)
+    UserID = Column(Integer)
+    ItemID = Column(Integer)
+    Quantity = Column(Integer)
+    WarehouseID = Column(Integer)
+    PriceListID = Column(Integer)
+    UnitPrice = Column(DECIMAL(10, 2))
+    Description = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
+    OrderDetailID = Column(Integer)
+    OrderID = Column(Integer)
 
-    branches_ = relationship('Branches', back_populates='TempOrderDetails')
-    companyData_ = relationship('CompanyData', back_populates='TempOrderDetails')
-    items_ = relationship('Items', back_populates='TempOrderDetails')
-    orders_ = relationship('Orders', back_populates='TempOrderDetails')
-    priceLists_ = relationship('PriceLists', back_populates='TempOrderDetails')
-    users_ = relationship('Users', back_populates='TempOrderDetails')
-    warehouses_ = relationship('Warehouses', back_populates='TempOrderDetails')
-
-
+    # Relaciones
+    branches_: Mapped['Branches'] = relationship('Branches', back_populates='tempOrderDetails')
+    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='tempOrderDetails')
+    items_: Mapped['Items'] = relationship('Items', back_populates='tempOrderDetails')
+    orders_: Mapped[Optional['Orders']] = relationship('Orders', back_populates='tempOrderDetails')
+    priceLists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='tempOrderDetails')
+    users_: Mapped['Users'] = relationship('Users', back_populates='tempOrderDetails')
+    warehouses_: Mapped['Warehouses'] = relationship('Warehouses', back_populates='tempOrderDetails')

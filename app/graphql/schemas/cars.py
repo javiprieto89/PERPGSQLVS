@@ -5,33 +5,33 @@ from typing import Optional
 
 @strawberry.input
 class CarsCreate:
-    licensePlate: str
-    year: Optional[int] = None
-    carModelID: int
-    clientID: int
-    lastServiceMileage: Optional[int] = None
-    isDebtor: Optional[bool] = None
-    discountID: int
+    LicensePlate: str
+    Year: Optional[int] = None
+    CarModelID: int
+    ClientID: int
+    LastServiceMileage: Optional[int] = None
+    IsDebtor: Optional[bool] = None
+    DiscountID: int
 
 
 @strawberry.input
 class CarsUpdate:
-    licensePlate: str
-    year: Optional[int] = None
-    carModelID: int
-    clientID: int
-    lastServiceMileage: Optional[int] = None
-    isDebtor: Optional[bool] = None
-    discountID: int
+    LicensePlate: str
+    Year: Optional[int] = None
+    CarModelID: int
+    ClientID: int
+    LastServiceMileage: Optional[int] = None
+    IsDebtor: Optional[bool] = None
+    DiscountID: int
 
 
 @strawberry.type
 class CarsInDB:
-    carID: int
-    licensePlate: str
-    year: Optional[int] = None
-    carModelID: int
-    clientID: int
-    lastServiceMileage: Optional[int] = None
-    isDebtor: Optional[bool] = None
-    discountID: int
+    CarID: int
+    LicensePlate: str
+    Year: Optional[int] = None
+    CarModelID: int
+    ClientID: int
+    LastServiceMileage: Optional[int] = None
+    IsDebtor: Optional[bool] = None
+    DiscountID: int

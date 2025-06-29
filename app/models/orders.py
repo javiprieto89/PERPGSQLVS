@@ -1,70 +1,93 @@
-# Auto-generado. Revisar imports si faltan.
+# ========== Orders ===========
+# app/models/orders.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .branches import Branches
+    from .cars import Cars
+    from .clients import Clients
+    from .companydata import CompanyData
+    from .discounts import Discounts
+    from .documenttypes import DocumentTypes
+    from .orderstatus import OrderStatus
+    from .pricelists import PriceLists
+    from .saleconditions import SaleConditions
+    from .servicetype import ServiceType
+    from .users import Users
+    from .warehouses import Warehouses
+    from .orderdetails import OrderDetails
+    from .orderhistory import OrderHistory
+    from .temporderdetails import TempOrderDetails
+
 from typing import List, Optional
-from sqlalchemy import Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text, Column
-from sqlalchemy.orm import relationship
+
+from sqlalchemy import Column, Integer, Unicode, Boolean, DateTime, DECIMAL, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, Index, text
+from sqlalchemy.orm import Mapped, relationship
+
 from app.db import Base
+
 
 class Orders(Base):
     __tablename__ = 'Orders'
     __table_args__ = (
-        ForeignKeyConstraint(['branchID'], ['Branches.branch_id'], name='FK__Orders__BranchID__01142BA1'),
-        ForeignKeyConstraint(['carID'], ['Cars.car_id'], name='FK__Orders__CarID__02FC7413'),
-        ForeignKeyConstraint(['clientID'], ['Clients.clientID'], name='FK__Orders__ClientID__00200768'),
-        ForeignKeyConstraint(['companyID'], ['CompanyData.company_id'], name='FK__Orders__CompanyI__02084FDA'),
-        ForeignKeyConstraint(['discountID'], ['Discounts.discountID'], name='FK__Orders__Discount__04E4BC85'),
-        ForeignKeyConstraint(['documentID'], ['DocumentTypes.document_type_id'], name='FK__Orders__Document__06CD04F7'),
-        ForeignKeyConstraint(['orderStatusID'], ['OrderStatus.orderStatusID'], name='FK_Orders_OrderStatus'),
-        ForeignKeyConstraint(['priceListID'], ['PriceLists.priceListID'], name='FK__Orders__PriceLis__08B54D69'),
-        ForeignKeyConstraint(['saleConditionID'], ['SaleConditions.saleConditionID'], name='FK__Orders__SaleCond__03F0984C'),
-        ForeignKeyConstraint(['serviceTypeID'], ['ServiceType.serviceTypeID'], name='FK_Orders_ServiceType'),
-        ForeignKeyConstraint(['statusID'], ['OrderStatus.orderStatusID'], name='FK__Orders__StatusID__07C12930'),
-        ForeignKeyConstraint(['userID'], ['Users.userID'], name='FK__Orders__UserID__05D8E0BE'),
-        ForeignKeyConstraint(['warehouseID'], ['Warehouses.warehouseID'], name='FK_Orders_Warehouses'),
-        PrimaryKeyConstraint('orderID', name='PK__Orders__C3905BAF2829B144'),
-        Index('idx_ClientID', 'clientID'),
-        Index('idx_CompanyID', 'companyID'),
-        Index('idx_OrderDate', 'date_')
+        ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK__Orders__branchID__01142BA1'),
+        ForeignKeyConstraint(['CarID'], ['Cars.CarID'], name='FK__Orders__carID__02FC7413'),
+        ForeignKeyConstraint(['ClientID'], ['Clients.ClientID'], name='FK__Orders__clientID__00200768'),
+        ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__Orders__CompanyI__02084FDA'),
+        ForeignKeyConstraint(['DiscountID'], ['Discounts.DiscountID'], name='FK__Orders__Discount__04E4BC85'),
+        ForeignKeyConstraint(['DocumentID'], ['DocumentTypes.DocumentTypeID'], name='FK__Orders__Document__06CD04F7'),
+        ForeignKeyConstraint(['OrderstatusID'], ['OrderStatus.OrderstatusID'], name='FK_Orders_OrderStatus'),
+        ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK__Orders__PriceLis__08B54D69'),
+        ForeignKeyConstraint(['SaleConditionID'], ['SaleConditions.SaleConditionID'], name='FK__Orders__SaleCond__03F0984C'),
+        ForeignKeyConstraint(['ServiceTypeID'], ['ServiceType.ServiceTypeID'], name='FK_Orders_ServiceType'),
+        ForeignKeyConstraint(['StatusID'], ['OrderStatus.OrderstatusID'], name='FK__Orders__statusID__07C12930'),
+        ForeignKeyConstraint(['UserID'], ['Users.UserID'], name='FK__Orders__userID__05D8E0BE'),
+        ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_Orders_Warehouses'),
+        PrimaryKeyConstraint('OrderID', name='PK__Orders__C3905BAF2829B144'),
+        Index('idx_clientID', 'ClientID'),
+        Index('idx_companyID', 'CompanyID'),
+        Index('idx_OrderDate', 'Date')
     )
 
-    orderID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    companyID = Column(Integer)
-    branchID = Column(Integer)
-    date_ = Column('Date', DateTime, server_default=text('(getdate())'))
-    clientID = Column(Integer)
-    saleConditionID = Column(Integer)
-    discountID = Column(Integer)
-    subtotal = Column(DECIMAL(10, 2))
-    total = Column(DECIMAL(10, 2))
-    vAT = Column(DECIMAL(10, 2))
-    userID = Column(Integer)
-    documentID = Column(Integer)
-    statusID = Column(Integer)
-    priceListID = Column(Integer)
-    orderStatusID = Column(Integer)
-    warehouseID = Column(Integer)
-    carID = Column(Integer)
-    isService = Column(Boolean)
-    serviceTypeID = Column(Integer)
-    mileage = Column(Integer)
-    nextServiceMileage = Column(Integer)
-    notes = Column(Unicode(500))
+    OrderID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    CompanyID = Column(Integer)
+    BranchID = Column(Integer)
+    Date_ = Column('Date', DateTime, server_default=text('(getdate())'))
+    ClientID = Column(Integer)
+    SaleConditionID = Column(Integer)
+    DiscountID = Column(Integer)
+    Subtotal = Column(DECIMAL(10, 2))
+    Total = Column(DECIMAL(10, 2))
+    VAT = Column(DECIMAL(10, 2))
+    UserID = Column(Integer)
+    DocumentID = Column(Integer)
+    StatusID = Column(Integer)
+    PriceListID = Column(Integer)
+    OrderstatusID = Column(Integer)
+    WarehouseID = Column(Integer)
+    CarID = Column(Integer)
+    IsService = Column(Boolean)
+    ServiceTypeID = Column(Integer)
+    Mileage = Column(Integer)
+    NextServiceMileage = Column(Integer)
+    Notes = Column(Unicode(500, 'Modern_Spanish_CI_AS'))
 
-    branch = relationship('Branches', back_populates='orders')
-    car = relationship('Cars', back_populates='orders')
-    client = relationship('Clients', back_populates='orders')
-    company_data = relationship('CompanyData', back_populates='orders')
-    discount = relationship('Discounts', back_populates='orders')
-    document_type = relationship('DocumentTypes', back_populates='orders')
-    order_status = relationship('OrderStatus', foreign_keys=[orderStatusID], back_populates='orders')
-    price_list = relationship('PriceLists', back_populates='orders')
-    sale_condition = relationship('SaleConditions', back_populates='orders')
-    service_type = relationship('ServiceType', back_populates='orders')
-    status = relationship('OrderStatus', foreign_keys=[statusID], back_populates='orders_status')
-    user = relationship('Users', back_populates='orders')
-    warehouse = relationship('Warehouses', back_populates='orders')
-    order_details = relationship('OrderDetails', back_populates='order')
-    order_history = relationship('OrderHistory', back_populates='order')
-    temp_order_details = relationship('TempOrderDetails', back_populates='order')
-    transactions = relationship('Transactions', back_populates='order')
-
-
+    # Relaciones
+    branches_: Mapped['Branches'] = relationship('Branches', back_populates='orders')
+    cars_: Mapped[Optional['Cars']] = relationship('Cars', back_populates='orders')
+    clients_: Mapped['Clients'] = relationship('Clients', back_populates='orders')
+    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='orders')
+    discounts_: Mapped['Discounts'] = relationship('Discounts', back_populates='orders')
+    documentTypes_: Mapped['DocumentTypes'] = relationship('DocumentTypes', back_populates='orders')
+    orderStatus_: Mapped['OrderStatus'] = relationship('OrderStatus', foreign_keys=[OrderstatusID], back_populates='orders')
+    orderStatus1: Mapped['OrderStatus'] = relationship('OrderStatus', foreign_keys=[StatusID], back_populates='orders_')
+    priceLists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='orders')
+    saleConditions_: Mapped['SaleConditions'] = relationship('SaleConditions', back_populates='orders')
+    serviceType_: Mapped[Optional['ServiceType']] = relationship('ServiceType', back_populates='orders')
+    orderStatus1: Mapped['OrderStatus'] = relationship('OrderStatus', foreign_keys=[StatusID], back_populates='orders_')
+    users_: Mapped['Users'] = relationship('Users', back_populates='orders')
+    warehouses_: Mapped['Warehouses'] = relationship('Warehouses', back_populates='orders')
+    orderDetails: Mapped[List['OrderDetails']] = relationship('OrderDetails', back_populates='orders_')
+    orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='orders_')
+    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship('TempOrderDetails', back_populates='orders_')

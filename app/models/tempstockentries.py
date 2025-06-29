@@ -1,7 +1,24 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== TempStockEntries ===========
+# app/models/tempstockentries.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .branches import Branches
+    from .companydata import CompanyData
+    from .items import Items
+    from .users import Users
+    from .warehouses import Warehouses
+
+from sqlalchemy import Column, Integer, Unicode, Boolean, DateTime, Uuid, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship
+#from .branches import Branches
+#from .companydata import CompanyData
+#from .items import Items
+#from .users import Users
+#from .warehouses import Warehouses
 from app.db import Base
+
 
 class TempStockEntries(Base):
     __tablename__ = 'TempStockEntries'
@@ -14,23 +31,22 @@ class TempStockEntries(Base):
         PrimaryKeyConstraint('TempStockEntryID', name='PK__TempStoc__6BCFA2A4F18BE300')
     )
 
-    tempStockEntryID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    companyID = Column(Integer)
-    branchID = Column(Integer)
-    uniqueID = Column(Uuid, server_default=text('(newid())'))
-    sessionID = Column(Unicode(100))
-    userID = Column(Integer)
-    itemID = Column(Integer)
-    warehouseID = Column(Integer)
-    quantityChange = Column(Integer)
-    entryDate = Column(DateTime, server_default=text('(getdate())'))
-    isProcessed = Column(Boolean, server_default=text('((0))'))
-    reason = Column(Unicode(200))
+    TempStockEntryID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    CompanyID = Column(Integer)
+    BranchID = Column(Integer)
+    UniqueID = Column(Uuid, server_default=text('(newid())'))
+    SessionID = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    UserID = Column(Integer)
+    ItemID = Column(Integer)
+    WarehouseID = Column(Integer)
+    Quantity = Column(Integer)
+    EntryDate = Column(DateTime, server_default=text('(getdate())'))
+    IsProcessed = Column(Boolean, server_default=text('((0))'))
+    Reason = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
 
-    branches_ = relationship('Branches', back_populates='TempStockEntries')
-    companyData_ = relationship('CompanyData', back_populates='TempStockEntries')
-    items_ = relationship('Items', back_populates='TempStockEntries')
-    users_ = relationship('Users', back_populates='TempStockEntries')
-    warehouses_ = relationship('Warehouses', back_populates='TempStockEntries')
-
-
+    # Relaciones
+    branches_: Mapped['Branches'] = relationship('Branches', back_populates='tempStockEntries')
+    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='tempStockEntries')
+    items_: Mapped['Items'] = relationship('Items', back_populates='tempStockEntries')
+    users_: Mapped['Users'] = relationship('Users', back_populates='tempStockEntries')
+    warehouses_: Mapped['Warehouses'] = relationship('Warehouses', back_populates='tempStockEntries')

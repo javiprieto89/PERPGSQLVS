@@ -5,22 +5,22 @@ from typing import Optional
 
 @strawberry.input
 class PriceListItemsCreate:
-    priceListID: int
-    itemID: int
-    price: float
-    effectiveDate: datetime
+    PriceListID: int
+    ItemID: int
+    Price: float
+    EffectiveDate: datetime
 
 @strawberry.input
 class PriceListItemsUpdate:
-    priceListID: Optional[int] = None
-    itemID: Optional[int] = None
-    price: Optional[float] = None
-    effectiveDate: Optional[datetime] = None
+    PriceListID: Optional[int] = None
+    ItemID: Optional[int] = None
+    Price: Optional[float] = None
+    EffectiveDate: Optional[datetime] = None
 
 @strawberry.type
 class PriceListItemsInDB:
-    priceListItemID: int
-    priceListID: int
-    itemID: int
-    price: float
-    effectiveDate: datetime
+    PriceListItemID: int
+    PriceListID: int
+    ItemID: int
+    Price: float
+    EffectiveDate: datetime

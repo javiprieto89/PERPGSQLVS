@@ -1,28 +1,40 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== OrderDetails ===========
+# app/models/orderdetails.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .items import Items
+    from .orders import Orders
+    from .warehouses import Warehouses
+
+from sqlalchemy import Column, Integer, Unicode, DECIMAL, DateTime, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship
+#from .items import Items
+#from .orders import Orders
+#from .warehouses import Warehouses
 from app.db import Base
+
 
 class OrderDetails(Base):
     __tablename__ = 'OrderDetails'
     __table_args__ = (
-        ForeignKeyConstraint(['itemID'], ['Items.itemID'], name='FK__OrderDeta__ItemI__2DE6D218'),
-        ForeignKeyConstraint(['orderID'], ['Orders.orderID'], name='FK__OrderDeta__Order__2CF2ADDF'),
-        ForeignKeyConstraint(['warehouseID'], ['Warehouses.warehouseID'], name='FK_OrderDetails_Warehouses'),
-        PrimaryKeyConstraint('orderDetailID', name='PK__OrderDet__9DD74D9DF5D37EDA')
+        ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK__OrderDeta__ItemI__2DE6D218'),
+        ForeignKeyConstraint(['OrderID'], ['Orders.OrderID'], name='FK__OrderDeta__Order__2CF2ADDF'),
+        ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_OrderDetails_Warehouses'),
+        PrimaryKeyConstraint('OrderDetailID', name='PK__OrderDet__9DD74D9DF5D37EDA')
     )
 
-    orderDetailID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    orderID = Column(Integer)
-    itemID = Column(Integer)
-    warehouseID = Column(Integer)
-    quantity = Column(Integer)
-    unitPrice = Column(DECIMAL(10, 2))
-    description = Column(Unicode(200))
-    lastModified = Column(DateTime, server_default=text('(getdate())'))
+    OrderDetailID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    OrderID = Column(Integer)
+    ItemID = Column(Integer)
+    WarehouseID = Column(Integer)
+    Quantity = Column(Integer)
+    UnitPrice = Column(DECIMAL(10, 2))
+    Description = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
+    LastModified = Column(DateTime, server_default=text('(getdate())'))
 
-    items_ = relationship('Items', back_populates='OrderDetails')
-    orders_ = relationship('Orders', back_populates='OrderDetails')
-    warehouses_ = relationship('Warehouses', back_populates='OrderDetails')
-
-
+    # Relaciones
+    items_: Mapped['Items'] = relationship('Items', back_populates='orderDetails')
+    orders_: Mapped['Orders'] = relationship('Orders', back_populates='orderDetails')
+    warehouses_: Mapped['Warehouses'] = relationship('Warehouses', back_populates='orderDetails')

@@ -6,27 +6,27 @@ from typing import Optional
 
 @strawberry.input
 class WarehousesCreate:
-    companyID: int
-    branchID: int
-    name: str
-    description: Optional[str] = None
-    isActive: bool = True
+    CompanyID: int
+    BranchID: int
+    Name: str
+    Description: Optional[str] = None
+    IsActive: bool = True
 
 
 @strawberry.input
 class WarehousesUpdate:
-    companyID: Optional[int] = None
-    branchID: Optional[int] = None
-    name: Optional[str] = None
-    description: Optional[str] = None
-    isActive: Optional[bool] = None
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
+    Name: Optional[str] = None
+    Description: Optional[str] = None
+    IsActive: Optional[bool] = None
 
 
 @strawberry.type
 class WarehousesInDB:
-    warehouseID: int
-    companyID: int
-    branchID: int
-    name: str
-    description: Optional[str] = None
-    isActive: bool
+    WarehouseID: int
+    CompanyID: int
+    BranchID: int
+    Name: str
+    Description: Optional[str] = None
+    IsActive: bool

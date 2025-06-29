@@ -5,19 +5,19 @@ from datetime import date, datetime
 
 @strawberry.input
 class AccountBalancesCreate:
-    supplierID: Optional[int] = None
-    clientID: Optional[int] = None
-    balance: float
+    SupplierID: Optional[int] = None
+    ClientID: Optional[int] = None
+    Balance: float
 
 @strawberry.input
 class AccountBalancesUpdate:
-    supplierID: Optional[int] = None
-    clientID: Optional[int] = None
-    balance: Optional[float] = None
+    SupplierID: Optional[int] = None
+    BlientID: Optional[int] = None
+    Balance: Optional[float] = None
 
 @strawberry.type
 class AccountBalancesInDB:
-    accountID: int
-    supplierID: Optional[int] = None
-    clientID: Optional[int] = None
-    balance: float
+    AccountID: int
+    SupplierID: Optional[int] = None
+    ClientID: Optional[int] = None
+    Balance: float

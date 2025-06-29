@@ -5,22 +5,22 @@ from datetime import date
 
 @strawberry.input
 class SaleConditionsCreate:
-    name: str
-    dueDate: date
-    surcharge: float
-    isActive: Optional[bool] = None
+    Name: str
+    DueDate: date
+    Surcharge: float
+    IsActive: Optional[bool] = None
 
 @strawberry.input
 class SaleConditionsUpdate:
-    name: Optional[str] = None
-    dueDate: Optional[date] = None
-    surcharge: Optional[float] = None
-    isActive: Optional[bool] = None
+    Name: Optional[str] = None
+    DueDate: Optional[date] = None
+    Surcharge: Optional[float] = None
+    IsActive: Optional[bool] = None
 
 @strawberry.type
 class SaleConditionsInDB:
-    saleConditionID: int
-    name: str
-    dueDate: date
-    surcharge: float
-    isActive: Optional[bool]
+    SaleConditionID: int
+    Name: str
+    DueDate: date
+    Surcharge: float
+    IsActive: Optional[bool]

@@ -9,54 +9,54 @@ from app.graphql.schemas.pricelists import PriceListsInDB
 
 @strawberry.input
 class ClientsCreate:
-    documentTypeID: int
-    documentNumber: Optional[str] = None
-    firstName: str
-    lastName: Optional[str] = None
-    phone: Optional[str] = None
-    email: Optional[str] = None
-    address: Optional[str] = None
-    isActive: bool
-    countryID: int
-    provinceID: int
-    city: Optional[str] = None
-    postalCode: Optional[str] = None
-    priceListID: int
+    DocumentTypeID: int
+    DocumentNumber: Optional[str] = None
+    FirstName: str
+    LastName: Optional[str] = None
+    Phone: Optional[str] = None
+    Email: Optional[str] = None
+    Address: Optional[str] = None
+    IsActive: bool
+    CountryID: int
+    ProvinceID: int
+    City: Optional[str] = None
+    PostalCode: Optional[str] = None
+    PriceListID: int
 
 
 @strawberry.input
 class ClientsUpdate:
-    documentTypeID: int
-    documentNumber: Optional[str] = None
-    firstName: str
-    lastName: Optional[str] = None
-    phone: Optional[str] = None
-    email: Optional[str] = None
-    address: Optional[str] = None
-    isActive: bool
-    countryID: int
-    provinceID: int
-    city: Optional[str] = None
-    postalCode: Optional[str] = None
-    priceListID: int
+    DocumentTypeID: int
+    DocumentNumber: Optional[str] = None
+    FirstName: str
+    LastName: Optional[str] = None
+    Phone: Optional[str] = None
+    Email: Optional[str] = None
+    Address: Optional[str] = None
+    IsActive: bool
+    CountryID: int
+    ProvinceID: int
+    City: Optional[str] = None
+    PostalCode: Optional[str] = None
+    PriceListID: int
 
 
 @strawberry.type
 class ClientsInDB:
-    clientID: int
-    documentTypeID: int
-    documentNumber: Optional[str] = None
-    firstName: str
-    lastName: Optional[str] = None
-    phone: Optional[str] = None
-    email: Optional[str] = None
-    address: Optional[str] = None
-    isActive: bool
-    countryID: int
-    provinceID: int
-    city: Optional[str] = None
-    postalCode: Optional[str] = None
-    priceListID: int
+    ClientID: int
+    DocumentTypeID: int
+    DocumentNumber: Optional[str] = None
+    FirstName: str
+    LastName: Optional[str] = None
+    Phone: Optional[str] = None
+    Email: Optional[str] = None
+    Address: Optional[str] = None
+    IsActive: bool
+    CountryID: int
+    ProvinceID: int
+    City: Optional[str] = None
+    PostalCode: Optional[str] = None
+    PriceListID: int
 
     # Relaciones
     document_type: Optional[DocumentTypesInDB] = None
@@ -67,20 +67,20 @@ class ClientsInDB:
 
 @strawberry.type
 class ClientsResponse:
-    clientID: int
-    documentTypeID: int
-    documentNumber: Optional[str] = None
-    firstName: str
-    lastName: Optional[str] = None
-    phone: Optional[str] = None
-    email: Optional[str] = None
-    address: Optional[str] = None
-    isActive: bool
-    countryID: int
-    provinceID: int
-    city: Optional[str] = None
-    postalCode: Optional[str] = None
-    priceListID: int
+    ClientID: int
+    DocumentTypeID: int
+    DocumentNumber: Optional[str] = None
+    FirstName: str
+    LastName: Optional[str] = None
+    Phone: Optional[str] = None
+    Email: Optional[str] = None
+    Address: Optional[str] = None
+    IsActive: bool
+    CountryID: int
+    ProvinceID: int
+    City: Optional[str] = None
+    PostalCode: Optional[str] = None
+    PriceListID: int
 
     # Relaciones
     document_type: Optional[DocumentTypesInDB] = None

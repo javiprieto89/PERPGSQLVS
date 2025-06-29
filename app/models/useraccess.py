@@ -1,7 +1,24 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== UserAccess ===========
+# app/models/useraccess.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .branches import Branches
+    from .companydata import CompanyData
+    from .roles import Roles
+    from .users import Users
+
+from typing import List
+
+from sqlalchemy import Column, Integer, PrimaryKeyConstraint, ForeignKeyConstraint
+from sqlalchemy.orm import Mapped, relationship
+#from .branches import Branches
+#from .companydata import CompanyData
+#from .roles import Roles
+#from .users import Users
 from app.db import Base
+
 
 class UserAccess(Base):
     __tablename__ = 'UserAccess'
@@ -13,14 +30,13 @@ class UserAccess(Base):
         PrimaryKeyConstraint('UserID', 'CompanyID', 'BranchID', 'RoleID', name='PK_UserAccess')
     )
 
-    userID = Column(Integer, primary_key=True)
-    companyID = Column(Integer, primary_key=True)
-    branchID = Column(Integer, primary_key=True)
-    roleID = Column(Integer, primary_key=True)
+    UserID = Column(Integer, primary_key=True)
+    CompanyID = Column(Integer, primary_key=True)
+    BranchID = Column(Integer, primary_key=True)
+    RoleID = Column(Integer, primary_key=True)
 
-    branches_ = relationship('Branches', back_populates='UserAccess')
-    companyData_ = relationship('CompanyData', back_populates='UserAccess')
-    roles_ = relationship('Roles', back_populates='UserAccess')
-    users_ = relationship('Users', back_populates='UserAccess')
-
-
+    # Relaciones
+    branches_: Mapped['Branches'] = relationship('Branches', back_populates='userAccess')
+    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='userAccess')
+    roles_: Mapped['Roles'] = relationship('Roles', back_populates='user_access')
+    users_: Mapped['Users'] = relationship('Users', back_populates='userAccess')

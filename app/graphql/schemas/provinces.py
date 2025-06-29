@@ -7,21 +7,21 @@ from app.graphql.schemas.countries import CountriesInDB
 
 @strawberry.input
 class ProvincesCreate:
-    countryID: int
-    name: str
+    CountryID: int
+    Name: str
 
 
 @strawberry.input
 class ProvincesUpdate:
-    countryID: Optional[int] = None
-    name: Optional[str] = None
+    CountryID: Optional[int] = None
+    Name: Optional[str] = None
 
 
 @strawberry.type
 class ProvincesInDB:
-    provinceID: int
-    countryID: int
-    name: str
+    ProvinceID: int
+    CountryID: int
+    Name: str
 
     # Relaciones
     country: Optional[CountriesInDB] = None

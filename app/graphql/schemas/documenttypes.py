@@ -6,18 +6,18 @@ from typing import Optional, List
 
 @strawberry.input
 class DocumentTypesCreate:
-    name: str
+    Name: str
 
 
 @strawberry.input
 class DocumentTypesUpdate:
-    name: Optional[str] = None
+    Name: Optional[str] = None
 
 
 @strawberry.type
 class DocumentTypesInDB:
-    documentTypeID: int
-    name: str
+    DocumentTypeID: int
+    Name: str
 
     # Relaciones
     #clients: Optional[List[ClientsInDB]] = None

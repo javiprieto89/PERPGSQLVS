@@ -6,30 +6,30 @@ from datetime import datetime
 
 @strawberry.input
 class OrderDetailsCreate:
-    orderID: int
-    itemID: int
-    quantity: int
-    unitPrice: float
-    description: Optional[str] = None
-    lastModified: Optional[datetime] = None
+    OrderID: int
+    ItemID: int
+    Wuantity: int
+    UnitPrice: float
+    Description: Optional[str] = None
+    LastModified: Optional[datetime] = None
 
 
 @strawberry.input
 class OrderDetailsUpdate:
-    orderID: Optional[int] = None
-    itemID: Optional[int] = None
-    quantity: Optional[int] = None
-    unitPrice: Optional[float] = None
-    description: Optional[str] = None
-    lastModified: Optional[datetime] = None
+    OrderID: Optional[int] = None
+    ItemID: Optional[int] = None
+    Quantity: Optional[int] = None
+    UnitPrice: Optional[float] = None
+    Description: Optional[str] = None
+    LastModified: Optional[datetime] = None
 
 
 @strawberry.type
 class OrderDetailsInDB:
-    orderDetailsID: int
-    orderID: int
-    itemID: int
-    quantity: int
-    unitPrice: float
-    description: Optional[str] = None
+    OrderDetailsID: int
+    OrderID: int
+    ItemID: int
+    Quantity: int
+    UnitPrice: float
+    Description: Optional[str] = None
     lastModified: Optional[datetime] = None

@@ -15,7 +15,7 @@ def get_itemsubcategories_by_id(db: Session, subcategoryid: int):
 
 def get_itemsubcategories_by_category_id(db: Session, category_id: int):
     return db.query(ItemSubcategories).filter(
-        ItemSubcategories.itemCategoryID == category_id
+        ItemSubcategories.ItemCategoryID == category_id
     ).all()
 
 def create_itemsubcategories(db: Session, data: ItemSubcategoriesCreate):

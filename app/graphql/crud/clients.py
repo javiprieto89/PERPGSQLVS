@@ -9,7 +9,7 @@ def get_clients(db: Session):
 
 
 def get_clients_by_id(db: Session, clientid: int):
-    return db.query(Clients).filter(Clients.clientID == clientid).first()
+    return db.query(Clients).filter(Clients.ClientID == clientid).first()
 
 
 def create_clients(db: Session, data: ClientsCreate):

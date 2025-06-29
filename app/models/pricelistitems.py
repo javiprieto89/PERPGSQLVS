@@ -1,24 +1,31 @@
-# Auto-generado. Revisar imports si faltan.
-from typing import List, Optional
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== PriceListItems ===========
+# app/models/pricelistitems.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .items import Items
+    from .pricelists import PriceLists
+
+from sqlalchemy import Column, Integer, DECIMAL, DateTime, PrimaryKeyConstraint, ForeignKeyConstraint, Identity, text
+from sqlalchemy.orm import Mapped, relationship
+
 from app.db import Base
+
 
 class PriceListItems(Base):
     __tablename__ = 'PriceListItems'
     __table_args__ = (
-        ForeignKeyConstraint(['itemID'], ['Items.itemID'], name='FK__PriceList__ItemI__76969D2E'),
-        ForeignKeyConstraint(['priceListID'], ['PriceLists.priceListID'], name='FK__PriceList__Price__75A278F5'),
-        PrimaryKeyConstraint('PriceListItemID', name='PK__PriceLis__BEEAD0334524605B')
+        ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK__PriceList__ItemI__76969D2E'),
+        ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK__PriceList__Price__75A278F5'),
+        PrimaryKeyConstraint('PriceListID', 'ItemID', name='PK_PriceListItems')
     )
 
-    priceListItemID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    priceListID = Column(Integer)
-    itemID = Column(Integer)
-    price = Column(DECIMAL(10, 2))
-    effectiveDate = Column(DateTime, server_default=text('(getdate())'))
+    PriceListID = Column(Integer, primary_key=True)
+    ItemID = Column(Integer, primary_key=True)
+    Price = Column(DECIMAL(10, 2))
+    EffectiveDate = Column(DateTime, server_default=text('(getdate())'))
 
-    items_ = relationship('Items', back_populates='PriceListItems')
-    priceLists_ = relationship('PriceLists', back_populates='PriceListItems')
-
-
+    # Relaciones
+    items_: Mapped['Items'] = relationship('Items', back_populates='priceListItems')
+    priceLists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='priceListItems')

@@ -3,16 +3,16 @@ import strawberry
 
 @strawberry.input
 class DocTypesCreate:
-    name: str
+    Name: str
     Active: bool
 
 @strawberry.input
 class DocTypesUpdate:
-    name: str
+    Name: str
     Active: bool
 
 @strawberry.type
 class DocTypesInDB:
-    docTypeID: int
-    name: str
+    DocTypeID: int
+    Name: str
     Active: bool

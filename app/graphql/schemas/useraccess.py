@@ -5,23 +5,23 @@ import strawberry
 
 @strawberry.input
 class UserAccessCreate:
-    userID: int
-    companyID: int
-    branchID: int
-    roleID: int
+    UserID: int    
+    CompanyID: int
+    BranchID: int
+    RoleID: int
 
 
 @strawberry.input
 class UserAccessUpdate:
-    userID: int
-    companyID: int
-    branchID: int
-    roleID: int
+    UserID: int
+    CompanyID: int
+    BranchID: int
+    RoleID: int
 
 
 @strawberry.type
 class UserAccessInDB:
-    userID: int
-    companyID: int
-    branchID: int
-    roleID: int
+    UserID: int
+    CompanyID: int
+    BranchID: int
+    RoleID: int

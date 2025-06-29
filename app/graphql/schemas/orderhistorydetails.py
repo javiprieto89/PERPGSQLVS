@@ -5,28 +5,28 @@ from datetime import datetime
 
 @strawberry.input
 class OrderHistoryDetailsCreate:
-    historyID: int
-    itemID: int
-    quantity: int
-    unitPrice: float
-    description: Optional[str] = None
-    lastModified: Optional[datetime] = None
+    HistoryID: int
+    ItemID: int
+    Quantity: int
+    UnitPrice: float
+    Description: Optional[str] = None
+    LastModified: Optional[datetime] = None
 
 @strawberry.input
 class OrderHistoryDetailsUpdate:
-    historyID: Optional[int] = None
-    itemID: Optional[int] = None
-    quantity: Optional[int] = None
-    unitPrice: Optional[float] = None
-    description: Optional[str] = None
-    lastModified: Optional[datetime] = None
+    HistoryID: Optional[int] = None
+    ItemID: Optional[int] = None
+    Quantity: Optional[int] = None
+    UnitPrice: Optional[float] = None
+    Description: Optional[str] = None
+    LastModified: Optional[datetime] = None
 
 @strawberry.type
 class OrderHistoryDetailsInDB:
     OrderHistoryDetailID: int
-    historyID: int
-    itemID: int
-    quantity: int
-    unitPrice: float
-    description: Optional[str]
+    HistoryID: int
+    ItemID: int
+    Quantity: int
+    UnitPrice: float
+    Description: Optional[str]
     lastModified: Optional[datetime]

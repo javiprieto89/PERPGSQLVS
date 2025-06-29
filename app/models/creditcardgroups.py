@@ -1,15 +1,24 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text, Column
-from sqlalchemy.orm import relationship
+# ========== CreditCardGroups ===========
+# app/models/creditcardgroups.py
+from __future__ import annotations
+from typing import List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.creditcards import CreditCards
+
+from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
+from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 
+
 class CreditCardGroups(Base):
-    __tablename__ = 'credit_card_groups'
+    __tablename__ = 'CreditCardGroups'
     __table_args__ = (
-        PrimaryKeyConstraint('card_group_id', name='PK_CreditCardGroups'),
+        PrimaryKeyConstraint('CreditCardGroupID', name='PK_CreditCardGroups'),
     )
 
-    card_group_id = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    group_name = Column(Unicode(100))
+    CreditCardGroupID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    GroupName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
-    credit_cards = relationship('CreditCards', back_populates='credit_card_group')
+    # Relaciones
+    creditCards: Mapped[List[CreditCards]] = relationship('CreditCards', back_populates='creditCardGroups_')

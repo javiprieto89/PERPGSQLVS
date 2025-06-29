@@ -4,46 +4,46 @@ from typing import Optional
 
 @strawberry.input
 class SuppliersCreate:
-    documentTypeID: Optional[int] = None
-    documentNumber: Optional[str] = None
-    firstName: str
-    lastName: Optional[str] = None
-    phone: Optional[str] = None
-    email: Optional[str] = None
-    address: Optional[str] = None
-    isActive: Optional[bool] = None
-    countryID: Optional[int] = None
-    provinceID: Optional[int] = None
-    city: Optional[str] = None
-    postalCode: Optional[str] = None
+    DocumentTypeID: Optional[int] = None
+    DocumentNumber: Optional[str] = None
+    FirstName: str
+    LastName: Optional[str] = None
+    Phone: Optional[str] = None
+    Email: Optional[str] = None
+    Address: Optional[str] = None
+    IsActive: Optional[bool] = None
+    CountryID: Optional[int] = None
+    ProvinceID: Optional[int] = None
+    City: Optional[str] = None
+    PostalCode: Optional[str] = None
 
 @strawberry.input
 class SuppliersUpdate:
-    documentTypeID: Optional[int] = None
-    documentNumber: Optional[str] = None
-    firstName: Optional[str] = None
-    lastName: Optional[str] = None
-    phone: Optional[str] = None
-    email: Optional[str] = None
-    address: Optional[str] = None
-    isActive: Optional[bool] = None
-    countryID: Optional[int] = None
-    provinceID: Optional[int] = None
-    city: Optional[str] = None
-    postalCode: Optional[str] = None
+    DocumentTypeID: Optional[int] = None
+    DocumentNumber: Optional[str] = None
+    FirstName: Optional[str] = None
+    LastName: Optional[str] = None
+    Phone: Optional[str] = None
+    Email: Optional[str] = None
+    Address: Optional[str] = None
+    IsActive: Optional[bool] = None
+    CountryID: Optional[int] = None
+    ProvinceID: Optional[int] = None
+    City: Optional[str] = None
+    PostalCode: Optional[str] = None
 
 @strawberry.type
 class SuppliersInDB:
-    supplierID: int
-    documentTypeID: Optional[int]
-    documentNumber: Optional[str]
-    firstName: str
-    lastName: Optional[str]
-    phone: Optional[str]
-    email: Optional[str]
-    address: Optional[str]
-    isActive: Optional[bool]
-    countryID: Optional[int]
-    provinceID: Optional[int]
-    city: Optional[str]
-    postalCode: Optional[str]
+    SupplierID: int
+    DocumentTypeID: Optional[int] = None
+    DocumentNumber: Optional[str] = None
+    FirstName: str
+    LastName: Optional[str] = None
+    Phone: Optional[str] = None
+    Email: Optional[str] = None
+    Address: Optional[str] = None
+    IsActive: Optional[bool] = None
+    CountryID: Optional[int] = None
+    ProvinceID: Optional[int] = None
+    City: Optional[str] = None
+    PostalCode: Optional[str] = None

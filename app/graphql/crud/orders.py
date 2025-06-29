@@ -12,12 +12,12 @@ def get_orders(db: Session):
 
 
 def get_orders_by_id(db: Session, orderid: int):
-    return db.query(Orders).filter(Orders.orderID == orderid).first()
+    return db.query(Orders).filter(Orders.OrderID == orderid).first()
 
 
 def create_orders(db: Session, data: OrdersCreate):
     # Extraer los ítems de la orden
-    items_data = data.items if hasattr(data, "items") else []
+    items_data = data.Items if hasattr(data, "items") else []
 
     # Crear orden sin los ítems
     order_data = asdict(data)
@@ -30,7 +30,7 @@ def create_orders(db: Session, data: OrdersCreate):
     # Crear detalles
     for item in items_data:
         detail = OrderDetails(
-            orderID=order.orderID,
+            orderID=order.Ord   ,
             itemID=item.itemID,
             quantity=item.quantity,
             unitPrice=item.unitPrice,

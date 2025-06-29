@@ -1,35 +1,50 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text, Column
-from sqlalchemy.orm import relationship
+# ========== Documents ===========
+# app/models/documents.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .branches import Branches
+    from .companydata import CompanyData    
+    from .documenttypes import DocumentTypes
+
+from typing import List
+
+from sqlalchemy import Column, Integer, Unicode, Boolean, LargeBinary, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship
+#from .branches import Branches
+#from .companydata import CompanyData    
+#from .documenttypes import DocumentTypes    
 from app.db import Base
+
 
 class Documents(Base):
     __tablename__ = 'Documents'
     __table_args__ = (
-        ForeignKeyConstraint(['company_id'], ['CompanyData.company_id'], name='FK__Documents__Compa__06CD04F7'),
-        PrimaryKeyConstraint('document_id', name='PK__Document__1ABEEF0F0D9D02EB'),
+        ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK_Documents_Branches'),
+        ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK_Documents_CompanyData'),
+        ForeignKeyConstraint(['DocumentTypeID'], ['DocumentTypes.DocumentTypeID'], name='FK_Documents_DocumentTypes'),
+        PrimaryKeyConstraint('DocumentID', name='PK__Document__1ABEEF6F4A2B1589')
     )
 
-    document_id = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    company_id = Column(Integer)
-    name = Column(Unicode(100))
-    document_path = Column(Unicode(200))
-    upload_date = Column(DateTime)
-    file_size = Column(Integer)
-    document_type = Column(Unicode(50))
-    is_active = Column(Boolean, server_default=text('((1))'))
-    testing = Column(Boolean, server_default=text('((0))'))
-    should_account = Column(Boolean)
-    moves_stock = Column(Boolean)
-    is_fiscal = Column(Boolean)
-    is_electronic = Column(Boolean)
-    is_manual = Column(Boolean)
-    is_quotation = Column(Boolean)
-    max_items = Column(Integer)
+    DocumentID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    CompanyID = Column(Integer)
+    BranchID = Column(Integer)
+    DocumentTypeID = Column(Integer)
+    Description = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    DocumentNumber = Column(Integer)
+    PointOfSale = Column(Integer)
+    IsActive = Column(Boolean, server_default=text('((1))'))
+    Testing = Column(Boolean, server_default=text('((0))'))
+    ShouldAccount = Column(Boolean)
+    MovesStock = Column(Boolean)
+    IsFiscal = Column(Boolean)
+    IsElectronic = Column(Boolean)
+    IsManual = Column(Boolean)
+    IsQuotation = Column(Boolean)
+    MaxItems = Column(Integer)
 
-    # Relationships
-    company_data = relationship('CompanyData', back_populates='documents')
-    branches = relationship('Branches', back_populates='documents')
-    document_types = relationship('DocumentTypes', back_populates='documents')
-
-
+    # Relaciones
+    branches_: Mapped['Branches'] = relationship('Branches', back_populates='documents')
+    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='documents')
+    documentTypes_: Mapped['DocumentTypes'] = relationship('DocumentTypes', back_populates='documents')

@@ -5,49 +5,49 @@ from datetime import datetime
 
 @strawberry.input
 class OrderHistoryCreate:
-    companyID: Optional[int] = None
-    branchID: Optional[int] = None
-    orderID: Optional[int] = None
-    clientID: Optional[int] = None
-    carID: Optional[int] = None
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
+    OrderID: Optional[int] = None
+    ClientID: Optional[int] = None
+    CarID: Optional[int] = None
     Date: Optional[datetime] = None
-    serviceType: Optional[str] = None
-    mileage: Optional[int] = None
-    nextServiceMileage: Optional[int] = None
-    subtotal: Optional[float] = None
-    total: Optional[float] = None
-    status: Optional[str] = None
-    comments: Optional[str] = None
+    ServiceType: Optional[str] = None
+    Mileage: Optional[int] = None
+    NextServiceMileage: Optional[int] = None
+    Subtotal: Optional[float] = None
+    Total: Optional[float] = None
+    Status: Optional[str] = None
+    Comments: Optional[str] = None
 
 @strawberry.input
 class OrderHistoryUpdate:
-    companyID: Optional[int] = None
-    branchID: Optional[int] = None
-    orderID: Optional[int] = None
-    clientID: Optional[int] = None
-    carID: Optional[int] = None
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
+    OrderID: Optional[int] = None
+    ClientID: Optional[int] = None
+    CarID: Optional[int] = None
     Date: Optional[datetime] = None
-    serviceType: Optional[str] = None
-    mileage: Optional[int] = None
-    nextServiceMileage: Optional[int] = None
-    subtotal: Optional[float] = None
-    total: Optional[float] = None
-    status: Optional[str] = None
-    comments: Optional[str] = None
+    ServiceType: Optional[str] = None
+    Mileage: Optional[int] = None
+    NextServiceMileage: Optional[int] = None
+    Subtotal: Optional[float] = None
+    Iotal: Optional[float] = None
+    Status: Optional[str] = None
+    Comments: Optional[str] = None
 
 @strawberry.type
 class OrderHistoryInDB:
-    historyID: int
-    companyID: Optional[int]
-    branchID: Optional[int]
-    orderID: Optional[int]
-    clientID: Optional[int]
-    carID: Optional[int]
+    HistoryID: int
+    CompanyID: Optional[int]
+    BranchID: Optional[int]
+    OrderID: Optional[int]
+    ClientID: Optional[int]
+    CarID: Optional[int]
     Date: Optional[datetime]
-    serviceType: Optional[str]
-    mileage: Optional[int]
-    nextServiceMileage: Optional[int]
-    subtotal: Optional[float]
-    total: Optional[float]
-    status: Optional[str]
-    comments: Optional[str]
+    ServiceType: Optional[str]
+    Mileage: Optional[int]
+    NextServiceMileage: Optional[int]
+    Subtotal: Optional[float]
+    Total: Optional[float]
+    Status: Optional[str]
+    Comments: Optional[str]

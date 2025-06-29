@@ -1,21 +1,33 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== ItemSubcategories ===========
+# app/models/itemsubcategories.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .itemcategories import ItemCategories
+    from .items import Items
+
+from typing import List
+
+from sqlalchemy import Column, Integer, String, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, Index
+from sqlalchemy.orm import Mapped, relationship
+#from .itemcategories import ItemCategories
+#from .items import Items
 from app.db import Base
+
 
 class ItemSubcategories(Base):
     __tablename__ = 'ItemSubcategories'
     __table_args__ = (
-        ForeignKeyConstraint(['itemCategoryID'], ['ItemCategories.itemCategoryID'], name='FK_ItemSubcategories_ItemCategories'),
-        PrimaryKeyConstraint('itemSubcategoryID', name='PK_ItemSubcategories_1'),
-        Index('ix_Subcategories_SubcategoryID', 'itemSubcategoryID')
+        ForeignKeyConstraint(['ItemCategoryID'], ['ItemCategories.ItemCategoryID'], name='FK_ItemSubcategories_ItemCategories'),
+        PrimaryKeyConstraint('ItemSubcategoryID', name='PK_ItemSubcategories_1'),
+        Index('ix_Subcategories_SubcategoryID', 'ItemSubcategoryID')
     )
 
-    itemSubcategoryID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    itemCategoryID = Column(Integer)
-    subcategoryName = Column(String(100))
+    ItemSubcategoryID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    ItemCategoryID = Column(Integer)
+    SubcategoryName = Column(String(100, 'Modern_Spanish_CI_AS'))
 
-    itemCategories_ = relationship('ItemCategories', back_populates='ItemSubcategories')
-    items = relationship('Items', back_populates='ItemSubcategories_')
-
-
+    # Relaciones
+    itemCategories_: Mapped['ItemCategories'] = relationship('ItemCategories', back_populates='itemSubcategories')
+    items: Mapped[List['Items']] = relationship('Items', back_populates='itemSubcategories_')

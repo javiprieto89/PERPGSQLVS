@@ -1,7 +1,32 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== Warehouses ===========
+# app/models/warehouses.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .items import Items
+    from .itemstock import Itemstock
+    from .orders import Orders
+    from .stockhistory import StockHistory
+    from .tempstockentries import TempStockEntries
+    from .orderdetails import OrderDetails
+    from .temporderdetails import TempOrderDetails
+    from .orderhistorydetails import OrderHistoryDetails
+
+from typing import List
+
+from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
+from sqlalchemy.orm import Mapped, relationship
+#from .items import Items
+#from .itemstock import Itemstock
+#from .orders import Orders
+#from .stockhistory import StockHistory
+#from .tempstockentries import TempStockEntries
+#from .orderdetails import OrderDetails
+#from .temporderdetails import TempOrderDetails
+#from .orderhistorydetails import OrderHistoryDetails
 from app.db import Base
+
 
 class Warehouses(Base):
     __tablename__ = 'Warehouses'
@@ -9,16 +34,16 @@ class Warehouses(Base):
         PrimaryKeyConstraint('WarehouseID', name='PK__Warehous__2608AFD9216E9B31'),
     )
 
-    warehouseID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    name = Column(Unicode(100))
-    addres = Column(Unicode(100))
+    WarehouseID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    Addres = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
-    items = relationship('Items', back_populates='Warehouses_')
-    itemstock = relationship('Itemstock', back_populates='Warehouses_')
-    orders = relationship('Orders', back_populates='Warehouses_')
-    stockHistory = relationship('StockHistory', back_populates='Warehouses_')
-    tempStockEntries = relationship('TempStockEntries', back_populates='Warehouses_')
-    orderDetails = relationship('OrderDetails', back_populates='Warehouses_')
-    tempOrderDetails = relationship('TempOrderDetails', back_populates='Warehouses_')
-
-
+    # Relaciones
+    items: Mapped[List['Items']] = relationship('Items', back_populates='warehouses_')
+    itemstock: Mapped[List['Itemstock']] = relationship('Itemstock', back_populates='warehouses_')
+    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='warehouses_')
+    stockHistory: Mapped[List['StockHistory']] = relationship('StockHistory', back_populates='warehouses_')
+    tempStockEntries: Mapped[List['TempStockEntries']] = relationship('TempStockEntries', back_populates='warehouses_')
+    orderDetails: Mapped[List['OrderDetails']] = relationship('OrderDetails', back_populates='warehouses_')
+    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship('TempOrderDetails', back_populates='warehouses_')
+    orderHistoryDetails: Mapped[List['OrderHistoryDetails']] = relationship('OrderHistoryDetails', back_populates='warehouses_')

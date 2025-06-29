@@ -4,16 +4,16 @@ from typing import Optional
 
 @strawberry.input
 class ItemSubcategoriesCreate:
-    itemCategoryID: int
-    subcategoryName: str
+    ItemCategoryID: int
+    SubcategoryName: str
 
 @strawberry.input
 class ItemSubcategoriesUpdate:
-    itemCategoryID: Optional[int] = None
-    subcategoryName: Optional[str] = None
+    ItemCategoryID: Optional[int] = None
+    SubcategoryName: Optional[str] = None
 
 @strawberry.type
 class ItemSubcategoriesInDB:
-    itemSubcategoryID: int
-    itemCategoryID: int
-    subcategoryName: str
+    ItemSubcategoryID: int
+    ItemCategoryID: int
+    SubcategoryName: str

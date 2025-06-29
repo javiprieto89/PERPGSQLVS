@@ -4,13 +4,13 @@ from typing import Optional
 
 @strawberry.input
 class ServiceTypeCreate:
-    type: Optional[str] = None
+    Type: Optional[str] = None
 
 @strawberry.input
 class ServiceTypeUpdate:
-    type: Optional[str] = None
+    Type: Optional[str] = None
 
 @strawberry.type
 class ServiceTypeInDB:
-    serviceTypeID: int
-    type: Optional[str] = None
+    ServiceTypeID: int
+    Type: Optional[str] = None

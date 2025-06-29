@@ -9,11 +9,11 @@ def get_cars(db: Session):
 
 
 def get_cars_by_id(db: Session, carid: int):
-    return db.query(Cars).filter(Cars.carID == carid).first()
+    return db.query(Cars).filter(Cars.CarID == carid).first()
 
 
 def get_cars_by_client_id(db: Session, client_id: int):
-    return db.query(Cars).filter(Cars.clientID == client_id).all()
+    return db.query(Cars).filter(Cars.ClientID == client_id).all()
 
 
 def create_cars(db: Session, data: CarsCreate):

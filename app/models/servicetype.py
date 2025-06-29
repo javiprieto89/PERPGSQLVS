@@ -1,7 +1,20 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Column, Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text
-from sqlalchemy.orm import relationship
+# ========== ServiceType ===========
+# app/models/servicetype.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .orders import Orders
+    from .orderhistory import OrderHistory
+
+from typing import List
+
+from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
+from sqlalchemy.orm import Mapped, relationship
+#from .orders import Orders
+#from .orderhistory import OrderHistory
 from app.db import Base
+
 
 class ServiceType(Base):
     __tablename__ = 'ServiceType'
@@ -9,10 +22,9 @@ class ServiceType(Base):
         PrimaryKeyConstraint('ServiceTypeID', name='PK_tipos_casos'),
     )
 
-    serviceTypeID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    type = Column(Unicode(100))
+    ServiceTypeID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    Type = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
-    orders = relationship('Orders', back_populates='ServiceType_')
-    orderHistory = relationship('OrderHistory', back_populates='ServiceType_')
-
-
+    # Relaciones
+    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='serviceType_')
+    orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='serviceType_')

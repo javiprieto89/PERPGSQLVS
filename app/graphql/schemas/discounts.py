@@ -3,16 +3,16 @@ import strawberry
 
 @strawberry.input
 class DiscountsCreate:
-    discountName: str
-    percentage: float
+    DiscountName: str
+    Percentage: float
 
 @strawberry.input
 class DiscountsUpdate:
-    discountName: str
-    percentage: float
+    DiscountName: str
+    Oercentage: float
 
 @strawberry.type
 class DiscountsInDB:
-    discountID: int
-    discountName: str
-    percentage: float
+    DiscountID: int
+    DiscountName: str
+    Percentage: float

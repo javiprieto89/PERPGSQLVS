@@ -1,44 +1,59 @@
-# Auto-generado. Revisar imports si faltan.
-from typing import List, Optional
-from sqlalchemy import Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text, Column
-from sqlalchemy.orm import relationship
+# ========== Clients ===========
+# app/models/clients.py
+from __future__ import annotations
+from typing import List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.models.vendors import Vendors
+    from app.models.accountbalances import AccountBalances
+    from app.models.cars import Cars
+    from app.models.orders import Orders
+    from app.models.countries import Countries
+    from app.models.doctypes import DocTypes
+    from app.models.pricelists import PriceLists
+    from app.models.provinces import Provinces
+    from app.models.vendors import Vendors
+
+from sqlalchemy import Column, Integer, Unicode, Boolean, Date, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
+
 
 class Clients(Base):
     __tablename__ = 'Clients'
     __table_args__ = (
-        ForeignKeyConstraint(['countryID'], ['Countries.countryID'], name='FK_Clients_Countries'),
-        ForeignKeyConstraint(['docTypeID'], ['DocTypes.docTypeID'], name='FK_Clients_DocTypes'),
-        ForeignKeyConstraint(['priceListID'], ['PriceLists.priceListID'], name='FK_Clients_PriceLists'),
-        ForeignKeyConstraint(['provinceID'], ['Provinces.provinceID'], name='FK_Clients_Provinces'),
-        ForeignKeyConstraint(['vendorID'], ['Vendors.vendorID'], name='FK_Clients_Vendors'),
-        PrimaryKeyConstraint('clientID', name='PK__Clients__E67E1A048D5F930D')
+        ForeignKeyConstraint(['CountryID'], ['Countries.CountryID'], name='FK_Clients_Countries'),
+        ForeignKeyConstraint(['DocTypeID'], ['DocTypes.DocTypeID'], name='FK_Clients_DocTypes'),
+        ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK_Clients_PriceLists'),
+        ForeignKeyConstraint(['ProvinceID'], ['Provinces.ProvinceID'], name='FK_Clients_Provinces'),
+        ForeignKeyConstraint(['VendorID'], ['Vendors.VendorID'], name='FK_Clients_Vendors'),
+        PrimaryKeyConstraint('ClientID', name='PK__Clients__E67E1A048D5F930D')
     )
 
-    clientID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    docTypeID = Column(Integer)
-    firstName = Column(Unicode(100))
-    isActive = Column(Boolean, server_default=text('((1))'))
-    countryID = Column(Integer)
-    provinceID = Column(Integer)
-    priceListID = Column(Integer)
-    vendorID = Column(Integer, server_default=text('((1))'))
-    docNumber = Column(Unicode(50))
-    lastName = Column(Unicode(100))
-    phone = Column(Unicode(20))
-    email = Column(Unicode(100))
-    address = Column(Unicode(200))
-    city = Column(Unicode(100))
-    postalCode = Column(Unicode(20))
+    ClientID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    DocTypeID = Column(Integer)
+    FirstName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    IsActive = Column(Boolean, server_default=text('((1))'))
+    CountryID = Column(Integer)
+    ProvinceID = Column(Integer)
+    PriceListID = Column(Integer)
+    VendorID = Column(Integer, server_default=text('((1))'))
+    DocNumber = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
+    LastName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    Phone = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
+    Email = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    Address = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
+    City = Column(Unicode(100, 'Modern_Spanish_CI_AS')) 
+    PostalCode = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
 
-    country = relationship('Countries', back_populates='clients')
-    doc_type = relationship('DocTypes', back_populates='clients')
-    price_list = relationship('PriceLists', back_populates='clients')
-    province = relationship('Provinces', back_populates='clients')
-    vendor = relationship('Vendors', back_populates='clients')
-    account_balances = relationship('AccountBalances', back_populates='client')
-    cars = relationship('Cars', back_populates='client')
-    orders = relationship('Orders', back_populates='client')
-    transactions = relationship('Transactions', back_populates='client')
+    # Relaciones
+    countries_: Mapped['Countries'] = relationship('Countries', back_populates='clients')
+    docTypes_: Mapped['DocTypes'] = relationship('DocTypes', back_populates='clients')
+    pricelists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='clients')
+    provinces_: Mapped['Provinces'] = relationship('Provinces', back_populates='clients')
+    vendors_: Mapped['Vendors'] = relationship('Vendors', back_populates='clients')
+    accountBalances: Mapped[List['AccountBalances']] = relationship('AccountBalances', back_populates='clients_')
+    cars: Mapped[List['Cars']] = relationship('Cars', back_populates='clients_')
+    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='clients_')
 
-
+    

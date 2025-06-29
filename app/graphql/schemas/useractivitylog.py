@@ -7,21 +7,21 @@ from datetime import datetime
 
 @strawberry.input
 class UserActivityLogCreate:
-    userID: int
-    actionID: int
-    timestamp: datetime
+    UserID: int
+    ActionID: int
+    Timestamp: datetime
 
 
 @strawberry.input
 class UserActivityLogUpdate:
-    userID: Optional[int] = None
-    actionID: Optional[int] = None
-    timestamp: Optional[datetime] = None
+    UserID: Optional[int] = None
+    ActionID: Optional[int] = None
+    Timestamp: Optional[datetime] = None
 
 
 @strawberry.type
 class UserActivityLogInDB:
-    activityID: int
-    userID: int
-    actionID: int
-    timestamp: datetime
+    ActivityID: int
+    UserID: int
+    ActionID: int
+    Timestamp: datetime

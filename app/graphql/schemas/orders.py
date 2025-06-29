@@ -1,4 +1,4 @@
-# app/graphql/schemas/orders.py
+# ap/graphql/schemas/orders.py
 import strawberry
 from typing import List, Optional
 from datetime import datetime
@@ -7,72 +7,81 @@ from app.graphql.schemas.orderdetails import OrderDetailsInDB
 
 
 @strawberry.input
+class OrderDetailInput:
+    ItemID: int
+    Quantity: float
+    UnitPrice: float
+    Description: Optional[str] = None
+
+
+@strawberry.input
 class OrdersCreate:
-    companyID: int
-    branchID: int
+    CompanyID: int
+    BranchID: int
     Date: datetime
-    clientID: Optional[int] = None
-    carID: Optional[int] = None
+    ClientID: Optional[int] = None
+    CarID: Optional[int] = None
     IsService: Optional[bool] = None
-    serviceType: Optional[str] = None
-    mileage: Optional[int] = None
-    nextServiceMileage: Optional[int] = None
-    notes: Optional[str] = None
-    saleConditionID: Optional[int] = None
-    discountID: Optional[int] = None
-    subtotal: Optional[float] = None
-    total: Optional[float] = None
+    ServiceType: Optional[str] = None
+    Mileage: Optional[int] = None
+    NextServiceMileage: Optional[int] = None
+    Notes: Optional[str] = None
+    SaleConditionID: Optional[int] = None
+    DiscountID: Optional[int] = None
+    Subtotal: Optional[float] = None
+    Total: Optional[float] = None
     VAT: Optional[float] = None
-    userID: Optional[int] = None
-    documentID: Optional[int] = None
+    UerID: Optional[int] = None
+    DocumentID: Optional[int] = None
     StatusID: Optional[int] = None
-    priceListID: Optional[int] = None
-    items: List[OrderDetailsInDB] = field(default_factory=list)  # CORREGIDO
+    PriceListID: Optional[int] = None
+    Items: List[OrderDetailsInDB] = field(default_factory=list)  # CORREGIDO
 
 
 @strawberry.input
 class OrdersUpdate:
-    companyID: Optional[int] = None
-    branchID: Optional[int] = None
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
     Date: Optional[datetime] = None
-    clientID: Optional[int] = None
-    carID: Optional[int] = None
+    ClientID: Optional[int] = None
+    CarID: Optional[int] = None
     IsService: Optional[bool] = None
-    serviceType: Optional[str] = None
-    mileage: Optional[int] = None
-    nextServiceMileage: Optional[int] = None
-    notes: Optional[str] = None
-    saleConditionID: Optional[int] = None
-    discountID: Optional[int] = None
-    subtotal: Optional[float] = None
-    total: Optional[float] = None
+    ServiceType: Optional[str] = None
+    Mileage: Optional[int] = None
+    NextServiceMileage: Optional[int] = None
+    Notes: Optional[str] = None
+    SaleConditionID: Optional[int] = None
+    DiscountID: Optional[int] = None
+    Subtotal: Optional[float] = None
+    Total: Optional[float] = None
     VAT: Optional[float] = None
-    userID: Optional[int] = None
-    documentID: Optional[int] = None
+    UserID: Optional[int] = None
+    DocumentID: Optional[int] = None
     StatusID: Optional[int] = None
-    priceListID: Optional[int] = None
-    items: Optional[List[OrderDetailsInDB]] = None
+    PriceListID: Optional[int] = None
+    Items: Optional[List[OrderDetailsInDB]] = None
 
 
 @strawberry.type
 class OrdersInDB:
-    orderID: int
-    companyID: Optional[int]
-    branchID: Optional[int]
+    OrderID: int
+    CompanyID: Optional[int]
+    BranchID: Optional[int]
     Date: Optional[datetime]
-    clientID: Optional[int]
-    carID: Optional[int]
+    ClientID: Optional[int]
+    CarID: Optional[int]
     IsService: Optional[bool]
-    serviceType: Optional[str]
-    mileage: Optional[int]
-    nextServiceMileage: Optional[int]
-    notes: Optional[str]
-    saleConditionID: Optional[int]
-    discountID: Optional[int]
-    subtotal: Optional[float]
-    total: Optional[float]
+    ServiceType: Optional[str]
+    Mileage: Optional[int]
+    NextServiceMileage: Optional[int]
+    Notes: Optional[str]
+    SaleConditionID: Optional[int]
+    DiscountID: Optional[int]
+    Subtotal: Optional[float]
+    Total: Optional[float]
     VAT: Optional[float]
-    userID: Optional[int]
-    documentID: Optional[int]
+    UserID: Optional[int]
+    DocumentID: Optional[int]
     StatusID: Optional[int]
-    priceListID: Optional[int]
+    PriceListID: Optional[int]
+    Items: Optional[List[OrderDetailInput]] = None

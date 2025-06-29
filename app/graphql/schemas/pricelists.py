@@ -8,27 +8,27 @@ from datetime import datetime
 
 @strawberry.input
 class PriceListsCreate:
-    name: str
-    description: Optional[str] = None
-    isActive: Optional[bool] = None
-    createdDate: Optional[datetime] = None
+    Name: str
+    Description: Optional[str] = None
+    IsActive: Optional[bool] = None
+    CreatedDate: Optional[datetime] = None
 
 
 @strawberry.input
 class PriceListsUpdate:
-    name: Optional[str] = None
-    description: Optional[str] = None
-    isActive: Optional[bool] = None
-    createdDate: Optional[datetime] = None
+    Name: Optional[str] = None
+    Description: Optional[str] = None
+    IsActive: Optional[bool] = None
+    CreatedDate: Optional[datetime] = None
 
 
 @strawberry.type
 class PriceListsInDB:
-    priceListID: int
-    name: str
-    description: Optional[str] = None
-    isActive: Optional[bool] = None
-    createdDate: Optional[datetime] = None
+    PriceListID: int
+    Name: str
+    Description: Optional[str] = None
+    IsActive: Optional[bool] = None
+    CreatedDate: Optional[datetime] = None
 
     # Relaciones
     #clients: Optional[List[ClientsInDB]] = None

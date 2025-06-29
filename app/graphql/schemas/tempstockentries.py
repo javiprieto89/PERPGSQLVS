@@ -5,43 +5,43 @@ from datetime import datetime
 
 @strawberry.input
 class TempStockEntriesCreate:
-    companyID: Optional[int] = None
-    branchID: Optional[int] = None
-    uniqueID: Optional[str] = None
-    sessionID: Optional[str] = None
-    userID: Optional[int] = None
-    itemID: Optional[int] = None
-    warehouseID: Optional[int] = None
-    quantityChange: Optional[int] = None
-    entryDate: Optional[datetime] = None
-    reason: Optional[str] = None
-    isProcessed: Optional[bool] = None
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
+    UniqueID: Optional[str] = None
+    SessionID: Optional[str] = None
+    UserID: Optional[int] = None
+    ItemID: Optional[int] = None
+    WarehouseID: Optional[int] = None
+    QuantityChange: Optional[int] = None
+    EntryDate: Optional[datetime] = None
+    Reason: Optional[str] = None
+    IsProcessed: Optional[bool] = None
 
 @strawberry.input
 class TempStockEntriesUpdate:
-    companyID: Optional[int] = None
-    branchID: Optional[int] = None
-    uniqueID: Optional[str] = None
-    sessionID: Optional[str] = None
-    userID: Optional[int] = None
-    itemID: Optional[int] = None
-    warehouseID: Optional[int] = None
-    quantityChange: Optional[int] = None
-    entryDate: Optional[datetime] = None
-    reason: Optional[str] = None
-    isProcessed: Optional[bool] = None
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
+    UniqueID: Optional[str] = None
+    SessionID: Optional[str] = None
+    UserID: Optional[int] = None
+    ItemID: Optional[int] = None
+    WarehouseID: Optional[int] = None
+    QuantityChange: Optional[int] = None
+    EntryDate: Optional[datetime] = None
+    Reason: Optional[str] = None
+    IsProcessed: Optional[bool] = None
 
 @strawberry.type
 class TempStockEntriesInDB:
-    tempStockEntryID: int
-    companyID: Optional[int]
-    branchID: Optional[int]
-    uniqueID: Optional[str]
-    sessionID: Optional[str]
-    userID: Optional[int]
-    itemID: Optional[int]
-    warehouseID: Optional[int]
-    quantityChange: Optional[int]
-    entryDate: Optional[datetime]
-    reason: Optional[str]
-    isProcessed: Optional[bool]
+    TempStockEntryID: int
+    CompanyID: Optional[int]
+    BranchID: Optional[int]
+    UniqueID: Optional[str]
+    SessionID: Optional[str]
+    UserID: Optional[int]
+    ItemID: Optional[int]
+    WarehouseID: Optional[int]
+    QuantityChange: Optional[int]
+    EntryDate: Optional[datetime]
+    Reason: Optional[str]
+    IsProcessed: Optional[bool]

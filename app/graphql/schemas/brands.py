@@ -4,15 +4,15 @@ import strawberry
 
 @strawberry.input
 class BrandsCreate:
-    name: str
+    Name: str
 
 
 @strawberry.input
 class BrandsUpdate:
-    name: str
+    Name: str
 
 
 @strawberry.type
 class BrandsInDB:
-    brandID: int
-    name: str
+    BrandID: int
+    Name: str

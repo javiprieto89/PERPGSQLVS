@@ -1,38 +1,53 @@
-# Auto-generado. Revisar imports si faltan.
-from sqlalchemy import Boolean, DECIMAL, Date, DateTime, ForeignKeyConstraint, Identity, Index, Integer, LargeBinary, PrimaryKeyConstraint, String, Unicode, Uuid, text, Column
-from sqlalchemy.orm import relationship
+# ========== Suppliers ===========
+# app/models/suppliers.py
+from __future__ import annotations
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:    
+    from .countries import Countries
+    from .doctypes import DocTypes
+    from .provinces import Provinces
+    from .accountbalances import AccountBalances
+    from .items import Items
+    from .itemstock import Itemstock
+    from .orderhistory import OrderHistory
+
+from typing import List
+
+from sqlalchemy import Column, Integer, Unicode, Boolean, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship
+
 from app.db import Base
+
 
 class Suppliers(Base):
     __tablename__ = 'Suppliers'
     __table_args__ = (
-        ForeignKeyConstraint(['country_id'], ['Countries.countryID'], name='FK__Suppliers__Count__440B1D61'),
-        ForeignKeyConstraint(['doc_type_id'], ['DocTypes.docTypeID'], name='FK_Suppliers_DocTypes'),
-        ForeignKeyConstraint(['province_id'], ['Provinces.provinceID'], name='FK__Suppliers__Provi__44FF419A'),
-        PrimaryKeyConstraint('supplier_id', name='PK__Supplier__4BE6669487E21347')
+        ForeignKeyConstraint(['CountryID'], ['Countries.CountryID'], name='FK__Suppliers__Count__440B1D61'),
+        ForeignKeyConstraint(['DocTypeID'], ['DocTypes.DocTypeID'], name='FK_Suppliers_DocTypes'),
+        ForeignKeyConstraint(['ProvinceID'], ['Provinces.ProvinceID'], name='FK__Suppliers__Provi__44FF419A'),
+        PrimaryKeyConstraint('SupplierID', name='PK__Supplier__4BE6669487E21347')
     )
 
-    supplier_id = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    doc_type_id = Column(Integer)
-    first_name = Column(Unicode(100))
-    is_active = Column(Boolean, server_default=text('((1))'))
-    country_id = Column(Integer)
-    province_id = Column(Integer)
-    doc_number = Column(Unicode(50))
-    last_name = Column(Unicode(100))
-    phone = Column(Unicode(20))
-    email = Column(Unicode(100))
-    address = Column(Unicode(200))
-    city = Column(Unicode(100))
-    postal_code = Column(Unicode(20))
+    SupplierID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    DocTypeID = Column(Integer)
+    FirstName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    IsActive = Column(Boolean, server_default=text('((1))'))
+    CountryID = Column(Integer)
+    ProvinceID = Column(Integer)
+    DocNumber = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
+    LastName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    Phone = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
+    Email = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    Address = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
+    City = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    PostalCode = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
 
-    country = relationship('Countries', back_populates='suppliers')
-    doc_type = relationship('DocTypes', back_populates='suppliers')
-    province = relationship('Provinces', back_populates='suppliers')
-    account_balances = relationship('AccountBalances', back_populates='supplier')
-    items = relationship('Items', back_populates='supplier')
-    itemstock = relationship('Itemstock', back_populates='supplier')
-    order_history = relationship('OrderHistory', back_populates='supplier')
-    transactions = relationship('Transactions', back_populates='supplier')
-
-
+    # Relaciones
+    countries_: Mapped['Countries'] = relationship('Countries', back_populates='suppliers')
+    docTypes_: Mapped['DocTypes'] = relationship('DocTypes', back_populates='suppliers')
+    provinces_: Mapped['Provinces'] = relationship('Provinces', back_populates='suppliers')
+    accountBalances: Mapped[List['AccountBalances']] = relationship('AccountBalances', back_populates='suppliers_')
+    items: Mapped[List['Items']] = relationship('Items', back_populates='suppliers_')
+    itemstock: Mapped[List['Itemstock']] = relationship('Itemstock', back_populates='suppliers_')
+    orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='suppliers_')
