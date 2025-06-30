@@ -15,7 +15,18 @@ class UsersQuery:
         db = next(db_gen)
         try:
             users = get_users(db)
-            return [UsersInDB(**user.__dict__) for user in users]
+            result = []
+            for user in users:
+                user_dict = user.__dict__
+                # Crear dict solo con campos del schema UsersInDB con conversión de tipos
+                filtered_dict = {
+                    'UserID': int(user_dict['UserID']),
+                    'Nickname': str(user_dict['Nickname']) if user_dict.get('Nickname') else None,
+                    'FullName': str(user_dict['FullName']) if user_dict.get('FullName') else None,
+                    'IsActive': bool(user_dict['IsActive'])
+                }
+                result.append(UsersInDB(**filtered_dict))
+            return result
         finally:
             db_gen.close()
 
@@ -25,7 +36,17 @@ class UsersQuery:
         db = next(db_gen)
         try:
             user = get_user_by_id(db, id)
-            return UsersInDB(**user.__dict__) if user else None
+            if user:
+                user_dict = user.__dict__
+                # Crear dict solo con campos del schema UsersInDB con conversión de tipos
+                filtered_dict = {
+                    'UserID': int(user_dict['UserID']),
+                    'Nickname': str(user_dict['Nickname']) if user_dict.get('Nickname') else None,
+                    'FullName': str(user_dict['FullName']) if user_dict.get('FullName') else None,
+                    'IsActive': bool(user_dict['IsActive'])
+                }
+                return UsersInDB(**filtered_dict)
+            return None
         finally:
             db_gen.close()
 

@@ -1,6 +1,6 @@
 ﻿# app/graphql/resolvers/items.py
 import strawberry
-from typing import List, Optional
+from typing import List, Optional, cast, Any
 from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy import and_, or_, func
 from app.graphql.schemas.items import ItemsInDB, ItemSearchResult
@@ -40,6 +40,34 @@ class ItemsResponse:
     has_next: bool
     has_prev: bool
 
+def safe_int(value: Any, default: int = 0) -> int:
+    """Convierte de forma segura cualquier valor a int"""
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+def safe_str(value: Any, default: str = "") -> str:
+    """Convierte de forma segura cualquier valor a str"""
+    try:
+        return str(value) if value is not None else default
+    except:
+        return default
+
+def safe_bool(value: Any, default: bool = False) -> bool:
+    """Convierte de forma segura cualquier valor a bool"""
+    try:
+        return bool(value)
+    except:
+        return default
+
+def safe_float(value: Any, default: float = 0.0) -> float:
+    """Convierte de forma segura cualquier valor a float"""
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
 @strawberry.type
 class ItemsQuery:
     
@@ -51,24 +79,24 @@ class ItemsQuery:
             items = db.query(Items).all()
             result = []
             for item in items:
-                # Convertir manualmente para evitar errores de tipo
+                # Convertir manualmente con funciones seguras
                 item_data = {
-                    'ItemID': item.ItemID,
-                    'CompanyID': item.CompanyID,
-                    'BranchID': item.BranchID,
-                    'BrandID': item.BrandID,
-                    'Code': item.Code,
-                    'Description': item.Description,
-                    'ItemCategoryID': item.ItemCategoryID,
-                    'ItemSubcategoryID': item.ItemSubcategoryID,
-                    'SupplierID': item.SupplierID,
-                    'ControlStock': item.ControlStock,
-                    'ReplenishmentStock': item.ReplenishmentStock,
-                    'IsOffer': item.IsOffer,
-                    'OEM': item.OEM,
-                    'LastModified': item.LastModified,
-                    'WarehouseID': item.WarehouseID,
-                    'IsActive': item.IsActive
+                    'ItemID': safe_int(getattr(item, 'ItemID', 0)),
+                    'CompanyID': safe_int(getattr(item, 'CompanyID', 0)),
+                    'BranchID': safe_int(getattr(item, 'BranchID', 0)),
+                    'BrandID': safe_int(getattr(item, 'BrandID', 0)),
+                    'Code': safe_str(getattr(item, 'Code', '')),
+                    'Description': safe_str(getattr(item, 'Description', '')),
+                    'ItemCategoryID': safe_int(getattr(item, 'ItemCategoryID', 0)),
+                    'ItemSubcategoryID': safe_int(getattr(item, 'ItemSubcategoryID', 0)),
+                    'SupplierID': safe_int(getattr(item, 'SupplierID', 0)),
+                    'ControlStock': safe_bool(getattr(item, 'ControlStock', False)),
+                    'ReplenishmentStock': safe_int(getattr(item, 'ReplenishmentStock', 0)),
+                    'IsOffer': safe_bool(getattr(item, 'IsOffer', False)),
+                    'OEM': safe_str(getattr(item, 'OEM', None)),
+                    'LastModified': getattr(item, 'LastModified', None),
+                    'WarehouseID': safe_int(getattr(item, 'WarehouseID', 0)),
+                    'IsActive': safe_bool(getattr(item, 'IsActive', False))
                 }
                 result.append(ItemsInDB(**item_data))
             return result
@@ -84,24 +112,24 @@ class ItemsQuery:
             if not item:
                 return None
             
-            # Convertir manualmente para evitar errores de tipo
+            # Convertir manualmente con funciones seguras
             item_data = {
-                'ItemID': item.ItemID,
-                'CompanyID': item.CompanyID,
-                'BranchID': item.BranchID,
-                'BrandID': item.BrandID,
-                'Code': item.Code,
-                'Description': item.Description,
-                'ItemCategoryID': item.ItemCategoryID,
-                'ItemSubcategoryID': item.ItemSubcategoryID,
-                'SupplierID': item.SupplierID,
-                'ControlStock': item.ControlStock,
-                'ReplenishmentStock': item.ReplenishmentStock,
-                'IsOffer': item.IsOffer,
-                'OEM': item.OEM,
-                'LastModified': item.LastModified,
-                'WarehouseID': item.WarehouseID,
-                'IsActive': item.IsActive
+                'ItemID': safe_int(getattr(item, 'ItemID', 0)),
+                'CompanyID': safe_int(getattr(item, 'CompanyID', 0)),
+                'BranchID': safe_int(getattr(item, 'BranchID', 0)),
+                'BrandID': safe_int(getattr(item, 'BrandID', 0)),
+                'Code': safe_str(getattr(item, 'Code', '')),
+                'Description': safe_str(getattr(item, 'Description', '')),
+                'ItemCategoryID': safe_int(getattr(item, 'ItemCategoryID', 0)),
+                'ItemSubcategoryID': safe_int(getattr(item, 'ItemSubcategoryID', 0)),
+                'SupplierID': safe_int(getattr(item, 'SupplierID', 0)),
+                'ControlStock': safe_bool(getattr(item, 'ControlStock', False)),
+                'ReplenishmentStock': safe_int(getattr(item, 'ReplenishmentStock', 0)),
+                'IsOffer': safe_bool(getattr(item, 'IsOffer', False)),
+                'OEM': safe_str(getattr(item, 'OEM', None)),
+                'LastModified': getattr(item, 'LastModified', None),
+                'WarehouseID': safe_int(getattr(item, 'WarehouseID', 0)),
+                'IsActive': safe_bool(getattr(item, 'IsActive', False))
             }
             return ItemsInDB(**item_data)
         finally:
@@ -184,8 +212,9 @@ class ItemsQuery:
                     try:
                         prices = []
                         for pli in item.priceListItems:
-                            if hasattr(pli, 'Price') and pli.Price is not None:
-                                prices.append(float(pli.Price))
+                            price_val = getattr(pli, 'Price', None)
+                            if price_val is not None:
+                                prices.append(safe_float(price_val))
                         if prices:
                             latest_price = max(prices)
                     except:
@@ -196,32 +225,33 @@ class ItemsQuery:
                 if hasattr(item, 'itemstock') and item.itemstock:
                     try:
                         for stock in item.itemstock:
-                            if hasattr(stock, 'Quantity') and stock.Quantity is not None:
-                                total_stock += int(stock.Quantity)
+                            qty = getattr(stock, 'Quantity', None)
+                            if qty is not None:
+                                total_stock += safe_int(qty)
                     except:
                         total_stock = 0
                 
                 # Obtener nombres relacionados de forma segura
                 brand_name = None
-                if hasattr(item, 'brands_') and item.brands_ and hasattr(item.brands_, 'Name'):
-                    brand_name = str(item.brands_.Name)
+                if hasattr(item, 'brands_') and item.brands_:
+                    brand_name = safe_str(getattr(item.brands_, 'Name', None))
                 
                 category_name = None
-                if hasattr(item, 'itemCategories_') and item.itemCategories_ and hasattr(item.itemCategories_, 'CategoryName'):
-                    category_name = str(item.itemCategories_.CategoryName)
+                if hasattr(item, 'itemCategories_') and item.itemCategories_:
+                    category_name = safe_str(getattr(item.itemCategories_, 'CategoryName', None))
                 
                 subcategory_name = None
-                if hasattr(item, 'itemSubcategories_') and item.itemSubcategories_ and hasattr(item.itemSubcategories_, 'SubcategoryName'):
-                    subcategory_name = str(item.itemSubcategories_.SubcategoryName)
+                if hasattr(item, 'itemSubcategories_') and item.itemSubcategories_:
+                    subcategory_name = safe_str(getattr(item.itemSubcategories_, 'SubcategoryName', None))
                 
                 supplier_name = None
-                if hasattr(item, 'suppliers_') and item.suppliers_ and hasattr(item.suppliers_, 'FirstName'):
-                    supplier_name = str(item.suppliers_.FirstName)
+                if hasattr(item, 'suppliers_') and item.suppliers_:
+                    supplier_name = safe_str(getattr(item.suppliers_, 'FirstName', None))
                 
                 items_result.append(ItemSearchResult(
-                    ItemID=int(item.ItemID),
-                    Code=str(item.Code),
-                    Description=str(item.Description),
+                    ItemID=safe_int(getattr(item, 'ItemID', 0)),
+                    Code=safe_str(getattr(item, 'Code', '')),
+                    Description=safe_str(getattr(item, 'Description', '')),
                     BrandName=brand_name,
                     CategoryName=category_name,
                     SubcategoryName=subcategory_name,
@@ -279,26 +309,31 @@ class ItemsQuery:
                 stock_quantity = 0
                 if hasattr(item, 'itemstock') and item.itemstock:
                     for stock in item.itemstock:
-                        if not warehouse_id or (hasattr(stock, 'WarehouseID') and stock.WarehouseID == warehouse_id):
-                            if hasattr(stock, 'Quantity') and stock.Quantity is not None:
-                                stock_quantity = int(stock.Quantity)
+                        stock_wh_id = getattr(stock, 'WarehouseID', None)
+                        if not warehouse_id or (stock_wh_id is not None and safe_int(stock_wh_id) == warehouse_id):
+                            qty = getattr(stock, 'Quantity', None)
+                            if qty is not None:
+                                stock_quantity = safe_int(qty)
                                 break
                 
                 # Obtener nombres relacionados de forma segura
                 brand_name = None
-                if hasattr(item, 'brands_') and item.brands_ and hasattr(item.brands_, 'Name'):
-                    brand_name = str(item.brands_.Name)
+                if hasattr(item, 'brands_') and item.brands_:
+                    brand_name = safe_str(getattr(item.brands_, 'Name', None))
                 
                 category_name = None
-                if hasattr(item, 'itemCategories_') and item.itemCategories_ and hasattr(item.itemCategories_, 'CategoryName'):
-                    category_name = str(item.itemCategories_.CategoryName)
+                if hasattr(item, 'itemCategories_') and item.itemCategories_:
+                    category_name = safe_str(getattr(item.itemCategories_, 'CategoryName', None))
                 
                 result.append(ItemSearchResult(
-                    ItemID=int(item.ItemID),
-                    Code=str(item.Code),
-                    Description=str(item.Description),
+                    ItemID=safe_int(getattr(item, 'ItemID', 0)),
+                    Code=safe_str(getattr(item, 'Code', '')),
+                    Description=safe_str(getattr(item, 'Description', '')),
                     BrandName=brand_name,
                     CategoryName=category_name,
+                    SubcategoryName=None,
+                    SupplierName=None,
+                    Price=None,
                     StockQuantity=stock_quantity
                 ))
             

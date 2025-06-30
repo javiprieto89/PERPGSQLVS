@@ -15974,6 +15974,7 @@
     <Content Include="frontend\src\pages\SupplierCreate.jsx" />
     <Content Include="frontend\src\pages\Suppliers.jsx" />
     <Content Include="frontend\src\utils\apiFetch.js" />
+    <Content Include="frontend\src\utils\graphqlClient.js" />
     <Content Include="frontend\src\utils\openReactWindow.js" />
     <Content Include="frontend\tailwind.config.js" />
     <Content Include="frontend\vite.config.js" />

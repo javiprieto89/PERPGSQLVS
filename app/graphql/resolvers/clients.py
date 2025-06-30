@@ -15,7 +15,28 @@ class ClientsQuery:
         db = next(db_gen)
         try:
             clients = get_clients(db)
-            return [ClientsInDB(**client.__dict__) for client in clients]
+            result = []
+            for client in clients:
+                client_dict = client.__dict__
+                # Crear dict solo con campos del schema ClientsInDB con conversión de tipos
+                filtered_dict = {
+                    'ClientID': int(client_dict['ClientID']),
+                    'DocumentTypeID': int(client_dict['DocTypeID']),  # Nota: DocTypeID en modelo
+                    'DocumentNumber': str(client_dict['DocNumber']) if client_dict.get('DocNumber') else None,
+                    'FirstName': str(client_dict['FirstName']),
+                    'LastName': str(client_dict['LastName']) if client_dict.get('LastName') else None,
+                    'Phone': str(client_dict['Phone']) if client_dict.get('Phone') else None,
+                    'Email': str(client_dict['Email']) if client_dict.get('Email') else None,
+                    'Address': str(client_dict['Address']) if client_dict.get('Address') else None,
+                    'IsActive': bool(client_dict['IsActive']),
+                    'CountryID': int(client_dict['CountryID']),
+                    'ProvinceID': int(client_dict['ProvinceID']),
+                    'City': str(client_dict['City']) if client_dict.get('City') else None,
+                    'PostalCode': str(client_dict['PostalCode']) if client_dict.get('PostalCode') else None,
+                    'PriceListID': int(client_dict['PriceListID'])
+                }
+                result.append(ClientsInDB(**filtered_dict))
+            return result
         finally:
             db_gen.close()
 
@@ -25,7 +46,27 @@ class ClientsQuery:
         db = next(db_gen)
         try:
             client = get_clients_by_id(db, id)
-            return ClientsInDB(**client.__dict__) if client else None
+            if client:
+                client_dict = client.__dict__
+                # Crear dict solo con campos del schema ClientsInDB con conversión de tipos
+                filtered_dict = {
+                    'ClientID': int(client_dict['ClientID']),
+                    'DocumentTypeID': int(client_dict['DocTypeID']),  # Nota: DocTypeID en modelo
+                    'DocumentNumber': str(client_dict['DocNumber']) if client_dict.get('DocNumber') else None,
+                    'FirstName': str(client_dict['FirstName']),
+                    'LastName': str(client_dict['LastName']) if client_dict.get('LastName') else None,
+                    'Phone': str(client_dict['Phone']) if client_dict.get('Phone') else None,
+                    'Email': str(client_dict['Email']) if client_dict.get('Email') else None,
+                    'Address': str(client_dict['Address']) if client_dict.get('Address') else None,
+                    'IsActive': bool(client_dict['IsActive']),
+                    'CountryID': int(client_dict['CountryID']),
+                    'ProvinceID': int(client_dict['ProvinceID']),
+                    'City': str(client_dict['City']) if client_dict.get('City') else None,
+                    'PostalCode': str(client_dict['PostalCode']) if client_dict.get('PostalCode') else None,
+                    'PriceListID': int(client_dict['PriceListID'])
+                }
+                return ClientsInDB(**filtered_dict)
+            return None
         finally:
             db_gen.close()
 

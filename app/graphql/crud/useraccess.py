@@ -8,6 +8,9 @@ from app.graphql.schemas.useraccess import UserAccessCreate, UserAccessUpdate
 def get_useraccess(db: Session):
     return db.query(UserAccess).all()
 
+def get_useraccess_by_userid(db: Session, userID: int):
+    """Obtiene TODOS los accesos de un usuario para que pueda elegir"""
+    return db.query(UserAccess).filter(UserAccess.UserID == userID).all()
 
 def get_useraccess_by_id(db: Session, userID: int, companyID: int, branchID: int, roleID: int):
     return db.query(UserAccess).filter_by(

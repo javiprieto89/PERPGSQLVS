@@ -47,6 +47,7 @@ from app.graphql.resolvers.useraccess import UseraccessQuery
 from app.graphql.resolvers.useractions import UseractionsQuery
 from app.graphql.resolvers.users import UsersQuery
 from app.graphql.resolvers.warehouses import WarehousesQuery
+from app.graphql.resolvers.auth import AuthMutation
 
 # Importar schemas para los tipos de datos
 from app.graphql.schemas.items import ItemsInDB, ItemSearchResult
@@ -354,6 +355,10 @@ class ServerInfo:
 @strawberry.type
 class Mutation:
     """Mutaciones principales"""
+
+    @strawberry.field
+    def auth(self) -> AuthMutation:
+        return AuthMutation()
     
     @strawberry.field
     def advanced(self) -> AdvancedMutation:

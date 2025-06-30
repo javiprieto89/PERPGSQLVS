@@ -1,25 +1,4 @@
 ﻿# app/main.py
-# Ruta: app/main.py
-#====================== VIEJO ======================
-
-#import os
-#from dotenv import load_dotenv
-#from strawberry.asgi import GraphQL
-#from app.graphql.schema import schema
-#from app.db import Base, engine
-
-# --- Cargar variables de entorno ---
-#load_dotenv()
-
-# --- Crear tablas en la base de datos ---
-#Base.metadata.create_all(bind=engine)
-
-# --- Instanciar la app de GraphQL ---
-#app = GraphQL(schema)
-
-#====================== VIEJO ======================
-#====================== NUEVO ======================
-# app/main.py
 import os
 import time
 import logging
@@ -32,7 +11,7 @@ from starlette.middleware.gzip import GZipMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.routing import Route, Mount
 from strawberry.asgi import GraphQL
-from app.auth import get_userinfo_from_token
+from app.auth import get_userinfo_from_token, authenticate_user, create_access_token
 
 from app.graphql.schema import schema
 from app.db import Base, engine
@@ -111,7 +90,8 @@ async def health_check(request: Request):
     return JSONResponse({
         "status": "healthy",
         "timestamp": time.time(),
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "graphql_endpoint": "/graphql/"
     })
 
 async def get_metrics(request: Request):
@@ -124,9 +104,11 @@ async def get_metrics(request: Request):
 async def root(request: Request):
     return JSONResponse({
         "message": "LubricentroDB API v1.0",
-        "graphql_endpoint": "/graphql",
+        "graphql_endpoint": "/graphql/",
         "health": "/health",
         "metrics": "/metrics",
+        "login": "/login",
+        "logout": "/logout",
         "features": [
             "GraphQL con resolvers",
             "Autenticación JWT",
@@ -134,6 +116,119 @@ async def root(request: Request):
             "Métricas de performance"
         ]
     })
+
+# =======================
+# Endpoint de Login REST
+# =======================
+async def login_endpoint(request: Request):
+    """Endpoint REST para login"""
+    try:
+        body = await request.json()
+        nickname = body.get("nickname")
+        password = body.get("password")
+        
+        if not nickname or not password:
+            return JSONResponse(
+                {"detail": "Nickname y password son requeridos"}, 
+                status_code=400
+            )
+        
+        # Autenticar usuario
+        user = authenticate_user(nickname, password)
+        if not user:
+            return JSONResponse(
+                {"detail": "Credenciales inválidas"}, 
+                status_code=401
+            )
+        
+        # Crear token
+        access_token = create_access_token(data={"sub": user.nickname})
+        
+        # Obtener accesos del usuario
+        from app.db import get_db
+        from app.graphql.crud.useraccess import get_useraccess_by_userid        
+        
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            user_accesses = get_useraccess_by_userid(db, user.userID)
+            
+            # Construir respuesta
+            user_data = {
+                "userID": user.userID,
+                "nickname": user.nickname,
+                "firstName": user.firstName,
+                "lastName": user.lastName,
+                "email": user.email,
+                "userAccesses": []
+            }
+            
+            # Procesar accesos del usuario
+            for ua in user_accesses:
+                access_data = {
+                    "userID": ua.UserID,
+                    "companyID": ua.CompanyID,
+                    "branchID": ua.BranchID,
+                    "roleID": ua.RoleID,
+                    "companyName": "",
+                    "branchName": "",
+                    "roleName": ""
+                }
+                
+                # Obtener nombres relacionados de forma segura
+                try:
+                    if hasattr(ua, 'companyData_') and ua.companyData_:
+                        access_data["companyName"] = ua.companyData_.Name
+                except:
+                    pass
+                    
+                try:
+                    if hasattr(ua, 'branches_') and ua.branches_:
+                        access_data["branchName"] = ua.branches_.Name
+                except:
+                    pass
+                    
+                try:
+                    if hasattr(ua, 'roles_') and ua.roles_:
+                        access_data["roleName"] = ua.roles_.RoleName
+                except:
+                    pass
+                
+                user_data["userAccesses"].append(access_data)
+            
+            return JSONResponse({
+                "access_token": access_token,
+                "token_type": "bearer",
+                "user": user_data
+            })
+            
+        finally:
+            db_gen.close()
+        
+    except Exception as e:
+        logger.error(f"Error en login: {e}")
+        return JSONResponse(
+            {"detail": "Error interno del servidor"}, 
+            status_code=500
+        )
+
+# =======================
+# Endpoint de Logout REST
+# =======================
+async def logout_endpoint(request: Request):
+    """Endpoint REST para logout"""
+    try:
+        # Por ahora solo retornamos OK
+        # En el futuro podríamos invalidar el token o limpiar sesiones
+        return JSONResponse({
+            "message": "Logout exitoso"
+        })
+    except Exception as e:
+        logger.error(f"Error en logout: {e}")
+        return JSONResponse(
+            {"detail": "Error interno del servidor"}, 
+            status_code=500
+        )
 
 # =======================
 # GraphQL app
@@ -148,15 +243,26 @@ app = Starlette(
         Route("/", root),
         Route("/health", health_check),
         Route("/metrics", get_metrics),
-        Mount("/graphql", graphql_app),
+        Route("/login", login_endpoint, methods=["POST"]),
+        Route("/logout", logout_endpoint, methods=["POST"]),
+        Mount("/graphql/", graphql_app),  # Con barra al final
+        Mount("/graphql", graphql_app),   # Sin barra (compatibilidad)
     ],
 )
 
 # Middlewares globales
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware, 
+    allow_origins=["*"], 
+    allow_methods=["*"], 
+    allow_headers=["*"],
+    allow_credentials=True
+)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(ProcessTimeMiddleware)
 app.add_middleware(GraphQLContextMiddleware)
 
-#====================== NUEVO ======================
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)

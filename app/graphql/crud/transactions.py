@@ -10,13 +10,13 @@ def get_transactions(db: Session):
 def get_transactions_by_id(db: Session, transactionid: int):
     return (
         db.query(Transactions)
-        .filter(Transactions.transactionID == transactionid)
+        .filter(Transactions.TransactionID == transactionid)  # CORREGIDO: PascalCase
         .first()
     )
 
 
 def create_transactions(db: Session, data: TransactionsCreate):
-    obj = Transactions(**data.__dict__)
+    obj = Transactions(**vars(data))  # CORREGIDO: usar vars() como patrón consistente
     db.add(obj)
     db.commit()
     db.refresh(obj)
@@ -26,8 +26,9 @@ def create_transactions(db: Session, data: TransactionsCreate):
 def update_transactions(db: Session, transactionid: int, data: TransactionsUpdate):
     obj = get_transactions_by_id(db, transactionid)
     if obj:
-        for k, v in data.__dict__.items():
-            setattr(obj, k, v)
+        for k, v in vars(data).items():  # CORREGIDO: usar vars() como patrón consistente
+            if v is not None:  # AGREGAR: verificación None
+                setattr(obj, k, v)
         db.commit()
         db.refresh(obj)
     return obj

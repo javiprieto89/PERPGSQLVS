@@ -4,53 +4,135 @@ import { createContext, useContext, useState, useEffect } from "react";
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
-  const [userInfo, setUserInfo] = useState(null);
+    const [userInfo, setUserInfo] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const stored = localStorage.getItem("user_info");
-    if (stored) {
-      setUserInfo(JSON.parse(stored));
-    }
-    // No necesitas cargar access_data o selected_access aquí directamente en el estado,
-    // ya que Login.jsx se encargará de pasarlo a UserContext y Layout/Dashboard lo leerán de localStorage.
-  }, []);
+    useEffect(() => {
+        // Cargar información del usuario desde sessionStorage al inicializar
+        const stored = sessionStorage.getItem("user_info");
+        const token = sessionStorage.getItem("token");
 
-  const login = (user) => {
-    setUserInfo(user);
-    localStorage.setItem("user_info", JSON.stringify(user));
+        if (stored && token) {
+            try {
+                const userData = JSON.parse(stored);
+                setUserInfo(userData);
+            } catch (error) {
+                console.error("Error parsing user data:", error);
+                // Si hay error, limpiar datos corruptos
+                sessionStorage.removeItem("user_info");
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("access_data");
+                sessionStorage.removeItem("selected_access");
+            }
+        }
 
-    // --- CORRECCIÓN CRÍTICA AQUÍ: Guardar los accesos y el seleccionado ---
-    if (user.userAccesses) {
-      localStorage.setItem("access_data", JSON.stringify(user.userAccesses));
-      if (user.userAccesses.length > 0) {
-        localStorage.setItem(
-          "selected_access",
-          JSON.stringify(user.userAccesses[0])
-        );
-      } else {
-        localStorage.removeItem("selected_access"); // Si no hay accesos, limpiar
-      }
-    } else {
-      localStorage.removeItem("access_data");
-      localStorage.removeItem("selected_access");
-    }
-  };
+        setLoading(false);
+    }, []);
 
-  const logout = () => {
-    setUserInfo(null);
-    localStorage.removeItem("user_info");
-    localStorage.removeItem("token");
-    localStorage.removeItem("access_data");
-    localStorage.removeItem("selected_access");
-  };
+    const login = (user) => {
+        setUserInfo(user);
+        sessionStorage.setItem("user_info", JSON.stringify(user));
 
-  return (
-    <UserContext.Provider value={{ userInfo, login, logout }}>
-      {children}
-    </UserContext.Provider>
-  );
+        // Guardar los accesos y el seleccionado
+        if (user.userAccesses && Array.isArray(user.userAccesses)) {
+            sessionStorage.setItem("access_data", JSON.stringify(user.userAccesses));
+
+            if (user.userAccesses.length > 0) {
+                // Seleccionar el primer acceso por defecto
+                sessionStorage.setItem(
+                    "selected_access",
+                    JSON.stringify(user.userAccesses[0])
+                );
+            } else {
+                sessionStorage.removeItem("selected_access");
+            }
+        } else {
+            sessionStorage.removeItem("access_data");
+            sessionStorage.removeItem("selected_access");
+        }
+    };
+
+    const logout = async () => {
+        try {
+            // Intentar hacer logout en el servidor
+            const token = sessionStorage.getItem("token");
+            if (token) {
+                await fetch("http://127.0.0.1:8000/logout", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }).catch(() => {
+                    // Si falla el logout del servidor, continuar con el logout local
+                    console.warn("No se pudo notificar al servidor del logout");
+                });
+            }
+        } finally {
+            // Siempre limpiar el estado local
+            setUserInfo(null);
+            sessionStorage.removeItem("user_info");
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("access_data");
+            sessionStorage.removeItem("selected_access");
+            sessionStorage.removeItem("redirectAfterLogin");
+        }
+    };
+
+    const updateSelectedAccess = (access) => {
+        if (access) {
+            sessionStorage.setItem("selected_access", JSON.stringify(access));
+        } else {
+            sessionStorage.removeItem("selected_access");
+        }
+    };
+
+    const getSelectedAccess = () => {
+        try {
+            const stored = sessionStorage.getItem("selected_access");
+            return stored ? JSON.parse(stored) : null;
+        } catch (error) {
+            console.error("Error parsing selected access:", error);
+            return null;
+        }
+    };
+
+    const getAccessData = () => {
+        try {
+            const stored = sessionStorage.getItem("access_data");
+            return stored ? JSON.parse(stored) : [];
+        } catch (error) {
+            console.error("Error parsing access data:", error);
+            return [];
+        }
+    };
+
+    const isAuthenticated = () => {
+        return !!sessionStorage.getItem("token") && !!userInfo;
+    };
+
+    const contextValue = {
+        userInfo,
+        loading,
+        login,
+        logout,
+        updateSelectedAccess,
+        getSelectedAccess,
+        getAccessData,
+        isAuthenticated,
+    };
+
+    return (
+        <UserContext.Provider value={contextValue}>
+            {children}
+        </UserContext.Provider>
+    );
 }
 
 export function useUser() {
-  return useContext(UserContext);
+    const context = useContext(UserContext);
+    if (context === undefined) {
+        throw new Error("useUser must be used within a UserProvider");
+    }
+    return context;
 }

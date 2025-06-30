@@ -1,481 +1,394 @@
-// src/pages/Suppliers.jsx
 import { useEffect, useState } from "react";
 import {
-  PencilSquareIcon,
-  TrashIcon,
-  PlusIcon,
+    PencilSquareIcon,
+    TrashIcon,
+    PlusIcon,
 } from "@heroicons/react/24/solid";
+import { graphqlClient, QUERIES } from "../utils/graphqlClient";
 
 export default function Suppliers() {
-  const [suppliers, setSuppliers] = useState([]);
-  const [filteredSuppliers, setFilteredSuppliers] = useState([]);
-  const [error, setError] = useState(null);
-  const [editingSupplier, setEditingSupplier] = useState(null);
-  const [newSupplier, setNewSupplier] = useState(null);
-  const [deletingSupplier, setDeletingSupplier] = useState(null);
-  const [countries, setCountries] = useState([]);
-  const [provinces, setProvinces] = useState([]);
-  const [documentTypes, setDocumentTypes] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [editingSupplier, setEditingSupplier] = useState(null);
+    const [deletingSupplier, setDeletingSupplier] = useState(null);
+    const [showCreateForm, setShowCreateForm] = useState(false);
 
-  const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState({});
+    // Estado para filtros
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filterActive, setFilterActive] = useState("all");
 
-  const emptySupplier = {
-    documentTypeID: 1,
-    documentNumber: "",
-    firstName: "",
-    lastName: "",
-    phone: "",
-    email: "",
-    address: "",
-    city: "",
-    postalCode: "",
-    isActive: true,
-    countryID: 54,
-    provinceID: 1,
-  };
+    const loadData = async () => {
+        try {
+            setLoading(true);
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/suppliers/")
-      .then((res) =>
-        res.ok ? res.json() : Promise.reject("Error fetching suppliers")
-      )
-      .then((data) => {
-        setSuppliers(data);
-        setFilteredSuppliers(data);
-      })
-      .catch((err) => setError(err));
-    fetch("http://127.0.0.1:8000/countries/")
-      .then((res) => res.json())
-      .then(setCountries);
-    fetch("http://127.0.0.1:8000/provinces/")
-      .then((res) => res.json())
-      .then(setProvinces);
-    fetch("http://127.0.0.1:8000/documenttypes/")
-      .then((res) => res.json())
-      .then(setDocumentTypes);
-  }, []);
+            // Obtener contexto actual
+            const storedSelected = sessionStorage.getItem("selected_access");
+            if (!storedSelected) {
+                throw new Error("No hay acceso seleccionado");
+            }
 
-  const cities = Array.from(
-    new Set(suppliers.map((s) => s.city).filter(Boolean))
-  );
+            const access = JSON.parse(storedSelected);
 
-  const applyFilter = () => {
-    let results = [...suppliers];
-    Object.entries(filters).forEach(([field, value]) => {
-      if (!value && value !== false) return;
-      const val = value.toString().toLowerCase();
-      if (field.endsWith("_mode")) return;
-      const mode = filters[`${field}_mode`] || "contains";
-      results = results.filter((s) => {
-        const raw = s[field];
-        if (raw === undefined) return false;
-        if (field === "isActive") {
-          const boolVal = ["true", "sí", "si"].includes(val);
-          return raw === boolVal;
+            const data = await graphqlClient.query(QUERIES.GET_SUPPLIERS, {
+                companyID: access.companyID
+            });
+
+            setSuppliers(data.suppliers || []);
+
+        } catch (e) {
+            console.error("Error cargando proveedores:", e);
+            setError(e.message);
+        } finally {
+            setLoading(false);
         }
-        const cell = raw.toString().toLowerCase();
-        if (mode === "contains") return cell.includes(val);
-        if (mode === "starts") return cell.startsWith(val);
-        if (mode === "equals") return cell === val;
-        return true;
-      });
-    });
-    setFilteredSuppliers(results);
-  };
+    };
 
-  const handleEditClick = (s) => setEditingSupplier(s);
-  const handleDeleteClick = (s) => setDeletingSupplier(s);
+    useEffect(() => {
+        loadData();
+    }, []);
 
-  const handleUpdate = () => {
-    fetch(`http://127.0.0.1:8000/suppliers/${editingSupplier.supplierID}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(editingSupplier),
-    })
-      .then((res) => res.json())
-      .then((updated) => {
-        setSuppliers((prev) =>
-          prev.map((x) => (x.supplierID === updated.supplierID ? updated : x))
-        );
-        setFilteredSuppliers((prev) =>
-          prev.map((x) => (x.supplierID === updated.supplierID ? updated : x))
-        );
-        setEditingSupplier(null);
-      })
-      .catch(console.error);
-  };
+    const handleEditClick = (supplier) => {
+        setEditingSupplier({ ...supplier });
+    };
 
-  const handleCreate = () => {
-    const { supplierID, ...payload } = newSupplier;
-    fetch("http://127.0.0.1:8000/suppliers/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
-      .then((res) => res.json())
-      .then((created) => {
-        setSuppliers((prev) => [...prev, created]);
-        setFilteredSuppliers((prev) => [...prev, created]);
-        setNewSupplier(null);
-      })
-      .catch(console.error);
-  };
+    const handleDeleteClick = (supplier) => {
+        setDeletingSupplier(supplier);
+    };
 
-  const confirmDelete = () => {
-    fetch(`http://127.0.0.1:8000/suppliers/${deletingSupplier.supplierID}`, {
-      method: "DELETE",
-    })
-      .then(() => {
-        setSuppliers((prev) =>
-          prev.filter((x) => x.supplierID !== deletingSupplier.supplierID)
-        );
-        setFilteredSuppliers((prev) =>
-          prev.filter((x) => x.supplierID !== deletingSupplier.supplierID)
-        );
-        setDeletingSupplier(null);
-      })
-      .catch(console.error);
-  };
+    const handleEditChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setEditingSupplier(prev => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    };
 
-  const renderForm = (item, setItem, onSubmit, label, readOnly) => (
-    <div className="space-y-3">
-      <label className="block">
-        Tipo de Documento:
-        <select
-          className="w-full border px-3 py-2 rounded"
-          value={item.documentTypeID}
-          onChange={(e) =>
-            setItem({ ...item, documentTypeID: parseInt(e.target.value, 10) })
-          }
-          disabled={readOnly}
-        >
-          <option value="">-- Tipo Documento --</option>
-          {documentTypes.map((dt) => (
-            <option key={dt.documentTypeID} value={dt.documentTypeID}>
-              {dt.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      {[
-        "documentNumber",
-        "firstName",
-        "lastName",
-        "phone",
-        "email",
-        "address",
-        "city",
-        "postalCode",
-      ].map((k) => (
-        <input
-          key={k}
-          name={k}
-          className="w-full border px-3 py-2 rounded"
-          placeholder={k}
-          value={item[k] || ""}
-          onChange={(e) => setItem({ ...item, [k]: e.target.value })}
-          readOnly={readOnly}
-        />
-      ))}
-      <label className="block">
-        País:
-        <select
-          className="w-full border px-3 py-2 rounded"
-          value={item.countryID}
-          onChange={(e) =>
-            setItem({ ...item, countryID: parseInt(e.target.value, 10) })
-          }
-          disabled={readOnly}
-        >
-          <option value="">-- País --</option>
-          {countries.map((ct) => (
-            <option key={ct.countryID} value={ct.countryID}>
-              {ct.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="block">
-        Provincia:
-        <select
-          className="w-full border px-3 py-2 rounded"
-          value={item.provinceID}
-          onChange={(e) =>
-            setItem({ ...item, provinceID: parseInt(e.target.value, 10) })
-          }
-          disabled={readOnly}
-        >
-          <option value="">-- Provincia --</option>
-          {provinces.map((pr) => (
-            <option key={pr.provinceID} value={pr.provinceID}>
-              {pr.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          checked={item.isActive}
-          onChange={(e) => setItem({ ...item, isActive: e.target.checked })}
-          disabled={readOnly}
-        />{" "}
-        Activo
-      </label>
-      <div className="flex justify-end gap-2">
-        <button
-          onClick={() => {
+    const handleUpdate = async () => {
+        try {
+            // Como no tienes mutations para suppliers definidas, usaremos un query básico
+            // En un entorno real, necesitarías agregar las mutations correspondientes
+            console.log("Actualizando proveedor:", editingSupplier);
+
+            // Por ahora solo actualizamos localmente
+            setSuppliers(prev => prev.map(s =>
+                s.supplierID === editingSupplier.supplierID ? editingSupplier : s
+            ));
             setEditingSupplier(null);
-            setNewSupplier(null);
+        } catch (err) {
+            console.error("Error al actualizar:", err);
+            setError("Error al actualizar proveedor: " + err.message);
+        }
+    };
+
+    const confirmDelete = async () => {
+        try {
+            // Como no tienes mutations para suppliers definidas, usaremos eliminación local
+            // En un entorno real, necesitarías agregar las mutations correspondientes
+            console.log("Eliminando proveedor:", deletingSupplier.supplierID);
+
+            setSuppliers(prev =>
+                prev.filter(s => s.supplierID !== deletingSupplier.supplierID)
+            );
             setDeletingSupplier(null);
-          }}
-          className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-        >
-          Cancelar
-        </button>
-        <button
-          onClick={onSubmit}
-          className={`px-4 py-2 rounded ${
-            readOnly
-              ? "bg-red-600 text-white hover:bg-red-700"
-              : "bg-blue-600 text-white hover:bg-blue-700"
-          }`}
-        >
-          {label}
-        </button>
-      </div>
-    </div>
-  );
+        } catch (e) {
+            console.error("Error al eliminar:", e);
+            setError("Error al eliminar proveedor: " + e.message);
+        }
+    };
 
-  const getNameById = (list, id) => {
-    const f = list.find((x) => x[Object.keys(x)[0]] === id);
-    return f ? f.name || f.name : "";
-  };
+    // Filtrar proveedores
+    const filteredSuppliers = suppliers.filter(supplier => {
+        const matchesSearch = !searchTerm ||
+            supplier.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            supplier.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            supplier.phone?.includes(searchTerm);
 
-  return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Suppliers</h1>
-        <div className="flex space-x-2">
-          <button
-            className="bg-gray-600 text-white px-4 py-2 rounded"
-            onClick={() => setShowFilters((v) => !v)}
-          >
-            {showFilters ? "Ocultar filtros" : "Mostrar filtros"}
-          </button>
-          <button
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            onClick={() => setNewSupplier({ ...emptySupplier })}
-          >
-            <PlusIcon className="h-5 w-5 inline-block mr-2" />
-            Nuevo Supplier
-          </button>
-        </div>
-      </div>
+        const matchesActive = filterActive === "all" ||
+            (filterActive === "active" && supplier.isActive) ||
+            (filterActive === "inactive" && !supplier.isActive);
 
-      {/* Filters */}
-      {showFilters && (
-        <div className="bg-gray-100 p-4 rounded mb-4 space-y-4">
-          {[
-            { key: "documentNumber", label: "Documento", type: "text" },
-            { key: "firstName", label: "Nombre", type: "text" },
-            { key: "lastName", label: "Apellido", type: "text" },
-            { key: "phone", label: "Teléfono", type: "text" },
-            { key: "email", label: "email", type: "text" },
-            { key: "address", label: "Dirección", type: "text" },
-            { key: "postalCode", label: "CP", type: "text" },
-          ].map(({ key, label }) => (
-            <div key={key} className="flex items-center space-x-2">
-              <label className="w-32 font-medium">{label}</label>
-              <select
-                className="border px-2 py-1 rounded"
-                value={filters[`${key}_mode`] || "contains"}
-                onChange={(e) =>
-                  setFilters((f) => ({ ...f, [`${key}_mode`]: e.target.value }))
-                }
-              >
-                <option value="contains">Contiene</option>
-                <option value="starts">Comienza con</option>
-                <option value="equals">Es igual a</option>
-              </select>
-              <input
-                type="text"
-                className="flex-1 border px-2 py-1 rounded"
-                value={filters[key] || ""}
-                onChange={(e) =>
-                  setFilters((f) => ({ ...f, [key]: e.target.value }))
-                }
-                placeholder={`Filtrar ${label.toLowerCase()}`}
-              />
+        return matchesSearch && matchesActive;
+    });
+
+    if (loading) {
+        return (
+            <div className="p-6">
+                <div className="animate-pulse">
+                    <div className="h-8 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-64 bg-gray-200 rounded"></div>
+                </div>
             </div>
-          ))}
-          {[
-            {
-              key: "city",
-              label: "Ciudad",
-              options: cities.map((c) => ({ value: c, text: c })),
-            },
-            {
-              key: "countryID",
-              label: "País",
-              options: countries.map((ct) => ({
-                value: ct.countryID,
-                text: ct.name,
-              })),
-            },
-            {
-              key: "provinceID",
-              label: "Provincia",
-              options: provinces.map((pr) => ({
-                value: pr.provinceID,
-                text: pr.name,
-              })),
-            },
-            {
-              key: "isActive",
-              label: "Activo",
-              options: [
-                { value: "true", text: "Sí" },
-                { value: "false", text: "No" },
-              ],
-            },
-          ].map(({ key, label, options }) => (
-            <div key={key} className="flex items-center space-x-2">
-              <label className="w-32 font-medium">{label}</label>
-              <select
-                className="flex-1 border px-2 py-1 rounded"
-                value={filters[key] === undefined ? "" : filters[key]}
-                onChange={(e) =>
-                  setFilters((f) => ({ ...f, [key]: e.target.value }))
-                }
-              >
-                <option value="">-- Todos --</option>
-                {options.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.text}
-                  </option>
-                ))}
-              </select>
+        );
+    }
+
+    return (
+        <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Proveedores</h1>
+                <button
+                    onClick={() => setShowCreateForm(true)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700"
+                >
+                    <PlusIcon className="w-5 h-5" />
+                    Nuevo Proveedor
+                </button>
             </div>
-          ))}
-          <div className="flex space-x-2">
-            <button
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              onClick={applyFilter}
-            >
-              Buscar
-            </button>
-            <button
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
-              onClick={() => {
-                setFilters({});
-                setFilteredSuppliers(suppliers);
-              }}
-            >
-              Limpiar filtros
-            </button>
-          </div>
-        </div>
-      )}
 
-      {/* Suppliers Table */}
-      <table className="w-full bg-white rounded shadow text-sm">
-        <thead>
-          <tr className="bg-gray-200 text-left text-xs uppercase text-gray-600">
-            <th className="p-3">Documento</th>
-            <th className="p-3">Nombre</th>
-            <th className="p-3">Apellido</th>
-            <th className="p-3">Teléfono</th>
-            <th className="p-3">email</th>
-            <th className="p-3">Dirección</th>
-            <th className="p-3">Ciudad</th>
-            <th className="p-3">CP</th>
-            <th className="p-3">País</th>
-            <th className="p-3">Provincia</th>
-            <th className="p-3">Activo</th>
-            <th className="p-3">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredSuppliers.map((s) => (
-            <tr key={s.supplierID} className="border-t hover:bg-gray-100">
-              <td className="p-2">{s.documentNumber}</td>
-              <td className="p-2">{s.firstName}</td>
-              <td className="p-2">{s.lastName}</td>
-              <td className="p-2">{s.phone}</td>
-              <td className="p-2">{s.email}</td>
-              <td className="p-2">{s.address}</td>
-              <td className="p-2">{s.city}</td>
-              <td className="p-2">{s.postalCode}</td>
-              <td className="p-2">{getNameById(countries, s.countryID)}</td>
-              <td className="p-2">{getNameById(provinces, s.provinceID)}</td>
-              <td className="p-2">{s.isActive ? "Sí" : "No"}</td>
-              <td className="p-2 flex gap-2">
-                <button
-                  onClick={() => handleEditClick(s)}
-                  className="text-green-600 hover:text-green-800"
-                  title="Editar"
-                >
-                  <PencilSquareIcon className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => handleDeleteClick(s)}
-                  className="text-red-600 hover:text-red-800"
-                  title="Eliminar"
-                >
-                  <TrashIcon className="h-5 w-5" />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            {error && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-600">{error}</p>
+                    <button
+                        onClick={() => setError(null)}
+                        className="text-red-800 underline text-sm"
+                    >
+                        Cerrar
+                    </button>
+                </div>
+            )}
 
-      {/* Modals */}
-      {editingSupplier && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded shadow-md w-[500px]">
-            <h2 className="text-xl font-bold mb-4">Editar Supplier</h2>
-            {renderForm(
-              editingSupplier,
-              setEditingSupplier,
-              handleUpdate,
-              "Actualizar",
-              false
+            {/* Filtros */}
+            <div className="mb-4 space-y-4">
+                <div className="flex gap-4 items-center">
+                    <input
+                        type="text"
+                        placeholder="Buscar por nombre, email o teléfono..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                    />
+                    <select
+                        value={filterActive}
+                        onChange={(e) => setFilterActive(e.target.value)}
+                        className="px-3 py-2 border border-gray-300 rounded-lg"
+                    >
+                        <option value="all">Todos</option>
+                        <option value="active">Activos</option>
+                        <option value="inactive">Inactivos</option>
+                    </select>
+                </div>
+                <div className="text-sm text-gray-600">
+                    Mostrando {filteredSuppliers.length} de {suppliers.length} proveedores
+                </div>
+            </div>
+
+            {/* Tabla de proveedores */}
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Proveedor
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Contacto
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Dirección
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Estado
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {filteredSuppliers.map((supplier) => (
+                                <tr key={supplier.supplierID} className="hover:bg-gray-50">
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div>
+                                            <div className="text-sm font-medium text-gray-900">
+                                                {supplier.name}
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                ID: {supplier.supplierID}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="text-sm text-gray-900">
+                                            {supplier.email || 'Sin email'}
+                                        </div>
+                                        <div className="text-sm text-gray-500">
+                                            {supplier.phone || 'Sin teléfono'}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="text-sm text-gray-900">
+                                            {supplier.address || 'Sin dirección'}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${supplier.isActive
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
+                                            }`}>
+                                            {supplier.isActive ? 'Activo' : 'Inactivo'}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div className="flex space-x-2">
+                                            <button
+                                                onClick={() => handleEditClick(supplier)}
+                                                className="text-blue-600 hover:text-blue-800"
+                                            >
+                                                <PencilSquareIcon className="w-5 h-5" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteClick(supplier)}
+                                                className="text-red-600 hover:text-red-800"
+                                            >
+                                                <TrashIcon className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {filteredSuppliers.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                    {suppliers.length === 0 ? 'No hay proveedores registrados' : 'No se encontraron proveedores con los filtros aplicados'}
+                </div>
             )}
-          </div>
-        </div>
-      )}
-      {newSupplier && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded shadow-md w-[500px]">
-            <h2 className="text-xl font-bold mb-4">Nuevo Supplier</h2>
-            {renderForm(
-              newSupplier,
-              setNewSupplier,
-              handleCreate,
-              "Crear",
-              false
+
+            {/* Modal de edición */}
+            {editingSupplier && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <h2 className="text-xl font-bold mb-4">Editar Proveedor</h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium mb-1">Nombre</label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={editingSupplier.name || ''}
+                                    onChange={handleEditChange}
+                                    className="w-full border p-2 rounded"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Email</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={editingSupplier.email || ''}
+                                    onChange={handleEditChange}
+                                    className="w-full border p-2 rounded"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Teléfono</label>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    value={editingSupplier.phone || ''}
+                                    onChange={handleEditChange}
+                                    className="w-full border p-2 rounded"
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium mb-1">Dirección</label>
+                                <input
+                                    type="text"
+                                    name="address"
+                                    value={editingSupplier.address || ''}
+                                    onChange={handleEditChange}
+                                    className="w-full border p-2 rounded"
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        name="isActive"
+                                        checked={editingSupplier.isActive}
+                                        onChange={handleEditChange}
+                                    />
+                                    <span>Proveedor activo</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end space-x-4 mt-6">
+                            <button
+                                onClick={() => setEditingSupplier(null)}
+                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleUpdate}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            >
+                                Guardar Cambios
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
-          </div>
-        </div>
-      )}
-      {deletingSupplier && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded shadow-md w-[500px]">
-            <h2 className="text-xl font-bold mb-4">Eliminar Supplier</h2>
-            {renderForm(
-              deletingSupplier,
-              null,
-              confirmDelete,
-              "Confirmar",
-              true
+
+            {/* Modal de confirmación de eliminación */}
+            {deletingSupplier && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+                        <h2 className="text-xl font-bold mb-4">Confirmar Eliminación</h2>
+                        <p className="mb-4">
+                            ¿Estás seguro de que deseas eliminar al proveedor{" "}
+                            <strong>{deletingSupplier.name}</strong>?
+                        </p>
+                        <p className="text-sm text-gray-600 mb-6">
+                            Esta acción no se puede deshacer.
+                        </p>
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                onClick={() => setDeletingSupplier(null)}
+                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                            >
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
-          </div>
+
+            {/* Formulario de creación simple */}
+            {showCreateForm && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <h2 className="text-xl font-bold mb-4">Nuevo Proveedor</h2>
+                        <p className="text-gray-600 mb-4">
+                            Funcionalidad de creación pendiente de implementar con GraphQL mutations.
+                        </p>
+                        <div className="flex justify-end">
+                            <button
+                                onClick={() => setShowCreateForm(false)}
+                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                            >
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 }

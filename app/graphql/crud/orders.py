@@ -17,24 +17,24 @@ def get_orders_by_id(db: Session, orderid: int):
 
 def create_orders(db: Session, data: OrdersCreate):
     # Extraer los ítems de la orden
-    items_data = data.Items if hasattr(data, "items") else []
+    items_data = data.Items if hasattr(data, "Items") else []
 
     # Crear orden sin los ítems
     order_data = asdict(data)
     # eliminar los ítems del dict para no pasarlos al modelo
-    order_data.pop("items", None)
+    order_data.pop("Items", None)  # Corregido: Items con mayúscula
     order = Orders(**order_data)
     db.add(order)
     db.flush()  # necesario para obtener orderID antes de los detalles
 
-    # Crear detalles
+    # Crear detalles con nombres de atributos correctos
     for item in items_data:
         detail = OrderDetails(
-            orderID=order.Ord   ,
-            itemID=item.itemID,
-            quantity=item.quantity,
-            unitPrice=item.unitPrice,
-            description=item.description,
+            OrderID=order.OrderID,  # Corregido: OrderID con mayúsculas
+            ItemID=item.ItemID,     # Corregido: ItemID con mayúsculas
+            Quantity=item.Quantity, # Corregido: Quantity con mayúscula
+            UnitPrice=item.UnitPrice,  # Corregido: UnitPrice con mayúsculas
+            Description=item.Description,  # Corregido: Description con mayúscula
         )
         db.add(detail)
 
@@ -48,7 +48,7 @@ def update_orders(db: Session, orderid: int, data: OrdersUpdate):
     if obj:
         update_data = asdict(data)
         # No se actualizan ítems desde esta función
-        update_data.pop("items", None)
+        update_data.pop("Items", None)  # Corregido: Items con mayúscula
         for k, v in update_data.items():
             if v is not None:
                 setattr(obj, k, v)
