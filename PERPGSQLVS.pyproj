@@ -30,6 +30,7 @@
     <Compile Include="app\ChangeModels.py" />
     <Compile Include="app\config.py" />
     <Compile Include="app\db.py" />
+    <Compile Include="deploy.py" />
     <Compile Include="app\generar_init.py" />
     <Compile Include="app\graphql\crud\accountbalances.py" />
     <Compile Include="app\graphql\crud\branches.py" />
@@ -78,6 +79,7 @@
     <Compile Include="app\graphql\resolvers\auth.py" />
     <Compile Include="app\graphql\resolvers\branches.py" />
     <Compile Include="app\graphql\resolvers\brands.py" />
+    <Compile Include="app\graphql\resolvers\cached_resolvers.py" />
     <Compile Include="app\graphql\resolvers\carbrands.py" />
     <Compile Include="app\graphql\resolvers\carmodels.py" />
     <Compile Include="app\graphql\resolvers\cars.py" />
@@ -207,7 +209,9 @@
     <Compile Include="app\models\vendors.py" />
     <Compile Include="app\models\warehouses.py" />
     <Compile Include="app\models\__init__.py" />
+    <Compile Include="app\utils\cache.py" />
     <Compile Include="app\utils\generic_filters.py" />
+    <Compile Include="app\utils\pagination.py" />
     <Compile Include="frontend\node_modules\flatted\python\flatted.py" />
     <Compile Include="PERPGSQLVS.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\annotated_types\test_cases.py" />
@@ -15973,6 +15977,8 @@
     <Content Include="frontend\src\utils\openReactWindow.js" />
     <Content Include="frontend\tailwind.config.js" />
     <Content Include="frontend\vite.config.js" />
+    <Content Include="Git-PushToBranch.ps1" />
+    <Content Include="Kill-Port8000.ps1" />
     <Content Include="node_modules\.bin\uuid" />
     <Content Include="node_modules\.bin\uuid.cmd" />
     <Content Include="node_modules\.bin\uuid.ps1" />

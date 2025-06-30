@@ -1,0 +1,44 @@
+from sqlalchemy.orm import Session
+from app.models.itemcategories import ItemCategories
+from app.graphql.schemas.itemcategories import (
+    ItemCategoriesCreate,
+    ItemCategoriesUpdate,
+)
+
+
+def get_itemcategories(db: Session):
+    return db.query(ItemCategories).all()
+
+
+def get_itemcategories_by_id(db: Session, categoryid: int):
+    return (
+        db.query(ItemCategories).filter(
+            ItemCategories.categoryID == categoryid).first()
+    )
+
+
+def create_itemcategories(db: Session, data: ItemCategoriesCreate):
+    obj = ItemCategories(**vars(data))
+    db.add(obj)
+    db.commit()
+    db.refresh(obj)
+    return obj
+
+
+def update_itemcategories(db: Session, categoryid: int, data: ItemCategoriesUpdate):
+    obj = get_itemcategories_by_id(db, categoryid)
+    if obj:
+        for k, v in vars(data).items():
+            if v is not None:
+                setattr(obj, k, v)
+        db.commit()
+        db.refresh(obj)
+    return obj
+
+
+def delete_itemcategories(db: Session, categoryid: int):
+    obj = get_itemcategories_by_id(db, categoryid)
+    if obj:
+        db.delete(obj)
+        db.commit()
+    return obj

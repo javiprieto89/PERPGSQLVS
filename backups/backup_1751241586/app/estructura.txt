@@ -1,0 +1,463 @@
+ El volumen de la unidad C es Windows
+ El n£mero de serie del volumen es: 2418-66A1
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app
+
+10/06/2025  05:35    <DIR>          .
+10/06/2025  04:43    <DIR>          ..
+18/05/2025  09:40                54 .env
+27/05/2025  01:37                87 .env.example
+05/06/2025  01:40             2.593 auth.py
+10/06/2025  04:59             5.094 ChangeModels.py
+05/06/2025  01:40               446 config.py
+05/06/2025  01:40               515 db.py
+10/06/2025  05:35                 0 estructura.txt
+05/06/2025  01:40               862 generar_init.py
+05/06/2025  02:19    <DIR>          graphql
+10/06/2025  02:31             1.066 main.py
+10/06/2025  05:19    <DIR>          models
+05/06/2025  01:40    <DIR>          utils
+10/06/2025  02:31    <DIR>          __pycache__
+               9 archivos         10.717 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\graphql
+
+05/06/2025  02:19    <DIR>          .
+10/06/2025  05:35    <DIR>          ..
+10/06/2025  01:44    <DIR>          crud
+05/06/2025  01:40    <DIR>          mutations
+05/06/2025  02:19    <DIR>          resolvers
+05/06/2025  01:40             3.927 schema.py
+10/06/2025  05:20    <DIR>          schemas
+01/06/2025  03:49    <DIR>          types
+05/06/2025  01:40             3.856 types.py
+05/06/2025  02:19    <DIR>          __pycache__
+               2 archivos          7.783 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\graphql\crud
+
+10/06/2025  01:44    <DIR>          .
+05/06/2025  02:19    <DIR>          ..
+05/06/2025  01:40             1.188 accountbalances.py
+05/06/2025  01:40             1.014 branches.py
+05/06/2025  01:40               969 brands.py
+05/06/2025  01:40             1.047 carbrands.py
+05/06/2025  01:40             1.047 carmodels.py
+10/06/2025  01:44             1.051 cars.py
+10/06/2025  01:44             1.000 clients.py
+05/06/2025  01:40             1.083 companydata.py
+05/06/2025  01:40             1.045 countries.py
+05/06/2025  01:40             1.307 creditcardgroups.py
+05/06/2025  01:40             1.197 creditcards.py
+05/06/2025  01:40             1.031 discounts.py
+05/06/2025  01:40             1.006 doctypes.py
+05/06/2025  01:40             1.031 documents.py
+05/06/2025  01:40               347 documenttypes.py
+05/06/2025  01:40             1.169 itemcategories.py
+05/06/2025  01:40             1.247 itempricehistory.py
+05/06/2025  01:40             1.060 items.py
+05/06/2025  01:40             1.003 itemstock.py
+10/06/2025  01:11             1.515 itemsubcategories.py
+05/06/2025  01:40             1.185 orderdetails.py
+05/06/2025  01:40             1.112 orderhistory.py
+05/06/2025  01:40             1.384 orderhistorydetails.py
+05/06/2025  01:40             1.858 orders.py
+05/06/2025  01:40             1.153 orderstatus.py
+05/06/2025  01:40             1.252 pricelistitems.py
+05/06/2025  01:40             1.086 pricelists.py
+05/06/2025  01:40             1.060 provinces.py
+05/06/2025  01:40               956 roles.py
+05/06/2025  01:40             1.252 saleconditions.py
+05/06/2025  01:40             1.176 servicetype.py
+05/06/2025  01:40             1.151 stockhistory.py
+05/06/2025  01:40             1.031 suppliers.py
+05/06/2025  01:40             1.804 temporderdetails.py
+05/06/2025  01:40             1.261 tempstockentries.py
+05/06/2025  01:40             1.115 transactions.py
+05/06/2025  01:40             1.202 transactiontypes.py
+05/06/2025  01:40               956 useraccess.py
+05/06/2025  01:40             1.253 useractions.py
+05/06/2025  01:40             1.193 useractivitylog.py
+05/06/2025  01:40             1.051 users.py
+05/06/2025  01:40             1.056 warehouses.py
+10/06/2025  01:44    <DIR>          __pycache__
+              42 archivos         47.904 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\graphql\crud\__pycache__
+
+10/06/2025  01:44    <DIR>          .
+10/06/2025  01:44    <DIR>          ..
+05/06/2025  02:19             2.242 accountbalances.cpython-313.pyc
+05/06/2025  04:15             2.155 branches.cpython-313.pyc
+05/06/2025  04:17             2.134 brands.cpython-313.pyc
+05/06/2025  04:17             2.175 carbrands.cpython-313.pyc
+05/06/2025  04:21             2.175 carmodels.cpython-313.pyc
+10/06/2025  01:44             2.469 cars.cpython-313.pyc
+10/06/2025  01:44             2.149 clients.cpython-313.pyc
+05/06/2025  04:24             2.191 companydata.cpython-313.pyc
+05/06/2025  04:24             2.173 countries.cpython-313.pyc
+05/06/2025  04:25             2.684 creditcardgroups.cpython-313.pyc
+05/06/2025  04:26             2.615 creditcards.cpython-313.pyc
+05/06/2025  04:27             2.175 discounts.cpython-313.pyc
+05/06/2025  04:27             2.168 documents.cpython-313.pyc
+05/06/2025  04:29               907 documenttypes.cpython-313.pyc
+05/06/2025  04:29             2.234 itemcategories.cpython-313.pyc
+05/06/2025  04:29             2.267 itempricehistory.cpython-313.pyc
+05/06/2025  04:30             2.176 items.cpython-313.pyc
+05/06/2025  04:35             2.167 itemstock.cpython-313.pyc
+10/06/2025  01:27             2.735 itemsubcategories.cpython-313.pyc
+05/06/2025  04:36             2.216 orderdetails.cpython-313.pyc
+05/06/2025  04:37             2.210 orderhistory.cpython-313.pyc
+05/06/2025  04:38             2.315 orderhistorydetails.cpython-313.pyc
+05/06/2025  04:39             2.912 orders.cpython-313.pyc
+05/06/2025  04:40             2.207 orderstatus.cpython-313.pyc
+05/06/2025  04:40             2.244 pricelistitems.cpython-313.pyc
+05/06/2025  04:40             2.190 pricelists.cpython-313.pyc
+05/06/2025  04:40             2.175 provinces.cpython-313.pyc
+05/06/2025  04:41             2.116 roles.cpython-313.pyc
+05/06/2025  04:41             2.244 saleconditions.cpython-313.pyc
+05/06/2025  04:41             2.264 servicetype.cpython-313.pyc
+05/06/2025  04:41             2.214 stockhistory.cpython-313.pyc
+05/06/2025  04:41             2.175 suppliers.cpython-313.pyc
+06/06/2025  22:32             2.203 transactions.cpython-313.pyc
+10/06/2025  01:34             2.223 transactiontypes.cpython-313.pyc
+10/06/2025  01:34             1.814 useraccess.cpython-313.pyc
+10/06/2025  01:34             2.684 useractions.cpython-313.pyc
+10/06/2025  01:34             2.474 users.cpython-313.pyc
+10/06/2025  01:34             2.190 warehouses.cpython-313.pyc
+              38 archivos         85.061 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\graphql\mutations
+
+05/06/2025  01:40    <DIR>          .
+05/06/2025  02:19    <DIR>          ..
+05/06/2025  01:40             1.606 useraccess.py
+               1 archivos          1.606 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\graphql\resolvers
+
+05/06/2025  02:19    <DIR>          .
+05/06/2025  02:19    <DIR>          ..
+05/06/2025  01:40             1.088 accountbalances.py
+05/06/2025  01:40             1.369 auth.py
+05/06/2025  01:40             1.491 branches.py
+05/06/2025  01:40               963 brands.py
+05/06/2025  01:40             1.014 carbrands.py
+05/06/2025  01:40             1.076 carmodels.py
+05/06/2025  01:40               922 cars.py
+05/06/2025  01:40               998 clients.py
+05/06/2025  01:40             1.838 companydata.py
+05/06/2025  01:40             1.045 countries.py
+05/06/2025  01:40             1.570 creditcardgroups.py
+05/06/2025  01:40             1.433 creditcards.py
+05/06/2025  01:40             1.046 discounts.py
+05/06/2025  01:40             1.007 doctypes.py
+05/06/2025  01:40             1.017 documents.py
+05/06/2025  01:40             1.142 documenttypes.py
+05/06/2025  01:40             1.161 itemcategories.py
+05/06/2025  01:40             1.159 itempricehistory.py
+05/06/2025  01:40               950 items.py
+05/06/2025  01:40             1.026 itemstock.py
+05/06/2025  01:40             1.174 itemsubcategories.py
+05/06/2025  01:40             1.073 orderdetails.py
+05/06/2025  01:40             1.083 orderhistory.py
+05/06/2025  01:40             1.282 orderhistorydetails.py
+05/06/2025  01:40               974 orders.py
+05/06/2025  01:40             1.058 orderstatus.py
+05/06/2025  01:40             1.103 pricelistitems.py
+05/06/2025  01:40             1.035 pricelists.py
+05/06/2025  01:40             1.038 provinces.py
+05/06/2025  01:40               950 roles.py
+05/06/2025  01:40             1.137 saleconditions.py
+05/06/2025  01:40             1.092 servicetype.py
+05/06/2025  01:40             1.083 stockhistory.py
+05/06/2025  01:40             1.044 suppliers.py
+05/06/2025  01:40             1.172 temporderdetails.py
+05/06/2025  01:40             1.173 tempstockentries.py
+05/06/2025  01:40             1.118 transactions.py
+05/06/2025  01:40             1.212 transactiontypes.py
+05/06/2025  01:40             1.148 useraccess.py
+05/06/2025  01:40             1.494 useractions.py
+05/06/2025  01:40             1.130 useractivitylog.py
+05/06/2025  01:40               948 users.py
+05/06/2025  01:40             1.070 warehouses.py
+10/06/2025  01:34    <DIR>          __pycache__
+              43 archivos         48.906 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\graphql\resolvers\__pycache__
+
+10/06/2025  01:34    <DIR>          .
+05/06/2025  02:19    <DIR>          ..
+05/06/2025  02:19             2.194 accountbalances.cpython-313.pyc
+05/06/2025  04:15             2.804 branches.cpython-313.pyc
+05/06/2025  04:17             2.056 brands.cpython-313.pyc
+05/06/2025  04:17             2.100 carbrands.cpython-313.pyc
+05/06/2025  04:21             2.146 carmodels.cpython-313.pyc
+05/06/2025  04:23             2.024 cars.cpython-313.pyc
+05/06/2025  04:24             2.076 clients.cpython-313.pyc
+05/06/2025  04:24             3.134 companydata.cpython-313.pyc
+05/06/2025  04:24             2.115 countries.cpython-313.pyc
+05/06/2025  04:25             2.910 creditcardgroups.cpython-313.pyc
+05/06/2025  04:26             2.802 creditcards.cpython-313.pyc
+05/06/2025  04:27             2.114 discounts.cpython-313.pyc
+05/06/2025  04:27             2.308 doctypes.cpython-313.pyc
+05/06/2025  04:27             2.103 documents.cpython-313.pyc
+05/06/2025  04:29             2.186 documenttypes.cpython-313.pyc
+05/06/2025  04:29             2.201 itemcategories.cpython-313.pyc
+05/06/2025  04:29             2.219 itempricehistory.cpython-313.pyc
+05/06/2025  04:30             2.043 items.cpython-313.pyc
+05/06/2025  04:35             2.106 itemstock.cpython-313.pyc
+05/06/2025  04:36             2.225 itemsubcategories.cpython-313.pyc
+05/06/2025  04:36             2.154 orderdetails.cpython-313.pyc
+05/06/2025  04:37             2.156 orderhistory.cpython-313.pyc
+05/06/2025  04:38             2.276 orderhistorydetails.cpython-313.pyc
+05/06/2025  04:39             2.060 orders.cpython-313.pyc
+05/06/2025  04:40             2.134 orderstatus.cpython-313.pyc
+05/06/2025  04:40             2.177 pricelistitems.cpython-313.pyc
+05/06/2025  04:40             2.119 pricelists.cpython-313.pyc
+05/06/2025  04:40             2.113 provinces.cpython-313.pyc
+05/06/2025  04:41             2.043 roles.cpython-313.pyc
+05/06/2025  04:41             2.196 saleconditions.cpython-313.pyc
+05/06/2025  04:41             2.156 servicetype.cpython-313.pyc
+05/06/2025  04:41             2.156 stockhistory.cpython-313.pyc
+05/06/2025  04:41             2.114 suppliers.cpython-313.pyc
+05/06/2025  04:41             2.422 temporderdetails.cpython-313.pyc
+06/06/2025  22:29             2.423 tempstockentries.cpython-313.pyc
+06/06/2025  22:32             2.170 transactions.cpython-313.pyc
+10/06/2025  01:34             2.235 transactiontypes.cpython-313.pyc
+10/06/2025  01:34             2.219 useraccess.cpython-313.pyc
+10/06/2025  01:34             2.820 useractions.cpython-313.pyc
+10/06/2025  01:34             2.042 users.cpython-313.pyc
+10/06/2025  01:34             2.130 warehouses.cpython-313.pyc
+              41 archivos         92.181 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\graphql\schemas
+
+10/06/2025  05:20    <DIR>          .
+05/06/2025  02:19    <DIR>          ..
+10/06/2025  01:04               596 accountbalances.py
+05/06/2025  01:40               138 auth.py
+10/06/2025  01:04               737 branches.py
+10/06/2025  01:04               244 brands.py
+10/06/2025  01:04               312 carbrands.py
+10/06/2025  01:04               382 carmodels.py
+10/06/2025  01:04               815 cars.py
+10/06/2025  05:20             2.474 clients.py
+09/06/2025  23:55             1.022 companydata.py
+10/06/2025  01:04               478 countries.py
+10/06/2025  01:04               387 creditcardgroups.py
+10/06/2025  01:04               760 creditcards.py
+10/06/2025  01:04               346 discounts.py
+10/06/2025  01:04               302 doctypes.py
+10/06/2025  01:04             1.468 documents.py
+10/06/2025  01:04               455 documenttypes.py
+10/06/2025  01:04               319 itemcategories.py
+10/06/2025  01:04               543 itempricehistory.py
+10/06/2025  01:04             1.821 items.py
+10/06/2025  01:04             1.652 itemstock.py
+10/06/2025  01:04               463 itemsubcategories.py
+10/06/2025  01:04               838 orderdetails.py
+10/06/2025  01:04             1.619 orderhistory.py
+10/06/2025  01:04               858 orderhistorydetails.py
+10/06/2025  01:04             2.415 orders.py
+10/06/2025  01:04               316 orderstatus.py
+10/06/2025  01:04               619 pricelistitems.py
+10/06/2025  01:04               833 pricelists.py
+10/06/2025  01:04               506 provinces.py
+10/06/2025  01:04               291 roles.py
+10/06/2025  01:04               612 saleconditions.py
+10/06/2025  01:04               344 servicetype.py
+10/06/2025  01:04               840 stockhistory.py
+10/06/2025  01:04             1.523 suppliers.py
+10/06/2025  01:04             1.081 temporderdetails.py
+10/06/2025  01:04             1.458 tempstockentries.py
+10/06/2025  01:04             1.174 transactions.py
+10/06/2025  01:04               343 transactiontypes.py
+10/06/2025  01:04               422 useraccess.py
+10/06/2025  01:04               357 useractions.py
+10/06/2025  01:04               534 useractivitylog.py
+10/06/2025  01:04               627 users.py
+10/06/2025  01:04               664 warehouses.py
+10/06/2025  05:20    <DIR>          __pycache__
+              43 archivos         33.988 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\graphql\schemas\__pycache__
+
+10/06/2025  05:20    <DIR>          .
+10/06/2025  05:20    <DIR>          ..
+10/06/2025  01:05             1.551 accountbalances.cpython-313.pyc
+10/06/2025  01:05             1.647 branches.cpython-313.pyc
+10/06/2025  01:05             1.054 brands.cpython-313.pyc
+10/06/2025  01:05             1.067 carbrands.cpython-313.pyc
+10/06/2025  01:05             1.240 carmodels.cpython-313.pyc
+10/06/2025  01:05             1.666 cars.cpython-313.pyc
+10/06/2025  05:20             3.369 clients.cpython-313.pyc
+10/06/2025  01:05             1.813 companydata.cpython-313.pyc
+10/06/2025  01:05             1.191 countries.cpython-313.pyc
+10/06/2025  01:05             1.214 creditcardgroups.cpython-313.pyc
+10/06/2025  01:05             1.691 creditcards.cpython-313.pyc
+10/06/2025  01:05             1.160 discounts.cpython-313.pyc
+10/06/2025  01:05             1.131 doctypes.cpython-313.pyc
+10/06/2025  01:05             2.312 documents.cpython-313.pyc
+10/06/2025  01:05             1.213 documenttypes.cpython-313.pyc
+10/06/2025  01:05             1.195 itemcategories.cpython-313.pyc
+10/06/2025  01:11             1.410 itempricehistory.cpython-313.pyc
+10/06/2025  01:12             3.162 items.cpython-313.pyc
+10/06/2025  01:18             2.736 itemstock.cpython-313.pyc
+10/06/2025  01:27             1.298 itemsubcategories.cpython-313.pyc
+10/06/2025  01:28             1.847 orderdetails.cpython-313.pyc
+10/06/2025  01:28             2.618 orderhistory.cpython-313.pyc
+10/06/2025  01:28             1.850 orderhistorydetails.cpython-313.pyc
+10/06/2025  01:28             3.777 orders.cpython-313.pyc
+10/06/2025  01:30             1.189 orderstatus.cpython-313.pyc
+10/06/2025  01:30             1.497 pricelistitems.cpython-313.pyc
+10/06/2025  01:05             1.691 pricelists.cpython-313.pyc
+10/06/2025  01:05             1.406 provinces.cpython-313.pyc
+10/06/2025  01:33             1.159 roles.cpython-313.pyc
+10/06/2025  01:33             1.601 saleconditions.cpython-313.pyc
+10/06/2025  01:33             1.187 servicetype.cpython-313.pyc
+10/06/2025  01:33             1.664 stockhistory.cpython-313.pyc
+10/06/2025  01:33             2.729 suppliers.cpython-313.pyc
+10/06/2025  01:33             2.113 temporderdetails.cpython-313.pyc
+10/06/2025  01:33             2.320 tempstockentries.cpython-313.pyc
+10/06/2025  01:33             2.215 transactions.cpython-313.pyc
+10/06/2025  01:34             1.212 transactiontypes.cpython-313.pyc
+10/06/2025  01:34             1.170 useraccess.cpython-313.pyc
+10/06/2025  01:34             1.187 useractions.cpython-313.pyc
+10/06/2025  01:34             1.455 users.cpython-313.pyc
+10/06/2025  01:34             1.644 warehouses.cpython-313.pyc
+              41 archivos         70.651 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\graphql\types
+
+01/06/2025  03:49    <DIR>          .
+05/06/2025  02:19    <DIR>          ..
+               0 archivos              0 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\graphql\__pycache__
+
+05/06/2025  02:19    <DIR>          .
+05/06/2025  02:19    <DIR>          ..
+05/06/2025  02:19             4.204 schema.cpython-313.pyc
+               1 archivos          4.204 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\models
+
+10/06/2025  05:19    <DIR>          .
+10/06/2025  05:35    <DIR>          ..
+09/06/2025  23:36             1.306 accountbalances.py
+09/06/2025  23:35             2.447 branches.py
+10/06/2025  02:07               779 brands.py
+10/06/2025  02:13               803 carbrands.py
+10/06/2025  02:13             1.083 carmodels.py
+09/06/2025  23:35             1.845 cars.py
+10/06/2025  03:53             3.026 clients.py
+10/06/2025  02:34             2.455 companydata.py
+10/06/2025  02:35             1.188 countries.py
+10/06/2025  02:35               854 creditcardgroups.py
+09/06/2025  23:35             1.405 creditcards.py
+10/06/2025  02:37             1.034 discounts.py
+10/06/2025  02:37             1.091 doctypes.py
+09/06/2025  23:35             2.151 documents.py
+10/06/2025  02:37             1.044 documenttypes.py
+10/06/2025  02:37             1.160 itemcategories.py
+10/06/2025  01:12             1.322 itempricehistory.py
+10/06/2025  05:19             4.534 items.py
+10/06/2025  01:27             2.643 itemstock.py
+10/06/2025  01:27             1.364 itemsubcategories.py
+10/06/2025  02:29             2.673 modelos.txt
+09/06/2025  23:35             1.753 orderdetails.py
+09/06/2025  23:35             3.125 orderhistory.py
+09/06/2025  23:35             1.795 orderhistorydetails.py
+10/06/2025  03:42             5.358 orders.py
+10/06/2025  03:26               998 orderstatus.py
+10/06/2025  01:33             1.261 pricelistitems.py
+10/06/2025  03:52             1.695 pricelists.py
+09/06/2025  23:35             1.250 provinces.py
+10/06/2025  03:58               806 roles.py
+09/06/2025  23:35             1.460 saleconditions.py
+10/06/2025  04:04             1.035 servicetype.py
+09/06/2025  23:35             2.264 stockhistory.py
+09/06/2025  23:35             2.593 suppliers.py
+09/06/2025  23:35             3.095 temporderdetails.py
+09/06/2025  23:35             2.565 tempstockentries.py
+10/06/2025  01:34             1.085 transactions.py
+09/06/2025  23:35               515 transactiontypes.py
+10/06/2025  03:59             1.769 useraccess.py
+10/06/2025  04:04               862 useractions.py
+10/06/2025  04:19             1.368 useractivitylog.py
+10/06/2025  04:13             2.208 users.py
+10/06/2025  02:25               896 vendors.py
+10/06/2025  05:03             2.299 warehouses.py
+10/06/2025  02:30             2.245 __init__.py
+10/06/2025  05:19    <DIR>          __pycache__
+              45 archivos         80.507 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\models\__pycache__
+
+10/06/2025  05:19    <DIR>          .
+10/06/2025  05:19    <DIR>          ..
+10/06/2025  04:56             1.808 accountbalances.cpython-313.pyc
+10/06/2025  04:56             2.939 branches.cpython-313.pyc
+10/06/2025  04:56             1.289 brands.cpython-313.pyc
+10/06/2025  04:56             1.294 carbrands.cpython-313.pyc
+10/06/2025  04:56             1.592 carmodels.cpython-313.pyc
+10/06/2025  04:56             2.393 cars.cpython-313.pyc
+10/06/2025  04:56             3.501 clients.cpython-313.pyc
+10/06/2025  04:56             2.926 companydata.cpython-313.pyc
+10/06/2025  04:56             1.491 countries.cpython-313.pyc
+10/06/2025  04:56             1.327 creditcardgroups.cpython-313.pyc
+10/06/2025  04:56             1.971 creditcards.cpython-313.pyc
+10/06/2025  04:56             1.585 discounts.cpython-313.pyc
+10/06/2025  04:56             1.559 doctypes.cpython-313.pyc
+10/06/2025  04:56             2.579 documents.cpython-313.pyc
+10/06/2025  04:56             1.456 documenttypes.cpython-313.pyc
+10/06/2025  04:56             1.566 itemcategories.cpython-313.pyc
+10/06/2025  04:56             1.837 itempricehistory.cpython-313.pyc
+10/06/2025  05:19             5.039 items.cpython-313.pyc
+10/06/2025  04:56             3.076 itemstock.cpython-313.pyc
+10/06/2025  04:56             1.785 itemsubcategories.cpython-313.pyc
+10/06/2025  04:56             2.215 orderdetails.cpython-313.pyc
+10/06/2025  04:56             3.671 orderhistory.cpython-313.pyc
+10/06/2025  04:56             2.298 orderhistorydetails.cpython-313.pyc
+10/06/2025  04:56             5.745 orders.cpython-313.pyc
+10/06/2025  04:56             1.467 orderstatus.cpython-313.pyc
+10/06/2025  04:56             1.729 pricelistitems.cpython-313.pyc
+10/06/2025  04:56             2.242 pricelists.cpython-313.pyc
+10/06/2025  04:56             1.745 provinces.cpython-313.pyc
+10/06/2025  04:56             1.312 roles.cpython-313.pyc
+10/06/2025  04:56             1.990 saleconditions.cpython-313.pyc
+10/06/2025  04:56             1.449 servicetype.cpython-313.pyc
+10/06/2025  04:56             2.742 stockhistory.cpython-313.pyc
+10/06/2025  04:56             3.095 suppliers.cpython-313.pyc
+10/06/2025  04:56             3.326 temporderdetails.cpython-313.pyc
+10/06/2025  04:56             2.898 tempstockentries.cpython-313.pyc
+10/06/2025  04:56             1.643 transactions.cpython-313.pyc
+10/06/2025  04:56               913 transactiontypes.cpython-313.pyc
+10/06/2025  04:56             1.974 useraccess.cpython-313.pyc
+10/06/2025  04:56             1.346 useractions.cpython-313.pyc
+10/06/2025  04:56             1.781 useractivitylog.cpython-313.pyc
+10/06/2025  04:56             2.461 users.cpython-313.pyc
+10/06/2025  04:56             1.478 vendors.cpython-313.pyc
+10/06/2025  05:03             2.421 warehouses.cpython-313.pyc
+10/06/2025  04:56             1.529 __init__.cpython-313.pyc
+              44 archivos         96.483 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\utils
+
+05/06/2025  01:40    <DIR>          .
+10/06/2025  05:35    <DIR>          ..
+05/06/2025  01:40             1.074 generic_filters.py
+               1 archivos          1.074 bytes
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\__pycache__
+
+10/06/2025  02:31    <DIR>          .
+10/06/2025  05:35    <DIR>          ..
+05/06/2025  02:19               868 db.cpython-313.pyc
+10/06/2025  02:31               628 main.cpython-313.pyc
+               2 archivos          1.496 bytes
+
+     Total de archivos en la lista:
+             353 archivos        582.561 bytes
+              44 dirs  193.822.883.840 bytes libres

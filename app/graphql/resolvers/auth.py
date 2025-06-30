@@ -27,12 +27,12 @@ class AuthMutation:
         db = next(db_gen)
         try:
             # Buscar usuario
-            user = get_user_by_nickname(db, credentials.nickname)
+            user = get_user_by_nickname(db, credentials.Nickname)
             if not user:
                 return None
 
             # Verificar contraseña
-            if not verify_password(credentials.password, user.password):
+            if not verify_password(credentials.Password, user.password):
                 return None
 
             # Verificar que el usuario esté activo
@@ -40,25 +40,25 @@ class AuthMutation:
                 return None
 
             # Obtener accesos del usuario con joins para datos completos
-            user_accesses = []
+            user_access = []
             for access in user.userAccess:
-                user_accesses.append(UserAccessInfo(
-                    userID=access.userID,
-                    companyID=access.companyID,
-                    company=access.company.name if access.company else "",
-                    branchID=access.branchID,
-                    branch=access.branch.name if access.branch else "",
-                    roleID=access.roleID,
-                    role=access.role.roleName if access.role else ""
+                user_access.append(UserAccessInfo(
+                    UserID=access.userID,
+                    CompanyID=access.companyID,
+                    Company=access.company.name if access.company else "",
+                    BranchID=access.branchID,
+                    Branch=access.branch.name if access.branch else "",
+                    RoleID=access.roleID,
+                    Role=access.role.roleName if access.role else ""
                 ))
 
             # Crear información del usuario
             user_info = UserInfo(
-                userID=user.userID,
-                nickname=user.nickname,
-                fullname=user.fullName,
-                isActive=user.isActive,
-                userAccesses=user_accesses
+                UserID=user.userID,
+                Nickname=user.nickname,
+                Fullname=user.fullName,
+                IsActive=user.isActive,
+                UserAccess=user_access
             )
 
             # Generar JWT
@@ -114,24 +114,24 @@ class AuthMutation:
                 new_token = jwt.encode(new_payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
                 # Recrear user info
-                user_accesses = []
+                user_access = []
                 for access in user.userAccess:
-                    user_accesses.append(UserAccessInfo(
-                        userID=access.userID,
-                        companyID=access.companyID,
-                        company=access.company.name if access.company else "",
-                        branchID=access.branchID,
-                        branch=access.branch.name if access.branch else "",
-                        roleID=access.roleID,
-                        role=access.role.roleName if access.role else ""
+                    user_access.append(UserAccessInfo(
+                        UserID=access.userID,
+                        CompanyID=access.companyID,
+                        Company=access.company.name if access.company else "",
+                        BranchID=access.branchID,
+                        Branch=access.branch.name if access.branch else "",
+                        RoleID=access.roleID,
+                        Role=access.role.roleName if access.role else ""
                     ))
 
                 user_info = UserInfo(
-                    userID=user.userID,
-                    nickname=user.nickname,
-                    fullname=user.fullName,
-                    isActive=user.isActive,
-                    userAccesses=user_accesses
+                    UserID=user.userID,
+                    Nickname=user.nickname,
+                    Fullname=user.fullName,
+                    IsActive=user.isActive,
+                    UserAccess=user_access
                 )
 
                 return LoginResponse(

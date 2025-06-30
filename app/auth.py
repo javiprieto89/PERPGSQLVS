@@ -1,18 +1,13 @@
+# app/auth.py - VERSIÓN CORREGIDA
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models.users import Users
-from app.schemas.auth import UserInfo
+from app.graphql.schemas.auth import UserInfo, UserAccessInfo
 
-# Asegurate de tener `settings.SECRET_KEY`, etc.
 from app.config import settings
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
@@ -22,7 +17,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-
 def get_user_model(token: str, db: Session) -> Users:
     try:
         payload = jwt.decode(
@@ -30,44 +24,44 @@ def get_user_model(token: str, db: Session) -> Users:
         )
         username = payload.get("sub")
         if not isinstance(username, str):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido"
-            )
+            raise ValueError("Token inválido: campo 'sub' no válido")
     except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido"
-        )
+        raise ValueError("Token inválido: error en la decodificación")
 
-    user = db.query(Users).filter(Users.nickname == username).first()
+    # CORRECCIÓN: Users.Nickname (con mayúscula) no Users.nickname
+    user = db.query(Users).filter(Users.Nickname == username).first()
     if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Usuario no encontrado"
-        )
+        raise ValueError("Usuario no encontrado")
 
     return user
 
-
-def get_current_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-) -> UserInfo:
-    user_model = get_user_model(token, db)
-
-    return UserInfo.model_validate(
-        {
-            "userID": int(getattr(user_model, "userID")),
-            "nickname": str(getattr(user_model, "nickname")),
-            "fullname": (
-                str(user_model.fullname) if getattr(user_model, "fullname") else None
-            ),
-            "userAccesses": [
-                {
-                    "userID": int(getattr(a, "userID")),
-                    "company": getattr(a.company, "name") if a.company else "",
-                    "branch": getattr(a.branch, "name") if a.branch else "",
-                    "Role": getattr(a.Role, "roleName") if a.Role else "",
-                    "branchID": int(a.branchID) if a.branchID is not None else None,
-                }
-                for a in user_model.userAccesses
-            ],
-        }
-    )
+def get_userinfo_from_token(token: str) -> UserInfo | None:
+    db = next(get_db())
+    try:
+        user_model = get_user_model(token, db)
+        
+        # Construir la lista de UserAccess
+        user_access_list = []
+        for access in user_model.userAccess:
+            user_access_info = UserAccessInfo(
+                UserID=access.UserID is access.UserID else 0,
+                CompanyID=access.CompanyID,
+                Company=access.companyData_.Name if access.companyData_ else "",
+                BranchID=access.BranchID,
+                Branch=access.branches_.Name if access.branches_ else "",
+                RoleID=access.RoleID,
+                Role=access.roles_.RoleName if access.roles_ else ""
+            )
+            user_access_list.append(user_access_info)
+        
+        return UserInfo(
+            UserID=user_model.UserID,
+            Nickname=user_model.Nickname,
+            Fullname=user_model.FullName if user_model.FullName else None,
+            IsActive=user_model.IsActive,
+            UserAccess=user_access_list
+        )
+    except Exception:
+        return None
+    finally:
+        db.close()

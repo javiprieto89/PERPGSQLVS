@@ -1,0 +1,54 @@
+ El volumen de la unidad C es Windows
+ El n£mero de serie del volumen es: 2418-66A1
+
+ Directorio de C:\Users\javie\OneDrive\_Development\PERPGSQLVS\app\models
+
+10/06/2025  02:29    <DIR>          .
+10/06/2025  01:41    <DIR>          ..
+09/06/2025  23:36             1.306 accountbalances.py
+09/06/2025  23:35             2.447 branches.py
+10/06/2025  02:07               779 brands.py
+10/06/2025  02:13               803 carbrands.py
+10/06/2025  02:13             1.083 carmodels.py
+09/06/2025  23:35             1.845 cars.py
+10/06/2025  02:25             3.025 clients.py
+09/06/2025  23:35             2.455 companydata.py
+09/06/2025  23:35             1.188 countries.py
+09/06/2025  23:35               854 creditcardgroups.py
+09/06/2025  23:35             1.405 creditcards.py
+10/06/2025  01:04             1.034 discounts.py
+09/06/2025  23:35             1.091 doctypes.py
+09/06/2025  23:35             2.151 documents.py
+09/06/2025  23:35             1.044 documenttypes.py
+10/06/2025  01:11             1.160 itemcategories.py
+10/06/2025  01:12             1.322 itempricehistory.py
+10/06/2025  02:07             4.534 items.py
+10/06/2025  01:27             2.643 itemstock.py
+10/06/2025  01:27             1.364 itemsubcategories.py
+10/06/2025  02:29               165 modelos.txt
+09/06/2025  23:35             1.753 orderdetails.py
+09/06/2025  23:35             3.125 orderhistory.py
+09/06/2025  23:35             1.795 orderhistorydetails.py
+10/06/2025  01:30             5.236 orders.py
+09/06/2025  23:35               996 orderstatus.py
+10/06/2025  01:33             1.261 pricelistitems.py
+09/06/2025  23:35             1.695 pricelists.py
+09/06/2025  23:35             1.250 provinces.py
+09/06/2025  23:35               805 roles.py
+09/06/2025  23:35             1.460 saleconditions.py
+09/06/2025  23:35             1.035 servicetype.py
+09/06/2025  23:35             2.264 stockhistory.py
+09/06/2025  23:35             2.593 suppliers.py
+09/06/2025  23:35             3.095 temporderdetails.py
+09/06/2025  23:35             2.565 tempstockentries.py
+10/06/2025  01:34             1.085 transactions.py
+09/06/2025  23:35               515 transactiontypes.py
+10/06/2025  01:34             1.768 useraccess.py
+09/06/2025  23:35               862 useractions.py
+09/06/2025  23:35             1.368 useractivitylog.py
+09/06/2025  23:35             2.208 users.py
+10/06/2025  02:25               896 vendors.py
+10/06/2025  01:23             2.299 warehouses.py
+10/06/2025  02:25    <DIR>          __pycache__
+              44 archivos         75.627 bytes
+               3 dirs  196.469.137.408 bytes libres
