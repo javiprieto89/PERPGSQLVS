@@ -1,89 +1,93 @@
-# app/graphql/schemas/clients.py
+﻿# app/graphql/schemas/clients.py
 import strawberry
 from typing import Optional
 
-from app.graphql.schemas.documenttypes import DocumentTypesInDB
-from app.graphql.schemas.countries import CountriesInDB
-from app.graphql.schemas.provinces import ProvincesInDB
-from app.graphql.schemas.pricelists import PriceListsInDB
-
 @strawberry.input
 class ClientsCreate:
-    DocumentTypeID: int
-    DocumentNumber: Optional[str] = None
+    """Schema para crear un nuevo cliente"""
+    DocTypeID: int
+    DocNumber: Optional[str] = None
     FirstName: str
     LastName: Optional[str] = None
     Phone: Optional[str] = None
     Email: Optional[str] = None
     Address: Optional[str] = None
-    IsActive: bool
-    CountryID: int
-    ProvinceID: int
     City: Optional[str] = None
     PostalCode: Optional[str] = None
+    IsActive: bool = True
+    CountryID: int
+    ProvinceID: int
     PriceListID: int
-
+    VendorID: int = 1  # Valor por defecto según la DB
 
 @strawberry.input
 class ClientsUpdate:
-    DocumentTypeID: int
-    DocumentNumber: Optional[str] = None
-    FirstName: str
+    """Schema para actualizar un cliente existente"""
+    DocTypeID: Optional[int] = None
+    DocNumber: Optional[str] = None
+    FirstName: Optional[str] = None
     LastName: Optional[str] = None
     Phone: Optional[str] = None
     Email: Optional[str] = None
     Address: Optional[str] = None
-    IsActive: bool
-    CountryID: int
-    ProvinceID: int
     City: Optional[str] = None
     PostalCode: Optional[str] = None
-    PriceListID: int
-
+    IsActive: Optional[bool] = None
+    CountryID: Optional[int] = None
+    ProvinceID: Optional[int] = None
+    PriceListID: Optional[int] = None
+    VendorID: Optional[int] = None
 
 @strawberry.type
 class ClientsInDB:
+    """Schema para la respuesta de clientes desde la DB"""
     ClientID: int
-    DocumentTypeID: int
-    DocumentNumber: Optional[str] = None
+    DocTypeID: int
+    DocNumber: Optional[str]
     FirstName: str
-    LastName: Optional[str] = None
-    Phone: Optional[str] = None
-    Email: Optional[str] = None
-    Address: Optional[str] = None
+    LastName: Optional[str]
+    Phone: Optional[str]
+    Email: Optional[str]
+    Address: Optional[str]
+    City: Optional[str]
+    PostalCode: Optional[str]
     IsActive: bool
     CountryID: int
     ProvinceID: int
-    City: Optional[str] = None
-    PostalCode: Optional[str] = None
     PriceListID: int
-
-    # Relaciones
-    document_type: Optional[DocumentTypesInDB] = None
-    country: Optional[CountriesInDB] = None
-    province: Optional[ProvincesInDB] = None
-    price_list: Optional[PriceListsInDB] = None
-
+    VendorID: int
 
 @strawberry.type
-class ClientsResponse:
+class ClientsWithRelations:
+    """Schema para clientes con relaciones incluidas"""
     ClientID: int
-    DocumentTypeID: int
-    DocumentNumber: Optional[str] = None
+    DocTypeID: int
+    DocNumber: Optional[str]
     FirstName: str
-    LastName: Optional[str] = None
-    Phone: Optional[str] = None
-    Email: Optional[str] = None
-    Address: Optional[str] = None
+    LastName: Optional[str]
+    Phone: Optional[str]
+    Email: Optional[str]
+    Address: Optional[str]
+    City: Optional[str]
+    PostalCode: Optional[str]
     IsActive: bool
     CountryID: int
     ProvinceID: int
-    City: Optional[str] = None
-    PostalCode: Optional[str] = None
     PriceListID: int
+    VendorID: int
+    
+    # Campos calculados
+    FullName: Optional[str] = None
+    ContactInfo: Optional[str] = None
+    StatusText: Optional[str] = None
 
-    # Relaciones
-    document_type: Optional[DocumentTypesInDB] = None
-    country: Optional[CountriesInDB] = None
-    province: Optional[ProvincesInDB] = None
-    price_list: Optional[PriceListsInDB] = None
+@strawberry.type
+class ClientSummary:
+    """Schema resumido para listas y búsquedas"""
+    ClientID: int
+    FullName: str
+    DocNumber: Optional[str]
+    Phone: Optional[str]
+    Email: Optional[str]
+    City: Optional[str]
+    IsActive: bool

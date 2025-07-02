@@ -4,8 +4,8 @@ from typing import Optional
 
 @strawberry.input
 class SuppliersCreate:
-    DocumentTypeID: Optional[int] = None
-    DocumentNumber: Optional[str] = None
+    DocTypeID: Optional[int] = None
+    DocNumber: Optional[str] = None
     FirstName: str
     LastName: Optional[str] = None
     Phone: Optional[str] = None
@@ -19,8 +19,8 @@ class SuppliersCreate:
 
 @strawberry.input
 class SuppliersUpdate:
-    DocumentTypeID: Optional[int] = None
-    DocumentNumber: Optional[str] = None
+    DocTypeID: Optional[int] = None
+    DocNumber: Optional[str] = None
     FirstName: Optional[str] = None
     LastName: Optional[str] = None
     Phone: Optional[str] = None
@@ -35,8 +35,8 @@ class SuppliersUpdate:
 @strawberry.type
 class SuppliersInDB:
     SupplierID: int
-    DocumentTypeID: Optional[int] = None
-    DocumentNumber: Optional[str] = None
+    DocTypeID: Optional[int] = None
+    DocNumber: Optional[str] = None
     FirstName: str
     LastName: Optional[str] = None
     Phone: Optional[str] = None

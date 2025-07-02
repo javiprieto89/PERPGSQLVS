@@ -1,3 +1,4 @@
+﻿# app/graphql/crud/doctypes.py
 from sqlalchemy.orm import Session
 from app.models.doctypes import DocTypes
 from app.graphql.schemas.doctypes import DocTypesCreate, DocTypesUpdate
@@ -8,7 +9,7 @@ def get_doctypes(db: Session):
 
 
 def get_doctypes_by_id(db: Session, doctypeid: int):
-    return db.query(DocTypes).filter(DocTypes.docTypeID == doctypeid).first()
+    return db.query(DocTypes).filter(DocTypes.DocTypeID == doctypeid).first()
 
 
 def create_doctypes(db: Session, data: DocTypesCreate):

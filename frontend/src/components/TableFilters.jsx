@@ -1,290 +1,262 @@
+// src/components/TableFilters.jsx
+
 import { useEffect, useState } from "react";
-import apiFetch from "../utils/apiFetch";
+import { graphqlClient } from "../utils/graphqlClient";
 
-export default function TableFilters({ modelName, onFilterChange }) {
-  const [columns, setColumns] = useState([]);
-  const [filters, setFilters] = useState({});
-  const [relationOptions, setRelationOptions] = useState({});
+// Query para obtener los filtros dinámicos de una entidad
+const FILTER_FIELDS_QUERY = `
+  query GetFilterFields($model: String!) {
+    filterFields(model: $model) {
+      field
+      label
+      type
+      relationModel
+      dependsOn
+    }
+  }
+`;
 
-  useEffect(() => {
-    if (!modelName) return;
+export default function TableFilters({ modelName, data, onFilterChange }) {
+    const [filterFields, setFilterFields] = useState([]);
+    const [filters, setFilters] = useState({});
+    const [options, setOptions] = useState({}); // Opciones de selects
+    const [loading, setLoading] = useState(true);
 
-    apiFetch(`/${modelName}/filters/`)
-      .then(async (data) => {
-        setColumns(data);
-
-        const relations = data.filter((col) => col.type === "relation");
-        const options = {};
-
-        for (const rel of relations) {
-          let items = [];
-
-          try {
-            if (rel.field === "provinceID") {
-              const countryFilter = filters["countryID"]?.value;
-              if (countryFilter) {
-                items = await apiFetch(
-                  `/provinces/by_country/${countryFilter}`
-                );
-              } else {
-                items = [];
-              }
-            } else {
-              items = await apiFetch(`/${rel.relationName}`);
+    // 1. Cargar definición de filtros del backend
+    useEffect(() => {
+        async function loadFilterFields() {
+            setLoading(true);
+            try {
+                const res = await graphqlClient.query(FILTER_FIELDS_QUERY, { model: modelName });
+                setFilterFields(res.filterFields || []);
+            } catch (err) {
+                console.error("Error cargando definición de filtros:", err);
+                setFilterFields([]);
             }
-
-            const labelField =
-              rel.relationLabel ||
-              (items.length
-                ? Object.keys(items[0]).find(
-                    (key) => typeof items[0][key] === "string"
-                  )
-                : "id");
-
-            options[rel.field] = {
-              items,
-              labelField,
-            };
-          } catch (err) {
-            console.error(
-              `Error loading relation data for ${rel.relationName}:`,
-              err
-            );
-          }
+            setLoading(false);
         }
+        if (modelName) loadFilterFields();
+    }, [modelName]);
 
-        setRelationOptions(options);
-      })
-      .catch((err) => console.error("Error cargando columnas:", err));
-  }, [modelName]);
+    // 2. Cargar las opciones de los selects, incluyendo dependientes
+    useEffect(() => {
+        async function loadSelectOptions() {
+            let newOptions = { ...options };
+            for (const field of filterFields) {
+                if (field.type === "select" && !field.dependsOn) {
+                    // Cargar opciones de select simples
+                    const queryName = `all${field.relationModel}s`; // Ej: allCountries
+                    const QUERY = `
+            query {
+              ${queryName} {
+                ${field.relationModel}ID
+                Name
+              }
+            }
+          `;
+                    try {
+                        const res = await graphqlClient.query(QUERY);
+                        newOptions[field.field] = res[queryName] || [];
+                    } catch (e) {
+                        newOptions[field.field] = [];
+                    }
+                }
+            }
+            setOptions(newOptions);
+        }
+        if (filterFields.length) loadSelectOptions();
+        // eslint-disable-next-line
+    }, [filterFields]);
 
-  useEffect(() => {
-    if (!columns.find((col) => col.field === "provinceID")) return;
+    // 3. Manejar selects dependientes (por ejemplo, provincias por país)
+    useEffect(() => {
+        async function loadDependentOptions() {
+            for (const field of filterFields) {
+                if (field.type === "select" && field.dependsOn && filters[field.dependsOn]) {
+                    // Ej: provincias por país
+                    const parentValue = filters[field.dependsOn];
+                    const queryName = field.relationModel === "Province"
+                        ? "provincesByCountry"
+                        : `all${field.relationModel}s`;
 
-    const countryFilter = filters["countryID"]?.value;
+                    let QUERY, variables;
+                    if (queryName === "provincesByCountry") {
+                        QUERY = `
+              query($countryID: Int!) {
+                provincesByCountry(countryID: $countryID) {
+                  ProvinceID
+                  Name
+                }
+              }
+            `;
+                        variables = { countryID: parseInt(parentValue) };
+                    } else {
+                        QUERY = `
+              query {
+                ${queryName} {
+                  ${field.relationModel}ID
+                  Name
+                }
+              }
+            `;
+                        variables = {};
+                    }
+                    try {
+                        const res = await graphqlClient.query(QUERY, variables);
+                        const key = queryName === "provincesByCountry" ? "provincesByCountry" : queryName;
+                        setOptions(prev => ({
+                            ...prev,
+                            [field.field]: res[key] || []
+                        }));
+                    } catch (e) {
+                        setOptions(prev => ({
+                            ...prev,
+                            [field.field]: []
+                        }));
+                    }
+                }
+            }
+            // eslint-disable-next-line
+        }
+        if (filterFields.some(f => f.dependsOn)) loadDependentOptions();
+        // eslint-disable-next-line
+    }, [filters, filterFields]);
 
-    if (!countryFilter) {
-      setRelationOptions((prev) => ({
-        ...prev,
-        provinceID: {
-          ...(prev.provinceID || {}),
-          items: [],
-        },
-      }));
+    // 4. Filtrar los datos en memoria según los filtros aplicados
+    useEffect(() => {
+        if (!filterFields.length) return;
+        let filtered = [...(data || [])];
+        for (const field of filterFields) {
+            const value = filters[field.field];
+            if (value === undefined || value === "" || value === null) continue;
 
-      setFilters((prev) => ({
-        ...prev,
-        provinceID: { ...prev.provinceID, value: "" },
-      }));
-      return;
-    }
+            // Ajustar nombres para que coincidan con el modelo original
+            const realField = field.field;
 
-    apiFetch(`/provinces/by_country/${countryFilter}`)
-      .then((items) => {
-        const labelField =
-          items.length && typeof items[0] === "object"
-            ? Object.keys(items[0]).find(
-                (key) => typeof items[0][key] === "string"
-              )
-            : "id";
+            switch (field.type) {
+                case "text":
+                    filtered = filtered.filter(item => (item[realField] || "").toString().toLowerCase().includes(value.toLowerCase()));
+                    break;
+                case "number":
+                    filtered = filtered.filter(item => parseInt(item[realField]) === parseInt(value));
+                    break;
+                case "boolean":
+                    filtered = filtered.filter(item => (item[realField] === (value === "true" || value === true)));
+                    break;
+                case "select":
+                    filtered = filtered.filter(item => (item[realField] == value));
+                    break;
+                default:
+                    break;
+            }
+        }
+        onFilterChange(filtered);
+        // eslint-disable-next-line
+    }, [filters, data, filterFields]);
 
-        setRelationOptions((prev) => ({
-          ...prev,
-          provinceID: {
-            ...prev.provinceID,
-            items,
-            labelField,
-          },
+    const handleChange = (field, value) => {
+        setFilters(prev => ({
+            ...prev,
+            [field]: value
         }));
-      })
-      .catch((err) => {
-        console.error("Error cargando provincias por país:", err);
-      });
-  }, [filters.countryID?.value, columns]);
+        // Si es un padre (ej: país), borra el valor del hijo dependiente (ej: provincia)
+        const depField = filterFields.find(f => f.dependsOn === field);
+        if (depField) {
+            setFilters(prev => ({
+                ...prev,
+                [depField.field]: ""
+            }));
+        }
+    };
 
-  const buildActiveFilters = () => {
-    const active = {};
-    for (const key in filters) {
-      const { value, mode } = filters[key] || {};
-      if (
-        (typeof value === "string" && value.trim() !== "") ||
-        (typeof value === "number" && !isNaN(value)) ||
-        typeof value === "boolean"
-      ) {
-        active[key] = { value, mode };
-      }
-    }
-    return active;
-  };
+    const clearFilters = () => {
+        setFilters({});
+        onFilterChange(data);
+    };
 
-  const handleSearch = async () => {
-    const activeFilters = buildActiveFilters();
-    try {
-      const data = await apiFetch(`/${modelName}/filters`, {
-        method: "POST",
-        body: activeFilters,
-      });
-      onFilterChange(data);
-    } catch (err) {
-      console.error("Error aplicando filtros:", err);
-    }
-  };
-
-  const handleClear = async () => {
-    setFilters({});
-    try {
-      const data = await apiFetch(`/${modelName}/`);
-      onFilterChange(data);
-    } catch (err) {
-      console.error("Error al limpiar y recargar datos:", err);
-    }
-  };
-
-  const handleInputChange = (field, value, mode = null) => {
-    setFilters((prev) => ({
-      ...prev,
-      [field]: {
-        ...prev[field],
-        value,
-        mode: mode || prev[field]?.mode || "contains",
-      },
-    }));
-  };
-
-  const renderFilterRow = ({ field, type, label }) => {
-    const current = filters[field] || { value: "", mode: "contains" };
-    let modeSelector = null;
-    let inputField = null;
-
-    switch (type) {
-      case "text":
-        modeSelector = (
-          <select
-            value={current.mode}
-            onChange={(e) =>
-              handleInputChange(field, current.value, e.target.value)
-            }
-            className="border p-1 rounded text-sm w-[130px]"
-          >
-            <option value="contains">Contiene</option>
-            <option value="starts">Comienza con</option>
-            <option value="equals">Es igual</option>
-          </select>
-        );
-        inputField = (
-          <input
-            type="text"
-            value={current.value}
-            onChange={(e) => handleInputChange(field, e.target.value)}
-            className="border p-1 rounded text-sm w-full"
-          />
-        );
-        break;
-
-      case "boolean":
-        inputField = (
-          <select
-            value={current.value}
-            onChange={(e) =>
-              handleInputChange(field, e.target.value === "true")
-            }
-            className="border p-1 rounded text-sm w-full"
-          >
-            <option value="">Todos</option>
-            <option value="true">Sí</option>
-            <option value="false">No</option>
-          </select>
-        );
-        break;
-
-      case "relation":
-        const options = relationOptions[field];
-        const labelField = options?.labelField || "id";
-        inputField = (
-          <select
-            value={current.value ?? ""}
-            onChange={(e) => handleInputChange(field, e.target.value)}
-            className="border p-1 rounded text-sm w-full"
-          >
-            <option value="">Todos</option>
-            {options?.items?.map((item) => (
-              <option
-                key={item.id ?? item[Object.keys(item)[0]]}
-                value={item.id ?? item[Object.keys(item)[0]]}
-              >
-                {item[labelField]}
-              </option>
-            ))}
-          </select>
-        );
-        break;
-
-      case "number":
-        modeSelector = (
-          <select
-            value={current.mode}
-            onChange={(e) =>
-              handleInputChange(field, current.value, e.target.value)
-            }
-            className="border p-1 rounded text-sm w-[130px]"
-          >
-            <option value="equals">Es igual</option>
-            <option value="greater">Mayor que</option>
-            <option value="less">Menor que</option>
-          </select>
-        );
-        inputField = (
-          <input
-            type="number"
-            value={current.value}
-            onChange={(e) => handleInputChange(field, e.target.value)}
-            className="border p-1 rounded text-sm w-full"
-          />
-        );
-        break;
-
-      default:
+    // Render dinámico según definición
+    const renderInput = (field) => {
+        const value = filters[field.field] || "";
+        if (field.type === "text")
+            return (
+                <input
+                    type="text"
+                    className="w-full px-3 py-2 border rounded"
+                    value={value}
+                    onChange={e => handleChange(field.field, e.target.value)}
+                />
+            );
+        if (field.type === "number")
+            return (
+                <input
+                    type="number"
+                    className="w-full px-3 py-2 border rounded"
+                    value={value}
+                    onChange={e => handleChange(field.field, e.target.value)}
+                />
+            );
+        if (field.type === "boolean")
+            return (
+                <select
+                    className="w-full px-3 py-2 border rounded"
+                    value={value}
+                    onChange={e => handleChange(field.field, e.target.value)}
+                >
+                    <option value="">Todos</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                </select>
+            );
+        if (field.type === "select")
+            return (
+                <select
+                    className="w-full px-3 py-2 border rounded"
+                    value={value}
+                    onChange={e => handleChange(field.field, e.target.value)}
+                    disabled={field.dependsOn && !filters[field.dependsOn]}
+                >
+                    <option value="">Todos</option>
+                    {(options[field.field] || []).map(opt => (
+                        <option key={opt[`${field.relationModel}ID`]} value={opt[`${field.relationModel}ID`]}>
+                            {opt.Name}
+                        </option>
+                    ))}
+                </select>
+            );
         return null;
-    }
+    };
 
     return (
-      <div
-        key={field}
-        className="flex items-center gap-2 mb-3 max-w-5xl mx-auto"
-      >
-        <label className="w-[220px] text-sm font-semibold text-right pr-2">
-          {label}:
-        </label>
-
-        {modeSelector ? (
-          <>
-            {modeSelector}
-            <div className="flex-1">{inputField}</div>
-          </>
-        ) : (
-          <div className="flex-[1.6]">{inputField}</div>
-        )}
-      </div>
+        <div className="bg-white p-4 rounded shadow border mb-4">
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-gray-800">Filtros</h3>
+                <button onClick={clearFilters} className="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 text-sm">
+                    Limpiar
+                </button>
+            </div>
+            {loading ? (
+                <div className="py-8 text-center text-gray-500">Cargando filtros...</div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filterFields.map(f => (
+                        <div key={f.field}>
+                            <label className="block text-sm font-medium mb-1">{f.label}</label>
+                            {renderInput(f)}
+                        </div>
+                    ))}
+                </div>
+            )}
+            {Object.keys(filters).length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                    {filterFields.map(f =>
+                        filters[f.field] ? (
+                            <span key={f.field} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs">
+                                {f.label}: {filters[f.field]}
+                            </span>
+                        ) : null
+                    )}
+                </div>
+            )}
+        </div>
     );
-  };
-
-  return (
-    <div className="bg-gray-50 p-6 border-b rounded-md max-w-6xl mx-auto">
-      <div className="space-y-3">{columns.map(renderFilterRow)}</div>
-      <div className="mt-6 flex justify-end gap-2">
-        <button
-          onClick={handleClear}
-          className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-        >
-          Limpiar filtros
-        </button>
-        <button
-          onClick={handleSearch}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-        >
-          Buscar
-        </button>
-      </div>
-    </div>
-  );
 }

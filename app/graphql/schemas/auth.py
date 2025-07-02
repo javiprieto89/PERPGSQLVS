@@ -1,10 +1,10 @@
-# app/graphql/schemas/auth.py
-from dataclasses import dataclass
-from typing import List, Optional
+Ôªø# app/graphql/schemas/auth.py
 import strawberry
+from typing import List, Optional
 
 @strawberry.type
 class UserAccessInfo:
+    """Informaci√≥n de acceso del usuario"""
     UserID: int
     CompanyID: int
     Company: str
@@ -15,20 +15,44 @@ class UserAccessInfo:
 
 @strawberry.type
 class UserInfo:
+    """Informaci√≥n completa del usuario"""
     UserID: int
     Nickname: str
-    FullName: Optional[str] = None
-    IsActive: bool = True
-    UserAccess: List[UserAccessInfo] = strawberry.field(default_factory=list)
+    FullName: Optional[str] = None  # Cambiado de Fullname a FullName
+    IsActive: bool
+    UserAccess: List[UserAccessInfo]
+
+@strawberry.input
+class LoginInput:
+    """Input para login"""
+    nickname: str
+    password: str
 
 @strawberry.type
 class LoginResponse:
-    AccessToken: str      # PascalCase como el resto del cÛdigo
-    TokenType: str        # PascalCase como el resto del cÛdigo
-    ExpiresIn: int        # PascalCase como el resto del cÛdigo
-    User: UserInfo        # PascalCase como el resto del cÛdigo
+    """Respuesta del login"""
+    success: bool
+    message: str
+    token: Optional[str] = None
+    user: Optional[UserInfo] = None
 
 @strawberry.input
-class LoginRequest:
-    Nickname: str
-    Password: str
+class UserCreateInput:
+    """Input para crear usuario"""
+    nickname: str
+    fullname: str  # Este se mapea a FullName en la DB
+    password: str
+    is_active: bool = True
+
+@strawberry.input
+class PasswordChangeInput:
+    """Input para cambiar contrase√±a"""
+    user_id: int
+    current_password: str
+    new_password: str
+
+@strawberry.type
+class AuthResponse:
+    """Respuesta gen√©rica de autenticaci√≥n"""
+    success: bool
+    message: str

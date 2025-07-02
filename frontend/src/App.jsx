@@ -1,7 +1,7 @@
+// src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import RedirectHome from "./components/RedirectHome";
 import Login from "./components/Login";
 import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
@@ -10,18 +10,38 @@ import Documents from "./pages/Documents";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
 import LogoutSuccess from "./pages/LogoutSuccess";
-
 import { UserProvider } from "./context/UserContext";
+import { AuthHelper } from "./utils/authHelper";
+
+// Redirecciona la raíz "/" según si hay token
+function RedirectRoot() {
+    const token = sessionStorage.getItem("token");
+    return <Navigate to={token ? "/dashboard" : "/login"} replace />;
+}
 
 export default function App() {
     const [userInfo, setUserInfo] = useState(null);
+    const [selectedAccess, setSelectedAccess] = useState(null);
 
     useEffect(() => {
-        // Cargar información del usuario desde sessionStorage
+        // Cargar información del usuario usando AuthHelper
+        const authUserInfo = AuthHelper.getUserInfoForHeader();
+        const authSelectedAccess = AuthHelper.getSelectedAccess();
+
+        if (authUserInfo) {
+            setUserInfo(authUserInfo);
+        }
+
+        if (authSelectedAccess) {
+            setSelectedAccess(authSelectedAccess);
+        }
+
+        // También mantener compatibilidad con el método anterior
         const saved = sessionStorage.getItem("user_info");
-        if (saved) {
+        if (saved && !authUserInfo) {
             try {
-                setUserInfo(JSON.parse(saved));
+                const parsedUserInfo = JSON.parse(saved);
+                setUserInfo(parsedUserInfo);
             } catch (error) {
                 console.error("Error parsing user info:", error);
                 // Si hay error, limpiar datos corruptos
@@ -29,6 +49,13 @@ export default function App() {
                 sessionStorage.removeItem("token");
             }
         }
+
+        // Escuchar cambios de acceso
+        const handleAccessChange = (event) => {
+            setSelectedAccess(event.detail);
+        };
+
+        window.addEventListener('accessChanged', handleAccessChange);
 
         // Configurar ID único para esta pestaña
         const tabId = Date.now().toString();
@@ -74,39 +101,78 @@ export default function App() {
         // Cleanup
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
+            window.removeEventListener('accessChanged', handleAccessChange);
         };
     }, []);
+
+    // Manejar cambio de acceso
+    const handleAccessChange = (newAccess) => {
+        AuthHelper.setSelectedAccess(newAccess);
+        setSelectedAccess(newAccess);
+    };
+
+    // Manejar login exitoso
+    const handleLoginSuccess = () => {
+        const authUserInfo = AuthHelper.getUserInfoForHeader();
+        const authSelectedAccess = AuthHelper.getSelectedAccess();
+
+        if (authUserInfo) {
+            setUserInfo(authUserInfo);
+        }
+
+        if (authSelectedAccess) {
+            setSelectedAccess(authSelectedAccess);
+        }
+
+        // También mantener compatibilidad con el método anterior
+        const saved = sessionStorage.getItem("user_info");
+        if (saved && !authUserInfo) {
+            try {
+                setUserInfo(JSON.parse(saved));
+            } catch (error) {
+                console.error("Error parsing user info on login:", error);
+            }
+        }
+    };
+
+    // Manejar logout
+    const handleLogout = () => {
+        AuthHelper.logout();
+        setUserInfo(null);
+        setSelectedAccess(null);
+    };
 
     return (
         <UserProvider>
             <Routes>
-                {/* Login sin layout */}
+                {/* Login solo en /login */}
                 <Route
                     path="/login"
                     element={
                         <Login
-                            onLogin={() => {
-                                const saved = sessionStorage.getItem("user_info");
-                                if (saved) {
-                                    setUserInfo(JSON.parse(saved));
-                                }
-                            }}
+                            onLogin={handleLoginSuccess}
                         />
                     }
                 />
 
-                {/* Pantalla de logout */}
+                {/* Logout */}
                 <Route path="/logout" element={<LogoutSuccess />} />
 
-                {/* Redirecciona según sesión */}
-                <Route path="/" element={<RedirectHome />} />
+                {/* Raíz "/" redirige según sesión */}
+                <Route path="/" element={<RedirectRoot />} />
 
-                {/* Rutas protegidas con layout */}
+                {/* Rutas protegidas */}
                 <Route
                     path="/"
                     element={
                         <RequireAuth>
-                            <Layout userInfo={userInfo} setUserInfo={setUserInfo} />
+                            <Layout
+                                userInfo={userInfo}
+                                setUserInfo={setUserInfo}
+                                selectedAccess={selectedAccess}
+                                onAccessChange={handleAccessChange}
+                                onLogout={handleLogout}
+                            />
                         </RequireAuth>
                     }
                 >
@@ -114,8 +180,7 @@ export default function App() {
                     <Route path="clients" element={<Clients />} />
                     <Route path="suppliers" element={<Suppliers />} />
                     <Route path="documents" element={<Documents />} />
-
-                    {/* Ruta por defecto dentro del layout */}
+                    {/* Ruta fallback: todo lo desconocido a dashboard */}
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Route>
             </Routes>

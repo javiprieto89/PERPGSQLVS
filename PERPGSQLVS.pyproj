@@ -30,6 +30,13 @@
     <Compile Include="app\ChangeModels.py" />
     <Compile Include="app\config.py" />
     <Compile Include="app\db.py" />
+    <Compile Include="app\graphql\crud\vendors.py" />
+    <Compile Include="app\graphql\mutations\clients.py" />
+    <Compile Include="app\graphql\mutations\doctypes.py" />
+    <Compile Include="app\graphql\resolvers\vendors.py" />
+    <Compile Include="app\graphql\schemas\vendors.py" />
+    <Compile Include="app\utils\filter_schemas.py" />
+    <Compile Include="app\utils\__init__.py" />
     <Compile Include="deploy.py" />
     <Compile Include="app\generar_init.py" />
     <Compile Include="app\graphql\crud\accountbalances.py" />
@@ -15974,6 +15981,7 @@
     <Content Include="frontend\src\pages\SupplierCreate.jsx" />
     <Content Include="frontend\src\pages\Suppliers.jsx" />
     <Content Include="frontend\src\utils\apiFetch.js" />
+    <Content Include="frontend\src\utils\authHelper.js" />
     <Content Include="frontend\src\utils\graphqlClient.js" />
     <Content Include="frontend\src\utils\openReactWindow.js" />
     <Content Include="frontend\tailwind.config.js" />

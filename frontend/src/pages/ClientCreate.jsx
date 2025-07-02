@@ -1,16 +1,15 @@
-import { useState, useEffect } from "react";
-import { graphqlClient, MUTATIONS } from "../utils/graphqlClient";
+
+import { useState, useEffect, useCallback } from "react";
+import { clientOperations } from "../utils/graphqlClient";
 
 export default function ClientCreate({
-    countries = [],
-    provinces = [],
-    priceLists = [],
-    documentTypes = [],
-    onClose
+    onClose,
+    onSave,
+    client: initialClient = null // Para edición
 }) {
     const [client, setClient] = useState({
-        documentTypeID: 1,
-        documentNumber: "",
+        docTypeID: 1,
+        docNumber: "",
         firstName: "",
         lastName: "",
         phone: "",
@@ -22,29 +21,109 @@ export default function ClientCreate({
         countryID: 1,
         provinceID: 1,
         priceListID: 1,
+        vendorID: 1,
+    });
+
+    const [formData, setFormData] = useState({
+        documentTypes: [],
+        countries: [],
+        provinces: [],
+        priceLists: [],
+        vendors: []
     });
 
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [loadingForm, setLoadingForm] = useState(true);
+    const [isEdit, setIsEdit] = useState(false);
 
-    // Actualizar valores por defecto cuando se cargan los datos
+    // Cargar datos del formulario al montar el componente
+    // Función para cargar datos del formulario (usa useCallback)
+    const loadFormData = useCallback(async () => {
+        try {
+            setLoadingForm(true);
+            console.log("Cargando datos del formulario...");
+
+            const data = await clientOperations.getClientFormData();
+            console.log("Datos del formulario cargados:", data);
+
+            setFormData(data);
+
+            // Establecer valores por defecto si no es edición
+            if (!isEdit && data.documentTypes.length > 0) {
+                setClient(prev => ({
+                    ...prev,
+                    docTypeID: data.documentTypes[0].DocTypeID,
+                    countryID: data.countries[0]?.CountryID || 1,
+                    provinceID: data.provinces[0]?.ProvinceID || 1,
+                    priceListID: data.priceLists[0]?.PriceListID || 1,
+                    vendorID: data.vendors[0]?.VendorID || 1,
+                }));
+            }
+        } catch (error) {
+            console.error("Error cargando datos del formulario:", error);
+            setError("Error cargando los datos del formulario: " + error.message);
+        } finally {
+            setLoadingForm(false);
+        }
+    }, [isEdit]);
+
+    // Cargar datos del formulario al montar el componente
     useEffect(() => {
-        setClient(prev => ({
-            ...prev,
-            documentTypeID: documentTypes[0]?.documentTypeID || 1,
-            countryID: countries[0]?.countryID || 1,
-            provinceID: provinces[0]?.provinceID || 1,
-            priceListID: priceLists[0]?.priceListID || 1,
-        }));
-    }, [documentTypes, countries, provinces, priceLists]);
+        loadFormData();
+    }, [loadFormData]);
+
+    // Configurar si es edición o creación
+    useEffect(() => {
+        if (initialClient) {
+            setIsEdit(true);
+            setClient({
+                docTypeID: parseInt(initialClient.DocTypeID) || 1,
+                docNumber: initialClient.DocNumber || "",
+                firstName: initialClient.FirstName || "",
+                lastName: initialClient.LastName || "",
+                phone: initialClient.Phone || "",
+                email: initialClient.Email || "",
+                address: initialClient.Address || "",
+                city: initialClient.City || "",
+                postalCode: initialClient.PostalCode || "",
+                isActive: initialClient.IsActive !== false,
+                countryID: parseInt(initialClient.CountryID) || 1,
+                provinceID: parseInt(initialClient.ProvinceID) || 1,
+                priceListID: parseInt(initialClient.PriceListID) || 1,
+                vendorID: parseInt(initialClient.VendorID) || 1,
+            });
+        }
+    }, [initialClient]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
+
+        let processedValue;
+        if (type === "checkbox") {
+            processedValue = checked;
+        } else if (name.includes("ID")) {
+            processedValue = parseInt(value) || 0;
+        } else {
+            processedValue = value;
+        }
+
         setClient(prev => ({
             ...prev,
-            [name]: type === "checkbox" ? checked :
-                (name.includes("ID") ? parseInt(value) : value),
+            [name]: processedValue
         }));
+
+        // Si cambia el país, actualizar la provincia
+        if (name === "countryID") {
+            const countryProvinces = formData.provinces.filter(p => p.CountryID === parseInt(value));
+            if (countryProvinces.length > 0) {
+                setClient(prev => ({
+                    ...prev,
+                    countryID: parseInt(value),
+                    provinceID: countryProvinces[0].ProvinceID
+                }));
+            }
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -53,47 +132,62 @@ export default function ClientCreate({
         setError(null);
 
         try {
-            // Validaciones básicas
-            if (!client.firstName.trim()) {
-                throw new Error("El nombre es obligatorio");
-            }
-            if (!client.lastName.trim()) {
-                throw new Error("El apellido es obligatorio");
-            }
-            if (!client.documentNumber.trim()) {
-                throw new Error("El número de documento es obligatorio");
+            console.log("Datos del cliente a enviar:", client);
+
+            let result;
+            if (isEdit) {
+                // Actualizar cliente existente
+                result = await clientOperations.updateClient(initialClient.ClientID, client);
+                console.log("Cliente actualizado:", result);
+            } else {
+                // Crear nuevo cliente
+                result = await clientOperations.createClient(client);
+                console.log("Cliente creado:", result);
             }
 
-            await graphqlClient.mutation(MUTATIONS.CREATE_CLIENT, {
-                input: {
-                    documentTypeID: client.documentTypeID,
-                    documentNumber: client.documentNumber,
-                    firstName: client.firstName,
-                    lastName: client.lastName,
-                    phone: client.phone,
-                    email: client.email,
-                    address: client.address,
-                    city: client.city,
-                    postalCode: client.postalCode,
-                    isActive: client.isActive,
-                    countryID: client.countryID,
-                    provinceID: client.provinceID,
-                    priceListID: client.priceListID,
-                }
-            });
+            // Llamar callback de éxito
+            if (onSave) {
+                onSave(result);
+            }
 
-            if (onClose) onClose();
-        } catch (e) {
-            console.error(e);
-            setError("Error al guardar el cliente: " + e.message);
+            // Cerrar modal/formulario
+            if (onClose) {
+                onClose();
+            }
+
+        } catch (error) {
+            console.error("Error al guardar cliente:", error);
+            setError(error.message);
         } finally {
             setLoading(false);
         }
     };
 
+    // Filtrar provincias por país seleccionado
+    const availableProvinces = formData.provinces.filter(p => p.CountryID === client.countryID);
+
+    if (loadingForm) {
+        return (
+            <div className="p-6 max-w-4xl mx-auto">
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-center">
+                        <svg className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p className="text-gray-600">Cargando formulario...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+
     return (
         <div className="p-6 max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Nuevo Cliente</h2>
+            <h2 className="text-2xl font-bold mb-6">
+                {isEdit ? 'Editar Cliente' : 'Nuevo Cliente'}
+            </h2>
 
             {error && (
                 <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
@@ -109,35 +203,34 @@ export default function ClientCreate({
                         <div>
                             <label className="block text-sm font-medium mb-2">Tipo de Documento *</label>
                             <select
-                                name="documentTypeID"
-                                value={client.documentTypeID}
+                                name="docTypeID"
+                                value={client.docTypeID}
                                 onChange={handleChange}
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
                             >
-                                {documentTypes.map(dt => (
-                                    <option key={dt.documentTypeID} value={dt.documentTypeID}>
-                                        {dt.name}
+                                {formData.documentTypes.map(dt => (
+                                    <option key={dt.DocTypeID} value={dt.DocTypeID}>
+                                        {dt.Name}
                                     </option>
                                 ))}
                             </select>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-2">Número de Documento *</label>
+                            <label className="block text-sm font-medium mb-2">Número de Documento</label>
                             <input
                                 type="text"
-                                name="documentNumber"
+                                name="docNumber"
                                 placeholder="Ingrese el número de documento"
-                                value={client.documentNumber}
+                                value={client.docNumber}
                                 onChange={handleChange}
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                required
+                                maxLength={50}
                             />
                         </div>
                     </div>
                 </div>
-
                 {/* Información personal */}
                 <div className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="text-lg font-semibold mb-4">Información Personal</h3>
@@ -152,11 +245,12 @@ export default function ClientCreate({
                                 onChange={handleChange}
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
+                                maxLength={100}
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-2">Apellido *</label>
+                            <label className="block text-sm font-medium mb-2">Apellido</label>
                             <input
                                 type="text"
                                 name="lastName"
@@ -164,7 +258,7 @@ export default function ClientCreate({
                                 value={client.lastName}
                                 onChange={handleChange}
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                required
+                                maxLength={100}
                             />
                         </div>
                     </div>
@@ -183,6 +277,7 @@ export default function ClientCreate({
                                 value={client.email}
                                 onChange={handleChange}
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                maxLength={100}
                             />
                         </div>
 
@@ -195,6 +290,7 @@ export default function ClientCreate({
                                 value={client.phone}
                                 onChange={handleChange}
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                maxLength={20}
                             />
                         </div>
                     </div>
@@ -213,10 +309,49 @@ export default function ClientCreate({
                                 value={client.address}
                                 onChange={handleChange}
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                maxLength={200}
                             />
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium mb-2">País *</label>
+                                <select
+                                    name="countryID"
+                                    value={client.countryID}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                >
+                                    {formData.countries.map(country => (
+                                        <option key={country.CountryID} value={country.CountryID}>
+                                            {country.Name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Provincia *</label>
+                                <select
+                                    name="provinceID"
+                                    value={client.provinceID}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                >
+                                    {availableProvinces.length > 0 ? (
+                                        availableProvinces.map(province => (
+                                            <option key={province.ProvinceID} value={province.ProvinceID}>
+                                                {province.Name}
+                                            </option>
+                                        ))
+                                    ) : (
+                                        <option value="">No hay provincias disponibles</option>
+                                    )}
+                                </select>
+                            </div>
+
                             <div>
                                 <label className="block text-sm font-medium mb-2">Ciudad</label>
                                 <input
@@ -226,9 +361,12 @@ export default function ClientCreate({
                                     value={client.city}
                                     onChange={handleChange}
                                     className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    maxLength={100}
                                 />
                             </div>
+                        </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-sm font-medium mb-2">Código Postal</label>
                                 <input
@@ -238,40 +376,9 @@ export default function ClientCreate({
                                     value={client.postalCode}
                                     onChange={handleChange}
                                     className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    maxLength={20}
                                 />
                             </div>
-
-                            <div>
-                                <label className="block text-sm font-medium mb-2">País</label>
-                                <select
-                                    name="countryID"
-                                    value={client.countryID}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                >
-                                    {countries.map(country => (
-                                        <option key={country.countryID} value={country.countryID}>
-                                            {country.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Provincia</label>
-                            <select
-                                name="provinceID"
-                                value={client.provinceID}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                {provinces.map(province => (
-                                    <option key={province.provinceID} value={province.provinceID}>
-                                        {province.name}
-                                    </option>
-                                ))}
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -279,40 +386,70 @@ export default function ClientCreate({
                 {/* Configuración comercial */}
                 <div className="bg-gray-50 p-4 rounded-lg">
                     <h3 className="text-lg font-semibold mb-4">Configuración Comercial</h3>
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium mb-2">Lista de Precios</label>
+                            <label className="block text-sm font-medium mb-2">Lista de Precios *</label>
                             <select
                                 name="priceListID"
                                 value={client.priceListID}
                                 onChange={handleChange}
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                required
                             >
-                                {priceLists.map(priceList => (
-                                    <option key={priceList.priceListID} value={priceList.priceListID}>
-                                        {priceList.name}
+                                {formData.priceLists.map(priceList => (
+                                    <option key={priceList.PriceListID} value={priceList.PriceListID}>
+                                        {priceList.Name} {priceList.Description && `- ${priceList.Description}`}
                                     </option>
                                 ))}
                             </select>
                         </div>
 
                         <div>
-                            <label className="flex items-center space-x-3">
-                                <input
-                                    type="checkbox"
-                                    name="isActive"
-                                    checked={client.isActive}
-                                    onChange={handleChange}
-                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                                />
-                                <span className="text-sm font-medium">Cliente activo</span>
-                            </label>
-                            <p className="text-xs text-gray-500 mt-1">
-                                Los clientes inactivos no aparecerán en las búsquedas por defecto
-                            </p>
+                            <label className="block text-sm font-medium mb-2">Vendedor *</label>
+                            <select
+                                name="vendorID"
+                                value={client.vendorID}
+                                onChange={handleChange}
+                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                required
+                            >
+                                {formData.vendors.map(vendor => (
+                                    <option key={vendor.VendorID} value={vendor.VendorID}>
+                                        {vendor.VendorName}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
+
+                    <div className="mt-4">
+                        <label className="flex items-center space-x-3">
+                            <input
+                                type="checkbox"
+                                name="isActive"
+                                checked={client.isActive}
+                                onChange={handleChange}
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                            />
+                            <span className="text-sm font-medium">Cliente activo</span>
+                        </label>
+                        <p className="text-xs text-gray-500 mt-1">
+                            Los clientes inactivos no aparecerán en las búsquedas por defecto
+                        </p>
+                    </div>
                 </div>
+
+                {/* Resumen de datos (solo en edición) */}
+                {isEdit && (
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                        <h3 className="text-lg font-semibold mb-2">Información del Cliente</h3>
+                        <div className="text-sm text-gray-600">
+                            <p><strong>ID:</strong> {initialClient?.ClientID}</p>
+                            <p><strong>Creado:</strong> {new Date().toLocaleDateString()}</p>
+                            <p><strong>Estado:</strong> {client.isActive ? 'Activo' : 'Inactivo'}</p>
+                        </div>
+                    </div>
+                )}
 
                 {/* Botones de acción */}
                 <div className="flex justify-end space-x-4 pt-6 border-t">
@@ -320,14 +457,14 @@ export default function ClientCreate({
                         type="button"
                         onClick={onClose}
                         disabled={loading}
-                        className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         Cancelar
                     </button>
                     <button
                         type="submit"
-                        disabled={loading}
-                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                        disabled={loading || !client.firstName.trim()}
+                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors"
                     >
                         {loading ? (
                             <>
@@ -335,10 +472,10 @@ export default function ClientCreate({
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                                Guardando...
+                                {isEdit ? 'Actualizando...' : 'Guardando...'}
                             </>
                         ) : (
-                            'Guardar Cliente'
+                            isEdit ? 'Actualizar Cliente' : 'Guardar Cliente'
                         )}
                     </button>
                 </div>

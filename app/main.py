@@ -133,43 +133,49 @@ async def login_endpoint(request: Request):
                 status_code=400
             )
         
-        # Autenticar usuario
-        user = authenticate_user(nickname, password)
-        if not user:
-            return JSONResponse(
-                {"detail": "Credenciales inválidas"}, 
-                status_code=401
-            )
-        
-        # Crear token
-        access_token = create_access_token(data={"sub": user.nickname})
-        
-        # Obtener accesos del usuario
+        # Obtener conexión de base de datos
         from app.db import get_db
-        from app.graphql.crud.useraccess import get_useraccess_by_userid        
-        
         db_gen = get_db()
         db = next(db_gen)
+        
         try:
-            user_accesses = get_useraccess_by_userid(db, user.userID)
+            # Autenticar usuario
+            user = authenticate_user(db, nickname, password)
+            if not user:
+                return JSONResponse(
+                    {"detail": "Credenciales inválidas"}, 
+                    status_code=401
+                )
+            
+            user_dict = user.__dict__
+            
+            # Crear token
+            access_token = create_access_token(data={"sub": user_dict['Nickname']})
+            
+            # Obtener accesos del usuario
+            from app.graphql.crud.useraccess import get_useraccess_by_userid        
+            
+            # Reutilizar la misma conexión db
+            user_accesses = get_useraccess_by_userid(db, user_dict['UserID'])
             
             # Construir respuesta
             user_data = {
-                "userID": user.userID,
-                "nickname": user.nickname,
-                "firstName": user.firstName,
-                "lastName": user.lastName,
-                "email": user.email,
+                "userID": user_dict['UserID'],
+                "nickname": user_dict['Nickname'],
+                "firstName": user_dict.get('FirstName', ''),
+                "lastName": user_dict.get('LastName', ''),
+                "email": user_dict.get('Email', ''),
                 "userAccesses": []
             }
             
             # Procesar accesos del usuario
             for ua in user_accesses:
+                ua_dict = ua.__dict__
                 access_data = {
-                    "userID": ua.UserID,
-                    "companyID": ua.CompanyID,
-                    "branchID": ua.BranchID,
-                    "roleID": ua.RoleID,
+                    "userID": ua_dict['UserID'],
+                    "companyID": ua_dict['CompanyID'],
+                    "branchID": ua_dict['BranchID'],
+                    "roleID": ua_dict['RoleID'],
                     "companyName": "",
                     "branchName": "",
                     "roleName": ""
@@ -178,19 +184,19 @@ async def login_endpoint(request: Request):
                 # Obtener nombres relacionados de forma segura
                 try:
                     if hasattr(ua, 'companyData_') and ua.companyData_:
-                        access_data["companyName"] = ua.companyData_.Name
+                        access_data["companyName"] = ua.companyData_.__dict__['Name']
                 except:
                     pass
                     
                 try:
                     if hasattr(ua, 'branches_') and ua.branches_:
-                        access_data["branchName"] = ua.branches_.Name
+                        access_data["branchName"] = ua.branches_.__dict__['Name']
                 except:
                     pass
                     
                 try:
                     if hasattr(ua, 'roles_') and ua.roles_:
-                        access_data["roleName"] = ua.roles_.RoleName
+                        access_data["roleName"] = ua.roles_.__dict__['RoleName']
                 except:
                     pass
                 
@@ -259,8 +265,8 @@ app.add_middleware(
     allow_credentials=True
 )
 app.add_middleware(GZipMiddleware, minimum_size=1000)
-app.add_middleware(RateLimitMiddleware)
 app.add_middleware(ProcessTimeMiddleware)
+app.add_middleware(RateLimitMiddleware)
 app.add_middleware(GraphQLContextMiddleware)
 
 if __name__ == "__main__":

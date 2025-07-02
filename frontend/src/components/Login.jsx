@@ -2,35 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import { Eye, EyeOff } from "lucide-react";
-import { graphqlClient } from "../utils/graphqlClient";
-
-// Mutation para login GraphQL
-const LOGIN_MUTATION = `
-    mutation Login($nickname: String!, $password: String!) {
-        auth {
-            login(credentials: { Nickname: $nickname, Password: $password }) {
-                AccessToken
-                TokenType
-                ExpiresIn
-                User {
-                    UserID
-                    Nickname
-                    FullName
-                    IsActive
-                    UserAccess {
-                        UserID
-                        CompanyID
-                        Company
-                        BranchID
-                        Branch
-                        RoleID
-                        Role
-                    }
-                }
-            }
-        }
-    }
-`;
+import { AuthHelper } from "../utils/authHelper";
 
 export default function Login() {
     const [nickname, setNickname] = useState("");
@@ -47,47 +19,32 @@ export default function Login() {
         setLoading(true);
 
         try {
-            // Usar GraphQL para el login
-            const result = await graphqlClient.mutation(LOGIN_MUTATION, {
-                nickname,
-                password
-            });
+            // Usar AuthHelper para el login
+            const result = await AuthHelper.login(nickname, password);
 
-            // Verificar si el login fue exitoso
-            if (!result.auth.login) {
-                throw new Error("Credenciales inválidas");
+            if (!result.success) {
+                throw new Error(result.message || "Credenciales inválidas");
             }
 
-            // Adaptar la respuesta al formato esperado
+            // Adaptar la respuesta al formato esperado por UserContext
             const data = {
-                access_token: result.auth.login.AccessToken,
-                user: {
-                    ...result.auth.login.User,
-                    userAccesses: result.auth.login.User.UserAccess
-                }
+                UserID: result.user.UserID,
+                Nickname: result.user.Nickname,
+                FullName: result.user.FullName,
+                IsActive: result.user.IsActive,
+                userAccesses: result.user.UserAccess.map(access => ({
+                    userID: access.UserID,
+                    companyID: access.CompanyID,
+                    companyName: access.Company,
+                    branchID: access.BranchID,
+                    branchName: access.Branch,
+                    roleID: access.RoleID,
+                    roleName: access.Role
+                }))
             };
 
-            // Guardar datos en sessionStorage
-            sessionStorage.setItem("token", data.access_token);
-            sessionStorage.setItem("user_info", JSON.stringify(data.user));
-
-            if (data.user.userAccesses) {
-                sessionStorage.setItem(
-                    "access_data",
-                    JSON.stringify(data.user.userAccesses)
-                );
-
-                // Seleccionar el primer acceso por defecto
-                if (data.user.userAccesses.length > 0) {
-                    sessionStorage.setItem(
-                        "selected_access",
-                        JSON.stringify(data.user.userAccesses[0])
-                    );
-                }
-            }
-
             // Actualizar contexto
-            login(data.user);
+            login(data);
 
             // Verificar si hay una redirección pendiente
             const redirectPath = sessionStorage.getItem("redirectAfterLogin");

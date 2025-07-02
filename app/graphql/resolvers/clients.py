@@ -1,4 +1,4 @@
-# app/graphql/resolvers/clients.py
+ï»¿# app/graphql/resolvers/clients.py
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.clients import ClientsInDB
@@ -18,11 +18,11 @@ class ClientsQuery:
             result = []
             for client in clients:
                 client_dict = client.__dict__
-                # Crear dict solo con campos del schema ClientsInDB con conversión de tipos
+                # Crear dict solo con campos del schema ClientsInDB con conversiÃ³n de tipos
                 filtered_dict = {
                     'ClientID': int(client_dict['ClientID']),
-                    'DocumentTypeID': int(client_dict['DocTypeID']),  # Nota: DocTypeID en modelo
-                    'DocumentNumber': str(client_dict['DocNumber']) if client_dict.get('DocNumber') else None,
+                    'DocTypeID': int(client_dict['DocTypeID']),  # Nota: DocTypeID en modelo
+                    'DocNumber': str(client_dict['DocNumber']) if client_dict.get('DocNumber') else None,
                     'FirstName': str(client_dict['FirstName']),
                     'LastName': str(client_dict['LastName']) if client_dict.get('LastName') else None,
                     'Phone': str(client_dict['Phone']) if client_dict.get('Phone') else None,
@@ -33,7 +33,8 @@ class ClientsQuery:
                     'ProvinceID': int(client_dict['ProvinceID']),
                     'City': str(client_dict['City']) if client_dict.get('City') else None,
                     'PostalCode': str(client_dict['PostalCode']) if client_dict.get('PostalCode') else None,
-                    'PriceListID': int(client_dict['PriceListID'])
+                    'PriceListID': int(client_dict['PriceListID']),
+                    'VendorID': int(client_dict['VendorID'])
                 }
                 result.append(ClientsInDB(**filtered_dict))
             return result
@@ -48,11 +49,11 @@ class ClientsQuery:
             client = get_clients_by_id(db, id)
             if client:
                 client_dict = client.__dict__
-                # Crear dict solo con campos del schema ClientsInDB con conversión de tipos
+                # Crear dict solo con campos del schema ClientsInDB con conversiÃ³n de tipos
                 filtered_dict = {
                     'ClientID': int(client_dict['ClientID']),
-                    'DocumentTypeID': int(client_dict['DocTypeID']),  # Nota: DocTypeID en modelo
-                    'DocumentNumber': str(client_dict['DocNumber']) if client_dict.get('DocNumber') else None,
+                    'DocTypeID': int(client_dict['DocTypeID']),  # Nota: DocTypeID en modelo
+                    'DocNumber': str(client_dict['DocNumber']) if client_dict.get('DocNumber') else None,
                     'FirstName': str(client_dict['FirstName']),
                     'LastName': str(client_dict['LastName']) if client_dict.get('LastName') else None,
                     'Phone': str(client_dict['Phone']) if client_dict.get('Phone') else None,
@@ -63,7 +64,8 @@ class ClientsQuery:
                     'ProvinceID': int(client_dict['ProvinceID']),
                     'City': str(client_dict['City']) if client_dict.get('City') else None,
                     'PostalCode': str(client_dict['PostalCode']) if client_dict.get('PostalCode') else None,
-                    'PriceListID': int(client_dict['PriceListID'])
+                    'PriceListID': int(client_dict['PriceListID']),
+                    'VendorID': int(client_dict['VendorID'])
                 }
                 return ClientsInDB(**filtered_dict)
             return None

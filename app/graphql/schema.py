@@ -1,4 +1,4 @@
-# app/graphql/schema.py
+﻿# app/graphql/schema.py - VERSIÓN FINAL SIN ERRORES
 
 import strawberry
 from typing import List, Optional
@@ -47,18 +47,32 @@ from app.graphql.resolvers.useraccess import UseraccessQuery
 from app.graphql.resolvers.useractions import UseractionsQuery
 from app.graphql.resolvers.users import UsersQuery
 from app.graphql.resolvers.warehouses import WarehousesQuery
-from app.graphql.resolvers.auth import AuthMutation
+from app.graphql.resolvers.vendors import VendorsQuery
+
+# IMPORTANTE: Importar las clases de autenticación correctamente
+from app.graphql.resolvers.auth import AuthQuery
 
 # Importar schemas para los tipos de datos
 from app.graphql.schemas.items import ItemsInDB, ItemSearchResult
 from app.graphql.schemas.clients import ClientsInDB
 from app.graphql.schemas.orders import OrdersInDB
-from app.graphql.schemas.auth import UserInfo
+from app.graphql.schemas.auth import (
+    UserInfo, LoginInput, LoginResponse, UserCreateInput, 
+    PasswordChangeInput, AuthResponse
+)
+
+# Importar funciones de autenticación
+from app.auth import authenticate_user, create_user_token, get_userinfo_from_token, create_user, update_user_password, get_user_by_id
+
+# Intentar importar utilidades de filtros
+try:
+    from app.utils.filter_schemas import FILTER_SCHEMAS
+except ImportError:
+    FILTER_SCHEMAS = {}
 
 # Tipos adicionales para funcionalidades avanzadas
 @strawberry.type
 class DashboardStats:
-    """Estadísticas del dashboard"""
     total_items: int
     active_items: int
     low_stock_items: int
@@ -71,73 +85,82 @@ class DashboardStats:
 
 @strawberry.type
 class SearchStats:
-    """Estadísticas de búsqueda"""
     total_results: int
     search_time_ms: float
     filters_applied: List[str]
 
 @strawberry.input
 class DashboardFilters:
-    """Filtros para dashboard"""
     company_id: int
     branch_id: Optional[int] = None
     date_from: Optional[datetime] = None
     date_to: Optional[datetime] = None
 
+@strawberry.type
+class GlobalSearchResult:
+    items: List[ItemsInDB]
+    clients: List[ClientsInDB]
+    orders: List[OrdersInDB]
+    stats: SearchStats
+
+@strawberry.type
+class FilterField:
+    field: str
+    label: str
+    type: str
+    relationModel: Optional[str] = None
+    dependsOn: Optional[str] = None
+
+@strawberry.type
+class ServerInfo:
+    version: str
+    timestamp: int
+    environment: str
+
 # Resolver para funcionalidades avanzadas
 class AdvancedResolver:
-    """Resolver para consultas avanzadas y dashboard"""
-    
     def get_dashboard_stats(self, info, filters: DashboardFilters) -> DashboardStats:
-        """Obtiene estadísticas completas del dashboard"""
         from app.db import get_db
         from app.models.items import Items
         from app.models.clients import Clients
         from app.models.orders import Orders
         from app.models.itemstock import Itemstock
-        
+
         db_gen = get_db()
         db = next(db_gen)
         try:
-            # Filtros base
             company_filter = Items.CompanyID == filters.company_id
             orders_company_filter = Orders.CompanyID == filters.company_id
-            
-            # Items
+
             total_items = db.query(Items).filter(company_filter).count()
             active_items = db.query(Items).filter(
                 company_filter,
                 Items.IsActive == True
             ).count()
-            
-            # Items con stock bajo
+
             low_stock_items = db.query(Items).join(Itemstock).filter(
                 company_filter,
                 Items.IsActive == True,
                 Items.ControlStock == True,
                 Itemstock.Quantity <= Items.ReplenishmentStock
             ).count()
-            
-            # Clientes
+
             total_clients = db.query(Clients).count()
             active_clients = db.query(Clients).filter(Clients.IsActive == True).count()
-            
-            # Órdenes
+
             orders_query = db.query(Orders).filter(orders_company_filter)
-            
             if filters.date_from:
                 orders_query = orders_query.filter(Orders.Date_ >= filters.date_from)
             if filters.date_to:
                 orders_query = orders_query.filter(Orders.Date_ <= filters.date_to)
-            
+
             total_orders = orders_query.count()
             pending_orders = orders_query.filter(Orders.StatusID.in_([1, 2])).count()
             completed_orders = orders_query.filter(Orders.StatusID == 3).count()
-            
-            # Ventas del período
+
             sales_query = orders_query.filter(Orders.Total.isnot(None))
             monthly_sales = sales_query.with_entities(func.sum(Orders.Total)).scalar() or 0.0
-            
+
             return DashboardStats(
                 total_items=total_items,
                 active_items=active_items,
@@ -149,47 +172,40 @@ class AdvancedResolver:
                 total_orders=total_orders,
                 completed_orders=completed_orders
             )
-            
         finally:
             db_gen.close()
-    
-    def search_global(self, info, query: str, company_id: int, limit: int = 50) -> 'GlobalSearchResult':
-        """Búsqueda global en items, clientes y órdenes"""
+
+    def search_global(self, info, query: str, company_id: int, limit: int = 50) -> GlobalSearchResult:
         import time
         start_time = time.time()
-        
         from app.db import get_db
         from app.models.items import Items
         from app.models.clients import Clients
         from app.models.orders import Orders
-        
+
         db_gen = get_db()
         db = next(db_gen)
         try:
             search_term = f"%{query}%"
-            
-            # Buscar items
             items = db.query(Items).filter(
                 Items.CompanyID == company_id,
                 (Items.Code.ilike(search_term) | Items.Description.ilike(search_term))
             ).limit(limit // 3).all()
-            
-            # Buscar clientes
+
             clients = db.query(Clients).filter(
-                (Clients.FirstName.ilike(search_term) | 
+                (Clients.FirstName.ilike(search_term) |
                  Clients.LastName.ilike(search_term) |
                  Clients.Email.ilike(search_term))
             ).limit(limit // 3).all()
-            
-            # Buscar órdenes
+
             orders = db.query(Orders).filter(
                 Orders.CompanyID == company_id,
                 Orders.Notes.ilike(search_term)
             ).limit(limit // 3).all()
-            
+
             search_time = (time.time() - start_time) * 1000
             total_results = len(items) + len(clients) + len(orders)
-            
+
             return GlobalSearchResult(
                 items=[ItemsInDB(**item.__dict__) for item in items],
                 clients=[ClientsInDB(**client.__dict__) for client in clients],
@@ -200,72 +216,12 @@ class AdvancedResolver:
                     filters_applied=[f"company_id:{company_id}", f"query:{query}"]
                 )
             )
-            
         finally:
             db_gen.close()
 
-@strawberry.type
-class GlobalSearchResult:
-    """Resultado de búsqueda global"""
-    items: List[ItemsInDB]
-    clients: List[ClientsInDB]
-    orders: List[OrdersInDB]
-    stats: SearchStats
-
-# Mutations para operaciones avanzadas
-@strawberry.type
-class AdvancedMutation:
-    """Mutaciones avanzadas"""
-    
-    @strawberry.mutation
-    def bulk_activate_items(self, info, item_ids: List[int]) -> bool:
-        """Activar múltiples items"""
-        from app.db import get_db
-        from app.models.items import Items
-        
-        db_gen = get_db()
-        db = next(db_gen)
-        try:
-            db.query(Items).filter(
-                Items.ItemID.in_(item_ids)
-            ).update(
-                {"IsActive": True, "LastModified": datetime.now().date()},
-                synchronize_session=False
-            )
-            db.commit()
-            return True
-        except:
-            db.rollback()
-            return False
-        finally:
-            db_gen.close()
-    
-    @strawberry.mutation
-    def bulk_deactivate_items(self, info, item_ids: List[int]) -> bool:
-        """Desactivar múltiples items"""
-        from app.db import get_db
-        from app.models.items import Items
-        
-        db_gen = get_db()
-        db = next(db_gen)
-        try:
-            db.query(Items).filter(
-                Items.ItemID.in_(item_ids)
-            ).update(
-                {"IsActive": False, "LastModified": datetime.now().date()},
-                synchronize_session=False
-            )
-            db.commit()
-            return True
-        except:
-            db.rollback()
-            return False
-        finally:
-            db_gen.close()
-
+# QUERY PRINCIPAL - Agregar AuthQuery aquí
 @strawberry.type
 class Query(
-    # Todos los resolvers existentes
     AccountbalancesQuery,
     BranchesQuery,
     BrandsQuery,
@@ -307,63 +263,236 @@ class Query(
     UseractionsQuery,
     UsersQuery,
     WarehousesQuery,
+    VendorsQuery,
+    AuthQuery,  # AGREGADO: Queries de autenticación
 ):
     """Query principal con todas las consultas disponibles"""
     
     # ========== FUNCIONALIDADES AVANZADAS ==========
     
     @strawberry.field
+    def filter_fields(self, model: str) -> List[FilterField]:
+        """Obtener campos de filtro para un modelo"""
+        filtros = FILTER_SCHEMAS.get(model, [])
+        return [
+            FilterField(
+                field=f["field"],
+                label=f["label"],
+                type=f["type"],
+                relationModel=f.get("relationModel"),
+                dependsOn=f.get("dependsOn"),
+            ) for f in filtros
+        ]
+
+    @strawberry.field
     def dashboard_stats(self, info, filters: DashboardFilters) -> DashboardStats:
         """Estadísticas completas del dashboard"""
         resolver = AdvancedResolver()
         return resolver.get_dashboard_stats(info, filters)
-    
+
     @strawberry.field
-    def search_global(
-        self, 
-        info, 
-        query: str, 
-        company_id: int, 
-        limit: int = 50
-    ) -> GlobalSearchResult:
+    def search_global(self, info, query: str, company_id: int, limit: int = 50) -> GlobalSearchResult:
         """Búsqueda global en toda la aplicación"""
         resolver = AdvancedResolver()
         return resolver.search_global(info, query, company_id, limit)
-    
+
     @strawberry.field
     def health_check(self, info) -> str:
         """Health check del GraphQL endpoint"""
         return "GraphQL endpoint is healthy"
-    
+
     @strawberry.field
-    def server_info(self, info) -> 'ServerInfo':
+    def server_info(self, info) -> ServerInfo:
         """Información del servidor"""
         import time
         return ServerInfo(
             version="1.0.0",
             timestamp=int(time.time()),
-            environment="production"
+            environment="development"
         )
 
-@strawberry.type
-class ServerInfo:
-    """Información del servidor"""
-    version: str
-    timestamp: int
-    environment: str
-
-@strawberry.type
+# MUTATION PRINCIPAL - COMPLETAMENTE CORREGIDO
+@strawberry.type  
 class Mutation:
     """Mutaciones principales"""
-
-    @strawberry.field
-    def auth(self) -> AuthMutation:
-        return AuthMutation()
     
-    @strawberry.field
-    def advanced(self) -> AdvancedMutation:
-        """Mutaciones avanzadas"""
-        return AdvancedMutation()
+    # ========== MUTACIONES DE AUTENTICACIÓN ==========
+    @strawberry.mutation
+    def login(self, input: LoginInput) -> LoginResponse:
+        """Login de usuario"""
+        from app.db import get_db
+        
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            # Autenticar usuario
+            user = authenticate_user(db, input.nickname, input.password)
+            
+            if not user:
+                return LoginResponse(
+                    success=False,
+                    message="Credenciales inválidas",
+                    token=None,
+                    user=None
+                )
+            
+            # Crear token
+            token = create_user_token(user)
+            
+            # Obtener información del usuario
+            user_info = get_userinfo_from_token(token)
+            
+            return LoginResponse(
+                success=True,
+                message="Login exitoso",
+                token=token,
+                user=user_info
+            )
+            
+        except Exception as e:
+            return LoginResponse(
+                success=False,
+                message=f"Error interno: {str(e)}",
+                token=None,
+                user=None
+            )
+        finally:
+            db_gen.close()
+    
+    @strawberry.mutation
+    def create_user(self, input: UserCreateInput) -> AuthResponse:
+        """Crear nuevo usuario"""
+        from app.db import get_db
+        from app.auth import get_user_by_nickname
+        
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            # Verificar si el usuario ya existe
+            existing_user = get_user_by_nickname(db, input.nickname)
+            
+            if existing_user:
+                return AuthResponse(
+                    success=False,
+                    message="El usuario ya existe"
+                )
+            
+            # Crear usuario
+            new_user = create_user(
+                db=db,
+                nickname=input.nickname,
+                fullname=input.fullname,
+                password=input.password,
+                is_active=input.is_active
+            )
+            
+            new_user_dict = new_user.__dict__
+            return AuthResponse(
+                success=True,
+                message=f"Usuario {new_user_dict['Nickname']} creado exitosamente"
+            )
+            
+        except Exception as e:
+            return AuthResponse(
+                success=False,
+                message=f"Error creando usuario: {str(e)}"
+            )
+        finally:
+            db_gen.close()
+    
+    @strawberry.mutation
+    def change_password(self, input: PasswordChangeInput) -> AuthResponse:
+        """Cambiar contraseña de usuario"""
+        from app.db import get_db
+        
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            # Verificar usuario actual
+            user = get_user_by_id(db, input.user_id)
+            if not user:
+                return AuthResponse(
+                    success=False,
+                    message="Usuario no encontrado"
+                )
+            
+            user_dict = user.__dict__
+            # Verificar contraseña actual
+            authenticated_user = authenticate_user(db, user_dict['Nickname'], input.current_password)
+            if not authenticated_user:
+                return AuthResponse(
+                    success=False,
+                    message="Contraseña actual incorrecta"
+                )
+            
+            # Actualizar contraseña
+            success = update_user_password(db, input.user_id, input.new_password)
+            
+            if success:
+                return AuthResponse(
+                    success=True,
+                    message="Contraseña actualizada exitosamente"
+                )
+            else:
+                return AuthResponse(
+                    success=False,
+                    message="Error actualizando contraseña"
+                )
+                
+        except Exception as e:
+            return AuthResponse(
+                success=False,
+                message=f"Error cambiando contraseña: {str(e)}"
+            )
+        finally:
+            db_gen.close()
+    
+    # ========== MUTACIONES AVANZADAS ==========
+    @strawberry.mutation
+    def bulk_activate_items(self, info, item_ids: List[int]) -> bool:
+        """Activar múltiples items"""
+        from app.db import get_db
+        from app.models.items import Items
+
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            db.query(Items).filter(
+                Items.ItemID.in_(item_ids)
+            ).update(
+                {"IsActive": True, "LastModified": datetime.now().date()},
+                synchronize_session=False
+            )
+            db.commit()
+            return True
+        except:
+            db.rollback()
+            return False
+        finally:
+            db_gen.close()
+    
+    @strawberry.mutation
+    def bulk_deactivate_items(self, info, item_ids: List[int]) -> bool:
+        """Desactivar múltiples items"""
+        from app.db import get_db
+        from app.models.items import Items
+
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            db.query(Items).filter(
+                Items.ItemID.in_(item_ids)
+            ).update(
+                {"IsActive": False, "LastModified": datetime.now().date()},
+                synchronize_session=False
+            )
+            db.commit()
+            return True
+        except:
+            db.rollback()
+            return False
+        finally:
+            db_gen.close()
 
 # Schema principal con Query y Mutation
 schema = strawberry.Schema(

@@ -1,11 +1,9 @@
-# app/graphql/resolvers/doctypes.py
-
+﻿# app/graphql/resolvers/doctypes.py
 import strawberry
 from typing import List, Optional
-from sqlalchemy.orm import Session
-from app.db import get_db
-from app.models.doctypes import DocTypes
 from app.graphql.schemas.doctypes import DocTypesInDB
+from app.graphql.crud.doctypes import get_doctypes, get_doctypes_by_id
+from app.db import get_db
 from strawberry.types import Info
 
 
@@ -16,8 +14,18 @@ class DoctypesQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            items = db.query(DocTypes).all()
-            return [DocTypesInDB(**i.__dict__) for i in items]
+            items = get_doctypes(db)
+            result = []
+            for item in items:
+                item_dict = item.__dict__
+                # Crear dict solo con campos del schema DocTypesInDB con conversión de tipos
+                filtered_dict = {
+                    'DocTypeID': int(item_dict['DocTypeID']),
+                    'Name': str(item_dict['Name']),
+                    'IsActive': bool(item_dict['IsActive'])
+                }
+                result.append(DocTypesInDB(**filtered_dict))
+            return result
         finally:
             db_gen.close()
 
@@ -26,7 +34,16 @@ class DoctypesQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            item = db.query(DocTypes).filter(DocTypes.docTypeID == id).first()
-            return DocTypesInDB(**item.__dict__) if item else None
+            item = get_doctypes_by_id(db, id)
+            if item:
+                item_dict = item.__dict__
+                # Crear dict solo con campos del schema DocTypesInDB con conversión de tipos
+                filtered_dict = {
+                    'DocTypeID': int(item_dict['DocTypeID']),
+                    'Name': str(item_dict['Name']),
+                    'IsActive': bool(item_dict['IsActive'])
+                }
+                return DocTypesInDB(**filtered_dict)
+            return None
         finally:
             db_gen.close()

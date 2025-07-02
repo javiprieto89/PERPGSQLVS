@@ -16,7 +16,7 @@ class DocumentTypesUpdate:
 
 @strawberry.type
 class DocumentTypesInDB:
-    DocumentTypeID: int
+    DocTypeID: int
     Name: str
 
     # Relaciones
