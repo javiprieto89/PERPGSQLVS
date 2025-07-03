@@ -3,6 +3,26 @@
 import { useEffect, useState } from "react";
 import { graphqlClient } from "../utils/graphqlClient";
 
+const pluralMap = {
+    Country: "Countries",
+    Province: "Provinces",
+    Branch: "Branches",
+    Company: "Companies",
+    DocType: "Doctypes",
+    ItemCategory: "Itemcategories",
+    ItemSubcategory: "Itemsubcategories",
+    PriceList: "Pricelists",
+    Supplier: "Suppliers",
+    Vendor: "Vendors",
+    Warehouse: "Warehouses",
+    Brand: "Brands",
+};
+
+const getQueryName = (model) => {
+    const plural = pluralMap[model] || `${model}s`;
+    return `all${plural}`;
+};
+
 // Query para obtener los filtros dinámicos de una entidad
 const FILTER_FIELDS_QUERY = `
   query GetFilterFields($model: String!) {
@@ -40,12 +60,13 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
 
     // 2. Cargar las opciones de los selects, incluyendo dependientes
     useEffect(() => {
+
         async function loadSelectOptions() {
             let newOptions = { ...options };
             for (const field of filterFields) {
                 if (field.type === "select" && !field.dependsOn) {
                     // Cargar opciones de select simples
-                    const queryName = `all${field.relationModel}s`; // Ej: allCountries
+                    const queryName = getQueryName(field.relationModel);
                     const QUERY = `
             query {
               ${queryName} {
@@ -77,7 +98,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                     const parentValue = filters[field.dependsOn];
                     const queryName = field.relationModel === "Province"
                         ? "provincesByCountry"
-                        : `all${field.relationModel}s`;
+                        : getQueryName(field.relationModel);
 
                     let QUERY, variables;
                     if (queryName === "provincesByCountry") {
