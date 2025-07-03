@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
 import Suppliers from "./pages/Suppliers";
 import Brands from "./pages/Brands";
+import CarBrands from "./pages/CarBrands";
 import Documents from "./pages/Documents";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
@@ -181,6 +182,7 @@ export default function App() {
                     <Route path="clients" element={<Clients />} />
                     <Route path="suppliers" element={<Suppliers />} />
                     <Route path="brands" element={<Brands />} />
+                    <Route path="carbrands" element={<CarBrands />} />
                     <Route path="documents" element={<Documents />} />
                     {/* Ruta fallback: todo lo desconocido a dashboard */}
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />

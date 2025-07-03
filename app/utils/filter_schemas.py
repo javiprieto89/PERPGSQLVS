@@ -55,6 +55,10 @@ FILTER_SCHEMAS = {
         {"field": "Name", "label": "Nombre", "type": "text"},
         {"field": "IsActive", "label": "Activo", "type": "boolean"}
     ],
+    "carbrands": [
+        {"field": "CarBrandID", "label": "ID de marca de auto", "type": "number"},
+        {"field": "Name", "label": "Nombre", "type": "text"}
+    ],
     "countries": [
         {"field": "CountryID", "label": "ID de país", "type": "number"},
         {"field": "Name", "label": "Nombre", "type": "text"}

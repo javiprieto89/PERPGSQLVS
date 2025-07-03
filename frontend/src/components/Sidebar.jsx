@@ -52,12 +52,12 @@ export default function Sidebar() {
         { label: "Clientes", to: "/clients" },
         { label: "Proveedores", to: "/suppliers" },
         { label: "Marcas", to: "/brands" },
+        { label: "Autos", to: "/carbrands" },
       ],
     },
     {
       title: "Vehículos",
       items: [
-        { label: "Marcas de auto", to: "/carbrands" },
         { label: "Modelos de auto", to: "/carmodels" },
         { label: "Autos", to: "/cars" },
       ],

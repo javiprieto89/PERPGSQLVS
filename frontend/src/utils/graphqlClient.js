@@ -350,6 +350,24 @@ export const QUERIES = {
         }
     `,
 
+    // MARCAS DE AUTO
+    GET_ALL_CARBRANDS: `
+        query GetAllCarBrands {
+            allCarbrands {
+                CarBrandID
+                Name
+            }
+        }
+    `,
+    GET_CARBRAND_BY_ID: `
+        query GetCarBrandById($id: Int!) {
+            carbrandsById(id: $id) {
+                CarBrandID
+                Name
+            }
+        }
+    `,
+
     // DASHBOARD COMPLETO
     GET_DASHBOARD_DATA: `
         query GetDashboardData {
@@ -543,6 +561,28 @@ export const MUTATIONS = {
     DELETE_BRAND: `
         mutation DeleteBrand($brandID: Int!) {
             deleteBrand(brandID: $brandID)
+        }
+    `,
+    // MARCAS DE AUTO
+    CREATE_CARBRAND: `
+        mutation CreateCarBrand($input: CarBrandsCreate!) {
+            createCarbrand(data: $input) {
+                CarBrandID
+                Name
+            }
+        }
+    `,
+    UPDATE_CARBRAND: `
+        mutation UpdateCarBrand($carBrandID: Int!, $input: CarBrandsUpdate!) {
+            updateCarbrand(carBrandID: $carBrandID, data: $input) {
+                CarBrandID
+                Name
+            }
+        }
+    `,
+    DELETE_CARBRAND: `
+        mutation DeleteCarBrand($carBrandID: Int!) {
+            deleteCarbrand(carBrandID: $carBrandID)
         }
     `
 };
@@ -969,6 +1009,65 @@ export const brandOperations = {
             return data.deleteBrand;
         } catch (error) {
             console.error("Error eliminando marca:", error);
+            throw error;
+        }
+    }
+};
+
+export const carBrandOperations = {
+    async getAllCarBrands() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_CARBRANDS);
+            return data.allCarbrands || [];
+        } catch (error) {
+            console.error("Error obteniendo marcas de auto:", error);
+            throw error;
+        }
+    },
+
+    async getCarBrandById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CARBRAND_BY_ID, { id });
+            return data.carbrandsById;
+        } catch (error) {
+            console.error("Error obteniendo marca de auto:", error);
+            throw error;
+        }
+    },
+
+    async createCarBrand(carBrandData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_CARBRAND, {
+                input: carBrandData
+            });
+            return data.createCarbrand;
+        } catch (error) {
+            console.error("Error creando marca de auto:", error);
+            throw error;
+        }
+    },
+
+    async updateCarBrand(id, carBrandData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CARBRAND, {
+                carBrandID: id,
+                input: carBrandData
+            });
+            return data.updateCarbrand;
+        } catch (error) {
+            console.error("Error actualizando marca de auto:", error);
+            throw error;
+        }
+    },
+
+    async deleteCarBrand(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_CARBRAND, {
+                carBrandID: id
+            });
+            return data.deleteCarbrand;
+        } catch (error) {
+            console.error("Error eliminando marca de auto:", error);
             throw error;
         }
     }
