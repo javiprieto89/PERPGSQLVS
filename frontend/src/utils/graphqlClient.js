@@ -661,7 +661,7 @@ export const clientOperations = {
         try {
             const data = await graphqlClient.query(QUERIES.GET_CLIENT_FORM_DATA);
             return {
-                documentTypes: data.documentTypes || [],
+                documentTypes: data.docTypes || [],
                 countries: data.countries || [],
                 provinces: data.provinces || [],
                 priceLists: data.priceLists?.filter(pl => pl.IsActive) || [],
