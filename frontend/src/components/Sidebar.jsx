@@ -53,6 +53,8 @@ export default function Sidebar() {
         { label: "Proveedores", to: "/suppliers" },
         { label: "Marcas", to: "/brands" },
         { label: "Condiciones", to: "/saleconditions" },
+        { label: "Grupos Tarjetas", to: "/creditcardgroups" },
+        { label: "Tarjetas", to: "/creditcards" },
         { label: "Autos", to: "/carbrands" },
         { label: "Categorías", to: "/itemcategories" },
         { label: "Subcategorías", to: "/itemsubcategories" },
