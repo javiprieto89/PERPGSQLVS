@@ -51,7 +51,6 @@ export default function Sidebar() {
       items: [
         { label: "Clientes", to: "/clients" },
         { label: "Proveedores", to: "/suppliers" },
-        { label: "Marcas", to: "/brands" },
       ],
     },
     {

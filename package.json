@@ -1,12 +1,8 @@
 {
   "dependencies": {
     "cors": "^2.8.5",
-    "lucide-react": "^0.525.0",
     "react-router-dom": "^7.6.0",
     "secrets": "^1.1.5",
     "uuid": "^11.1.0"
-  },
-  "devDependencies": {
-    "sucrase": "^3.35.0"
   }
 }
