@@ -13,7 +13,7 @@ def get_accountbalances(db: Session):
 
 def get_accountbalances_by_id(db: Session, accountid: int):
     return (
-        db.query(AccountBalances).filter(AccountBalances.accountID == accountid).first()
+        db.query(AccountBalances).filter(AccountBalances.AccountID == accountid).first()
     )
 
 

@@ -3,6 +3,7 @@ from typing import List, Optional
 from app.graphql.schemas.accountbalances import AccountBalancesInDB
 from app.graphql.crud.accountbalances import get_accountbalances, get_accountbalances_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 @strawberry.type
@@ -13,7 +14,7 @@ class AccountbalancesQuery:
         db = next(db_gen)
         try:
             items = get_accountbalances(db)
-            return [AccountBalancesInDB(**item.__dict__) for item in items]
+            return list_to_schema(AccountBalancesInDB, items)
         finally:
             db_gen.close()
 
@@ -25,7 +26,7 @@ class AccountbalancesQuery:
         db = next(db_gen)
         try:
             item = get_accountbalances_by_id(db, id)
-            return AccountBalancesInDB(**item.__dict__) if item else None
+            return obj_to_schema(AccountBalancesInDB, item) if item else None
         finally:
             db_gen.close()
 

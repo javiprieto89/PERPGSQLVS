@@ -10,7 +10,7 @@ def get_orderhistory(db: Session):
 
 
 def get_orderhistory_by_id(db: Session, historyid: int):
-    return db.query(OrderHistory).filter(OrderHistory.historyID == historyid).first()
+    return db.query(OrderHistory).filter(OrderHistory.OrderHistoryID == historyid).first()
 
 
 def create_orderhistory(db: Session, data: OrderHistoryCreate):

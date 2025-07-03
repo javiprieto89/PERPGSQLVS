@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.transactiontypes import TransactionTypesInDB
 from app.graphql.crud.transactiontypes import get_transactiontypes, get_transactiontypes_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -15,7 +16,7 @@ class TransactiontypesQuery:
         db = next(db_gen)
         try:
             transactiontypes = get_transactiontypes(db)
-            return [TransactionTypesInDB(**transactiontype.__dict__) for transactiontype in transactiontypes]
+            return list_to_schema(TransactionTypesInDB, transactiontypes)
         finally:
             db_gen.close()
 
@@ -25,7 +26,7 @@ class TransactiontypesQuery:
         db = next(db_gen)
         try:
             transactiontype = get_transactiontypes_by_id(db, id)
-            return TransactionTypesInDB(**transactiontype.__dict__) if transactiontype else None
+            return obj_to_schema(TransactionTypesInDB, transactiontype) if transactiontype else None
         finally:
             db_gen.close()
 

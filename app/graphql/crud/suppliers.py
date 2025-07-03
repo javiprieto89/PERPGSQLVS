@@ -8,7 +8,7 @@ def get_suppliers(db: Session):
 
 
 def get_suppliers_by_id(db: Session, supplierid: int):
-    return db.query(Suppliers).filter(Suppliers.supplierID == supplierid).first()
+    return db.query(Suppliers).filter(Suppliers.SupplierID == supplierid).first()
 
 
 def create_suppliers(db: Session, data: SuppliersCreate):

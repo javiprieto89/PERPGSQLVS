@@ -9,7 +9,7 @@ def get_countries(db: Session):
 
 
 def get_countries_by_id(db: Session, countryid: int):
-    return db.query(Countries).filter(Countries.countryID == countryid).first()
+    return db.query(Countries).filter(Countries.CountryID == countryid).first()
 
 
 def create_countries(db: Session, data: CountriesCreate):

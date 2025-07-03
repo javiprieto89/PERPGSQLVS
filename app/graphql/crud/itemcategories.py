@@ -13,7 +13,7 @@ def get_itemcategories(db: Session):
 def get_itemcategories_by_id(db: Session, categoryid: int):
     return (
         db.query(ItemCategories).filter(
-            ItemCategories.categoryID == categoryid).first()
+            ItemCategories.ItemCategoryID == categoryid).first()
     )
 
 

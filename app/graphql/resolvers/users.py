@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.users import UsersInDB
 from app.graphql.crud.users import get_users, get_user_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -18,7 +19,7 @@ class UsersQuery:
             result = []
             for user in users:
                 user_dict = user.__dict__
-                # Crear dict solo con campos del schema UsersInDB con conversión de tipos
+                # Crear dict solo con campos del schema UsersInDB con conversin de tipos
                 filtered_dict = {
                     'UserID': int(user_dict['UserID']),
                     'Nickname': str(user_dict['Nickname']) if user_dict.get('Nickname') else None,
@@ -38,7 +39,7 @@ class UsersQuery:
             user = get_user_by_id(db, id)
             if user:
                 user_dict = user.__dict__
-                # Crear dict solo con campos del schema UsersInDB con conversión de tipos
+                # Crear dict solo con campos del schema UsersInDB con conversin de tipos
                 filtered_dict = {
                     'UserID': int(user_dict['UserID']),
                     'Nickname': str(user_dict['Nickname']) if user_dict.get('Nickname') else None,

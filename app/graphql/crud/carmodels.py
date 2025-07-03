@@ -9,7 +9,7 @@ def get_carmodels(db: Session):
 
 
 def get_carmodels_by_id(db: Session, carmodelid: int):
-    return db.query(CarModels).filter(CarModels.carModelID == carmodelid).first()
+    return db.query(CarModels).filter(CarModels.CarModelID == carmodelid).first()
 
 
 def create_carmodels(db: Session, data: CarModelsCreate):

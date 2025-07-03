@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.orderstatus import OrderStatusInDB
 from app.graphql.crud.orderstatus import get_orderstatus, get_orderstatus_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -15,7 +16,7 @@ class OrderstatusQuery:
         db = next(db_gen)
         try:
             statuses = get_orderstatus(db)
-            return [OrderStatusInDB(**s.__dict__) for s in statuses]
+            return list_to_schema(OrderStatusInDB, statuses)
         finally:
             db_gen.close()
 
@@ -25,7 +26,7 @@ class OrderstatusQuery:
         db = next(db_gen)
         try:
             status = get_orderstatus_by_id(db, id)
-            return OrderStatusInDB(**status.__dict__) if status else None
+            return obj_to_schema(OrderStatusInDB, status) if status else None
         finally:
             db_gen.close()
 

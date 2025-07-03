@@ -10,7 +10,7 @@ def get_creditcards(db: Session):
 
 
 def get_creditcard_by_id(db: Session, id: int):
-    return db.query(CreditCards).filter(CreditCards.creditCardID == id).first()
+    return db.query(CreditCards).filter(CreditCards.CreditCardID == id).first()
 
 
 def get_creditcard_by_name(db: Session, name: str):

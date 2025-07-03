@@ -8,7 +8,7 @@ def get_itemstock(db: Session):
 
 
 def get_itemstock_by_id(db: Session, itemid: int):
-    return db.query(Itemstock).filter(Itemstock.itemID == itemid).first()
+    return db.query(Itemstock).filter(Itemstock.ItemID == itemid).first()
 
 
 def create_itemstock(db: Session, data: ItemStockCreate):

@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.useractivitylog import UserActivityLogInDB
 from app.models.useractivitylog import UserActivityLog
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -15,7 +16,7 @@ class UseractivitylogQuery:
         db = next(db_gen)
         try:
             items = db.query(UserActivityLog).all()
-            return [UserActivityLogInDB(**item.__dict__) for item in items]
+            return list_to_schema(UserActivityLogInDB, items)
         finally:
             db_gen.close()
 
@@ -25,7 +26,7 @@ class UseractivitylogQuery:
         db = next(db_gen)
         try:
             item = db.query(UserActivityLog).filter(UserActivityLog.activityID == id).first()
-            return UserActivityLogInDB(**item.__dict__) if item else None
+            return obj_to_schema(UserActivityLogInDB, item) if item else None
         finally:
             db_gen.close()
 

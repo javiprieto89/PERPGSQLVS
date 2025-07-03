@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.itemstock import ItemStockInDB
 from app.graphql.crud.itemstock import get_itemstock, get_itemstock_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -15,7 +16,7 @@ class ItemstockQuery:
         db = next(db_gen)
         try:
             itemstock = get_itemstock(db)
-            return [ItemStockInDB(**item.__dict__) for item in itemstock]
+            return list_to_schema(ItemStockInDB, itemstock)
         finally:
             db_gen.close()
 
@@ -25,7 +26,7 @@ class ItemstockQuery:
         db = next(db_gen)
         try:
             item = get_itemstock_by_id(db, id)
-            return ItemStockInDB(**item.__dict__) if item else None
+            return obj_to_schema(ItemStockInDB, item) if item else None
         finally:
             db_gen.close()
 

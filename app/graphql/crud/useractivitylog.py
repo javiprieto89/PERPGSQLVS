@@ -13,7 +13,7 @@ def get_useractivitylog(db: Session):
 def get_useractivitylog_by_id(db: Session, activityid: int):
     return (
         db.query(UserActivityLog)
-        .filter(UserActivityLog.activityID == activityid)
+        .filter(UserActivityLog.ActivityID == activityid)
         .first()
     )
 

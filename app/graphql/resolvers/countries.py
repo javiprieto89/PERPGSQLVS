@@ -1,20 +1,29 @@
 # app/graphql/resolvers/countries.py
 import strawberry
-from typing import Sequence, Optional
+from typing import List, Optional
 from app.graphql.schemas.countries import CountriesInDB
 from app.graphql.crud.countries import get_countries, get_countries_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 @strawberry.type
 class CountriesQuery:
     @strawberry.field
-    def all_countries(self, info: Info) -> Sequence[CountriesInDB]:
+    def all_countries(self, info: Info) -> List[CountriesInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
             countries = get_countries(db)
-            return [CountriesInDB(**country.__dict__) for country in countries]
+            result = []
+            for country in countries:
+                country_dict = country.__dict__
+                filtered_dict = {
+                    'CountryID': int(country_dict['CountryID']),
+                    'Name': str(country_dict['Name'])
+                }
+                result.append(CountriesInDB(**filtered_dict))
+            return result
         finally:
             db_gen.close()
 
@@ -24,7 +33,14 @@ class CountriesQuery:
         db = next(db_gen)
         try:
             country = get_countries_by_id(db, id)
-            return CountriesInDB(**country.__dict__) if country else None
+            if country:
+                country_dict = country.__dict__
+                filtered_dict = {
+                    'CountryID': int(country_dict['CountryID']),
+                    'Name': str(country_dict['Name'])
+                }
+                return CountriesInDB(**filtered_dict)
+            return None
         finally:
             db_gen.close()
 

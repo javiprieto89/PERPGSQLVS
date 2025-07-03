@@ -8,7 +8,7 @@ def get_items(db: Session):
     return db.query(Items).all()
 
 def get_items_by_id(db: Session, item_id: int):
-    return db.query(Items).filter(Items.itemID == item_id).first()
+    return db.query(Items).filter(Items.ItemID == item_id).first()
 
 def create_items(db: Session, item: ItemsCreate):
     db_item = Items(**asdict(item))

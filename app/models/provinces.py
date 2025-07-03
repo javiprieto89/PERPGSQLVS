@@ -3,10 +3,10 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-if TYPE_CHECKING:    
-    from .countries import Countries
-    from .clients import Clients
-    from .suppliers import Suppliers
+if TYPE_CHECKING:
+    from app.models.countries import Countries
+    from app.models.clients import Clients
+    from app.models.suppliers import Suppliers
 
 from typing import List
 

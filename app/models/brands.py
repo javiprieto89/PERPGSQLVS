@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .items import Items
+    from app.models.items import Items
 
 from typing import List
 

@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.doctypes import DocTypesInDB
 from app.graphql.crud.doctypes import get_doctypes, get_doctypes_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 

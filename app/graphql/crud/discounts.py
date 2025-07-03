@@ -8,7 +8,7 @@ def get_discounts(db: Session):
 
 
 def get_discounts_by_id(db: Session, discountid: int):
-    return db.query(Discounts).filter(Discounts.discountID == discountid).first()
+    return db.query(Discounts).filter(Discounts.DiscountID == discountid).first()
 
 
 def create_discounts(db: Session, data: DiscountsCreate):

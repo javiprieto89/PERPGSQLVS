@@ -8,7 +8,7 @@ def get_documents(db: Session):
 
 
 def get_documents_by_id(db: Session, documentID: int):
-    return db.query(Documents).filter(Documents.documentID == documentID).first()
+    return db.query(Documents).filter(Documents.DocumentID == documentID).first()
 
 
 def create_documents(db: Session, data: DocumentsCreate):

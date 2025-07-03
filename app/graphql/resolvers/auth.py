@@ -10,6 +10,7 @@ from app.auth import (
     create_user, update_user_password, get_user_by_id
 )
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 @strawberry.type
