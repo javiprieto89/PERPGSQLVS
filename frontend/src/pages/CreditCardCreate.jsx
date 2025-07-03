@@ -139,7 +139,15 @@ export default function CreditCardCreate({ onClose, onSave, card: initialCard = 
                         <span>Tarjeta activa</span>
                     </label>
                 </div>
-                <div className="text-right">
+                <div className="flex justify-end space-x-4 pt-4 border-t">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        disabled={loading}
+                        className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        Cancelar
+                    </button>
                     <button
                         type="submit"
                         disabled={loading || !card.CardName.trim()}

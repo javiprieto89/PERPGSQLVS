@@ -161,7 +161,15 @@ export default function ItemCreate({ onClose, onSave, item: initialItem = null }
                         <span>Activo</span>
                     </label>
                 </div>
-                <div className="text-right">
+                <div className="flex justify-end space-x-4 pt-4 border-t">
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        disabled={loading}
+                        className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                    >
+                        Cancelar
+                    </button>
                     <button type="submit" disabled={loading || !form.code || !form.description || !form.brandID || !form.categoryID || !form.subcategoryID || !form.supplierID} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
                         {loading ? 'Guardando...' : 'Guardar'}
                     </button>
