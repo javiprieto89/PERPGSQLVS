@@ -53,6 +53,8 @@ from app.graphql.mutations.suppliers import SuppliersMutations
 from app.graphql.mutations.brands import BrandsMutations
 from app.graphql.mutations.carbrands import CarBrandsMutations
 from app.graphql.mutations.itemcategories import ItemCategoriesMutations
+from app.graphql.mutations.itemsubcategories import ItemSubcategoriesMutations
+from app.graphql.mutations.items import ItemsMutations
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
 from app.graphql.resolvers.auth import AuthQuery
@@ -318,7 +320,7 @@ class Query(
 
 # MUTATION PRINCIPAL - COMPLETAMENTE CORREGIDO
 @strawberry.type
-class Mutation(ClientsMutations, SuppliersMutations, BrandsMutations, CarBrandsMutations, ItemCategoriesMutations):
+class Mutation(ClientsMutations, SuppliersMutations, BrandsMutations, CarBrandsMutations, ItemCategoriesMutations, ItemSubcategoriesMutations, ItemsMutations):
     """Mutaciones principales"""
     
     # ========== MUTACIONES DE AUTENTICACIÓN ==========

@@ -258,6 +258,28 @@ export const QUERIES = {
             }
         }
     `,
+    GET_ITEM_BY_ID: `
+        query GetItemById($id: Int!) {
+            itemsById(id: $id) {
+                ItemID
+                CompanyID
+                BranchID
+                BrandID
+                Code
+                Description
+                ItemCategoryID
+                ItemSubcategoryID
+                SupplierID
+                ControlStock
+                ReplenishmentStock
+                IsOffer
+                OEM
+                LastModified
+                WarehouseID
+                IsActive
+            }
+        }
+    `,
 
     // ORDENES
     GET_ALL_ORDERS: `
@@ -364,6 +386,26 @@ export const QUERIES = {
             itemcategoriesById(id: $id) {
                 ItemCategoryID
                 CategoryName
+            }
+        }
+    `,
+
+    // SUBCATEGORÍAS DE ÍTEM
+    GET_ALL_ITEMSUBCATEGORIES: `
+        query GetAllItemSubcategories {
+            allItemsubcategories {
+                ItemSubcategoryID
+                ItemCategoryID
+                SubcategoryName
+            }
+        }
+    `,
+    GET_ITEMSUBCATEGORY_BY_ID: `
+        query GetItemSubcategoryById($id: Int!) {
+            itemsubcategoriesById(id: $id) {
+                ItemSubcategoryID
+                ItemCategoryID
+                SubcategoryName
             }
         }
     `,
@@ -604,6 +646,31 @@ export const MUTATIONS = {
             deleteItemcategory(categoryID: $categoryID)
         }
     `,
+
+    // SUBCATEGORÍAS DE ÍTEM
+    CREATE_ITEMSUBCATEGORY: `
+        mutation CreateItemSubcategory($input: ItemSubcategoriesCreate!) {
+            createItemsubcategory(data: $input) {
+                ItemSubcategoryID
+                ItemCategoryID
+                SubcategoryName
+            }
+        }
+    `,
+    UPDATE_ITEMSUBCATEGORY: `
+        mutation UpdateItemSubcategory($subcategoryID: Int!, $input: ItemSubcategoriesUpdate!) {
+            updateItemsubcategory(subcategoryID: $subcategoryID, data: $input) {
+                ItemSubcategoryID
+                ItemCategoryID
+                SubcategoryName
+            }
+        }
+    `,
+    DELETE_ITEMSUBCATEGORY: `
+        mutation DeleteItemSubcategory($subcategoryID: Int!) {
+            deleteItemsubcategory(subcategoryID: $subcategoryID)
+        }
+    `,
     // MARCAS DE AUTO
     CREATE_CARBRAND: `
         mutation CreateCarBrand($input: CarBrandsCreate!) {
@@ -624,6 +691,29 @@ export const MUTATIONS = {
     DELETE_CARBRAND: `
         mutation DeleteCarBrand($carBrandID: Int!) {
             deleteCarbrand(carBrandID: $carBrandID)
+        }
+    `,
+
+    // ÍTEMS
+    CREATE_ITEM: `
+        mutation CreateItem($input: ItemsCreate!) {
+            createItem(data: $input) {
+                ItemID
+                Code
+            }
+        }
+    `,
+    UPDATE_ITEM: `
+        mutation UpdateItem($itemID: Int!, $input: ItemsUpdate!) {
+            updateItem(itemID: $itemID, data: $input) {
+                ItemID
+                Code
+            }
+        }
+    `,
+    DELETE_ITEM: `
+        mutation DeleteItem($itemID: Int!) {
+            deleteItem(itemID: $itemID)
         }
     `
 };
@@ -1168,6 +1258,124 @@ export const itemCategoryOperations = {
             return data.deleteItemcategory;
         } catch (error) {
             console.error("Error eliminando categoría:", error);
+            throw error;
+        }
+    }
+};
+
+export const itemSubcategoryOperations = {
+    async getAllItemSubcategories() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_ITEMSUBCATEGORIES);
+            return data.allItemsubcategories || [];
+        } catch (error) {
+            console.error("Error obteniendo subcategorías:", error);
+            throw error;
+        }
+    },
+
+    async getItemSubcategoryById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ITEMSUBCATEGORY_BY_ID, { id });
+            return data.itemsubcategoriesById;
+        } catch (error) {
+            console.error("Error obteniendo subcategoría:", error);
+            throw error;
+        }
+    },
+
+    async createItemSubcategory(subcategoryData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_ITEMSUBCATEGORY, {
+                input: subcategoryData
+            });
+            return data.createItemsubcategory;
+        } catch (error) {
+            console.error("Error creando subcategoría:", error);
+            throw error;
+        }
+    },
+
+    async updateItemSubcategory(id, subcategoryData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_ITEMSUBCATEGORY, {
+                subcategoryID: id,
+                input: subcategoryData
+            });
+            return data.updateItemsubcategory;
+        } catch (error) {
+            console.error("Error actualizando subcategoría:", error);
+            throw error;
+        }
+    },
+
+    async deleteItemSubcategory(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_ITEMSUBCATEGORY, {
+                subcategoryID: id
+            });
+            return data.deleteItemsubcategory;
+        } catch (error) {
+            console.error("Error eliminando subcategoría:", error);
+            throw error;
+        }
+    }
+};
+
+export const itemOperations = {
+    async getAllItems() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_ITEMS);
+            return data.allItems || [];
+        } catch (error) {
+            console.error("Error obteniendo ítems:", error);
+            throw error;
+        }
+    },
+
+    async getItemById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ITEM_BY_ID, { id });
+            return data.itemsById;
+        } catch (error) {
+            console.error("Error obteniendo ítem:", error);
+            throw error;
+        }
+    },
+
+    async createItem(itemData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_ITEM, {
+                input: itemData
+            });
+            return data.createItem;
+        } catch (error) {
+            console.error("Error creando ítem:", error);
+            throw error;
+        }
+    },
+
+    async updateItem(id, itemData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_ITEM, {
+                itemID: id,
+                input: itemData
+            });
+            return data.updateItem;
+        } catch (error) {
+            console.error("Error actualizando ítem:", error);
+            throw error;
+        }
+    },
+
+    async deleteItem(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_ITEM, {
+                itemID: id
+            });
+            return data.deleteItem;
+        } catch (error) {
+            console.error("Error eliminando ítem:", error);
             throw error;
         }
     }
