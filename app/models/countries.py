@@ -1,12 +1,12 @@
 # ========== Countries ===========
 # app/models/countries.py
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:    
-    from provinces import Provinces  # Assuming Provinces is defined in provinces.py
-    from clients import Clients  # Assuming Clients is defined in clients.py
-    from suppliers import Suppliers  # Assuming Suppliers is defined in suppliers.py
+if TYPE_CHECKING:
+    from app.models.provinces import Provinces
+    from app.models.clients import Clients
+    from app.models.suppliers import Suppliers
 
 from typing import List
 

@@ -8,7 +8,7 @@ def get_warehouses(db: Session):
 
 
 def get_warehouses_by_id(db: Session, warehouseid: int):
-    return db.query(Warehouses).filter(Warehouses.warehouseID == warehouseid).first()
+    return db.query(Warehouses).filter(Warehouses.WarehouseID == warehouseid).first()
 
 
 def create_warehouses(db: Session, data: WarehousesCreate):

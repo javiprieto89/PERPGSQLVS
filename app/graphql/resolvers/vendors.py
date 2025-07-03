@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.vendors import VendorsInDB
 from app.models.vendors import Vendors
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -15,7 +16,7 @@ class VendorsQuery:
         db = next(db_gen)
         try:
             vendors = db.query(Vendors).all()
-            return [VendorsInDB(**vendor.__dict__) for vendor in vendors]
+            return list_to_schema(VendorsInDB, vendors)
         finally:
             db_gen.close()
 
@@ -25,7 +26,7 @@ class VendorsQuery:
         db = next(db_gen)
         try:
             vendor = db.query(Vendors).filter(Vendors.VendorID == id).first()
-            return VendorsInDB(**vendor.__dict__) if vendor else None
+            return obj_to_schema(VendorsInDB, vendor) if vendor else None
         finally:
             db_gen.close()
 
@@ -36,7 +37,7 @@ class VendorsQuery:
         db = next(db_gen)
         try:
             vendors = db.query(Vendors).filter(Vendors.IsActive == True).all()
-            return [VendorsInDB(**vendor.__dict__) for vendor in vendors]
+            return list_to_schema(VendorsInDB, vendors)
         finally:
             db_gen.close()
 

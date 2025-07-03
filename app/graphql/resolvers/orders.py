@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.orders import OrdersInDB
 from app.graphql.crud.orders import get_orders, get_orders_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -15,7 +16,7 @@ class OrdersQuery:
         db = next(db_gen)
         try:
             orders = get_orders(db)
-            return [OrdersInDB(**order.__dict__) for order in orders]
+            return list_to_schema(OrdersInDB, orders)
         finally:
             db_gen.close()
 
@@ -25,7 +26,7 @@ class OrdersQuery:
         db = next(db_gen)
         try:
             order = get_orders_by_id(db, id)
-            return OrdersInDB(**order.__dict__) if order else None
+            return obj_to_schema(OrdersInDB, order) if order else None
         finally:
             db_gen.close()
 

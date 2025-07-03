@@ -9,7 +9,7 @@ def get_companydata(db: Session):
 
 
 def get_companydata_by_id(db: Session, companyID: int):
-    return db.query(CompanyData).filter(CompanyData.companyID == companyID).first()
+    return db.query(CompanyData).filter(CompanyData.CompanyID == companyID).first()
 
 
 def create_companydata(db: Session, data: CompanyDataCreate):

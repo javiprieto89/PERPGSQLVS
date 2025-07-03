@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.tempstockentries import TempStockEntriesInDB
 from app.models.tempstockentries import TempStockEntries
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -15,7 +16,7 @@ class TempstockentriesQuery:
         db = next(db_gen)
         try:
             items = db.query(TempStockEntries).all()
-            return [TempStockEntriesInDB(**item.__dict__) for item in items]
+            return list_to_schema(TempStockEntriesInDB, items)
         finally:
             db_gen.close()
 
@@ -26,7 +27,7 @@ class TempstockentriesQuery:
         try:
             item = db.query(TempStockEntries).filter(
                 TempStockEntries.tempStockEntryID == id).first()
-            return TempStockEntriesInDB(**item.__dict__) if item else None
+            return obj_to_schema(TempStockEntriesInDB, item) if item else None
         finally:
             db_gen.close()
 

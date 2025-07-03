@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.temporderdetails import TempOrderDetailsInDB
 from app.models.temporderdetails import TempOrderDetails
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -15,7 +16,7 @@ class TemporderdetailsQuery:
         db = next(db_gen)
         try:
             items = db.query(TempOrderDetails).all()
-            return [TempOrderDetailsInDB(**item.__dict__) for item in items]
+            return list_to_schema(TempOrderDetailsInDB, items)
         finally:
             db_gen.close()
 
@@ -26,7 +27,7 @@ class TemporderdetailsQuery:
         try:
             item = db.query(TempOrderDetails).filter(
                 TempOrderDetails.tempOrderItemID == id).first()
-            return TempOrderDetailsInDB(**item.__dict__) if item else None
+            return obj_to_schema(TempOrderDetailsInDB, item) if item else None
         finally:
             db_gen.close()
 

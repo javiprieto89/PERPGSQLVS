@@ -9,7 +9,7 @@ def get_branches(db: Session):
 
 
 def get_branches_by_id(db: Session, branchID: int):
-    return db.query(Branches).filter(Branches.branchID == branchID).first()
+    return db.query(Branches).filter(Branches.BranchID == branchID).first()
 
 
 def create_branches(db: Session, data: BranchesCreate):

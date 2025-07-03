@@ -5,6 +5,7 @@ from typing import List, Optional
 from app.graphql.schemas.branches import BranchesInDB
 from app.graphql.crud.branches import get_branches, get_branches_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 

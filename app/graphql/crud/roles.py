@@ -9,7 +9,7 @@ def get_roles(db: Session):
 
 
 def get_roles_by_id(db: Session, roleID: int):
-    return db.query(Roles).filter(Roles.roleID == roleID).first()
+    return db.query(Roles).filter(Roles.RoleID == roleID).first()
 
 
 def create_roles(db: Session, data: RolesCreate):

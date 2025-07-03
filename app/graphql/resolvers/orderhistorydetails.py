@@ -7,6 +7,7 @@ from app.graphql.crud.orderhistorydetails import (
     get_orderhistorydetails_by_id,
 )
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -32,7 +33,7 @@ class OrderhistorydetailsQuery:
         db = next(db_gen)
         try:
             detail = get_orderhistorydetails_by_id(db, id)
-            return OrderHistoryDetailsInDB(**detail.__dict__) if detail else None
+            return obj_to_schema(OrderHistoryDetailsInDB, detail) if detail else None
         finally:
             db_gen.close()
 

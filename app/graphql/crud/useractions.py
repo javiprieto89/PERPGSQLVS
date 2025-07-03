@@ -8,7 +8,7 @@ def get_useractions(db: Session):
     return db.query(UserActions).all()
 
 def get_useractions_by_id(db: Session, id: int):
-    return db.query(UserActions).filter(UserActions.actionID == id).first()
+    return db.query(UserActions).filter(UserActions.UserActionID == id).first()
 
 def get_useractions_by_name(db: Session, name: str):
     return db.query(UserActions).filter(UserActions.actionName.ilike(f"%{name}%")).all()

@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.useraccess import UserAccessInDB
 from app.graphql.crud.useraccess import get_useraccess, get_useraccess_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -15,7 +16,7 @@ class UseraccessQuery:
         db = next(db_gen)
         try:
             records = get_useraccess(db)
-            return [UserAccessInDB(**record.__dict__) for record in records]
+            return list_to_schema(UserAccessInDB, records)
         finally:
             db_gen.close()
 
@@ -26,7 +27,7 @@ class UseraccessQuery:
         try:
             record = get_useraccess_by_id(
                 db, userID, companyID, branchID, roleID)
-            return UserAccessInDB(**record.__dict__) if record else None
+            return obj_to_schema(UserAccessInDB, record) if record else None
         finally:
             db_gen.close()
 

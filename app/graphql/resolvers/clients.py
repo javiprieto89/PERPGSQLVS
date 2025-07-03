@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.clients import ClientsInDB
 from app.graphql.crud.clients import get_clients, get_clients_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 

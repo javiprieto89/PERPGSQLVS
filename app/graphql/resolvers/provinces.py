@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.provinces import ProvincesInDB
 from app.graphql.crud.provinces import get_provinces, get_provinces_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -15,7 +16,16 @@ class ProvincesQuery:
         db = next(db_gen)
         try:
             provinces = get_provinces(db)
-            return [ProvincesInDB(**prov.__dict__) for prov in provinces]
+            result = []
+            for prov in provinces:
+                prov_dict = prov.__dict__
+                filtered = {
+                    'ProvinceID': int(prov_dict['ProvinceID']),
+                    'CountryID': int(prov_dict['CountryID']),
+                    'Name': str(prov_dict['Name'])
+                }
+                result.append(ProvincesInDB(**filtered))
+            return result
         finally:
             db_gen.close()
 
@@ -25,7 +35,15 @@ class ProvincesQuery:
         db = next(db_gen)
         try:
             province = get_provinces_by_id(db, id)
-            return ProvincesInDB(**province.__dict__) if province else None
+            if province:
+                prov_dict = province.__dict__
+                filtered = {
+                    'ProvinceID': int(prov_dict['ProvinceID']),
+                    'CountryID': int(prov_dict['CountryID']),
+                    'Name': str(prov_dict['Name'])
+                }
+                return ProvincesInDB(**filtered)
+            return None
         finally:
             db_gen.close()
 

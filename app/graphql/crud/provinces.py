@@ -9,7 +9,7 @@ def get_provinces(db: Session):
 
 
 def get_provinces_by_id(db: Session, provinceid: int):
-    return db.query(Provinces).filter(Provinces.provinceID == provinceid).first()
+    return db.query(Provinces).filter(Provinces.ProvinceID == provinceid).first()
 
 
 def create_provinces(db: Session, data: ProvincesCreate):

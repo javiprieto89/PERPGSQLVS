@@ -3,9 +3,9 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-if TYPE_CHECKING:    
-    from .creditcardgroups import CreditCardGroups
-    from .saleconditions import SaleConditions
+if TYPE_CHECKING:
+    from app.models.creditcardgroups import CreditCardGroups
+    from app.models.saleconditions import SaleConditions
 
 from typing import List
 

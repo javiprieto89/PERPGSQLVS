@@ -9,7 +9,7 @@ def get_brands(db: Session):
 
 
 def get_brands_by_id(db: Session, brandid: int):
-    return db.query(Brands).filter(Brands.brandID == brandid).first()
+    return db.query(Brands).filter(Brands.BrandID == brandid).first()
 
 
 def create_brands(db: Session, data: BrandsCreate):

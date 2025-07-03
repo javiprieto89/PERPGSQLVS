@@ -7,6 +7,7 @@ from app.graphql.crud.itemsubcategories import (
     get_itemsubcategories_by_id,
 )
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 
@@ -18,7 +19,7 @@ class ItemsubcategoriesQuery:
         db = next(db_gen)
         try:
             records = get_itemsubcategories(db)
-            return [ItemSubcategoriesInDB(**r.__dict__) for r in records]
+            return list_to_schema(ItemSubcategoriesInDB, records)
         finally:
             db_gen.close()
 
@@ -28,7 +29,7 @@ class ItemsubcategoriesQuery:
         db = next(db_gen)
         try:
             record = get_itemsubcategories_by_id(db, id)
-            return ItemSubcategoriesInDB(**record.__dict__) if record else None
+            return obj_to_schema(ItemSubcategoriesInDB, record) if record else None
         finally:
             db_gen.close()
 
