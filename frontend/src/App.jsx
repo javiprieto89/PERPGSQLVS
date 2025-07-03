@@ -11,6 +11,7 @@ import CarBrands from "./pages/CarBrands";
 import ItemCategories from "./pages/ItemCategories";
 import ItemSubcategories from "./pages/ItemSubcategories";
 import Items from "./pages/Items";
+import SaleConditions from "./pages/SaleConditions";
 import Documents from "./pages/Documents";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
@@ -185,6 +186,7 @@ export default function App() {
                     <Route path="clients" element={<Clients />} />
                     <Route path="suppliers" element={<Suppliers />} />
                     <Route path="brands" element={<Brands />} />
+                    <Route path="saleconditions" element={<SaleConditions />} />
                     <Route path="itemcategories" element={<ItemCategories />} />
                     <Route path="itemsubcategories" element={<ItemSubcategories />} />
                     <Route path="items" element={<Items />} />
