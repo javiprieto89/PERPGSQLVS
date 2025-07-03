@@ -10,11 +10,11 @@ def get_creditcardgroups(db: Session):
 
 
 def get_creditcardgroup_by_id(db: Session, id: int):
-    return db.query(CreditCardGroups).filter(CreditCardGroups.cardGroupID == id).first()
+    return db.query(CreditCardGroups).filter(CreditCardGroups.CreditCardGroupID == id).first()
 
 
 def get_creditcardgroup_by_name(db: Session, name: str):
-    return db.query(CreditCardGroups).filter(CreditCardGroups.groupName.ilike(f"%{name}%")).all()
+    return db.query(CreditCardGroups).filter(CreditCardGroups.GroupName.ilike(f"%{name}%")).all()
 
 
 def create_creditcardgroup(db: Session, data: CreditCardGroupsCreate):

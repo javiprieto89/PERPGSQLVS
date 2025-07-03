@@ -14,7 +14,7 @@ def get_saleconditions(db: Session):
 def get_saleconditions_by_id(db: Session, saleconditionid: int):
     return (
         db.query(SaleConditions)
-        .filter(SaleConditions.saleConditionID == saleconditionid)
+        .filter(SaleConditions.SaleConditionID == saleconditionid)
         .first()
     )
 

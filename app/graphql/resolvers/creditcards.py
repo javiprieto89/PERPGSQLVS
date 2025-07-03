@@ -16,19 +16,7 @@ class CreditcardsQuery:
         db = next(db_gen)
         try:
             creditcards = get_creditcards(db)
-            result = []
-            for cc in creditcards:
-                cc_dict = cc.__dict__
-                data = {
-                    'CreditCardID': int(cc_dict['CreditCardID']),
-                    'CardGroupID': int(cc_dict['CreditCardGroupID']),
-                    'CardName': str(cc_dict['CardName']),
-                    'Surcharge': float(cc_dict['Surcharge']) if cc_dict.get('Surcharge') is not None else None,
-                    'Installments': int(cc_dict['Installments']) if cc_dict.get('Installments') is not None else None,
-                    'IsActive': bool(cc_dict['IsActive']) if cc_dict.get('IsActive') is not None else None
-                }
-                result.append(CreditCardsInDB(**data))
-            return result
+            return list_to_schema(CreditCardsInDB, creditcards)
         finally:
             db_gen.close()
 
@@ -38,18 +26,7 @@ class CreditcardsQuery:
         db = next(db_gen)
         try:
             cc = get_creditcard_by_id(db, id)
-            if cc:
-                cc_dict = cc.__dict__
-                data = {
-                    'CreditCardID': int(cc_dict['CreditCardID']),
-                    'CardGroupID': int(cc_dict['CreditCardGroupID']),
-                    'CardName': str(cc_dict['CardName']),
-                    'Surcharge': float(cc_dict['Surcharge']) if cc_dict.get('Surcharge') is not None else None,
-                    'Installments': int(cc_dict['Installments']) if cc_dict.get('Installments') is not None else None,
-                    'IsActive': bool(cc_dict['IsActive']) if cc_dict.get('IsActive') is not None else None
-                }
-                return CreditCardsInDB(**data)
-            return None
+            return obj_to_schema(CreditCardsInDB, cc) if cc else None
         finally:
             db_gen.close()
 
@@ -59,19 +36,7 @@ class CreditcardsQuery:
         db = next(db_gen)
         try:
             creditcards = get_creditcard_by_name(db, name)
-            result = []
-            for cc in creditcards:
-                cc_dict = cc.__dict__
-                data = {
-                    'CreditCardID': int(cc_dict['CreditCardID']),
-                    'CardGroupID': int(cc_dict['CreditCardGroupID']),
-                    'CardName': str(cc_dict['CardName']),
-                    'Surcharge': float(cc_dict['Surcharge']) if cc_dict.get('Surcharge') is not None else None,
-                    'Installments': int(cc_dict['Installments']) if cc_dict.get('Installments') is not None else None,
-                    'IsActive': bool(cc_dict['IsActive']) if cc_dict.get('IsActive') is not None else None
-                }
-                result.append(CreditCardsInDB(**data))
-            return result
+            return list_to_schema(CreditCardsInDB, creditcards)
         finally:
             db_gen.close()
 

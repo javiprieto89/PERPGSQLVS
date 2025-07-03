@@ -1,14 +1,32 @@
 import { useState, useEffect } from "react";
-import { saleConditionOperations } from "../utils/graphqlClient";
+import { saleConditionOperations, creditCardOperations } from "../utils/graphqlClient";
 
 export default function SaleConditionCreate({ onClose, onSave, saleCondition: initialSC = null }) {
     const [name, setName] = useState("");
     const [dueDate, setDueDate] = useState("");
     const [surcharge, setSurcharge] = useState(0);
+    const [creditCardID, setCreditCardID] = useState(0);
+    const [cards, setCards] = useState([]);
     const [isActive, setIsActive] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [loadingForm, setLoadingForm] = useState(true);
     const [error, setError] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const data = await creditCardOperations.getAllCards();
+                setCards(data);
+                if (data.length > 0 && !initialSC) {
+                    setCreditCardID(data[0].CreditCardID);
+                }
+            } finally {
+                setLoadingForm(false);
+            }
+        };
+        load();
+    }, []);
 
     useEffect(() => {
         if (initialSC) {
@@ -17,6 +35,7 @@ export default function SaleConditionCreate({ onClose, onSave, saleCondition: in
             setDueDate(initialSC.DueDate || "");
             setSurcharge(initialSC.Surcharge || 0);
             setIsActive(initialSC.IsActive !== false);
+            setCreditCardID(initialSC.CreditCardID || 0);
         }
     }, [initialSC]);
 
@@ -32,6 +51,7 @@ export default function SaleConditionCreate({ onClose, onSave, saleCondition: in
                     DueDate: dueDate,
                     Surcharge: parseFloat(surcharge),
                     IsActive: isActive,
+                    CreditCardID: creditCardID,
                 });
             } else {
                 result = await saleConditionOperations.createSaleCondition({
@@ -39,6 +59,7 @@ export default function SaleConditionCreate({ onClose, onSave, saleCondition: in
                     DueDate: dueDate,
                     Surcharge: parseFloat(surcharge),
                     IsActive: isActive,
+                    CreditCardID: creditCardID,
                 });
             }
             onSave && onSave(result);
@@ -50,6 +71,9 @@ export default function SaleConditionCreate({ onClose, onSave, saleCondition: in
             setLoading(false);
         }
     };
+    if (loadingForm) {
+        return <div className="p-6">Cargando...</div>;
+    }
 
     return (
         <div className="p-6">
@@ -75,6 +99,18 @@ export default function SaleConditionCreate({ onClose, onSave, saleCondition: in
                         className="w-full border border-gray-300 p-2 rounded"
                         required
                     />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium mb-1">Tarjeta de Crédito</label>
+                    <select
+                        value={creditCardID}
+                        onChange={(e) => setCreditCardID(parseInt(e.target.value))}
+                        className="w-full border border-gray-300 p-2 rounded"
+                    >
+                        {cards.map(card => (
+                            <option key={card.CreditCardID} value={card.CreditCardID}>{card.CardName}</option>
+                        ))}
+                    </select>
                 </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">Recargo</label>
