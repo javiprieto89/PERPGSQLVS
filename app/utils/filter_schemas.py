@@ -59,6 +59,10 @@ FILTER_SCHEMAS = {
         {"field": "CarBrandID", "label": "ID de marca de auto", "type": "number"},
         {"field": "Name", "label": "Nombre", "type": "text"}
     ],
+    "itemcategories": [
+        {"field": "ItemCategoryID", "label": "ID de categoría", "type": "number"},
+        {"field": "CategoryName", "label": "Nombre", "type": "text"}
+    ],
     "countries": [
         {"field": "CountryID", "label": "ID de país", "type": "number"},
         {"field": "Name", "label": "Nombre", "type": "text"}

@@ -350,6 +350,24 @@ export const QUERIES = {
         }
     `,
 
+    // CATEGORÍAS DE ÍTEM
+    GET_ALL_ITEMCATEGORIES: `
+        query GetAllItemCategories {
+            allItemcategories {
+                ItemCategoryID
+                CategoryName
+            }
+        }
+    `,
+    GET_ITEMCATEGORY_BY_ID: `
+        query GetItemCategoryById($id: Int!) {
+            itemcategoriesById(id: $id) {
+                ItemCategoryID
+                CategoryName
+            }
+        }
+    `,
+
     // MARCAS DE AUTO
     GET_ALL_CARBRANDS: `
         query GetAllCarBrands {
@@ -561,6 +579,29 @@ export const MUTATIONS = {
     DELETE_BRAND: `
         mutation DeleteBrand($brandID: Int!) {
             deleteBrand(brandID: $brandID)
+        }
+    `,
+
+    // CATEGORÍAS DE ÍTEM
+    CREATE_ITEMCATEGORY: `
+        mutation CreateItemCategory($input: ItemCategoriesCreate!) {
+            createItemcategory(data: $input) {
+                ItemCategoryID
+                CategoryName
+            }
+        }
+    `,
+    UPDATE_ITEMCATEGORY: `
+        mutation UpdateItemCategory($categoryID: Int!, $input: ItemCategoriesUpdate!) {
+            updateItemcategory(categoryID: $categoryID, data: $input) {
+                ItemCategoryID
+                CategoryName
+            }
+        }
+    `,
+    DELETE_ITEMCATEGORY: `
+        mutation DeleteItemCategory($categoryID: Int!) {
+            deleteItemcategory(categoryID: $categoryID)
         }
     `,
     // MARCAS DE AUTO
@@ -1068,6 +1109,65 @@ export const carBrandOperations = {
             return data.deleteCarbrand;
         } catch (error) {
             console.error("Error eliminando marca de auto:", error);
+            throw error;
+        }
+    }
+};
+
+export const itemCategoryOperations = {
+    async getAllItemCategories() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_ITEMCATEGORIES);
+            return data.allItemcategories || [];
+        } catch (error) {
+            console.error("Error obteniendo categorías:", error);
+            throw error;
+        }
+    },
+
+    async getItemCategoryById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ITEMCATEGORY_BY_ID, { id });
+            return data.itemcategoriesById;
+        } catch (error) {
+            console.error("Error obteniendo categoría:", error);
+            throw error;
+        }
+    },
+
+    async createItemCategory(categoryData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_ITEMCATEGORY, {
+                input: categoryData
+            });
+            return data.createItemcategory;
+        } catch (error) {
+            console.error("Error creando categoría:", error);
+            throw error;
+        }
+    },
+
+    async updateItemCategory(id, categoryData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_ITEMCATEGORY, {
+                categoryID: id,
+                input: categoryData
+            });
+            return data.updateItemcategory;
+        } catch (error) {
+            console.error("Error actualizando categoría:", error);
+            throw error;
+        }
+    },
+
+    async deleteItemCategory(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_ITEMCATEGORY, {
+                categoryID: id
+            });
+            return data.deleteItemcategory;
+        } catch (error) {
+            console.error("Error eliminando categoría:", error);
             throw error;
         }
     }

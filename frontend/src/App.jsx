@@ -8,6 +8,7 @@ import Clients from "./pages/Clients";
 import Suppliers from "./pages/Suppliers";
 import Brands from "./pages/Brands";
 import CarBrands from "./pages/CarBrands";
+import ItemCategories from "./pages/ItemCategories";
 import Documents from "./pages/Documents";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
@@ -182,6 +183,7 @@ export default function App() {
                     <Route path="clients" element={<Clients />} />
                     <Route path="suppliers" element={<Suppliers />} />
                     <Route path="brands" element={<Brands />} />
+                    <Route path="itemcategories" element={<ItemCategories />} />
                     <Route path="carbrands" element={<CarBrands />} />
                     <Route path="documents" element={<Documents />} />
                     {/* Ruta fallback: todo lo desconocido a dashboard */}
