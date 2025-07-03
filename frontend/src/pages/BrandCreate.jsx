@@ -3,6 +3,7 @@ import { brandOperations } from "../utils/graphqlClient";
 
 export default function BrandCreate({ onClose, onSave, brand: initialBrand = null }) {
     const [name, setName] = useState("");
+    const [isActive, setIsActive] = useState(true);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
@@ -11,6 +12,7 @@ export default function BrandCreate({ onClose, onSave, brand: initialBrand = nul
         if (initialBrand) {
             setIsEdit(true);
             setName(initialBrand.Name || "");
+            setIsActive(initialBrand.IsActive !== false);
         }
     }, [initialBrand]);
 
@@ -21,9 +23,9 @@ export default function BrandCreate({ onClose, onSave, brand: initialBrand = nul
         try {
             let result;
             if (isEdit) {
-                result = await brandOperations.updateBrand(initialBrand.BrandID, { Name: name });
+                result = await brandOperations.updateBrand(initialBrand.BrandID, { Name: name, IsActive: isActive });
             } else {
-                result = await brandOperations.createBrand({ Name: name });
+                result = await brandOperations.createBrand({ Name: name, IsActive: isActive });
             }
             onSave && onSave(result);
             onClose && onClose();
@@ -49,6 +51,17 @@ export default function BrandCreate({ onClose, onSave, brand: initialBrand = nul
                         className="w-full border border-gray-300 p-2 rounded"
                         required
                     />
+                </div>
+                <div>
+                    <label className="inline-flex items-center mt-2">
+                        <input
+                            type="checkbox"
+                            className="mr-2"
+                            checked={isActive}
+                            onChange={(e) => setIsActive(e.target.checked)}
+                        />
+                        <span>Marca activa</span>
+                    </label>
                 </div>
                 <div className="text-right">
                     <button
