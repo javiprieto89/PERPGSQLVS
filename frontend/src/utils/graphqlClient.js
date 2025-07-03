@@ -330,6 +330,26 @@ export const QUERIES = {
         }
     `,
 
+    // MARCAS
+    GET_ALL_BRANDS: `
+        query GetAllBrands {
+            allBrands {
+                BrandID
+                Name
+                IsActive
+            }
+        }
+    `,
+    GET_BRAND_BY_ID: `
+        query GetBrandById($id: Int!) {
+            brandsById(id: $id) {
+                BrandID
+                Name
+                IsActive
+            }
+        }
+    `,
+
     // DASHBOARD COMPLETO
     GET_DASHBOARD_DATA: `
         query GetDashboardData {
@@ -498,6 +518,31 @@ export const MUTATIONS = {
                 SupplierID
                 IsActive
             }
+        }
+    `,
+
+    // MARCAS
+    CREATE_BRAND: `
+        mutation CreateBrand($input: BrandsCreate!) {
+            createBrand(data: $input) {
+                BrandID
+                Name
+                IsActive
+            }
+        }
+    `,
+    UPDATE_BRAND: `
+        mutation UpdateBrand($brandID: Int!, $input: BrandsUpdate!) {
+            updateBrand(brandID: $brandID, data: $input) {
+                BrandID
+                Name
+                IsActive
+            }
+        }
+    `,
+    DELETE_BRAND: `
+        mutation DeleteBrand($brandID: Int!) {
+            deleteBrand(brandID: $brandID)
         }
     `
 };
@@ -867,6 +912,64 @@ export const supplierOperations = {
             return data.updateSupplier;
         } catch (error) {
             console.error("Error cambiando estado del proveedor:", error);
+            throw error;
+        }
+    }
+};
+
+// ===== FUNCIONES DE MARCAS =====
+export const brandOperations = {
+    async getAllBrands() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_BRANDS);
+            return data.allBrands || [];
+        } catch (error) {
+            console.error("Error obteniendo marcas:", error);
+            throw error;
+        }
+    },
+
+    async getBrandById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_BRAND_BY_ID, { id });
+            return data.brandsById;
+        } catch (error) {
+            console.error("Error obteniendo marca:", error);
+            throw error;
+        }
+    },
+
+    async createBrand(brandData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_BRAND, {
+                input: brandData
+            });
+            return data.createBrand;
+        } catch (error) {
+            console.error("Error creando marca:", error);
+            throw error;
+        }
+    },
+
+    async updateBrand(id, brandData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_BRAND, {
+                brandID: id,
+                input: brandData
+            });
+            return data.updateBrand;
+        } catch (error) {
+            console.error("Error actualizando marca:", error);
+            throw error;
+        }
+    },
+
+    async deleteBrand(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_BRAND, { brandID: id });
+            return data.deleteBrand;
+        } catch (error) {
+            console.error("Error eliminando marca:", error);
             throw error;
         }
     }
