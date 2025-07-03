@@ -428,6 +428,50 @@ export const QUERIES = {
         }
     `,
 
+    // GRUPOS DE TARJETAS DE CRÉDITO
+    GET_ALL_CREDITCARDGROUPS: `
+        query GetAllCreditCardGroups {
+            allCreditcardgroups {
+                CreditCardGroupID
+                GroupName
+            }
+        }
+    `,
+    GET_CREDITCARDGROUP_BY_ID: `
+        query GetCreditCardGroupById($id: Int!) {
+            creditcardgroupById(id: $id) {
+                CreditCardGroupID
+                GroupName
+            }
+        }
+    `,
+
+    // TARJETAS DE CRÉDITO
+    GET_ALL_CREDITCARDS: `
+        query GetAllCreditCards {
+            allCreditcards {
+                CreditCardID
+                CreditCardGroupID
+                CardName
+                Surcharge
+                Installments
+                IsActive
+            }
+        }
+    `,
+    GET_CREDITCARD_BY_ID: `
+        query GetCreditCardById($id: Int!) {
+            creditcardById(id: $id) {
+                CreditCardID
+                CreditCardGroupID
+                CardName
+                Surcharge
+                Installments
+                IsActive
+            }
+        }
+    `,
+
     // DASHBOARD COMPLETO
     GET_DASHBOARD_DATA: `
         query GetDashboardData {
@@ -463,6 +507,7 @@ export const QUERIES = {
         query GetAllSaleConditions {
             allSaleconditions {
                 SaleConditionID
+                CreditCardID
                 Name
                 DueDate
                 Surcharge
@@ -474,6 +519,7 @@ export const QUERIES = {
         query GetSaleConditionById($id: Int!) {
             saleconditionsById(id: $id) {
                 SaleConditionID
+                CreditCardID
                 Name
                 DueDate
                 Surcharge
@@ -718,11 +764,66 @@ export const MUTATIONS = {
         }
     `,
 
+    // GRUPOS DE TARJETAS DE CRÉDITO
+    CREATE_CREDITCARDGROUP: `
+        mutation CreateCreditCardGroup($input: CreditCardGroupsCreate!) {
+            createCreditcardgroup(data: $input) {
+                CreditCardGroupID
+                GroupName
+            }
+        }
+    `,
+    UPDATE_CREDITCARDGROUP: `
+        mutation UpdateCreditCardGroup($id: Int!, $input: CreditCardGroupsUpdate!) {
+            updateCreditcardgroup(id: $id, data: $input) {
+                CreditCardGroupID
+                GroupName
+            }
+        }
+    `,
+    DELETE_CREDITCARDGROUP: `
+        mutation DeleteCreditCardGroup($id: Int!) {
+            deleteCreditcardgroup(id: $id)
+        }
+    `,
+
+    // TARJETAS DE CRÉDITO
+    CREATE_CREDITCARD: `
+        mutation CreateCreditCard($input: CreditCardsCreate!) {
+            createCreditcard(data: $input) {
+                CreditCardID
+                CreditCardGroupID
+                CardName
+                Surcharge
+                Installments
+                IsActive
+            }
+        }
+    `,
+    UPDATE_CREDITCARD: `
+        mutation UpdateCreditCard($id: Int!, $input: CreditCardsUpdate!) {
+            updateCreditcard(id: $id, data: $input) {
+                CreditCardID
+                CreditCardGroupID
+                CardName
+                Surcharge
+                Installments
+                IsActive
+            }
+        }
+    `,
+    DELETE_CREDITCARD: `
+        mutation DeleteCreditCard($id: Int!) {
+            deleteCreditcard(id: $id)
+        }
+    `,
+
     // CONDICIONES DE VENTA
     CREATE_SALECONDITION: `
         mutation CreateSaleCondition($input: SaleConditionsCreate!) {
             createSalecondition(data: $input) {
                 SaleConditionID
+                CreditCardID
                 Name
                 DueDate
                 Surcharge
@@ -734,6 +835,7 @@ export const MUTATIONS = {
         mutation UpdateSaleCondition($saleConditionID: Int!, $input: SaleConditionsUpdate!) {
             updateSalecondition(saleConditionID: $saleConditionID, data: $input) {
                 SaleConditionID
+                CreditCardID
                 Name
                 DueDate
                 Surcharge
@@ -1313,6 +1415,65 @@ export const saleConditionOperations = {
             console.error("Error eliminando condición de venta:", error);
             throw error;
         }
+    }
+};
+
+export const creditCardGroupOperations = {
+    async getAllGroups() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_CREDITCARDGROUPS);
+        return data.allCreditcardgroups || [];
+    },
+
+    async getGroupById(id) {
+        const data = await graphqlClient.query(QUERIES.GET_CREDITCARDGROUP_BY_ID, { id });
+        return data.creditcardgroupById;
+    },
+
+    async createGroup(input) {
+        const data = await graphqlClient.mutation(MUTATIONS.CREATE_CREDITCARDGROUP, {
+            input
+        });
+        return data.createCreditcardgroup;
+    },
+
+    async updateGroup(id, input) {
+        const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CREDITCARDGROUP, {
+            id,
+            input
+        });
+        return data.updateCreditcardgroup;
+    },
+
+    async deleteGroup(id) {
+        const data = await graphqlClient.mutation(MUTATIONS.DELETE_CREDITCARDGROUP, { id });
+        return data.deleteCreditcardgroup;
+    }
+};
+
+export const creditCardOperations = {
+    async getAllCards() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_CREDITCARDS);
+        return data.allCreditcards || [];
+    },
+
+    async getCardById(id) {
+        const data = await graphqlClient.query(QUERIES.GET_CREDITCARD_BY_ID, { id });
+        return data.creditcardById;
+    },
+
+    async createCard(input) {
+        const data = await graphqlClient.mutation(MUTATIONS.CREATE_CREDITCARD, { input });
+        return data.createCreditcard;
+    },
+
+    async updateCard(id, input) {
+        const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CREDITCARD, { id, input });
+        return data.updateCreditcard;
+    },
+
+    async deleteCard(id) {
+        const data = await graphqlClient.mutation(MUTATIONS.DELETE_CREDITCARD, { id });
+        return data.deleteCreditcard;
     }
 };
 

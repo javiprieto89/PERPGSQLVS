@@ -88,6 +88,7 @@ export default function SaleConditions() {
                     {saleConditions.map(sc => (
                         <div key={sc.SaleConditionID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-2">{sc.Name}</h3>
+                            <p className="text-sm">Tarjeta ID: {sc.CreditCardID}</p>
                             <p className="text-sm mb-1">Vencimiento: {sc.DueDate}</p>
                             <p className="text-sm mb-2">Activo: {sc.IsActive ? 'Sí' : 'No'}</p>
                             <button onClick={() => handleEdit(sc)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
