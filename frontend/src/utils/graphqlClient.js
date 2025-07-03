@@ -836,22 +836,6 @@ export const supplierOperations = {
         }
     },
 
-    // Obtener datos para formulario de proveedor
-    async getSupplierFormData() {
-        try {
-            // Reutilizamos la consulta de datos del formulario de clientes
-            const data = await clientOperations.getClientFormData();
-            return {
-                documentTypes: data.documentTypes,
-                countries: data.countries,
-                provinces: data.provinces,
-            };
-        } catch (error) {
-            console.error("Error obteniendo datos del formulario de proveedor:", error);
-            throw error;
-        }
-    },
-
     async createSupplier(supplierData) {
         try {
             const errors = supplierHelpers.validateSupplierData(supplierData);
