@@ -51,6 +51,7 @@ export default function Sidebar() {
       items: [
         { label: "Clientes", to: "/clients" },
         { label: "Proveedores", to: "/suppliers" },
+        { label: "Marcas", to: "/brands" },
       ],
     },
     {
@@ -76,7 +77,6 @@ export default function Sidebar() {
       title: "Inventario",
       items: [
         { label: "Artículos", to: "/items" },
-        { label: "Marcas", to: "/brands" },
         { label: "Categorías", to: "/itemcategories" },
         { label: "Subcategorías", to: "/itemsubcategories" },
         { label: "Stock", to: "/itemstock" },

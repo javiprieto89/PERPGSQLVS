@@ -336,6 +336,7 @@ export const QUERIES = {
             allBrands {
                 BrandID
                 Name
+                IsActive
             }
         }
     `,
@@ -344,6 +345,7 @@ export const QUERIES = {
             brandsById(id: $id) {
                 BrandID
                 Name
+                IsActive
             }
         }
     `,
@@ -525,6 +527,7 @@ export const MUTATIONS = {
             createBrand(data: $input) {
                 BrandID
                 Name
+                IsActive
             }
         }
     `,
@@ -533,6 +536,7 @@ export const MUTATIONS = {
             updateBrand(brandID: $brandID, data: $input) {
                 BrandID
                 Name
+                IsActive
             }
         }
     `,
