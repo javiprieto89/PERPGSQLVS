@@ -330,13 +330,12 @@ export const QUERIES = {
         }
     `,
 
-   // MARCAS
+    // MARCAS
     GET_ALL_BRANDS: `
         query GetAllBrands {
             allBrands {
                 BrandID
                 Name
-                IsActive
             }
         }
     `,
@@ -345,7 +344,6 @@ export const QUERIES = {
             brandsById(id: $id) {
                 BrandID
                 Name
-                IsActive
             }
         }
     `,
@@ -452,7 +450,7 @@ export const MUTATIONS = {
         }
     `,
 
-    ACTIVAR CLIENTE
+    // ACTIVAR/DESACTIVAR CLIENTE
     TOGGLE_CLIENT_STATUS: `
         mutation ToggleClientStatus($clientID: Int!, $isActive: Boolean!) {
             updateClient(clientID: $clientID, data: { IsActive: $isActive }) {
@@ -519,7 +517,7 @@ export const MUTATIONS = {
                 IsActive
             }
         }
-`,
+    `,
 
     // MARCAS
     CREATE_BRAND: `
@@ -527,7 +525,6 @@ export const MUTATIONS = {
             createBrand(data: $input) {
                 BrandID
                 Name
-                IsActive
             }
         }
     `,
@@ -536,7 +533,6 @@ export const MUTATIONS = {
             updateBrand(brandID: $brandID, data: $input) {
                 BrandID
                 Name
-                IsActive
             }
         }
     `,
