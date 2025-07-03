@@ -894,6 +894,21 @@ export const supplierOperations = {
             console.error("Error cambiando estado del proveedor:", error);
             throw error;
         }
+    },
+
+    // Obtener datos para formulario de proveedor
+    async getSupplierFormData() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CLIENT_FORM_DATA);
+            return {
+                documentTypes: data.docTypes || [],
+                countries: data.countries || [],
+                provinces: data.provinces || []
+            };
+        } catch (error) {
+            console.error("Error obteniendo datos del formulario:", error);
+            throw error;
+        }
     }
 };
 
