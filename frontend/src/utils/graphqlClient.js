@@ -309,6 +309,26 @@ export const QUERIES = {
             }
         }
     `,
+    // Alias para compatibilidad
+    GET_SUPPLIERS: `
+        query GetSuppliers {
+            allSuppliers {
+                SupplierID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                IsActive
+                CountryID
+                ProvinceID
+                City
+                PostalCode
+            }
+        }
+    `,
 
     // DASHBOARD COMPLETO
     GET_DASHBOARD_DATA: `
@@ -420,6 +440,65 @@ export const MUTATIONS = {
                 IsActive
             }
         }
+    `,
+
+    // CREAR PROVEEDOR
+    CREATE_SUPPLIER: `
+        mutation CreateSupplier($input: SuppliersCreate!) {
+            createSupplier(data: $input) {
+                SupplierID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                IsActive
+                CountryID
+                ProvinceID
+                City
+                PostalCode
+            }
+        }
+    `,
+
+    // ACTUALIZAR PROVEEDOR
+    UPDATE_SUPPLIER: `
+        mutation UpdateSupplier($supplierID: Int!, $input: SuppliersUpdate!) {
+            updateSupplier(supplierID: $supplierID, data: $input) {
+                SupplierID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                IsActive
+                CountryID
+                ProvinceID
+                City
+                PostalCode
+            }
+        }
+    `,
+
+    // ELIMINAR PROVEEDOR
+    DELETE_SUPPLIER: `
+        mutation DeleteSupplier($supplierID: Int!) {
+            deleteSupplier(supplierID: $supplierID)
+        }
+    `,
+
+    // ACTIVAR/DESACTIVAR PROVEEDOR
+    TOGGLE_SUPPLIER_STATUS: `
+        mutation ToggleSupplierStatus($supplierID: Int!, $isActive: Boolean!) {
+            updateSupplier(supplierID: $supplierID, data: { IsActive: $isActive }) {
+                SupplierID
+                IsActive
+            }
+        }
     `
 };
 
@@ -493,6 +572,36 @@ export const clientHelpers = {
             FullName: `${client.FirstName} ${client.LastName || ''}`.trim(),
             StatusText: client.IsActive ? 'Activo' : 'Inactivo',
             ContactInfo: client.Email || client.Phone || 'Sin contacto',
+        };
+    }
+};
+
+// ===== FUNCIONES AUXILIARES DE PROVEEDORES =====
+export const supplierHelpers = {
+    validateSupplierData(data) {
+        const errors = [];
+        if (!data.firstName?.trim()) {
+            errors.push("El nombre es obligatorio");
+        }
+        if (data.email && !clientHelpers.isValidEmail(data.email)) {
+            errors.push("El formato del email no es válido");
+        }
+        return errors;
+    },
+    prepareSupplierData(formData) {
+        return {
+            DocTypeID: formData.docTypeID ? parseInt(formData.docTypeID) : null,
+            DocNumber: formData.docNumber?.trim() || null,
+            FirstName: formData.firstName?.trim() || "",
+            LastName: formData.lastName?.trim() || null,
+            Phone: formData.phone?.trim() || null,
+            Email: formData.email?.trim() || null,
+            Address: formData.address?.trim() || null,
+            IsActive: Boolean(formData.isActive !== false),
+            CountryID: formData.countryID ? parseInt(formData.countryID) : null,
+            ProvinceID: formData.provinceID ? parseInt(formData.provinceID) : null,
+            City: formData.city?.trim() || null,
+            PostalCode: formData.postalCode?.trim() || null,
         };
     }
 };
@@ -669,6 +778,79 @@ export const clientOperations = {
             };
         } catch (error) {
             console.error("Error obteniendo datos del formulario:", error);
+            throw error;
+        }
+    }
+};
+
+// ===== FUNCIONES DE PROVEEDORES =====
+export const supplierOperations = {
+    async getAllSuppliers() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_SUPPLIERS);
+            return data.allSuppliers || [];
+        } catch (error) {
+            console.error("Error obteniendo proveedores:", error);
+            throw error;
+        }
+    },
+
+    async createSupplier(supplierData) {
+        try {
+            const errors = supplierHelpers.validateSupplierData(supplierData);
+            if (errors.length > 0) {
+                throw new Error(`Errores de validación: ${errors.join(', ')}`);
+            }
+            const prepared = supplierHelpers.prepareSupplierData(supplierData);
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_SUPPLIER, {
+                input: prepared
+            });
+            return data.createSupplier;
+        } catch (error) {
+            console.error("Error creando proveedor:", error);
+            throw error;
+        }
+    },
+
+    async updateSupplier(id, supplierData) {
+        try {
+            const errors = supplierHelpers.validateSupplierData(supplierData);
+            if (errors.length > 0) {
+                throw new Error(`Errores de validación: ${errors.join(', ')}`);
+            }
+            const prepared = supplierHelpers.prepareSupplierData(supplierData);
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_SUPPLIER, {
+                supplierID: id,
+                input: prepared
+            });
+            return data.updateSupplier;
+        } catch (error) {
+            console.error("Error actualizando proveedor:", error);
+            throw error;
+        }
+    },
+
+    async deleteSupplier(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_SUPPLIER, {
+                supplierID: id
+            });
+            return data.deleteSupplier;
+        } catch (error) {
+            console.error("Error eliminando proveedor:", error);
+            throw error;
+        }
+    },
+
+    async toggleSupplierStatus(id, isActive) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.TOGGLE_SUPPLIER_STATUS, {
+                supplierID: id,
+                isActive
+            });
+            return data.updateSupplier;
+        } catch (error) {
+            console.error("Error cambiando estado del proveedor:", error);
             throw error;
         }
     }

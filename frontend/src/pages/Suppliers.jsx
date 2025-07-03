@@ -4,7 +4,8 @@ import {
     TrashIcon,
     PlusIcon,
 } from "@heroicons/react/24/solid";
-import { graphqlClient, QUERIES } from "../utils/graphqlClient";
+import { supplierOperations } from "../utils/graphqlClient";
+import SupplierCreate from "./SupplierCreate";
 
 export default function Suppliers() {
     const [suppliers, setSuppliers] = useState([]);
@@ -21,20 +22,8 @@ export default function Suppliers() {
     const loadData = async () => {
         try {
             setLoading(true);
-
-            // Obtener contexto actual
-            const storedSelected = sessionStorage.getItem("selected_access");
-            if (!storedSelected) {
-                throw new Error("No hay acceso seleccionado");
-            }
-
-            const access = JSON.parse(storedSelected);
-
-            const data = await graphqlClient.query(QUERIES.GET_SUPPLIERS, {
-                companyID: access.companyID
-            });
-
-            setSuppliers(data.suppliers || []);
+            const data = await supplierOperations.getAllSuppliers();
+            setSuppliers(data);
 
         } catch (e) {
             console.error("Error cargando proveedores:", e);
@@ -66,13 +55,9 @@ export default function Suppliers() {
 
     const handleUpdate = async () => {
         try {
-            // Como no tienes mutations para suppliers definidas, usaremos un query básico
-            // En un entorno real, necesitarías agregar las mutations correspondientes
-            console.log("Actualizando proveedor:", editingSupplier);
-
-            // Por ahora solo actualizamos localmente
+            const updated = await supplierOperations.updateSupplier(editingSupplier.SupplierID, editingSupplier);
             setSuppliers(prev => prev.map(s =>
-                s.supplierID === editingSupplier.supplierID ? editingSupplier : s
+                s.SupplierID === updated.SupplierID ? updated : s
             ));
             setEditingSupplier(null);
         } catch (err) {
@@ -83,13 +68,8 @@ export default function Suppliers() {
 
     const confirmDelete = async () => {
         try {
-            // Como no tienes mutations para suppliers definidas, usaremos eliminación local
-            // En un entorno real, necesitarías agregar las mutations correspondientes
-            console.log("Eliminando proveedor:", deletingSupplier.supplierID);
-
-            setSuppliers(prev =>
-                prev.filter(s => s.supplierID !== deletingSupplier.supplierID)
-            );
+            await supplierOperations.deleteSupplier(deletingSupplier.SupplierID);
+            setSuppliers(prev => prev.filter(s => s.SupplierID !== deletingSupplier.SupplierID));
             setDeletingSupplier(null);
         } catch (e) {
             console.error("Error al eliminar:", e);
@@ -99,14 +79,15 @@ export default function Suppliers() {
 
     // Filtrar proveedores
     const filteredSuppliers = suppliers.filter(supplier => {
+        const fullName = `${supplier.FirstName || ''} ${supplier.LastName || ''}`.toLowerCase();
         const matchesSearch = !searchTerm ||
-            supplier.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            supplier.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            supplier.phone?.includes(searchTerm);
+            fullName.includes(searchTerm.toLowerCase()) ||
+            supplier.Email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            supplier.Phone?.includes(searchTerm);
 
         const matchesActive = filterActive === "all" ||
-            (filterActive === "active" && supplier.isActive) ||
-            (filterActive === "inactive" && !supplier.isActive);
+            (filterActive === "active" && supplier.IsActive) ||
+            (filterActive === "inactive" && !supplier.IsActive);
 
         return matchesSearch && matchesActive;
     });
@@ -197,36 +178,36 @@ export default function Suppliers() {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {filteredSuppliers.map((supplier) => (
-                                <tr key={supplier.supplierID} className="hover:bg-gray-50">
+                                <tr key={supplier.SupplierID} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div>
                                             <div className="text-sm font-medium text-gray-900">
-                                                {supplier.name}
+                                                {supplier.FirstName} {supplier.LastName}
                                             </div>
                                             <div className="text-sm text-gray-500">
-                                                ID: {supplier.supplierID}
+                                                ID: {supplier.SupplierID}
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm text-gray-900">
-                                            {supplier.email || 'Sin email'}
+                                            {supplier.Email || 'Sin email'}
                                         </div>
                                         <div className="text-sm text-gray-500">
-                                            {supplier.phone || 'Sin teléfono'}
+                                            {supplier.Phone || 'Sin teléfono'}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm text-gray-900">
-                                            {supplier.address || 'Sin dirección'}
+                                            {supplier.Address || 'Sin dirección'}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${supplier.isActive
+                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${supplier.IsActive
                                                 ? 'bg-green-100 text-green-800'
                                                 : 'bg-red-100 text-red-800'
                                             }`}>
-                                            {supplier.isActive ? 'Activo' : 'Inactivo'}
+                                            {supplier.IsActive ? 'Activo' : 'Inactivo'}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -269,8 +250,8 @@ export default function Suppliers() {
                                 <label className="block text-sm font-medium mb-1">Nombre</label>
                                 <input
                                     type="text"
-                                    name="name"
-                                    value={editingSupplier.name || ''}
+                                    name="FirstName"
+                                    value={editingSupplier.FirstName || ''}
                                     onChange={handleEditChange}
                                     className="w-full border p-2 rounded"
                                 />
@@ -280,8 +261,8 @@ export default function Suppliers() {
                                 <label className="block text-sm font-medium mb-1">Email</label>
                                 <input
                                     type="email"
-                                    name="email"
-                                    value={editingSupplier.email || ''}
+                                    name="Email"
+                                    value={editingSupplier.Email || ''}
                                     onChange={handleEditChange}
                                     className="w-full border p-2 rounded"
                                 />
@@ -291,8 +272,8 @@ export default function Suppliers() {
                                 <label className="block text-sm font-medium mb-1">Teléfono</label>
                                 <input
                                     type="tel"
-                                    name="phone"
-                                    value={editingSupplier.phone || ''}
+                                    name="Phone"
+                                    value={editingSupplier.Phone || ''}
                                     onChange={handleEditChange}
                                     className="w-full border p-2 rounded"
                                 />
@@ -302,8 +283,8 @@ export default function Suppliers() {
                                 <label className="block text-sm font-medium mb-1">Dirección</label>
                                 <input
                                     type="text"
-                                    name="address"
-                                    value={editingSupplier.address || ''}
+                                    name="Address"
+                                    value={editingSupplier.Address || ''}
                                     onChange={handleEditChange}
                                     className="w-full border p-2 rounded"
                                 />
@@ -313,8 +294,8 @@ export default function Suppliers() {
                                 <label className="flex items-center space-x-2">
                                     <input
                                         type="checkbox"
-                                        name="isActive"
-                                        checked={editingSupplier.isActive}
+                                        name="IsActive"
+                                        checked={editingSupplier.IsActive}
                                         onChange={handleEditChange}
                                     />
                                     <span>Proveedor activo</span>
@@ -347,7 +328,7 @@ export default function Suppliers() {
                         <h2 className="text-xl font-bold mb-4">Confirmar Eliminación</h2>
                         <p className="mb-4">
                             ¿Estás seguro de que deseas eliminar al proveedor{" "}
-                            <strong>{deletingSupplier.name}</strong>?
+                            <strong>{deletingSupplier.FirstName}</strong>?
                         </p>
                         <p className="text-sm text-gray-600 mb-6">
                             Esta acción no se puede deshacer.
@@ -370,22 +351,13 @@ export default function Suppliers() {
                 </div>
             )}
 
-            {/* Formulario de creación simple */}
             {showCreateForm && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-                        <h2 className="text-xl font-bold mb-4">Nuevo Proveedor</h2>
-                        <p className="text-gray-600 mb-4">
-                            Funcionalidad de creación pendiente de implementar con GraphQL mutations.
-                        </p>
-                        <div className="flex justify-end">
-                            <button
-                                onClick={() => setShowCreateForm(false)}
-                                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                            >
-                                Cerrar
-                            </button>
-                        </div>
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+                        <SupplierCreate
+                            onClose={() => setShowCreateForm(false)}
+                            onSave={(newSup) => setSuppliers(prev => [...prev, newSup])}
+                        />
                     </div>
                 </div>
             )}
