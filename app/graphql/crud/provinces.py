@@ -8,6 +8,11 @@ def get_provinces(db: Session):
     return db.query(Provinces).all()
 
 
+def get_provinces_by_country(db: Session, country_id: int):
+    """Obtener provincias filtradas por CountryID"""
+    return db.query(Provinces).filter(Provinces.CountryID == country_id).all()
+
+
 def get_provinces_by_id(db: Session, provinceid: int):
     return db.query(Provinces).filter(Provinces.ProvinceID == provinceid).first()
 
