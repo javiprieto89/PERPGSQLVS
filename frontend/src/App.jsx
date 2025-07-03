@@ -12,6 +12,8 @@ import ItemCategories from "./pages/ItemCategories";
 import ItemSubcategories from "./pages/ItemSubcategories";
 import Items from "./pages/Items";
 import SaleConditions from "./pages/SaleConditions";
+import CreditCardGroups from "./pages/CreditCardGroups";
+import CreditCards from "./pages/CreditCards";
 import Documents from "./pages/Documents";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
@@ -187,6 +189,8 @@ export default function App() {
                     <Route path="suppliers" element={<Suppliers />} />
                     <Route path="brands" element={<Brands />} />
                     <Route path="saleconditions" element={<SaleConditions />} />
+                    <Route path="creditcardgroups" element={<CreditCardGroups />} />
+                    <Route path="creditcards" element={<CreditCards />} />
                     <Route path="itemcategories" element={<ItemCategories />} />
                     <Route path="itemsubcategories" element={<ItemSubcategories />} />
                     <Route path="items" element={<Items />} />

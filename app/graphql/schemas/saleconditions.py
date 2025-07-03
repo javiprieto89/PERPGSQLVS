@@ -5,6 +5,7 @@ from datetime import date
 
 @strawberry.input
 class SaleConditionsCreate:
+    CreditCardID: int
     Name: str
     DueDate: date
     Surcharge: float
@@ -12,6 +13,7 @@ class SaleConditionsCreate:
 
 @strawberry.input
 class SaleConditionsUpdate:
+    CreditCardID: Optional[int] = None
     Name: Optional[str] = None
     DueDate: Optional[date] = None
     Surcharge: Optional[float] = None
@@ -20,6 +22,7 @@ class SaleConditionsUpdate:
 @strawberry.type
 class SaleConditionsInDB:
     SaleConditionID: int
+    CreditCardID: int
     Name: str
     DueDate: date
     Surcharge: float
