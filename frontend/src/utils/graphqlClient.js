@@ -429,31 +429,31 @@ export const clientHelpers = {
     validateClientData(clientData) {
         const errors = [];
 
-        if (!clientData.FirstName?.trim()) {
+        if (!clientData.firstName?.trim()) {
             errors.push("El nombre es obligatorio");
         }
 
-        if (!clientData.DocTypeID) {
+        if (!clientData.docTypeID) {
             errors.push("El tipo de documento es obligatorio");
         }
 
-        if (!clientData.CountryID) {
+        if (!clientData.countryID) {
             errors.push("El país es obligatorio");
         }
 
-        if (!clientData.ProvinceID) {
+        if (!clientData.provinceID) {
             errors.push("La provincia es obligatoria");
         }
 
-        if (!clientData.PriceListID) {
+        if (!clientData.priceListID) {
             errors.push("La lista de precios es obligatoria");
         }
 
-        if (!clientData.VendorID) {
+        if (!clientData.vendorID) {
             errors.push("El vendedor es obligatorio");
         }
 
-        if (clientData.Email && !this.isValidEmail(clientData.Email)) {
+        if (clientData.email && !this.isValidEmail(clientData.email)) {
             errors.push("El formato del email no es válido");
         }
 
@@ -469,8 +469,8 @@ export const clientHelpers = {
     // Preparar datos para crear cliente
     prepareClientData(formData) {
         return {
-            DocTypeID: parseInt(formData.DocTypeID) || 1,
-            DocNumber: formData.DocNumber?.trim() || null,
+            DocTypeID: parseInt(formData.docTypeID) || 1,
+            DocNumber: formData.docNumber?.trim() || null,
             FirstName: formData.firstName?.trim() || "",
             LastName: formData.lastName?.trim() || null,
             Phone: formData.phone?.trim() || null,

@@ -18,6 +18,12 @@ const pluralMap = {
     Brand: "Brands",
 };
 
+const nameFieldMap = {
+    Vendor: "VendorName",
+};
+
+const getNameField = (model) => nameFieldMap[model] || "Name";
+
 const getQueryName = (model) => {
     const plural = pluralMap[model] || `${model}s`;
     return `all${plural}`;
@@ -67,11 +73,12 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                 if (field.type === "select" && !field.dependsOn) {
                     // Cargar opciones de select simples
                     const queryName = getQueryName(field.relationModel);
+                    const nameField = getNameField(field.relationModel);
                     const QUERY = `
             query {
               ${queryName} {
                 ${field.relationModel}ID
-                Name
+                ${nameField}
               }
             }
           `;
@@ -112,11 +119,12 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
             `;
                         variables = { countryID: parseInt(parentValue) };
                     } else {
+                        const nameField = getNameField(field.relationModel);
                         QUERY = `
               query {
                 ${queryName} {
                   ${field.relationModel}ID
-                  Name
+                  ${nameField}
                 }
               }
             `;
@@ -239,7 +247,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                     <option value="">Todos</option>
                     {(options[field.field] || []).map(opt => (
                         <option key={opt[`${field.relationModel}ID`]} value={opt[`${field.relationModel}ID`]}>
-                            {opt.Name}
+                            {opt[getNameField(field.relationModel)]}
                         </option>
                     ))}
                 </select>
