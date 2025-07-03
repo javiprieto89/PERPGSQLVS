@@ -16,6 +16,6 @@ class CreditCardGroupsUpdate:
 
 @strawberry.type
 class CreditCardGroupsInDB:
-    CardGroupID: int
+    CreditCardGroupID: int
     GroupName: Optional[str] = None
 
