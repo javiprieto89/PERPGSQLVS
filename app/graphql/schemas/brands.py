@@ -6,7 +6,7 @@ from typing import Optional
 @strawberry.input
 class BrandsCreate:
     Name: str
-    IsActive: Optional[bool] = True
+    IsActive: bool = True
 
 
 @strawberry.input
