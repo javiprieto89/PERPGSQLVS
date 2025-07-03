@@ -3,6 +3,34 @@ import { graphqlClient, QUERIES, diagnosticGraphQL } from "../utils/graphqlClien
 import ClientCreate from "./ClientCreate";
 import TableFilters from "../components/TableFilters";
 
+// Modal simple para mostrar los datos del cliente seleccionado
+function ClientDetails({ client, onClose }) {
+    if (!client) return null;
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-lg w-full p-6 space-y-4">
+                <h2 className="text-xl font-bold">Detalles del Cliente</h2>
+                <div className="space-y-1 text-sm">
+                    <p><strong>Nombre:</strong> {client.FirstName} {client.LastName}</p>
+                    <p><strong>Email:</strong> {client.Email || '—'}</p>
+                    <p><strong>Teléfono:</strong> {client.Phone || '—'}</p>
+                    <p><strong>Dirección:</strong> {client.Address || '—'}</p>
+                    <p><strong>Documento:</strong> {client.DocNumber || '—'}</p>
+                    <p><strong>Activo:</strong> {client.IsActive ? 'Sí' : 'No'}</p>
+                </div>
+                <div className="text-right mt-4">
+                    <button
+                        onClick={onClose}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function Clients() {
     const [allClients, setAllClients] = useState([]); // Lista original de clientes
     const [clients, setClients] = useState([]);       // Lista filtrada a mostrar
@@ -11,6 +39,8 @@ export default function Clients() {
     const [debugInfo, setDebugInfo] = useState(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
+    const [selectedClient, setSelectedClient] = useState(null);
+    const [editingClient, setEditingClient] = useState(null);
 
     useEffect(() => {
         loadClients();
@@ -73,10 +103,20 @@ export default function Clients() {
         setShowCreateModal(true);
     };
 
+    const handleEditClient = (client) => {
+        setEditingClient(client);
+        setShowCreateModal(true);
+    };
+
+    const handleViewDetails = (client) => {
+        setSelectedClient(client);
+    };
+
     const handleClientSaved = (newClient) => {
         console.log('Cliente guardado:', newClient);
         loadClients(); // Recargar la lista
         setShowCreateModal(false);
+        setEditingClient(null);
     };
 
     // El filtro ahora opera sobre allClients
@@ -272,10 +312,16 @@ export default function Clients() {
                                 </div>
 
                                 <div className="mt-4 pt-4 border-t border-gray-200 flex space-x-2">
-                                    <button className="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors">
+                                    <button
+                                        onClick={() => handleViewDetails(client)}
+                                        className="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                                    >
                                         Ver Detalles
                                     </button>
-                                    <button className="px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200">
+                                    <button
+                                        onClick={() => handleEditClient(client)}
+                                        className="px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200"
+                                    >
                                         Editar
                                     </button>
                                 </div>
@@ -311,11 +357,16 @@ export default function Clients() {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
                         <ClientCreate
-                            onClose={() => setShowCreateModal(false)}
+                            onClose={() => { setShowCreateModal(false); setEditingClient(null); }}
                             onSave={handleClientSaved}
+                            client={editingClient}
                         />
                     </div>
                 </div>
+            )}
+
+            {selectedClient && (
+                <ClientDetails client={selectedClient} onClose={() => setSelectedClient(null)} />
             )}
         </div>
     );
