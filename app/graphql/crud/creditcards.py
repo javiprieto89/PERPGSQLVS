@@ -14,7 +14,7 @@ def get_creditcard_by_id(db: Session, id: int):
 
 
 def get_creditcard_by_name(db: Session, name: str):
-    return db.query(CreditCards).filter(CreditCards.cardName.ilike(f"%{name}%")).all()
+    return db.query(CreditCards).filter(CreditCards.CardName.ilike(f"%{name}%")).all()
 
 
 def create_creditcard(db: Session, data: CreditCardsCreate):
