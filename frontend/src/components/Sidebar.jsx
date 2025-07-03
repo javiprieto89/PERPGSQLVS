@@ -76,6 +76,7 @@ export default function Sidebar() {
       title: "Inventario",
       items: [
         { label: "Artículos", to: "/items" },
+        { label: "Marcas", to: "/brands" },
         { label: "Categorías", to: "/itemcategories" },
         { label: "Subcategorías", to: "/itemsubcategories" },
         { label: "Stock", to: "/itemstock" },
