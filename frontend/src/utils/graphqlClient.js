@@ -362,7 +362,7 @@ export const MUTATIONS = {
     // CREAR CLIENTE
     CREATE_CLIENT: `
         mutation CreateClient($input: ClientsCreate!) {
-            createClient(input: $input) {
+            createClient(data: $input) {
                 ClientID
                 DocTypeID
                 DocNumber
@@ -385,7 +385,7 @@ export const MUTATIONS = {
     // ACTUALIZAR CLIENTE
     UPDATE_CLIENT: `
         mutation UpdateClient($clientID: Int!, $input: ClientsUpdate!) {
-            updateClient(clientID: $clientID, input: $input) {
+            updateClient(clientID: $clientID, data: $input) {
                 ClientID
                 DocTypeID
                 DocNumber

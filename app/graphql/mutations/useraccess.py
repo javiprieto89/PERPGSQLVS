@@ -7,6 +7,7 @@ from app.graphql.crud.useraccess import (
     create_useraccess,
     delete_useraccess,
 )
+from app.utils import obj_to_schema
 from app.db import get_db
 from strawberry.types import Info
 
@@ -17,7 +18,7 @@ class UserAccessMutation:
     def create_useraccess(self, info: Info, data: UserAccessCreate) -> UserAccessInDB:
         db = next(get_db())
         obj = create_useraccess(db, data)
-        return UserAccessInDB(**obj.__dict__)
+        return obj_to_schema(UserAccessInDB, obj)
 
     @strawberry.mutation
     def delete_useraccess(
@@ -53,4 +54,4 @@ class UserAccessMutation:
 
         # Crear nuevo acceso con los nuevos datos
         obj = create_useraccess(db, newData)
-        return UserAccessInDB(**obj.__dict__)
+        return obj_to_schema(UserAccessInDB, obj)
