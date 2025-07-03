@@ -330,7 +330,7 @@ export const QUERIES = {
         }
     `,
 
-    // MARCAS
+   // MARCAS
     GET_ALL_BRANDS: `
         query GetAllBrands {
             allBrands {
@@ -452,7 +452,7 @@ export const MUTATIONS = {
         }
     `,
 
-    // ACTIVAR/DESACTIVAR CLIENTE
+    ACTIVAR CLIENTE
     TOGGLE_CLIENT_STATUS: `
         mutation ToggleClientStatus($clientID: Int!, $isActive: Boolean!) {
             updateClient(clientID: $clientID, data: { IsActive: $isActive }) {
@@ -519,7 +519,7 @@ export const MUTATIONS = {
                 IsActive
             }
         }
-    `,
+`,
 
     // MARCAS
     CREATE_BRAND: `
