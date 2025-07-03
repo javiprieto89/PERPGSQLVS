@@ -3,6 +3,15 @@
 import { useEffect, useState } from "react";
 import { graphqlClient } from "../utils/graphqlClient";
 
+const TEXT_OPERATORS = [
+    { value: "all", label: "Todos" },
+    { value: "startsWith", label: "Comienza con" },
+    { value: "contains", label: "Contiene" },
+    { value: "equals", label: "Es igual" },
+    { value: "notEquals", label: "Es distinto a" },
+    { value: "notContains", label: "No contiene" },
+];
+
 const pluralMap = {
     Country: "Countries",
     Province: "Provinces",
@@ -164,7 +173,26 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
 
             switch (field.type) {
                 case "text":
-                    filtered = filtered.filter(item => (item[realField] || "").toString().toLowerCase().includes(value.toLowerCase()));
+                    const op = filters[`${field.field}_op`] || "contains";
+                    if (op === "all") break;
+                    filtered = filtered.filter(item => {
+                        const itemVal = (item[realField] || "").toString().toLowerCase();
+                        const val = value.toLowerCase();
+                        switch (op) {
+                            case "startsWith":
+                                return itemVal.startsWith(val);
+                            case "equals":
+                                return itemVal === val;
+                            case "notEquals":
+                                return itemVal !== val;
+                            case "notContains":
+                                return !itemVal.includes(val);
+                            case "contains":
+                                return itemVal.includes(val);
+                            default:
+                                return true;
+                        }
+                    });
                     break;
                 case "number":
                     filtered = filtered.filter(item => parseInt(item[realField]) === parseInt(value));
@@ -193,9 +221,17 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
         if (depField) {
             setFilters(prev => ({
                 ...prev,
-                [depField.field]: ""
+                [depField.field]: "",
+                [`${depField.field}_op`]: "contains"
             }));
         }
+    };
+
+    const handleOperatorChange = (field, value) => {
+        setFilters(prev => ({
+            ...prev,
+            [`${field}_op`]: value
+        }));
     };
 
     const clearFilters = () => {
@@ -206,15 +242,28 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
     // Render dinámico según definición
     const renderInput = (field) => {
         const value = filters[field.field] || "";
-        if (field.type === "text")
+        if (field.type === "text") {
+            const opValue = filters[`${field.field}_op`] || "contains";
             return (
-                <input
-                    type="text"
-                    className="w-full px-3 py-2 border rounded"
-                    value={value}
-                    onChange={e => handleChange(field.field, e.target.value)}
-                />
+                <div className="flex gap-2">
+                    <select
+                        className="px-2 py-2 border rounded"
+                        value={opValue}
+                        onChange={e => handleOperatorChange(field.field, e.target.value)}
+                    >
+                        {TEXT_OPERATORS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                    </select>
+                    <input
+                        type="text"
+                        className="w-full px-3 py-2 border rounded"
+                        value={value}
+                        onChange={e => handleChange(field.field, e.target.value)}
+                    />
+                </div>
             );
+        }
         if (field.type === "number")
             return (
                 <input
