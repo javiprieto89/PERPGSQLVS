@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { saleConditionOperations } from "../utils/graphqlClient";
+import { saleConditionOperations, creditCardOperations, creditCardGroupOperations } from "../utils/graphqlClient";
 import SaleConditionCreate from "./SaleConditionCreate";
 import TableFilters from "../components/TableFilters";
 
 export default function SaleConditions() {
     const [allSaleConditions, setAllSaleConditions] = useState([]);
     const [saleConditions, setSaleConditions] = useState([]);
+    const [cards, setCards] = useState([]);
+    const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -17,9 +19,15 @@ export default function SaleConditions() {
     const loadSCs = async () => {
         try {
             setLoading(true);
-            const data = await saleConditionOperations.getAllSaleConditions();
-            setAllSaleConditions(data);
-            setSaleConditions(data);
+            const [scData, cardData, groupData] = await Promise.all([
+                saleConditionOperations.getAllSaleConditions(),
+                creditCardOperations.getAllCards(),
+                creditCardGroupOperations.getAllGroups(),
+            ]);
+            setAllSaleConditions(scData);
+            setSaleConditions(scData);
+            setCards(cardData);
+            setGroups(groupData);
         } catch (err) {
             console.error("Error cargando condiciones:", err);
             setError(err.message);
@@ -85,15 +93,22 @@ export default function SaleConditions() {
                 <div>Cargando...</div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {saleConditions.map(sc => (
-                        <div key={sc.SaleConditionID} className="bg-white rounded shadow p-4">
-                            <h3 className="text-lg font-semibold mb-2">{sc.Name}</h3>
-                            <p className="text-sm">Tarjeta ID: {sc.CreditCardID}</p>
-                            <p className="text-sm mb-1">Vencimiento: {sc.DueDate}</p>
-                            <p className="text-sm mb-2">Activo: {sc.IsActive ? 'Sí' : 'No'}</p>
-                            <button onClick={() => handleEdit(sc)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
-                        </div>
-                    ))}
+                    {saleConditions.map(sc => {
+                        const card = cards.find(c => c.CreditCardID === sc.CreditCardID);
+                        const group = card ? groups.find(g => g.CreditCardGroupID === card.CreditCardGroupID) : null;
+                        return (
+                            <div key={sc.SaleConditionID} className="bg-white rounded shadow p-4">
+                                <h3 className="text-lg font-semibold mb-2">{sc.Name}</h3>
+                                <p className="text-sm">
+                                    Tarjeta: {card ? card.CardName : sc.CreditCardID}
+                                    {group ? ` (${group.GroupName})` : ''}
+                                </p>
+                                <p className="text-sm mb-1">Vencimiento: {sc.DueDate}</p>
+                                <p className="text-sm mb-2">Activo: {sc.IsActive ? 'Sí' : 'No'}</p>
+                                <button onClick={() => handleEdit(sc)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                            </div>
+                        );
+                    })}
                 </div>
             )}
             {showModal && (
