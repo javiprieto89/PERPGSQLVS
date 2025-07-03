@@ -20,16 +20,7 @@ class ProvincesQuery:
         db = next(db_gen)
         try:
             provinces = get_provinces(db)
-            result = []
-            for prov in provinces:
-                prov_dict = prov.__dict__
-                filtered = {
-                    'ProvinceID': int(prov_dict['ProvinceID']),
-                    'CountryID': int(prov_dict['CountryID']),
-                    'Name': str(prov_dict['Name'])
-                }
-                result.append(ProvincesInDB(**filtered))
-            return result
+            return list_to_schema(ProvincesInDB, provinces)
         finally:
             db_gen.close()
 
@@ -39,15 +30,18 @@ class ProvincesQuery:
         db = next(db_gen)
         try:
             province = get_provinces_by_id(db, id)
-            if province:
-                prov_dict = province.__dict__
-                filtered = {
-                    'ProvinceID': int(prov_dict['ProvinceID']),
-                    'CountryID': int(prov_dict['CountryID']),
-                    'Name': str(prov_dict['Name'])
-                }
-                return ProvincesInDB(**filtered)
-            return None
+            return obj_to_schema(ProvincesInDB, province) if province else None
+        finally:
+            db_gen.close()
+
+    @strawberry.field
+    def provinces_by_country(self, info: Info, countryID: int) -> List[ProvincesInDB]:
+        """Obtener provincias filtradas por país"""
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            provinces = get_provinces_by_country(db, countryID)
+            return list_to_schema(ProvincesInDB, provinces)
         finally:
             db_gen.close()
 
