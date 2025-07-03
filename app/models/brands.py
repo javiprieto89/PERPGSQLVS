@@ -21,7 +21,7 @@ class Brands(Base):
 
     BrandID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
     Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    IsActive = Column(Boolean, server_default=text('((1))'))
+    IsActive = Column(Boolean, nullable=False, server_default=text('((1))'))
 
     # Relaciones
     items: Mapped[List['Items']] = relationship('Items', back_populates='brands_')
