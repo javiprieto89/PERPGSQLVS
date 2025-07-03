@@ -3,10 +3,11 @@ import strawberry
 from typing import Optional
 from app.graphql.schemas.clients import ClientsCreate, ClientsUpdate, ClientsInDB
 from app.graphql.crud.clients import (
-    create_clients, 
-    update_clients, 
+    create_clients,
+    update_clients,
     delete_clients,
 )
+from app.utils import obj_to_schema
 from app.db import get_db
 from strawberry.types import Info
 
@@ -18,7 +19,7 @@ class ClientsMutations:
         db = next(db_gen)
         try:
             new_client = create_clients(db, data)
-            return ClientsInDB(**new_client.__dict__)
+            return obj_to_schema(ClientsInDB, new_client)
         finally:
             db_gen.close()
 
@@ -30,7 +31,7 @@ class ClientsMutations:
             updated_client = update_clients(db, clientID, data)
             if not updated_client:
                 return None
-            return ClientsInDB(**updated_client.__dict__)
+            return obj_to_schema(ClientsInDB, updated_client)
         finally:
             db_gen.close()
 
@@ -53,6 +54,6 @@ class ClientsMutations:
             updated_client = update_clients(db, clientID, update_data)
             if not updated_client:
                 return None
-            return ClientsInDB(**updated_client.__dict__)
+            return obj_to_schema(ClientsInDB, updated_client)
         finally:
             db_gen.close()
