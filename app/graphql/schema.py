@@ -48,6 +48,7 @@ from app.graphql.resolvers.useractions import UseractionsQuery
 from app.graphql.resolvers.users import UsersQuery
 from app.graphql.resolvers.warehouses import WarehousesQuery
 from app.graphql.resolvers.vendors import VendorsQuery
+from app.graphql.mutations.clients import ClientsMutations
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
 from app.graphql.resolvers.auth import AuthQuery
@@ -312,8 +313,8 @@ class Query(
         )
 
 # MUTATION PRINCIPAL - COMPLETAMENTE CORREGIDO
-@strawberry.type  
-class Mutation:
+@strawberry.type
+class Mutation(ClientsMutations):
     """Mutaciones principales"""
     
     # ========== MUTACIONES DE AUTENTICACIÓN ==========
