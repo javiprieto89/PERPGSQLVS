@@ -63,6 +63,11 @@ FILTER_SCHEMAS = {
         {"field": "ItemCategoryID", "label": "ID de categoría", "type": "number"},
         {"field": "CategoryName", "label": "Nombre", "type": "text"}
     ],
+    "itemsubcategories": [
+        {"field": "ItemSubcategoryID", "label": "ID de subcategoría", "type": "number"},
+        {"field": "ItemCategoryID", "label": "Categoría", "type": "select", "relationModel": "ItemCategory"},
+        {"field": "SubcategoryName", "label": "Nombre", "type": "text"}
+    ],
     "countries": [
         {"field": "CountryID", "label": "ID de país", "type": "number"},
         {"field": "Name", "label": "Nombre", "type": "text"}

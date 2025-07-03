@@ -53,6 +53,9 @@ export default function Sidebar() {
         { label: "Proveedores", to: "/suppliers" },
         { label: "Marcas", to: "/brands" },
         { label: "Autos", to: "/carbrands" },
+        { label: "Categorías", to: "/itemcategories" },
+        { label: "Subcategorías", to: "/itemsubcategories" },
+        { label: "Ítems", to: "/items" },
       ],
     },
     {
@@ -73,16 +76,13 @@ export default function Sidebar() {
         { label: "Historial", to: "/orderhistory" },
       ],
     },
-    {
+  {
       title: "Inventario",
       items: [
-        { label: "Artículos", to: "/items" },
-        { label: "Categorías", to: "/itemcategories" },
-        { label: "Subcategorías", to: "/itemsubcategories" },
         { label: "Stock", to: "/itemstock" },
         { label: "Historial de stock", to: "/stockhistory" },
       ],
-    },
+  },
     {
       title: "Configuración",
       items: [
