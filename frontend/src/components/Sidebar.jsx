@@ -52,6 +52,7 @@ export default function Sidebar() {
         { label: "Clientes", to: "/clients" },
         { label: "Proveedores", to: "/suppliers" },
         { label: "Marcas", to: "/brands" },
+        { label: "Condiciones", to: "/saleconditions" },
         { label: "Autos", to: "/carbrands" },
         { label: "Categorías", to: "/itemcategories" },
         { label: "Subcategorías", to: "/itemsubcategories" },

@@ -102,6 +102,14 @@ FILTER_SCHEMAS = {
         {"field": "RoleID", "label": "ID de rol", "type": "number"},
         {"field": "Name", "label": "Nombre", "type": "text"}
     ],
+    "saleconditions": [
+        {"field": "SaleConditionID", "label": "ID de condición", "type": "number"},
+        {"field": "CreditCardID", "label": "Tarjeta", "type": "select", "relationModel": "CreditCard"},
+        {"field": "Name", "label": "Nombre", "type": "text"},
+        {"field": "DueDate", "label": "Vencimiento", "type": "text"},
+        {"field": "Surcharge", "label": "Recargo", "type": "number"},
+        {"field": "IsActive", "label": "Activo", "type": "boolean"}
+    ],
     "users": [
         {"field": "UserID", "label": "ID de usuario", "type": "number"},
         {"field": "Nickname", "label": "Usuario", "type": "text"},

@@ -458,6 +458,30 @@ export const QUERIES = {
         }
     `,
 
+    // CONDICIONES DE VENTA
+    GET_ALL_SALECONDITIONS: `
+        query GetAllSaleConditions {
+            allSaleconditions {
+                SaleConditionID
+                Name
+                DueDate
+                Surcharge
+                IsActive
+            }
+        }
+    `,
+    GET_SALECONDITION_BY_ID: `
+        query GetSaleConditionById($id: Int!) {
+            saleconditionsById(id: $id) {
+                SaleConditionID
+                Name
+                DueDate
+                Surcharge
+                IsActive
+            }
+        }
+    `,
+
     // BÚSQUEDA DE CLIENTES
     SEARCH_CLIENTS: `
         query SearchClients($searchTerm: String!, $isActive: Boolean) {
@@ -691,6 +715,35 @@ export const MUTATIONS = {
     DELETE_CARBRAND: `
         mutation DeleteCarBrand($carBrandID: Int!) {
             deleteCarbrand(carBrandID: $carBrandID)
+        }
+    `,
+
+    // CONDICIONES DE VENTA
+    CREATE_SALECONDITION: `
+        mutation CreateSaleCondition($input: SaleConditionsCreate!) {
+            createSalecondition(data: $input) {
+                SaleConditionID
+                Name
+                DueDate
+                Surcharge
+                IsActive
+            }
+        }
+    `,
+    UPDATE_SALECONDITION: `
+        mutation UpdateSaleCondition($saleConditionID: Int!, $input: SaleConditionsUpdate!) {
+            updateSalecondition(saleConditionID: $saleConditionID, data: $input) {
+                SaleConditionID
+                Name
+                DueDate
+                Surcharge
+                IsActive
+            }
+        }
+    `,
+    DELETE_SALECONDITION: `
+        mutation DeleteSaleCondition($saleConditionID: Int!) {
+            deleteSalecondition(saleConditionID: $saleConditionID)
         }
     `,
 
@@ -1199,6 +1252,65 @@ export const carBrandOperations = {
             return data.deleteCarbrand;
         } catch (error) {
             console.error("Error eliminando marca de auto:", error);
+            throw error;
+        }
+    }
+};
+
+export const saleConditionOperations = {
+    async getAllSaleConditions() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_SALECONDITIONS);
+            return data.allSaleconditions || [];
+        } catch (error) {
+            console.error("Error obteniendo condiciones de venta:", error);
+            throw error;
+        }
+    },
+
+    async getSaleConditionById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_SALECONDITION_BY_ID, { id });
+            return data.saleconditionsById;
+        } catch (error) {
+            console.error("Error obteniendo condición de venta:", error);
+            throw error;
+        }
+    },
+
+    async createSaleCondition(scData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_SALECONDITION, {
+                input: scData
+            });
+            return data.createSalecondition;
+        } catch (error) {
+            console.error("Error creando condición de venta:", error);
+            throw error;
+        }
+    },
+
+    async updateSaleCondition(id, scData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_SALECONDITION, {
+                saleConditionID: id,
+                input: scData
+            });
+            return data.updateSalecondition;
+        } catch (error) {
+            console.error("Error actualizando condición de venta:", error);
+            throw error;
+        }
+    },
+
+    async deleteSaleCondition(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_SALECONDITION, {
+                saleConditionID: id
+            });
+            return data.deleteSalecondition;
+        } catch (error) {
+            console.error("Error eliminando condición de venta:", error);
             throw error;
         }
     }
