@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { supplierOperations } from "../utils/graphqlClient";
 
 export default function SupplierCreate({ onClose, onSave, supplier: initialSupplier = null }) {
@@ -16,48 +16,13 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
         provinceID: null,
         isActive: true,
     });
-
-    const [formData, setFormData] = useState({
-        documentTypes: [],
-        countries: [],
-        provinces: []
-    });
-
-    const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [loadingForm, setLoadingForm] = useState(true);
-    const [isEdit, setIsEdit] = useState(false);
+    const [error, setError] = useState(null);
 
-    const loadFormData = useCallback(async () => {
-        try {
-            setLoadingForm(true);
-            const data = await supplierOperations.getSupplierFormData();
-            setFormData(data);
-            if (!isEdit && data.documentTypes.length > 0) {
-                setSupplier(prev => ({
-                    ...prev,
-                    docTypeID: data.documentTypes[0].DocTypeID,
-                    countryID: data.countries[0]?.CountryID || null,
-                    provinceID: data.provinces[0]?.ProvinceID || null,
-                }));
-            }
-        } catch (err) {
-            console.error("Error cargando datos del formulario:", err);
-            setError("Error cargando datos del formulario: " + err.message);
-        } finally {
-            setLoadingForm(false);
-        }
-    }, [isEdit]);
-
-    useEffect(() => {
-        loadFormData();
-    }, [loadFormData]);
-
-    useEffect(() => {
+    useState(() => {
         if (initialSupplier) {
-            setIsEdit(true);
             setSupplier({
-                docTypeID: parseInt(initialSupplier.DocTypeID) || null,
+                docTypeID: initialSupplier.DocTypeID,
                 docNumber: initialSupplier.DocNumber || "",
                 firstName: initialSupplier.FirstName || "",
                 lastName: initialSupplier.LastName || "",
@@ -66,30 +31,19 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
                 address: initialSupplier.Address || "",
                 city: initialSupplier.City || "",
                 postalCode: initialSupplier.PostalCode || "",
-                countryID: parseInt(initialSupplier.CountryID) || null,
-                provinceID: parseInt(initialSupplier.ProvinceID) || null,
+                countryID: initialSupplier.CountryID,
+                provinceID: initialSupplier.ProvinceID,
                 isActive: initialSupplier.IsActive !== false,
             });
         }
-    }, [initialSupplier]);
+    }, []);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        let processed;
-        if (type === "checkbox") processed = checked;
-        else if (name.includes("ID")) processed = parseInt(value) || null;
-        else processed = value;
-
-        setSupplier(prev => ({ ...prev, [name]: processed }));
-
-        if (name === "countryID") {
-            const provs = formData.provinces.filter(p => p.CountryID === parseInt(value));
-            setSupplier(prev => ({
-                ...prev,
-                countryID: parseInt(value),
-                provinceID: provs[0]?.ProvinceID || null,
-            }));
-        }
+        setSupplier(prev => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value,
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -98,13 +52,13 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
         setError(null);
         try {
             let result;
-            if (isEdit) {
+            if (initialSupplier) {
                 result = await supplierOperations.updateSupplier(initialSupplier.SupplierID, supplier);
             } else {
                 result = await supplierOperations.createSupplier(supplier);
             }
-            onSave && onSave(result);
-            onClose && onClose();
+            if (onSave) onSave(result);
+            if (onClose) onClose();
         } catch (err) {
             console.error("Error guardando proveedor:", err);
             setError(err.message);
@@ -113,240 +67,70 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
         }
     };
 
-    const availableProvinces = formData.provinces.filter(p => p.CountryID === supplier.countryID);
-
-    if (loadingForm) {
-        return (
-            <div className="p-6 max-w-4xl mx-auto">
-                <div className="flex items-center justify-center h-64">
-                    <div className="text-center">
-                        <svg className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <p className="text-gray-600">Cargando formulario...</p>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="p-6 max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">
-                {isEdit ? 'Editar Proveedor' : 'Nuevo Proveedor'}
-            </h2>
-
-            {error && (
-                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-red-600">{error}</p>
-                </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Documento */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-4">Información del Documento</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Tipo de Documento *</label>
-                            <select
-                                name="docTypeID"
-                                value={supplier.docTypeID || ''}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                required
-                            >
-                                {formData.documentTypes.map(dt => (
-                                    <option key={dt.DocTypeID} value={dt.DocTypeID}>{dt.Name}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Número de Documento</label>
-                            <input
-                                type="text"
-                                name="docNumber"
-                                value={supplier.docNumber}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Personal */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-4">Información Personal</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Nombre *</label>
-                            <input
-                                type="text"
-                                name="firstName"
-                                value={supplier.firstName}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Apellido</label>
-                            <input
-                                type="text"
-                                name="lastName"
-                                value={supplier.lastName}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Contacto */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-4">Información de Contacto</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Email</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={supplier.email}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Teléfono</label>
-                            <input
-                                type="tel"
-                                name="phone"
-                                value={supplier.phone}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Ubicación */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="text-lg font-semibold mb-4">Información de Ubicación</h3>
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Dirección</label>
-                            <input
-                                type="text"
-                                name="address"
-                                value={supplier.address}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-2">País *</label>
-                                <select
-                                    name="countryID"
-                                    value={supplier.countryID || ''}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    required
-                                >
-                                    {formData.countries.map(c => (
-                                        <option key={c.CountryID} value={c.CountryID}>{c.Name}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Provincia *</label>
-                                <select
-                                    name="provinceID"
-                                    value={supplier.provinceID || ''}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    required
-                                >
-                                    {availableProvinces.length > 0 ? (
-                                        availableProvinces.map(p => (
-                                            <option key={p.ProvinceID} value={p.ProvinceID}>{p.Name}</option>
-                                        ))
-                                    ) : (
-                                        <option value="">No hay provincias disponibles</option>
-                                    )}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Ciudad</label>
-                                <input
-                                    type="text"
-                                    name="city"
-                                    value={supplier.city}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                />
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-2">Código Postal</label>
-                                <input
-                                    type="text"
-                                    name="postalCode"
-                                    value={supplier.postalCode}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Activo */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="mt-4">
-                        <label className="flex items-center space-x-3">
-                            <input
-                                type="checkbox"
-                                name="isActive"
-                                checked={supplier.isActive}
-                                onChange={handleChange}
-                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                            />
-                            <span className="text-sm font-medium">Proveedor activo</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div className="flex justify-end space-x-4 pt-6 border-t">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        disabled={loading}
-                        className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                        Cancelar
-                    </button>
-                    <button
-                        type="submit"
-                        disabled={loading || !supplier.firstName.trim()}
-                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors"
-                    >
-                        {loading ? (
-                            <>
-                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                {isEdit ? 'Actualizando...' : 'Guardando...'}
-                            </>
-                        ) : (
-                            isEdit ? 'Actualizar Proveedor' : 'Guardar Proveedor'
-                        )}
-                    </button>
-                </div>
-            </form>
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4 p-6 max-w-xl mx-auto">
+            <h2 className="text-xl font-bold">{initialSupplier ? 'Editar Proveedor' : 'Nuevo Proveedor'}</h2>
+            {error && <p className="text-red-600">{error}</p>}
+            <input
+                name="firstName"
+                value={supplier.firstName}
+                onChange={handleChange}
+                placeholder="Nombre"
+                className="w-full border p-2"
+            />
+            <input
+                name="lastName"
+                value={supplier.lastName}
+                onChange={handleChange}
+                placeholder="Apellido"
+                className="w-full border p-2"
+            />
+            <input
+                name="email"
+                value={supplier.email}
+                onChange={handleChange}
+                placeholder="Email"
+                className="w-full border p-2"
+            />
+            <input
+                name="phone"
+                value={supplier.phone}
+                onChange={handleChange}
+                placeholder="Teléfono"
+                className="w-full border p-2"
+            />
+            <input
+                name="address"
+                value={supplier.address}
+                onChange={handleChange}
+                placeholder="Dirección"
+                className="w-full border p-2"
+            />
+            <label className="flex items-center gap-2">
+                <input
+                    type="checkbox"
+                    name="isActive"
+                    checked={supplier.isActive}
+                    onChange={handleChange}
+                />
+                Activo
+            </label>
+            <div className="flex justify-end gap-2">
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="bg-gray-300 px-4 py-2 rounded"
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                >
+                    {loading ? 'Guardando...' : 'Guardar Proveedor'}
+                </button>
+            </div>
+        </form>
     );
 }
