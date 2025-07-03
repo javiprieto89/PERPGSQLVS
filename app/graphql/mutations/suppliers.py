@@ -1,4 +1,4 @@
-# app/graphql/mutations/suppliers.py
+﻿# app/graphql/mutations/suppliers.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.suppliers import SuppliersCreate, SuppliersUpdate, SuppliersInDB

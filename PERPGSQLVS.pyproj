@@ -31,8 +31,10 @@
     <Compile Include="app\config.py" />
     <Compile Include="app\db.py" />
     <Compile Include="app\graphql\crud\vendors.py" />
+    <Compile Include="app\graphql\mutations\brands.py" />
     <Compile Include="app\graphql\mutations\clients.py" />
     <Compile Include="app\graphql\mutations\doctypes.py" />
+    <Compile Include="app\graphql\mutations\suppliers.py" />
     <Compile Include="app\graphql\resolvers\vendors.py" />
     <Compile Include="app\graphql\schemas\vendors.py" />
     <Compile Include="app\utils\filter_schemas.py" />
@@ -15969,6 +15971,8 @@
     <Content Include="frontend\src\input.css" />
     <Content Include="frontend\src\main.jsx" />
     <Content Include="frontend\src\output.css" />
+    <Content Include="frontend\src\pages\BrandCreate.jsx" />
+    <Content Include="frontend\src\pages\Brands.jsx" />
     <Content Include="frontend\src\pages\c.jsx" />
     <Content Include="frontend\src\pages\ClientCreate.jsx" />
     <Content Include="frontend\src\pages\Clients.jsx" />

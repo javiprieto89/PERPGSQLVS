@@ -1,4 +1,4 @@
-# app/graphql/mutations/brands.py
+﻿# app/graphql/mutations/brands.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.brands import BrandsCreate, BrandsUpdate, BrandsInDB
