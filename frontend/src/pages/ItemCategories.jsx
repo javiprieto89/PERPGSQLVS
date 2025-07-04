@@ -2,17 +2,26 @@ import { useEffect, useState } from "react";
 import { itemCategoryOperations } from "../utils/graphqlClient";
 import ItemCategoryCreate from "./ItemCategoryCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function ItemCategories() {
     const [allCategories, setAllCategories] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editingCategory, setEditingCategory] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => { loadCategories(); }, []);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-itemcategories') {
+                loadCategories();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     const loadCategories = async () => {
         try {
@@ -29,15 +38,20 @@ export default function ItemCategories() {
         }
     };
 
-    const handleCategorySaved = () => {
-        loadCategories();
-        setShowModal(false);
-        setEditingCategory(null);
-    };
 
     const handleCreate = () => {
-        setEditingCategory(null);
-        setShowModal(true);
+        openReactWindow(
+            () => (
+                <ItemCategoryCreate
+                    onSave={() => {
+                        window.opener.postMessage('reload-itemcategories', '*');
+                        window.close();
+                    }}
+                    onClose={() => window.close()}
+                />
+            ),
+            'Nueva Categoría'
+        );
     };
 
     const handleFilterChange = (filtered) => {
@@ -45,8 +59,19 @@ export default function ItemCategories() {
     };
 
     const handleEdit = (category) => {
-        setEditingCategory(category);
-        setShowModal(true);
+        openReactWindow(
+            () => (
+                <ItemCategoryCreate
+                    category={category}
+                    onSave={() => {
+                        window.opener.postMessage('reload-itemcategories', '*');
+                        window.close();
+                    }}
+                    onClose={() => window.close()}
+                />
+            ),
+            'Editar Categoría'
+        );
     };
 
     return (
@@ -91,17 +116,6 @@ export default function ItemCategories() {
                             <button onClick={() => handleEdit(cat)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}
-                </div>
-            )}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                        <ItemCategoryCreate
-                            onClose={() => { setShowModal(false); setEditingCategory(null); }}
-                            onSave={handleCategorySaved}
-                            category={editingCategory}
-                        />
-                    </div>
                 </div>
             )}
         </div>

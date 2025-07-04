@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { saleConditionOperations, creditCardOperations, creditCardGroupOperations } from "../utils/graphqlClient";
 import SaleConditionCreate from "./SaleConditionCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function SaleConditions() {
     const [allSaleConditions, setAllSaleConditions] = useState([]);
@@ -10,11 +11,19 @@ export default function SaleConditions() {
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editingSC, setEditingSC] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => { loadSCs(); }, []);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-saleconditions') {
+                loadSCs();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     const loadSCs = async () => {
         try {
@@ -37,15 +46,22 @@ export default function SaleConditions() {
         }
     };
 
-    const handleSaved = () => {
-        loadSCs();
-        setShowModal(false);
-        setEditingSC(null);
-    };
 
     const handleCreate = () => {
-        setEditingSC(null);
-        setShowModal(true);
+        openReactWindow(
+            () => (
+                <SaleConditionCreate
+                    cards={cards}
+                    groups={groups}
+                    onSave={() => {
+                        window.opener.postMessage('reload-saleconditions', '*');
+                        window.close();
+                    }}
+                    onClose={() => window.close()}
+                />
+            ),
+            'Nueva Condición'
+        );
     };
 
     const handleFilterChange = (filtered) => {
@@ -53,8 +69,21 @@ export default function SaleConditions() {
     };
 
     const handleEdit = (sc) => {
-        setEditingSC(sc);
-        setShowModal(true);
+        openReactWindow(
+            () => (
+                <SaleConditionCreate
+                    saleCondition={sc}
+                    cards={cards}
+                    groups={groups}
+                    onSave={() => {
+                        window.opener.postMessage('reload-saleconditions', '*');
+                        window.close();
+                    }}
+                    onClose={() => window.close()}
+                />
+            ),
+            'Editar Condición'
+        );
     };
 
     return (
@@ -109,17 +138,6 @@ export default function SaleConditions() {
                             </div>
                         );
                     })}
-                </div>
-            )}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                        <SaleConditionCreate
-                            onClose={() => { setShowModal(false); setEditingSC(null); }}
-                            onSave={handleSaved}
-                            saleCondition={editingSC}
-                        />
-                    </div>
                 </div>
             )}
         </div>

@@ -2,17 +2,26 @@ import { useEffect, useState } from "react";
 import { brandOperations } from "../utils/graphqlClient";
 import BrandCreate from "./BrandCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function Brands() {
     const [allBrands, setAllBrands] = useState([]);
     const [brands, setBrands] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editingBrand, setEditingBrand] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => { loadBrands(); }, []);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-brands') {
+                loadBrands();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     const loadBrands = async () => {
         try {
@@ -29,15 +38,20 @@ export default function Brands() {
         }
     };
 
-    const handleBrandSaved = () => {
-        loadBrands();
-        setShowModal(false);
-        setEditingBrand(null);
-    };
 
     const handleCreate = () => {
-        setEditingBrand(null);
-        setShowModal(true);
+        openReactWindow(
+            () => (
+                <BrandCreate
+                    onSave={() => {
+                        window.opener.postMessage('reload-brands', '*');
+                        window.close();
+                    }}
+                    onClose={() => window.close()}
+                />
+            ),
+            'Nueva Marca'
+        );
     };
 
     const handleFilterChange = (filtered) => {
@@ -45,8 +59,19 @@ export default function Brands() {
     };
 
     const handleEdit = (brand) => {
-        setEditingBrand(brand);
-        setShowModal(true);
+        openReactWindow(
+            () => (
+                <BrandCreate
+                    brand={brand}
+                    onSave={() => {
+                        window.opener.postMessage('reload-brands', '*');
+                        window.close();
+                    }}
+                    onClose={() => window.close()}
+                />
+            ),
+            'Editar Marca'
+        );
     };
 
     return (
@@ -92,17 +117,6 @@ export default function Brands() {
                             <button onClick={() => handleEdit(br)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}
-                </div>
-            )}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                        <BrandCreate
-                            onClose={() => { setShowModal(false); setEditingBrand(null); }}
-                            onSave={handleBrandSaved}
-                            brand={editingBrand}
-                        />
-                    </div>
                 </div>
             )}
         </div>
