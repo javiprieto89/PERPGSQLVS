@@ -2,17 +2,26 @@ import { useEffect, useState } from "react";
 import { itemSubcategoryOperations } from "../utils/graphqlClient";
 import ItemSubcategoryCreate from "./ItemSubcategoryCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function ItemSubcategories() {
     const [allSubcategories, setAllSubcategories] = useState([]);
     const [subcategories, setSubcategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editingSubcategory, setEditingSubcategory] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => { loadSubcategories(); }, []);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-itemsubcategories') {
+                loadSubcategories();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     const loadSubcategories = async () => {
         try {
@@ -31,13 +40,21 @@ export default function ItemSubcategories() {
 
     const handleSubcategorySaved = () => {
         loadSubcategories();
-        setShowModal(false);
-        setEditingSubcategory(null);
     };
 
     const handleCreate = () => {
-        setEditingSubcategory(null);
-        setShowModal(true);
+        openReactWindow(
+            () => (
+                <ItemSubcategoryCreate
+                    onSave={() => {
+                        window.opener.postMessage('reload-itemsubcategories', '*');
+                        window.close();
+                    }}
+                    onClose={() => window.close()}
+                />
+            ),
+            'Nueva Subcategoría'
+        );
     };
 
     const handleFilterChange = (filtered) => {
@@ -45,8 +62,19 @@ export default function ItemSubcategories() {
     };
 
     const handleEdit = (subcat) => {
-        setEditingSubcategory(subcat);
-        setShowModal(true);
+        openReactWindow(
+            () => (
+                <ItemSubcategoryCreate
+                    subcategory={subcat}
+                    onSave={() => {
+                        window.opener.postMessage('reload-itemsubcategories', '*');
+                        window.close();
+                    }}
+                    onClose={() => window.close()}
+                />
+            ),
+            'Editar Subcategoría'
+        );
     };
 
     return (
@@ -92,17 +120,6 @@ export default function ItemSubcategories() {
                             <button onClick={() => handleEdit(sc)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}
-                </div>
-            )}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                        <ItemSubcategoryCreate
-                            onClose={() => { setShowModal(false); setEditingSubcategory(null); }}
-                            onSave={handleSubcategorySaved}
-                            subcategory={editingSubcategory}
-                        />
-                    </div>
                 </div>
             )}
         </div>
