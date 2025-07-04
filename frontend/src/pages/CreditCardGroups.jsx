@@ -2,17 +2,26 @@ import { useEffect, useState } from "react";
 import { creditCardGroupOperations } from "../utils/graphqlClient";
 import CreditCardGroupCreate from "./CreditCardGroupCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function CreditCardGroups() {
     const [allGroups, setAllGroups] = useState([]);
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editingGroup, setEditingGroup] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => { loadGroups(); }, []);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-cardgroups') {
+                loadGroups();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     const loadGroups = async () => {
         try {
@@ -30,13 +39,21 @@ export default function CreditCardGroups() {
 
     const handleSaved = () => {
         loadGroups();
-        setShowModal(false);
-        setEditingGroup(null);
     };
 
     const handleCreate = () => {
-        setEditingGroup(null);
-        setShowModal(true);
+        openReactWindow(
+            () => (
+                <CreditCardGroupCreate
+                    onSave={() => {
+                        window.opener.postMessage('reload-cardgroups', '*');
+                        window.close();
+                    }}
+                    onClose={() => window.close()}
+                />
+            ),
+            'Nuevo Grupo'
+        );
     };
 
     const handleFilterChange = (filtered) => {
@@ -44,8 +61,19 @@ export default function CreditCardGroups() {
     };
 
     const handleEdit = (group) => {
-        setEditingGroup(group);
-        setShowModal(true);
+        openReactWindow(
+            () => (
+                <CreditCardGroupCreate
+                    group={group}
+                    onSave={() => {
+                        window.opener.postMessage('reload-cardgroups', '*');
+                        window.close();
+                    }}
+                    onClose={() => window.close()}
+                />
+            ),
+            'Editar Grupo'
+        );
     };
 
     return (
@@ -90,17 +118,6 @@ export default function CreditCardGroups() {
                             <button onClick={() => handleEdit(g)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}
-                </div>
-            )}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                        <CreditCardGroupCreate
-                            onClose={() => { setShowModal(false); setEditingGroup(null); }}
-                            onSave={handleSaved}
-                            group={editingGroup}
-                        />
-                    </div>
                 </div>
             )}
         </div>
