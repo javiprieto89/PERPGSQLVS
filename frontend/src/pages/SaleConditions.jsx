@@ -46,7 +46,6 @@ export default function SaleConditions() {
         }
     };
 
-
     const handleCreate = () => {
         openReactWindow(
             (popup) => (
@@ -70,6 +69,7 @@ export default function SaleConditions() {
 
     const handleEdit = (sc) => {
         openReactWindow(
+
             (popup) => (
                 <SaleConditionCreate
                     saleCondition={sc}

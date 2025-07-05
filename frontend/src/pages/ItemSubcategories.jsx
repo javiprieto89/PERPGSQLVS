@@ -38,8 +38,7 @@ export default function ItemSubcategories() {
         }
     };
 
-
-    const handleCreate = () => {
+  const handleCreate = () => {
         openReactWindow(
             (popup) => (
                 <ItemSubcategoryCreate
