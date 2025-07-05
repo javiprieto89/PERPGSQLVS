@@ -1,4 +1,4 @@
-import strawberry
+﻿import strawberry
 from typing import Optional
 from app.graphql.schemas.cars import CarsCreate, CarsUpdate, CarsInDB
 from app.graphql.crud.cars import (

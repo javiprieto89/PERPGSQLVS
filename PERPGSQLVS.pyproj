@@ -15973,6 +15973,10 @@
     <Content Include="frontend\src\output.css" />
     <Content Include="frontend\src\pages\BrandCreate.jsx" />
     <Content Include="frontend\src\pages\Brands.jsx" />
+    <Content Include="frontend\src\pages\CarCreate.jsx" />
+    <Content Include="frontend\src\pages\CarModelCreate.jsx" />
+    <Content Include="frontend\src\pages\CarModels.jsx" />
+    <Content Include="frontend\src\pages\Cars.jsx" />
     <Content Include="frontend\src\pages\ClientCreate.jsx" />
     <Content Include="frontend\src\pages\Clients.jsx" />
     <Content Include="frontend\src\pages\Dashboard.jsx" />
