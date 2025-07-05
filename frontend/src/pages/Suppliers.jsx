@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { graphqlClient, QUERIES, diagnosticGraphQL } from "../utils/graphqlClient";
 import SupplierCreate from "./SupplierCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 function SupplierDetails({ supplier, onClose }) {
     if (!supplier) return null;
@@ -33,13 +34,21 @@ export default function Suppliers() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [debugInfo, setDebugInfo] = useState(null);
-    const [showCreateModal, setShowCreateModal] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
     const [selectedSupplier, setSelectedSupplier] = useState(null);
-    const [editingSupplier, setEditingSupplier] = useState(null);
 
     useEffect(() => {
         loadSuppliers();
+    }, []);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-suppliers') {
+                loadSuppliers();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
     }, []);
 
     const loadSuppliers = async () => {
@@ -80,22 +89,38 @@ export default function Suppliers() {
     };
 
     const handleCreateSupplier = () => {
-        setShowCreateModal(true);
+        openReactWindow(
+            (popup) => (
+                <SupplierCreate
+                    onSave={() => {
+                        popup.opener.postMessage('reload-suppliers', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Nuevo Proveedor'
+        );
     };
 
     const handleEditSupplier = (supplier) => {
-        setEditingSupplier(supplier);
-        setShowCreateModal(true);
+        openReactWindow(
+            (popup) => (
+                <SupplierCreate
+                    supplier={supplier}
+                    onSave={() => {
+                        popup.opener.postMessage('reload-suppliers', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Editar Proveedor'
+        );
     };
 
     const handleViewDetails = (supplier) => {
         setSelectedSupplier(supplier);
-    };
-
-    const handleSupplierSaved = () => {
-        loadSuppliers();
-        setShowCreateModal(false);
-        setEditingSupplier(null);
     };
 
     const handleFilterChange = (filtered) => {
@@ -249,17 +274,6 @@ export default function Suppliers() {
                         <button onClick={handleCreateSupplier} className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                             Crear Primer Proveedor
                         </button>
-                    </div>
-                </div>
-            )}
-            {showCreateModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-                        <SupplierCreate
-                            onClose={() => { setShowCreateModal(false); setEditingSupplier(null); }}
-                            onSave={handleSupplierSaved}
-                            supplier={editingSupplier}
-                        />
                     </div>
                 </div>
             )}

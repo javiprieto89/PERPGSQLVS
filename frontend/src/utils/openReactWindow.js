@@ -9,8 +9,8 @@ import { createRoot } from "react-dom/client";
  * @param {{ width?: number, height?: number }} options
  */
 export function openReactWindow(ComponentFn, title = "Ventana", options = {}) {
-  const width  = options.width  ||  1000;
-  const height = options.height ||   700;
+  const width  = options.width  || 1000;
+  const height = options.height || 700;
 
   // 1) Abro ventana en blanco
   const newWindow = window.open(
@@ -26,6 +26,13 @@ export function openReactWindow(ComponentFn, title = "Ventana", options = {}) {
   // 2) Personalizo el título
   newWindow.document.title = title;
 
+  // Copiar estilos y hojas de estilo
+  Array.from(document.querySelectorAll('link[rel="stylesheet"], style')).forEach(
+    (node) => {
+      newWindow.document.head.appendChild(node.cloneNode(true));
+    }
+  );
+
   // 3) Creo el contenedor React
   const container = newWindow.document.createElement("div");
   container.id = "react-window-root";
@@ -34,6 +41,6 @@ export function openReactWindow(ComponentFn, title = "Ventana", options = {}) {
 
   // 4) Montaje de React en la nueva ventana
   const root = createRoot(container);
-  // Si `ComponentFn` devuelve JSX, llamalo así:
-  root.render(ComponentFn());
+  // Pasar referencia de la ventana al componente
+  root.render(ComponentFn(newWindow));
 }
