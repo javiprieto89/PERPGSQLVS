@@ -175,9 +175,9 @@ export default function Sidebar() {
                                         to={sub.to}
                                         className={({ isActive }) =>
                                           `flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 ${
-                                            isActive ? "bg-gray-200 font-medium" : "text-gray-700"`
-                                        }
-                                      >
+                                            isActive ? "bg-gray-200 font-medium" : "text-gray-700"
+                                          }`
+                                        >
                                         <FileText size={16} />
                                         {sub.label}
                                       </NavLink>
@@ -222,12 +222,12 @@ export default function Sidebar() {
                           )}
                         </li>
                       );
-                    })}
+                    })
                   </ul>
                 )}
               </div>
             );
-          })}
+          })
         </nav>
       </aside>
       {popup}
