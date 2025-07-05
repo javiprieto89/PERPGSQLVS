@@ -1,43 +1,57 @@
 # PERPGSQLVS
 
-This repository contains a FastAPI application together with a small React frontend.
+PERPGSQLVS is a small full‑stack project composed of a FastAPI back‑end and a React front‑end. The API exposes GraphQL and REST endpoints while the front‑end uses Vite and Tailwind CSS.
 
 ## Configuration
 
-The backend reads its settings from environment variables. You can copy `.env.template` to `.env` and adjust the values. The most important variables are:
+Copy `.env.template` to `.env` and adjust the variables for your environment. At minimum set `SQLALCHEMY_DATABASE_URL`, `ENVIRONMENT`, `DEBUG` and `SECRET_KEY`.
 
-- `SQLALCHEMY_DATABASE_URL` – SQLAlchemy connection string for the database.
-- `ENVIRONMENT` – set to `development`, `testing` or `production`.
-- `DEBUG` – enables debug mode when `true`.
-- `SECRET_KEY` – JWT secret key.
+## Setup
 
-Any variable present in `.env.template` can be configured in the same way.
-
-## Running locally
-
-1. Install Python dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. Start the backend:
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-
-See `Como iniciar.txt` for additional development tips.
-
-## Updating relationships
-
-The `app/ChangeModels.py` helper analyzes the SQLAlchemy models and
-ensures that reciprocal `relationship()` definitions are kept in sync.
-It looks for the models directory in this order:
-
-1. The `--models-dir` command-line argument.
-2. The `MODELS_DIR` environment variable.
-3. `app/models` relative to the repository root.
-
-Example usage:
+### Back‑end
 
 ```bash
-python app/ChangeModels.py --models-dir path/to/models
+# create and activate a virtual environment
+python -m venv perpenv
+perpenv\scripts\activate  # on Windows
+# or source perpenv/bin/activate on Linux/macOS
+
+# install Python dependencies
+pip install -r requirements.txt
+
+# start the API
+uvicorn app.main:app --reload
 ```
+
+### Front‑end
+
+```bash
+cd frontend
+npm install
+
+# watch Tailwind and generate CSS
+npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch
+
+# start the development server
+npm run dev
+```
+
+### ESLint
+
+Run `npm run lint` from the repository root or inside `frontend/` to lint the JavaScript/React code.
+
+## Deployment
+
+The `deploy.py` script automates a simple deployment workflow. Execute:
+
+```bash
+python deploy.py
+```
+
+or start a production server directly with:
+
+```bash
+python deploy.py start
+```
+
+This checks prerequisites, installs dependencies, optionally backs up the current deployment and runs the API under Uvicorn.
