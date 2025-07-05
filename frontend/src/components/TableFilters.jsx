@@ -1,5 +1,5 @@
 ﻿// frontend/src/components/TableFilters.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { graphqlClient } from "../utils/graphqlClient";
 
 const TEXT_OPERATORS = [
@@ -77,13 +77,20 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
     const [filters, setFilters] = useState({});
     const [options, setOptions] = useState({}); // Opciones de selects
     const [loading, setLoading] = useState(true);
+    const [componentKey, setComponentKey] = useState(0); // Para forzar re-renderizado
+
+    // Memoizar el modelo y datos para evitar bucles
+    const memoizedModelName = useMemo(() => modelName, [modelName]);
+    const memoizedData = useMemo(() => data, [data]);
 
     // 1. Cargar definición de filtros del backend
     useEffect(() => {
         async function loadFilterFields() {
+            if (!memoizedModelName) return;
+
             setLoading(true);
             try {
-                const res = await graphqlClient.query(FILTER_FIELDS_QUERY, { model: modelName });
+                const res = await graphqlClient.query(FILTER_FIELDS_QUERY, { model: memoizedModelName });
                 setFilterFields(res.filterFields || []);
             } catch (err) {
                 console.error("Error cargando definición de filtros:", err);
@@ -91,13 +98,16 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
             }
             setLoading(false);
         }
-        if (modelName) loadFilterFields();
-    }, [modelName]);
+
+        loadFilterFields();
+    }, [memoizedModelName]);
 
     // 2. Cargar opciones para campos de tipo select
     useEffect(() => {
         async function loadOptions() {
             const selectFields = filterFields.filter(f => f.type === "select");
+            if (selectFields.length === 0) return;
+
             const newOptions = {};
 
             for (const field of selectFields) {
@@ -135,11 +145,12 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
         }
     }, [filterFields]);
 
-    // 3. Aplicar filtros cuando cambian
-    useEffect(() => {
-        if (!data || !filterFields.length) return;
+    // 3. Aplicar filtros cuando cambian - OPTIMIZADO
+    const applyFilters = useCallback(() => {
+        if (!memoizedData || !filterFields.length) return;
 
-        let filtered = [...data];
+        let filtered = [...memoizedData];
+
         for (const [field, value] of Object.entries(filters)) {
             if (!value || value === "" || value === "all") continue;
 
@@ -147,34 +158,33 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
             if (!fieldDef) continue;
 
             const operator = filters[`${field}_op`] || "contains";
-            const realField = field;
 
             switch (fieldDef.type) {
                 case "text":
                     switch (operator) {
                         case "startsWith":
                             filtered = filtered.filter(item =>
-                                String(item[realField] || "").toLowerCase().startsWith(value.toLowerCase())
+                                String(item[field] || "").toLowerCase().startsWith(value.toLowerCase())
                             );
                             break;
                         case "contains":
                             filtered = filtered.filter(item =>
-                                String(item[realField] || "").toLowerCase().includes(value.toLowerCase())
+                                String(item[field] || "").toLowerCase().includes(value.toLowerCase())
                             );
                             break;
                         case "equals":
                             filtered = filtered.filter(item =>
-                                String(item[realField] || "").toLowerCase() === value.toLowerCase()
+                                String(item[field] || "").toLowerCase() === value.toLowerCase()
                             );
                             break;
                         case "notEquals":
                             filtered = filtered.filter(item =>
-                                String(item[realField] || "").toLowerCase() !== value.toLowerCase()
+                                String(item[field] || "").toLowerCase() !== value.toLowerCase()
                             );
                             break;
                         case "notContains":
                             filtered = filtered.filter(item =>
-                                !String(item[realField] || "").toLowerCase().includes(value.toLowerCase())
+                                !String(item[field] || "").toLowerCase().includes(value.toLowerCase())
                             );
                             break;
                         default:
@@ -182,20 +192,33 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                     }
                     break;
                 case "number":
-                    filtered = filtered.filter(item => parseInt(item[realField]) === parseInt(value));
+                    filtered = filtered.filter(item => parseInt(item[field]) === parseInt(value));
                     break;
                 case "boolean":
-                    filtered = filtered.filter(item => (item[realField] === (value === "true" || value === true)));
+                    filtered = filtered.filter(item => (item[field] === (value === "true" || value === true)));
                     break;
                 case "select":
-                    filtered = filtered.filter(item => (item[realField] == value));
+                    filtered = filtered.filter(item => (item[field] == value));
                     break;
                 default:
                     break;
             }
         }
-        onFilterChange(filtered);
-    }, [filters, data, filterFields, onFilterChange]);
+
+        // Solo llamar onFilterChange si hay cambios
+        if (JSON.stringify(filtered) !== JSON.stringify(memoizedData)) {
+            onFilterChange(filtered);
+        }
+    }, [filters, memoizedData, filterFields, onFilterChange]);
+
+    // Aplicar filtros cuando cambian los filtros
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            applyFilters();
+        }, 300); // Debounce de 300ms
+
+        return () => clearTimeout(timeoutId);
+    }, [applyFilters]);
 
     // Función para cargar provincias por país
     const loadProvincesByCountry = async (countryID, fieldName) => {
@@ -257,7 +280,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
         }
     };
 
-    const handleChange = (field, value) => {
+    const handleChange = useCallback((field, value) => {
         setFilters(prev => ({
             ...prev,
             [field]: value
@@ -289,30 +312,32 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                 }));
             }
         }
-    };
+    }, [filterFields]);
 
-    const handleOperatorChange = (field, value) => {
+    const handleOperatorChange = useCallback((field, value) => {
         setFilters(prev => ({
             ...prev,
             [`${field}_op`]: value
         }));
-    };
+    }, []);
 
-    const clearFilters = () => {
+    const clearFilters = useCallback(() => {
         setFilters({});
-        onFilterChange(data);
-    };
+        setComponentKey(prev => prev + 1); // Forzar re-render
+        // Aplicar datos originales inmediatamente
+        onFilterChange(memoizedData);
+    }, [memoizedData, onFilterChange]);
 
     // Función para formatear el nombre del cliente
-    const formatClientName = (client) => {
+    const formatClientName = useCallback((client) => {
         if (client.FirstName && client.LastName) {
             return `${client.FirstName} ${client.LastName}`;
         }
         return client.FirstName || client.LastName || `Cliente ${client.ClientID}`;
-    };
+    }, []);
 
     // Render dinámico según definición
-    const renderInput = (field) => {
+    const renderInput = useCallback((field) => {
         const value = filters[field.field] || "";
         const operator = filters[`${field.field}_op`] || "contains";
 
@@ -396,13 +421,22 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                 </select>
             );
         return null;
-    };
+    }, [filters, options, handleChange, handleOperatorChange, formatClientName]);
+
+    // Reset del componente cuando cambia el modelo
+    useEffect(() => {
+        setFilters({});
+        setOptions({});
+        setComponentKey(prev => prev + 1);
+    }, [memoizedModelName]);
 
     return (
-        <div className="bg-white rounded-lg border border-gray-200">
+        <div key={componentKey} className="bg-white rounded-lg border border-gray-200">
             <div className="px-4 py-3 border-b border-gray-200">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium text-gray-900">Filtros</h3>
+                    <h3 className="text-lg font-medium text-gray-900">
+                        Filtros {memoizedModelName && `- ${memoizedModelName}`}
+                    </h3>
                     <button
                         onClick={clearFilters}
                         className="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -428,7 +462,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filterFields.map(field => (
-                            <div key={field.field} className="space-y-1">
+                            <div key={`${field.field}-${componentKey}`} className="space-y-1">
                                 <label className="block text-sm font-medium text-gray-700">
                                     {field.label}
                                     {field.dependsOn && (

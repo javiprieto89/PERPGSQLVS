@@ -1,4 +1,4 @@
-// frontend/src/pages/CarCreate.jsx
+﻿// frontend/src/pages/CarCreate.jsx
 import React, { useState, useEffect } from 'react';
 import { graphqlClient, QUERIES, MUTATIONS } from '../utils/graphqlClient';
 import { carBrandOperations, carModelOperations, clientOperations } from '../utils/graphqlClient';
@@ -368,7 +368,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                     isOpen={true}
                     onClose={() => setShowModelModal(false)}
                     onModelSelect={handleModelSelect}
-                    selectedBrandID={form.carBrandID || null} // AGREGADO: Pasar la marca seleccionada
+                    selectedCarBrandID={form.carBrandID || null} // CAMBIO: Nombre más consistente
                 />
             )}
 

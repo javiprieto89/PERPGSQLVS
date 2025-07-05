@@ -1,4 +1,5 @@
-﻿const GRAPHQL_ENDPOINT = "http://127.0.0.1:8000/graphql/";
+﻿// utils/graphqlClient.js
+const GRAPHQL_ENDPOINT = "http://127.0.0.1:8000/graphql/";
 
 class GraphQLClient {
     constructor() {
@@ -494,6 +495,9 @@ export const QUERIES = {
                 CarBrandID
                 CarBrandName
                 ClientID
+                ClientFirstName
+                ClientLastName
+                ClientName
                 LastServiceMileage
                 IsDebtor
                 DiscountID
@@ -511,6 +515,9 @@ export const QUERIES = {
                 CarBrandID
                 CarBrandName
                 ClientID
+                ClientFirstName
+                ClientLastName
+                ClientName
                 LastServiceMileage
                 IsDebtor
                 DiscountID

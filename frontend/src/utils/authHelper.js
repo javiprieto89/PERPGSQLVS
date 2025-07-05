@@ -1,8 +1,8 @@
-// utils/authHelper.js
+ï»¿// utils/authHelper.js
 import { graphqlClient } from './graphqlClient';
 import React from 'react';
 
-// Consultas de autenticación
+// Consultas de autenticaciÃ³n
 export const AUTH_QUERIES = {
     LOGIN: `
         mutation Login($input: LoginInput!) {
@@ -56,7 +56,7 @@ export class AuthHelper {
     static ACCESS_KEY = 'access_data';
     static SELECTED_ACCESS_KEY = 'selected_access';
 
-    // Función de login
+    // FunciÃ³n de login
     static async login(nickname, password) {
         try {
             const response = await graphqlClient.mutation(AUTH_QUERIES.LOGIN, {
@@ -73,11 +73,16 @@ export class AuthHelper {
 
                 // Guardar accesos del usuario
                 if (userData.UserAccess && userData.UserAccess.length > 0) {
-                    sessionStorage.setItem(this.ACCESS_KEY, JSON.stringify(userData.UserAccess));
+                    // Normalizar accesos antes de guardar
+                    const normalizedAccesses = userData.UserAccess.map(access => this.normalizeAccess(access));
+                    sessionStorage.setItem(this.ACCESS_KEY, JSON.stringify(normalizedAccesses));
 
-                    // Si solo tiene un acceso, seleccionarlo automáticamente
+                    // Si solo tiene un acceso, seleccionarlo automÃ¡ticamente
                     if (userData.UserAccess.length === 1) {
-                        this.setSelectedAccess(userData.UserAccess[0]);
+                        this.setSelectedAccess(normalizedAccesses[0]);
+                    } else {
+                        // Si tiene mÃºltiples accesos, seleccionar el primero como predeterminado
+                        this.setSelectedAccess(normalizedAccesses[0]);
                     }
                 }
 
@@ -96,12 +101,12 @@ export class AuthHelper {
             console.error('Error en login:', error);
             return {
                 success: false,
-                message: error.message || 'Error de conexión'
+                message: error.message || 'Error de conexiÃ³n'
             };
         }
     }
 
-    // Función de logout
+    // FunciÃ³n de logout
     static logout() {
         sessionStorage.removeItem(this.TOKEN_KEY);
         sessionStorage.removeItem(this.USER_KEY);
@@ -112,7 +117,7 @@ export class AuthHelper {
         window.location.href = '/login';
     }
 
-    // Verificar si el usuario está autenticado
+    // Verificar si el usuario estÃ¡ autenticado
     static isAuthenticated() {
         return !!sessionStorage.getItem(this.TOKEN_KEY);
     }
@@ -131,47 +136,99 @@ export class AuthHelper {
     // Obtener accesos del usuario
     static getUserAccess() {
         const accessData = sessionStorage.getItem(this.ACCESS_KEY);
-        return accessData ? JSON.parse(accessData) : [];
+        if (accessData) {
+            const accesses = JSON.parse(accessData);
+            // Asegurar que todos los accesos estÃ©n normalizados
+            return accesses.map(access => this.normalizeAccess(access));
+        }
+        return [];
     }
 
-    // Obtener acceso seleccionado
+    // Obtener acceso seleccionado - CORREGIDO
     static getSelectedAccess() {
         const selectedAccess = sessionStorage.getItem(this.SELECTED_ACCESS_KEY);
-        return selectedAccess ? JSON.parse(selectedAccess) : null;
+        if (selectedAccess) {
+            try {
+                const access = JSON.parse(selectedAccess);
+                return this.normalizeAccess(access);
+            } catch (error) {
+                console.error('Error parsing selected access:', error);
+                // Si hay error, intentar recuperar el primer acceso disponible
+                const userAccesses = this.getUserAccess();
+                if (userAccesses.length > 0) {
+                    this.setSelectedAccess(userAccesses[0]);
+                    return userAccesses[0];
+                }
+            }
+        }
+
+        // Si no hay acceso seleccionado, intentar usar el primer acceso disponible
+        const userAccesses = this.getUserAccess();
+        if (userAccesses.length > 0) {
+            const firstAccess = userAccesses[0];
+            this.setSelectedAccess(firstAccess);
+            return firstAccess;
+        }
+
+        return null;
     }
 
-    // Establecer acceso seleccionado
+    // Establecer acceso seleccionado - MEJORADO
     static setSelectedAccess(access) {
-        sessionStorage.setItem(this.SELECTED_ACCESS_KEY, JSON.stringify(access));
+        if (!access) {
+            console.warn('Intentando establecer un acceso nulo');
+            return;
+        }
+
+        const normalizedAccess = this.normalizeAccess(access);
+        sessionStorage.setItem(this.SELECTED_ACCESS_KEY, JSON.stringify(normalizedAccess));
+
+        console.log('Acceso seleccionado establecido:', normalizedAccess);
 
         // Disparar evento personalizado para que otros componentes se actualicen
         window.dispatchEvent(new CustomEvent('accessChanged', {
-            detail: access
+            detail: normalizedAccess
         }));
     }
 
-    // Normalizar datos de acceso (para compatibilidad con diferentes formatos)
+    // Normalizar datos de acceso - MEJORADO
     static normalizeAccess(access) {
-        return {
-            UserID: access.UserID || access.userID,
-            CompanyID: access.CompanyID || access.companyID,
-            Company: access.Company || access.companyName || `Empresa ${access.CompanyID || access.companyID}`,
-            BranchID: access.BranchID || access.branchID,
-            Branch: access.Branch || access.branchName || `Sucursal ${access.BranchID || access.branchID}`,
-            RoleID: access.RoleID || access.roleID,
-            Role: access.Role || access.roleName || `Rol ${access.RoleID || access.roleID}`,
+        if (!access) {
+            return null;
+        }
 
-            // Mantener también las propiedades originales para compatibilidad
-            companyID: access.CompanyID || access.companyID,
-            companyName: access.Company || access.companyName,
-            branchID: access.BranchID || access.branchID,
-            branchName: access.Branch || access.branchName,
-            roleID: access.RoleID || access.roleID,
-            roleName: access.Role || access.roleName
+        // Manejar diferentes formatos de datos de acceso
+        const userID = access.UserID || access.userID || null;
+        const companyID = access.CompanyID || access.companyID || null;
+        const branchID = access.BranchID || access.branchID || null;
+        const roleID = access.RoleID || access.roleID || null;
+
+        // Para los nombres, usar valores predeterminados mÃ¡s informativos
+        const companyName = access.Company || access.companyName || (companyID ? `Empresa ${companyID}` : 'Sin empresa');
+        const branchName = access.Branch || access.branchName || (branchID ? `Sucursal ${branchID}` : 'Sin sucursal');
+        const roleName = access.Role || access.roleName || (roleID ? `Rol ${roleID}` : 'Sin rol');
+
+        return {
+            UserID: userID,
+            CompanyID: companyID,
+            Company: companyName,
+            BranchID: branchID,
+            Branch: branchName,
+            RoleID: roleID,
+            Role: roleName,
+
+            // Mantener tambiÃ©n las propiedades originales para compatibilidad
+            userID: userID,
+            companyID: companyID,
+            companyName: companyName,
+            branchID: branchID,
+            branchName: branchName,
+            roleID: roleID,
+            roleName: roleName
         };
     }
 
-    // Obtener información completa del usuario para el Header
+    // Obtener informaciÃ³n completa del usuario para el Header
     static getUserInfoForHeader() {
         const userData = this.getUserData();
         const userAccess = this.getUserAccess();
@@ -181,8 +238,8 @@ export class AuthHelper {
 
         return {
             ...userData,
-            UserAccess: userAccess.map(access => this.normalizeAccess(access)),
-            selectedAccess: selectedAccess ? this.normalizeAccess(selectedAccess) : null
+            UserAccess: userAccess,
+            selectedAccess: selectedAccess
         };
     }
 
@@ -192,11 +249,11 @@ export class AuthHelper {
         if (!selectedAccess) return false;
 
         const currentRole = selectedAccess.Role || selectedAccess.roleName;
-        // Aquí puedes implementar lógica más compleja de permisos
+        // AquÃ­ puedes implementar lÃ³gica mÃ¡s compleja de permisos
         return currentRole === requiredRole;
     }
 
-    // Verificar si el usuario pertenece a una empresa específica
+    // Verificar si el usuario pertenece a una empresa especÃ­fica
     static belongsToCompany(companyId) {
         const userAccess = this.getUserAccess();
         return userAccess.some(access =>
@@ -204,7 +261,7 @@ export class AuthHelper {
         );
     }
 
-    // Verificar si el usuario pertenece a una sucursal específica
+    // Verificar si el usuario pertenece a una sucursal especÃ­fica
     static belongsToBranch(branchId) {
         const userAccess = this.getUserAccess();
         return userAccess.some(access =>
@@ -221,7 +278,7 @@ export class AuthHelper {
             const companyId = access.CompanyID || access.companyID;
             const companyName = access.Company || access.companyName;
 
-            if (!companies.has(companyId)) {
+            if (companyId && !companies.has(companyId)) {
                 companies.set(companyId, {
                     id: companyId,
                     name: companyName
@@ -232,7 +289,7 @@ export class AuthHelper {
         return Array.from(companies.values());
     }
 
-    // Obtener todas las sucursales de una empresa específica
+    // Obtener todas las sucursales de una empresa especÃ­fica
     static getBranchesForCompany(companyId) {
         const userAccess = this.getUserAccess();
         const branches = new Map();
@@ -243,7 +300,7 @@ export class AuthHelper {
                 const branchId = access.BranchID || access.branchID;
                 const branchName = access.Branch || access.branchName;
 
-                if (!branches.has(branchId)) {
+                if (branchId && !branches.has(branchId)) {
                     branches.set(branchId, {
                         id: branchId,
                         name: branchName
@@ -252,6 +309,16 @@ export class AuthHelper {
             });
 
         return Array.from(branches.values());
+    }
+
+    // MÃ©todo para debugging - NUEVO
+    static debugAuthState() {
+        console.log('=== DEBUG AUTH STATE ===');
+        console.log('Token exists:', !!this.getToken());
+        console.log('User data:', this.getUserData());
+        console.log('User access:', this.getUserAccess());
+        console.log('Selected access:', this.getSelectedAccess());
+        console.log('========================');
     }
 }
 
