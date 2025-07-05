@@ -178,7 +178,7 @@ ENVIRONMENT=production
 DEBUG=False
 
 # Database
-DATABASE_URL=mssql+pyodbc://sa:Ladeda78@127.0.0.1/LubricentroDB2?driver=ODBC+Driver+17+for+SQL+Server
+SQLALCHEMY_DATABASE_URL=mssql+pyodbc://sa:Ladeda78@127.0.0.1/LubricentroDB2?driver=ODBC+Driver+17+for+SQL+Server
 
 # JWT
 SECRET_KEY=lvCExuRie_iGmnAcbsyvMODcNWbPuFOmTmHGo77t4rE
