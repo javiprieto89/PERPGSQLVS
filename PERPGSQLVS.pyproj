@@ -32,6 +32,8 @@
     <Compile Include="app\db.py" />
     <Compile Include="app\graphql\crud\vendors.py" />
     <Compile Include="app\graphql\mutations\brands.py" />
+    <Compile Include="app\graphql\mutations\carmodels.py" />
+    <Compile Include="app\graphql\mutations\cars.py" />
     <Compile Include="app\graphql\mutations\clients.py" />
     <Compile Include="app\graphql\mutations\doctypes.py" />
     <Compile Include="app\graphql\mutations\suppliers.py" />
