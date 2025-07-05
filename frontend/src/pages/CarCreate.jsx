@@ -116,9 +116,9 @@ export default function CarCreate({ onClose, onSave, car: initialCar = null }) {
             {error && <div className="text-red-600 mb-2">{error}</div>}
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium mb-1">Marca</label>
+                    <label htmlFor="carBrandID" className="block text-sm font-medium mb-1">Marca</label>
                     <div className="flex items-center space-x-2">
-                        <select name="carBrandID" value={form.carBrandID} onChange={handleChange} className="flex-1 border p-2 rounded" required>
+                        <select id="carBrandID" name="carBrandID" value={form.carBrandID} onChange={handleChange} className="flex-1 border p-2 rounded" required>
                             <option value="">Seleccione</option>
                             {brands.map(b => <option key={b.CarBrandID} value={b.CarBrandID}>{b.Name}</option>)}
                         </select>
@@ -130,9 +130,9 @@ export default function CarCreate({ onClose, onSave, car: initialCar = null }) {
                     </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">Modelo</label>
+                    <label htmlFor="carModelID" className="block text-sm font-medium mb-1">Modelo</label>
                     <div className="flex items-center space-x-2">
-                        <select name="carModelID" value={form.carModelID} onChange={handleChange} className="flex-1 border p-2 rounded" required disabled={!form.carBrandID}>
+                        <select id="carModelID" name="carModelID" value={form.carModelID} onChange={handleChange} className="flex-1 border p-2 rounded" required disabled={!form.carBrandID}>
                             <option value="">Seleccione</option>
                             {models.map(m => <option key={m.CarModelID} value={m.CarModelID}>{m.Model}</option>)}
                         </select>
@@ -144,9 +144,9 @@ export default function CarCreate({ onClose, onSave, car: initialCar = null }) {
                     </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">Cliente</label>
+                    <label htmlFor="clientID" className="block text-sm font-medium mb-1">Cliente</label>
                     <div className="flex items-center space-x-2">
-                        <select name="clientID" value={form.clientID} onChange={handleChange} className="flex-1 border p-2 rounded" required>
+                        <select id="clientID" name="clientID" value={form.clientID} onChange={handleChange} className="flex-1 border p-2 rounded" required>
                             <option value="">Seleccione</option>
                             {clients.map(c => <option key={c.ClientID} value={c.ClientID}>{c.FirstName} {c.LastName}</option>)}
                         </select>
@@ -158,16 +158,16 @@ export default function CarCreate({ onClose, onSave, car: initialCar = null }) {
                     </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">Patente</label>
-                    <input type="text" name="licensePlate" value={form.licensePlate} onChange={handleChange} className="w-full border p-2 rounded" required />
+                    <label htmlFor="licensePlate" className="block text-sm font-medium mb-1">Patente</label>
+                    <input id="licensePlate" type="text" name="licensePlate" value={form.licensePlate} onChange={handleChange} className="w-full border p-2 rounded" required />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">Año</label>
-                    <input type="number" name="year" value={form.year} onChange={handleChange} className="w-full border p-2 rounded" />
+                    <label htmlFor="year" className="block text-sm font-medium mb-1">Año</label>
+                    <input id="year" type="number" name="year" value={form.year} onChange={handleChange} className="w-full border p-2 rounded" />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">Kilometraje último servicio</label>
-                    <input type="number" name="lastServiceMileage" value={form.lastServiceMileage} onChange={handleChange} className="w-full border p-2 rounded" />
+                    <label htmlFor="lastServiceMileage" className="block text-sm font-medium mb-1">Kilometraje último servicio</label>
+                    <input id="lastServiceMileage" type="number" name="lastServiceMileage" value={form.lastServiceMileage} onChange={handleChange} className="w-full border p-2 rounded" />
                 </div>
                 <div>
                     <label className="inline-flex items-center">
