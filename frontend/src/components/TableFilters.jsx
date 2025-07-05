@@ -1,4 +1,4 @@
-// frontend/src/components/TableFilters.jsx
+﻿// frontend/src/components/TableFilters.jsx
 import { useEffect, useState } from "react";
 import { graphqlClient } from "../utils/graphqlClient";
 
@@ -24,10 +24,32 @@ const pluralMap = {
     Vendor: "Vendors",
     Warehouse: "Warehouses",
     Brand: "Brands",
+    CarBrand: "Carbrands",
+    CarModel: "Carmodels",
+    Client: "Clients",
+    CreditCard: "Creditcards",
+    CreditCardGroup: "Creditcardgroups",
+    Discount: "Discounts",
+    Item: "Items",
+    Order: "Orders",
+    OrderStatus: "Orderstatus",
+    SaleCondition: "Saleconditions",
+    ServiceType: "Servicetypes",
+    User: "Users"
 };
 
 const nameFieldMap = {
     Vendor: "VendorName",
+    Client: "FirstName", // Para clientes, usar FirstName como campo principal
+    CreditCard: "CardName",
+    CreditCardGroup: "GroupName",
+    Discount: "DiscountName",
+    ItemCategory: "CategoryName",
+    ItemSubcategory: "SubcategoryName",
+    OrderStatus: "StatusName",
+    SaleCondition: "Name",
+    ServiceType: "Name",
+    User: "Fullname"
 };
 
 const getNameField = (model) => nameFieldMap[model] || "Name";
@@ -81,10 +103,24 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
             for (const field of selectFields) {
                 if (field.relationModel) {
                     try {
-                        const queryName = getQueryName(field.relationModel);
-                        const query = `{ ${queryName} { ${field.relationModel}ID ${getNameField(field.relationModel)} } }`;
-                        const res = await graphqlClient.query(query);
-                        newOptions[field.field] = res[queryName] || [];
+                        // Para modelos dependientes, no cargar inicialmente
+                        if (field.dependsOn) {
+                            newOptions[field.field] = [];
+                        } else {
+                            const queryName = getQueryName(field.relationModel);
+                            const nameField = getNameField(field.relationModel);
+
+                            // Construir la query dinámicamente basada en el modelo
+                            let query;
+                            if (field.relationModel === "Client") {
+                                query = `{ ${queryName} { ${field.relationModel}ID FirstName LastName } }`;
+                            } else {
+                                query = `{ ${queryName} { ${field.relationModel}ID ${nameField} } }`;
+                            }
+
+                            const res = await graphqlClient.query(query);
+                            newOptions[field.field] = res[queryName] || [];
+                        }
                     } catch (err) {
                         console.error(`Error cargando opciones para ${field.field}:`, err);
                         newOptions[field.field] = [];
@@ -161,12 +197,73 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
         onFilterChange(filtered);
     }, [filters, data, filterFields, onFilterChange]);
 
+    // Función para cargar provincias por país
+    const loadProvincesByCountry = async (countryID, fieldName) => {
+        try {
+            const response = await graphqlClient.query(`
+                query { 
+                    provincesByCountry(countryID: ${countryID}) { 
+                        ProvinceID 
+                        Name 
+                    } 
+                }
+            `);
+            setOptions(prev => ({
+                ...prev,
+                [fieldName]: response.provincesByCountry || []
+            }));
+        } catch (err) {
+            console.error("Error cargando provincias:", err);
+        }
+    };
+
+    // Función para cargar modelos por marca
+    const loadModelsByBrand = async (brandID, fieldName) => {
+        try {
+            const response = await graphqlClient.query(`
+                query { 
+                    carmodelsByBrand(carBrandID: ${brandID}) { 
+                        CarModelID 
+                        Model 
+                    } 
+                }
+            `);
+            setOptions(prev => ({
+                ...prev,
+                [fieldName]: response.carmodelsByBrand || []
+            }));
+        } catch (err) {
+            console.error("Error cargando modelos:", err);
+        }
+    };
+
+    // Función para cargar subcategorías por categoría
+    const loadSubcategoriesByCategory = async (categoryID, fieldName) => {
+        try {
+            const response = await graphqlClient.query(`
+                query { 
+                    itemsubcategoriesByCategory(categoryID: ${categoryID}) { 
+                        ItemSubcategoryID 
+                        SubcategoryName 
+                    } 
+                }
+            `);
+            setOptions(prev => ({
+                ...prev,
+                [fieldName]: response.itemsubcategoriesByCategory || []
+            }));
+        } catch (err) {
+            console.error("Error cargando subcategorías:", err);
+        }
+    };
+
     const handleChange = (field, value) => {
         setFilters(prev => ({
             ...prev,
             [field]: value
         }));
-        // Si es un padre (ej: país), borra el valor del hijo dependiente (ej: provincia)
+
+        // Si es un padre (ej: país, marca, categoría), borra el valor del hijo dependiente
         const depField = filterFields.find(f => f.dependsOn === field);
         if (depField) {
             setFilters(prev => ({
@@ -174,6 +271,23 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                 [depField.field]: "",
                 [`${depField.field}_op`]: "contains"
             }));
+
+            // Cargar opciones dinámicamente para el campo dependiente
+            if (value) {
+                if (depField.relationModel === "Province" && field === "CountryID") {
+                    loadProvincesByCountry(value, depField.field);
+                } else if (depField.relationModel === "CarModel" && field === "CarBrandID") {
+                    loadModelsByBrand(value, depField.field);
+                } else if (depField.relationModel === "ItemSubcategory" && field === "ItemCategoryID") {
+                    loadSubcategoriesByCategory(value, depField.field);
+                }
+            } else {
+                // Si se deselecciona el padre, limpiar las opciones del hijo
+                setOptions(prev => ({
+                    ...prev,
+                    [depField.field]: []
+                }));
+            }
         }
     };
 
@@ -187,6 +301,14 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
     const clearFilters = () => {
         setFilters({});
         onFilterChange(data);
+    };
+
+    // Función para formatear el nombre del cliente
+    const formatClientName = (client) => {
+        if (client.FirstName && client.LastName) {
+            return `${client.FirstName} ${client.LastName}`;
+        }
+        return client.FirstName || client.LastName || `Cliente ${client.ClientID}`;
     };
 
     // Render dinámico según definición
@@ -253,11 +375,24 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                     disabled={field.dependsOn && !filters[field.dependsOn]}
                 >
                     <option value="">Todos</option>
-                    {(options[field.field] || []).map(opt => (
-                        <option key={opt[`${field.relationModel}ID`]} value={opt[`${field.relationModel}ID`]}>
-                            {opt[getNameField(field.relationModel)]}
-                        </option>
-                    ))}
+                    {(options[field.field] || []).map(opt => {
+                        // Manejar diferentes tipos de modelos
+                        const id = opt[`${field.relationModel}ID`];
+                        let displayName;
+
+                        if (field.relationModel === "Client") {
+                            displayName = formatClientName(opt);
+                        } else {
+                            const nameField = getNameField(field.relationModel);
+                            displayName = opt[nameField] || `${field.relationModel} ${id}`;
+                        }
+
+                        return (
+                            <option key={id} value={id}>
+                                {displayName}
+                            </option>
+                        );
+                    })}
                 </select>
             );
         return null;
@@ -296,6 +431,11 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                             <div key={field.field} className="space-y-1">
                                 <label className="block text-sm font-medium text-gray-700">
                                     {field.label}
+                                    {field.dependsOn && (
+                                        <span className="text-xs text-gray-500 ml-1">
+                                            (depende de {filterFields.find(f => f.field === field.dependsOn)?.label})
+                                        </span>
+                                    )}
                                 </label>
                                 {renderInput(field)}
                             </div>
@@ -313,12 +453,28 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                             const value = filters[field.field];
                             if (!value || value === "") return null;
 
+                            // Mostrar valor legible para selects
+                            let displayValue = value;
+                            if (field.type === "select" && options[field.field]) {
+                                const selectedOption = options[field.field].find(opt =>
+                                    opt[`${field.relationModel}ID`] == value
+                                );
+                                if (selectedOption) {
+                                    if (field.relationModel === "Client") {
+                                        displayValue = formatClientName(selectedOption);
+                                    } else {
+                                        const nameField = getNameField(field.relationModel);
+                                        displayValue = selectedOption[nameField] || value;
+                                    }
+                                }
+                            }
+
                             return (
                                 <span
                                     key={field.field}
                                     className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
                                 >
-                                    {field.label}: {value}
+                                    {field.label}: {displayValue}
                                     <button
                                         onClick={() => handleChange(field.field, "")}
                                         className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-600"

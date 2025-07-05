@@ -219,7 +219,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                         </div>
                     </div>
 
-                    {/* Cliente - MEJORADO */}
+                    {/* Cliente */}
                     <div>
                         <label htmlFor="clientID" className="block text-sm font-medium mb-1">
                             Cliente
@@ -368,6 +368,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                     isOpen={true}
                     onClose={() => setShowModelModal(false)}
                     onModelSelect={handleModelSelect}
+                    selectedBrandID={form.carBrandID || null} // AGREGADO: Pasar la marca seleccionada
                 />
             )}
 

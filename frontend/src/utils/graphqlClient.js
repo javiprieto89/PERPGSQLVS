@@ -184,6 +184,17 @@ export const QUERIES = {
         }
     `,
 
+    // NUEVA QUERY AGREGADA
+    GET_PROVINCES_BY_COUNTRY: `
+        query GetProvincesByCountry($countryID: Int!) {
+            provincesByCountry(countryID: $countryID) {
+                ProvinceID
+                Name
+                CountryID
+            }
+        }
+    `,
+
     GET_PRICE_LISTS: `
         query GetPriceLists {
             allPricelists {
@@ -406,6 +417,17 @@ export const QUERIES = {
                 ItemSubcategoryID
                 ItemCategoryID
                 SubcategoryName
+            }
+        }
+    `,
+
+    // NUEVA QUERY AGREGADA
+    GET_ITEMSUBCATEGORIES_BY_CATEGORY: `
+        query GetItemSubcategoriesByCategory($categoryID: Int!) {
+            itemsubcategoriesByCategory(categoryID: $categoryID) {
+                ItemSubcategoryID
+                SubcategoryName
+                ItemCategoryID
             }
         }
     `,
@@ -1832,6 +1854,19 @@ export const itemSubcategoryOperations = {
         }
     },
 
+    // NUEVA FUNCIÓN AGREGADA
+    async getItemSubcategoriesByCategory(categoryID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ITEMSUBCATEGORIES_BY_CATEGORY, {
+                categoryID: parseInt(categoryID)
+            });
+            return data.itemsubcategoriesByCategory || [];
+        } catch (error) {
+            console.error("Error obteniendo subcategorías por categoría:", error);
+            throw error;
+        }
+    },
+
     async createItemSubcategory(subcategoryData) {
         try {
             const data = await graphqlClient.mutation(MUTATIONS.CREATE_ITEMSUBCATEGORY, {
@@ -1924,6 +1959,31 @@ export const itemOperations = {
             return data.deleteItem;
         } catch (error) {
             console.error("Error eliminando ítem:", error);
+            throw error;
+        }
+    }
+};
+
+// NUEVA OPERACIÓN AGREGADA
+export const provinceOperations = {
+    async getAllProvinces() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_PROVINCES);
+            return data.allProvinces || [];
+        } catch (error) {
+            console.error("Error obteniendo provincias:", error);
+            throw error;
+        }
+    },
+
+    async getProvincesByCountry(countryID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_PROVINCES_BY_COUNTRY, {
+                countryID: parseInt(countryID)
+            });
+            return data.provincesByCountry || [];
+        } catch (error) {
+            console.error("Error obteniendo provincias por país:", error);
             throw error;
         }
     }
