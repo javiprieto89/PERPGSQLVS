@@ -2329,6 +2329,7 @@
     <Content Include="app\__pycache__\db.cpython-313.pyc" />
     <Content Include="app\__pycache__\main.cpython-313.pyc" />
     <Content Include="Como iniciar.txt" />
+    <Content Include="eslint.config.cjs" />
     <Content Include="frontend\.gitignore" />
     <Content Include="frontend\dist\output.css" />
     <Content Include="frontend\eslint.config.js" />
