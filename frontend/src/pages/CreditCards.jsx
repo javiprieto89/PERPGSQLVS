@@ -37,10 +37,6 @@ export default function CreditCards() {
         }
     };
 
-    const handleSaved = () => {
-        loadCards();
-    };
-
     const handleCreate = () => {
         openReactWindow(
             () => (

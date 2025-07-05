@@ -38,10 +38,6 @@ export default function ItemSubcategories() {
         }
     };
 
-    const handleSubcategorySaved = () => {
-        loadSubcategories();
-    };
-
     const handleCreate = () => {
         openReactWindow(
             () => (

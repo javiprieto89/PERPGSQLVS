@@ -46,10 +46,6 @@ export default function SaleConditions() {
         }
     };
 
-    const handleSaved = () => {
-        loadSCs();
-    };
-
     const handleCreate = () => {
         openReactWindow(
             () => (

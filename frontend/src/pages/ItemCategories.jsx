@@ -38,9 +38,6 @@ export default function ItemCategories() {
         }
     };
 
-    const handleCategorySaved = () => {
-        loadCategories();
-    };
 
     const handleCreate = () => {
         openReactWindow(

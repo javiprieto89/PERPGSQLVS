@@ -38,10 +38,6 @@ export default function Items() {
         }
     };
 
-    const handleItemSaved = () => {
-        loadItems();
-    };
-
     const handleCreate = () => {
         openReactWindow(
             () => (

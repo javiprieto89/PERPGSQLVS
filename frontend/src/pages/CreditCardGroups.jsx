@@ -37,10 +37,6 @@ export default function CreditCardGroups() {
         }
     };
 
-    const handleSaved = () => {
-        loadGroups();
-    };
-
     const handleCreate = () => {
         openReactWindow(
             () => (
@@ -122,5 +118,4 @@ export default function CreditCardGroups() {
             )}
         </div>
     );
-}
 }
