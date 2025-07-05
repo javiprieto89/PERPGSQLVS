@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { carModelOperations, carBrandOperations } from "../utils/graphqlClient";
+import TableFilters from "./TableFilters";
 
 export default function CarModelSearchModal({
   isOpen,
@@ -8,14 +9,14 @@ export default function CarModelSearchModal({
 }) {
   const [models, setModels] = useState([]);
   const [brands, setBrands] = useState([]);
-  const [brandFilter, setBrandFilter] = useState("");
+  const [filteredModels, setFilteredModels] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setQuery("");
-      setBrandFilter("");
       setIsLoading(true);
       Promise.all([
         carModelOperations.getAllCarModels(),
@@ -24,11 +25,13 @@ export default function CarModelSearchModal({
         .then(([m, b]) => {
           setModels(m || []);
           setBrands(b || []);
+          setFilteredModels(m || []);
         })
         .catch((err) => {
           console.error("Error fetching models:", err);
           setModels([]);
           setBrands([]);
+          setFilteredModels([]);
         })
         .finally(() => setIsLoading(false));
     }
@@ -36,12 +39,9 @@ export default function CarModelSearchModal({
 
   if (!isOpen) return null;
 
-  const filtered = models.filter((m) => {
-    if (brandFilter && String(m.CarBrandID) !== String(brandFilter)) {
-      return false;
-    }
-    return m.Model.toLowerCase().includes(query.toLowerCase());
-  });
+  const filtered = filteredModels.filter((m) =>
+    m.Model.toLowerCase().includes(query.toLowerCase())
+  );
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-start pt-10">
@@ -57,27 +57,29 @@ export default function CarModelSearchModal({
             </svg>
           </button>
         </div>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="flex space-x-2 items-center">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="border rounded px-3 py-2 col-span-2"
+            className="flex-1 border rounded px-3 py-2"
             placeholder="Nombre del modelo..."
           />
-          <select
-            value={brandFilter}
-            onChange={(e) => setBrandFilter(e.target.value)}
-            className="border rounded px-2 py-2"
+          <button
+            type="button"
+            onClick={() => setShowFilters(!showFilters)}
+            className="px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm"
           >
-            <option value="">Todas las marcas</option>
-            {brands.map((b) => (
-              <option key={b.CarBrandID} value={b.CarBrandID}>
-                {b.Name}
-              </option>
-            ))}
-          </select>
+            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
+          </button>
         </div>
+        {showFilters && (
+          <TableFilters
+            modelName="carmodels"
+            data={models}
+            onFilterChange={setFilteredModels}
+          />
+        )}
         <div className="max-h-80 overflow-y-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0">
