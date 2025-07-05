@@ -2,17 +2,26 @@ import { useEffect, useState } from "react";
 import { creditCardOperations } from "../utils/graphqlClient";
 import CreditCardCreate from "./CreditCardCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function CreditCards() {
     const [allCards, setAllCards] = useState([]);
     const [cards, setCards] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editingCard, setEditingCard] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => { loadCards(); }, []);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-creditcards') {
+                loadCards();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     const loadCards = async () => {
         try {
@@ -28,15 +37,20 @@ export default function CreditCards() {
         }
     };
 
-    const handleSaved = () => {
-        loadCards();
-        setShowModal(false);
-        setEditingCard(null);
-    };
 
     const handleCreate = () => {
-        setEditingCard(null);
-        setShowModal(true);
+        openReactWindow(
+            (popup) => (
+                <CreditCardCreate
+                    onSave={() => {
+                        popup.opener.postMessage('reload-creditcards', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Nueva Tarjeta'
+        );
     };
 
     const handleFilterChange = (filtered) => {
@@ -44,8 +58,19 @@ export default function CreditCards() {
     };
 
     const handleEdit = (card) => {
-        setEditingCard(card);
-        setShowModal(true);
+        openReactWindow(
+            (popup) => (
+                <CreditCardCreate
+                    card={card}
+                    onSave={() => {
+                        popup.opener.postMessage('reload-creditcards', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Editar Tarjeta'
+        );
     };
 
     return (
@@ -93,17 +118,6 @@ export default function CreditCards() {
                             <button onClick={() => handleEdit(c)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}
-                </div>
-            )}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                        <CreditCardCreate
-                            onClose={() => { setShowModal(false); setEditingCard(null); }}
-                            onSave={handleSaved}
-                            card={editingCard}
-                        />
-                    </div>
                 </div>
             )}
         </div>

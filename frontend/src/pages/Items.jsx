@@ -2,17 +2,26 @@ import { useEffect, useState } from "react";
 import { itemOperations } from "../utils/graphqlClient";
 import ItemCreate from "./ItemCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function Items() {
     const [allItems, setAllItems] = useState([]);
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editingItem, setEditingItem] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => { loadItems(); }, []);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-items') {
+                loadItems();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     const loadItems = async () => {
         try {
@@ -29,15 +38,20 @@ export default function Items() {
         }
     };
 
-    const handleItemSaved = () => {
-        loadItems();
-        setShowModal(false);
-        setEditingItem(null);
-    };
 
     const handleCreate = () => {
-        setEditingItem(null);
-        setShowModal(true);
+        openReactWindow(
+            (popup) => (
+                <ItemCreate
+                    onSave={() => {
+                        popup.opener.postMessage('reload-items', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Nuevo Ítem'
+        );
     };
 
     const handleFilterChange = (filtered) => {
@@ -45,8 +59,19 @@ export default function Items() {
     };
 
     const handleEdit = (item) => {
-        setEditingItem(item);
-        setShowModal(true);
+        openReactWindow(
+            (popup) => (
+                <ItemCreate
+                    item={item}
+                    onSave={() => {
+                        popup.opener.postMessage('reload-items', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Editar Ítem'
+        );
     };
 
     return (
@@ -92,17 +117,6 @@ export default function Items() {
                             <button onClick={() => handleEdit(it)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}
-                </div>
-            )}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                        <ItemCreate
-                            onClose={() => { setShowModal(false); setEditingItem(null); }}
-                            onSave={handleItemSaved}
-                            item={editingItem}
-                        />
-                    </div>
                 </div>
             )}
         </div>

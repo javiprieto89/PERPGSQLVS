@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { graphqlClient, QUERIES, diagnosticGraphQL } from "../utils/graphqlClient";
 import ClientCreate from "./ClientCreate";
+import { openReactWindow } from "../utils/openReactWindow";
 import TableFilters from "../components/TableFilters";
 
 // Modal simple para mostrar los datos del cliente seleccionado
@@ -37,13 +38,21 @@ export default function Clients() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [debugInfo, setDebugInfo] = useState(null);
-    const [showCreateModal, setShowCreateModal] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
-    const [editingClient, setEditingClient] = useState(null);
 
     useEffect(() => {
         loadClients();
+    }, []);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-clients') {
+                loadClients();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
     }, []);
 
     const loadClients = async () => {
@@ -100,24 +109,40 @@ export default function Clients() {
     };
 
     const handleCreateClient = () => {
-        setShowCreateModal(true);
+        openReactWindow(
+            (popup) => (
+                <ClientCreate
+                    onSave={() => {
+                        popup.opener.postMessage('reload-clients', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Nuevo Cliente'
+        );
     };
 
     const handleEditClient = (client) => {
-        setEditingClient(client);
-        setShowCreateModal(true);
+        openReactWindow(
+            (popup) => (
+                <ClientCreate
+                    client={client}
+                    onSave={() => {
+                        popup.opener.postMessage('reload-clients', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Editar Cliente'
+        );
     };
 
     const handleViewDetails = (client) => {
         setSelectedClient(client);
     };
 
-    const handleClientSaved = (newClient) => {
-        console.log('Cliente guardado:', newClient);
-        loadClients(); // Recargar la lista
-        setShowCreateModal(false);
-        setEditingClient(null);
-    };
 
     // El filtro ahora opera sobre allClients
     const handleFilterChange = (filteredClients) => {
@@ -352,18 +377,6 @@ export default function Clients() {
                 </div>
             )}
 
-            {/* Modal de crear cliente */}
-            {showCreateModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-                        <ClientCreate
-                            onClose={() => { setShowCreateModal(false); setEditingClient(null); }}
-                            onSave={handleClientSaved}
-                            client={editingClient}
-                        />
-                    </div>
-                </div>
-            )}
 
             {selectedClient && (
                 <ClientDetails client={selectedClient} onClose={() => setSelectedClient(null)} />
