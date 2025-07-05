@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { carOperations, carModelOperations, clientOperations, discountOperations } from "../utils/graphqlClient";
+import { carOperations, carModelOperations, clientOperations, discountOperations, carBrandOperations } from "../utils/graphqlClient";
 
 export default function CarCreate({ onClose, onSave, car: initialCar = null }) {
     const [form, setForm] = useState({
         licensePlate: "",
         year: "",
+        carBrandID: "",
         carModelID: "",
         clientID: "",
         lastServiceMileage: "",
@@ -12,6 +13,7 @@ export default function CarCreate({ onClose, onSave, car: initialCar = null }) {
         discountID: "",
     });
 
+    const [brands, setBrands] = useState([]);
     const [models, setModels] = useState([]);
     const [clients, setClients] = useState([]);
     const [discounts, setDiscounts] = useState([]);
@@ -22,12 +24,12 @@ export default function CarCreate({ onClose, onSave, car: initialCar = null }) {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [m, c, d] = await Promise.all([
-                    carModelOperations.getAllCarModels(),
+                const [b, c, d] = await Promise.all([
+                    carBrandOperations.getAllCarBrands(),
                     clientOperations.getAllClients(),
                     discountOperations.getAllDiscounts(),
                 ]);
-                setModels(m);
+                setBrands(b);
                 setClients(c);
                 setDiscounts(d);
             } catch (err) {
@@ -38,11 +40,25 @@ export default function CarCreate({ onClose, onSave, car: initialCar = null }) {
     }, []);
 
     useEffect(() => {
+        const loadModels = async () => {
+            if (!form.carBrandID) { setModels([]); return; }
+            try {
+                const m = await carModelOperations.getCarModelsByBrand(form.carBrandID);
+                setModels(m);
+            } catch (err) {
+                console.error("Error cargando modelos:", err);
+            }
+        };
+        loadModels();
+    }, [form.carBrandID]);
+
+    useEffect(() => {
         if (initialCar) {
             setIsEdit(true);
             setForm({
                 licensePlate: initialCar.LicensePlate || "",
                 year: initialCar.Year || "",
+                carBrandID: initialCar.CarBrandID || "",
                 carModelID: initialCar.CarModelID || "",
                 clientID: initialCar.ClientID || "",
                 lastServiceMileage: initialCar.LastServiceMileage || "",
@@ -93,8 +109,15 @@ export default function CarCreate({ onClose, onSave, car: initialCar = null }) {
             {error && <div className="text-red-600 mb-2">{error}</div>}
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
+                    <label className="block text-sm font-medium mb-1">Marca</label>
+                    <select name="carBrandID" value={form.carBrandID} onChange={handleChange} className="w-full border p-2 rounded" required>
+                        <option value="">Seleccione</option>
+                        {brands.map(b => <option key={b.CarBrandID} value={b.CarBrandID}>{b.Name}</option>)}
+                    </select>
+                </div>
+                <div>
                     <label className="block text-sm font-medium mb-1">Modelo</label>
-                    <select name="carModelID" value={form.carModelID} onChange={handleChange} className="w-full border p-2 rounded" required>
+                    <select name="carModelID" value={form.carModelID} onChange={handleChange} className="w-full border p-2 rounded" required disabled={!form.carBrandID}>
                         <option value="">Seleccione</option>
                         {models.map(m => <option key={m.CarModelID} value={m.CarModelID}>{m.Model}</option>)}
                     </select>
@@ -133,7 +156,7 @@ export default function CarCreate({ onClose, onSave, car: initialCar = null }) {
                 </div>
                 <div className="flex justify-end space-x-4 pt-4 border-t">
                     <button type="button" onClick={onClose} disabled={loading} className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50">Cancelar</button>
-                    <button type="submit" disabled={loading || !form.licensePlate || !form.carModelID || !form.clientID || !form.discountID} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
+                    <button type="submit" disabled={loading || !form.licensePlate || !form.carBrandID || !form.carModelID || !form.clientID || !form.discountID} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">
                         {loading ? 'Guardando...' : 'Guardar'}
                     </button>
                 </div>

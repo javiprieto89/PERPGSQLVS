@@ -59,6 +59,15 @@ FILTER_SCHEMAS = {
         {"field": "CarBrandID", "label": "ID de marca de auto", "type": "number"},
         {"field": "Name", "label": "Nombre", "type": "text"}
     ],
+    "carmodels": [
+        {"field": "CarBrandName", "label": "Marca", "type": "text"},
+        {"field": "Model", "label": "Modelo", "type": "text"}
+    ],
+    "cars": [
+        {"field": "CarBrandName", "label": "Marca", "type": "text"},
+        {"field": "CarModelName", "label": "Modelo", "type": "text"},
+        {"field": "LicensePlate", "label": "Patente", "type": "text"}
+    ],
     "itemcategories": [
         {"field": "ItemCategoryID", "label": "ID de categoría", "type": "number"},
         {"field": "CategoryName", "label": "Nombre", "type": "text"}
