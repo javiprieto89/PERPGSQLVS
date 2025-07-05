@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import { carOperations } from "../utils/graphqlClient";
 import CarCreate from "./CarCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function Cars() {
     const [allCars, setAllCars] = useState([]);
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editing, setEditing] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => { loadCars(); }, []);
@@ -29,22 +28,47 @@ export default function Cars() {
         }
     };
 
-    const handleSaved = () => {
-        loadCars();
-        setShowModal(false);
-        setEditing(null);
-    };
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-cars') {
+                loadCars();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     const handleCreate = () => {
-        setEditing(null);
-        setShowModal(true);
+        openReactWindow(
+            (popup) => (
+                <CarCreate
+                    onSave={() => {
+                        popup.opener.postMessage('reload-cars', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Nuevo Auto'
+        );
     };
 
     const handleFilterChange = (filtered) => setCars(filtered);
 
     const handleEdit = (c) => {
-        setEditing(c);
-        setShowModal(true);
+        openReactWindow(
+            (popup) => (
+                <CarCreate
+                    car={c}
+                    onSave={() => {
+                        popup.opener.postMessage('reload-cars', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Editar Auto'
+        );
     };
 
     return (
@@ -78,13 +102,6 @@ export default function Cars() {
                             <button onClick={() => handleEdit(c)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}
-                </div>
-            )}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                        <CarCreate onClose={() => { setShowModal(false); setEditing(null); }} onSave={handleSaved} car={editing} />
-                    </div>
                 </div>
             )}
         </div>

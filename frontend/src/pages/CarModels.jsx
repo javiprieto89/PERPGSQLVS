@@ -2,14 +2,13 @@
 import { carModelOperations } from "../utils/graphqlClient";
 import CarModelCreate from "./CarModelCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function CarModels() {
     const [allModels, setAllModels] = useState([]);
     const [models, setModels] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editing, setEditing] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => { loadModels(); }, []);
@@ -29,22 +28,47 @@ export default function CarModels() {
         }
     };
 
-    const handleSaved = () => {
-        loadModels();
-        setShowModal(false);
-        setEditing(null);
-    };
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-carmodels') {
+                loadModels();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     const handleCreate = () => {
-        setEditing(null);
-        setShowModal(true);
+        openReactWindow(
+            (popup) => (
+                <CarModelCreate
+                    onSave={() => {
+                        popup.opener.postMessage('reload-carmodels', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Nuevo Modelo de Auto'
+        );
     };
 
     const handleFilterChange = (filtered) => setModels(filtered);
 
     const handleEdit = (m) => {
-        setEditing(m);
-        setShowModal(true);
+        openReactWindow(
+            (popup) => (
+                <CarModelCreate
+                    carModel={m}
+                    onSave={() => {
+                        popup.opener.postMessage('reload-carmodels', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Editar Modelo de Auto'
+        );
     };
 
     return (
@@ -76,13 +100,6 @@ export default function CarModels() {
                             <button onClick={() => handleEdit(m)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}
-                </div>
-            )}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                        <CarModelCreate onClose={() => { setShowModal(false); setEditing(null); }} onSave={handleSaved} carModel={editing} />
-                    </div>
                 </div>
             )}
         </div>

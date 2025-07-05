@@ -75,7 +75,7 @@ export default function CarModelSearchModal({
         </div>
         {showFilters && (
           <div className="fixed inset-0 bg-black bg-opacity-40 flex items-start justify-center pt-10 z-60">
-            <div className="bg-white rounded-md shadow-lg p-4 w-full max-w-xl space-y-4">
+          <div className="bg-white rounded-md shadow-lg p-4 w-full max-w-xl space-y-4 max-h-[80vh] overflow-y-auto">
               <div className="flex justify-between items-center pb-2 border-b">
                 <h4 className="text-lg font-semibold">Filtros</h4>
                 <button
@@ -108,7 +108,14 @@ export default function CarModelSearchModal({
             <tbody className="bg-white divide-y divide-gray-200">
               {filtered.length > 0 ? (
                 filtered.map((m) => (
-                  <tr key={m.CarModelID} className="hover:bg-gray-50">
+                  <tr
+                    key={m.CarModelID}
+                    className="hover:bg-gray-50"
+                    onDoubleClick={() => {
+                      onModelSelect(m);
+                      onClose();
+                    }}
+                  >
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{m.CarModelID}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{m.Model}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
@@ -120,7 +127,7 @@ export default function CarModelSearchModal({
                           onModelSelect(m);
                           onClose();
                         }}
-                        className="text-indigo-600 hover:text-indigo-900"
+                        className="text-indigo-600 hover:text-indigo-900 px-2 py-1 text-sm"
                       >
                         Seleccionar
                       </button>
