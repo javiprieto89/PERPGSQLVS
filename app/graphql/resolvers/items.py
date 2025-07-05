@@ -7,7 +7,8 @@ from app.graphql.schemas.items import ItemsInDB, ItemSearchResult
 from app.models.items import Items
 from app.models.itemstock import Itemstock
 from app.db import get_db
-from app.utils.item_helpers import item_to_in_db
+from app.graphql.crud.items import get_items, get_items_by_id
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 @strawberry.input
@@ -77,12 +78,8 @@ class ItemsQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            items = db.query(Items).options(
-                joinedload(Items.brands_),
-                joinedload(Items.itemCategories_),
-                joinedload(Items.itemSubcategories_),
-            ).all()
-            return [item_to_in_db(item) for item in items]
+            items = get_items(db)
+            return list_to_schema(ItemsInDB, items)
         finally:
             db_gen.close()
 
@@ -91,14 +88,8 @@ class ItemsQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            item = db.query(Items).options(
-                joinedload(Items.brands_),
-                joinedload(Items.itemCategories_),
-                joinedload(Items.itemSubcategories_),
-            ).filter(Items.ItemID == id).first()
-            if not item:
-                return None
-            return item_to_in_db(item)
+            item = get_items_by_id(db, id)
+            return obj_to_schema(ItemsInDB, item) if item else None
         finally:
             db_gen.close()
     

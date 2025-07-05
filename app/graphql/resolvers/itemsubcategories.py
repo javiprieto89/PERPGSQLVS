@@ -2,10 +2,14 @@
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.itemsubcategories import ItemSubcategoriesInDB
-from app.models.itemsubcategories import ItemSubcategories
+from app.graphql.crud.itemsubcategories import (
+    get_itemsubcategories,
+    get_itemsubcategories_by_id,
+    get_itemsubcategories_by_category_id,
+)
 from app.db import get_db
-from sqlalchemy.orm import joinedload
 from strawberry.types import Info
+from app.utils import list_to_schema, obj_to_schema
 
 
 @strawberry.type

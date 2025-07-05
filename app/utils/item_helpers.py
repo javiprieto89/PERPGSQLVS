@@ -12,7 +12,7 @@ def safe_int(value: Any, default: int = 0) -> int:
         return default
 
 
-def safe_str(value: Any, default: str = "") -> str:
+def safe_str(value: Any, default: Optional[str] = "") -> Optional[str]:
     """Convierte de forma segura cualquier valor a str"""
     try:
         return str(value) if value is not None else default

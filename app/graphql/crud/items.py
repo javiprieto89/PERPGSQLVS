@@ -1,14 +1,50 @@
 # app/graphql/crud/items.py
 from sqlalchemy.orm import Session
 from app.models.items import Items
+from app.models.brands import Brands
+from app.models.itemcategories import ItemCategories
+from app.models.itemsubcategories import ItemSubcategories
 from app.graphql.schemas.items import ItemsCreate, ItemsUpdate
 from dataclasses import asdict
 
 def get_items(db: Session):
-    return db.query(Items).all()
+    """Obtener items junto con nombres relacionados"""
+    results = db.query(
+        Items,
+        Brands.Name.label("BrandName"),
+        ItemCategories.CategoryName.label("CategoryName"),
+        ItemSubcategories.SubcategoryName.label("SubcategoryName"),
+    ).join(Brands, Brands.BrandID == Items.BrandID)
+    results = results.join(ItemCategories, ItemCategories.ItemCategoryID == Items.ItemCategoryID)
+    results = results.join(ItemSubcategories, ItemSubcategories.ItemSubcategoryID == Items.ItemSubcategoryID)
+    rows = results.all()
+
+    items = []
+    for item, brand_name, cat_name, sub_name in rows:
+        setattr(item, "BrandName", brand_name)
+        setattr(item, "CategoryName", cat_name)
+        setattr(item, "SubcategoryName", sub_name)
+        items.append(item)
+    return items
 
 def get_items_by_id(db: Session, item_id: int):
-    return db.query(Items).filter(Items.ItemID == item_id).first()
+    """Obtener item por ID con nombres relacionados"""
+    result = db.query(
+        Items,
+        Brands.Name.label("BrandName"),
+        ItemCategories.CategoryName.label("CategoryName"),
+        ItemSubcategories.SubcategoryName.label("SubcategoryName"),
+    ).join(Brands, Brands.BrandID == Items.BrandID)
+    result = result.join(ItemCategories, ItemCategories.ItemCategoryID == Items.ItemCategoryID)
+    result = result.join(ItemSubcategories, ItemSubcategories.ItemSubcategoryID == Items.ItemSubcategoryID)
+    result = result.filter(Items.ItemID == item_id).first()
+    if result:
+        item, brand_name, cat_name, sub_name = result
+        setattr(item, "BrandName", brand_name)
+        setattr(item, "CategoryName", cat_name)
+        setattr(item, "SubcategoryName", sub_name)
+        return item
+    return None
 
 def create_items(db: Session, item: ItemsCreate):
     db_item = Items(**asdict(item))
