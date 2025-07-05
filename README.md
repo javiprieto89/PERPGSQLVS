@@ -25,3 +25,19 @@ Any variable present in `.env.template` can be configured in the same way.
    ```
 
 See `Como iniciar.txt` for additional development tips.
+
+## Updating relationships
+
+The `app/ChangeModels.py` helper analyzes the SQLAlchemy models and
+ensures that reciprocal `relationship()` definitions are kept in sync.
+It looks for the models directory in this order:
+
+1. The `--models-dir` command-line argument.
+2. The `MODELS_DIR` environment variable.
+3. `app/models` relative to the repository root.
+
+Example usage:
+
+```bash
+python app/ChangeModels.py --models-dir path/to/models
+```
