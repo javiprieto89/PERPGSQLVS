@@ -1,32 +1,39 @@
 import React, { useState, useEffect } from "react";
-import apiFetch from "../utils/apiFetch";
+import { graphqlClient, QUERIES } from "../utils/graphqlClient";
+import TableFilters from "./TableFilters";
 
 export default function ClientSearchModal({ isOpen, onClose, onClientSelect }) {
+  const [clients, setClients] = useState([]);
+  const [filteredClients, setFilteredClients] = useState([]);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
+    async function loadClients() {
+      setIsLoading(true);
+      try {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_CLIENTS);
+        const list = data?.allClients || [];
+        setClients(list);
+        setFilteredClients(list);
+      } catch (err) {
+        console.error("Error fetching clients:", err);
+        setClients([]);
+        setFilteredClients([]);
+      }
+      setIsLoading(false);
+    }
     if (isOpen) {
       setQuery("");
-      setResults([]);
+      loadClients();
     }
   }, [isOpen]);
 
-  const handleSearch = async () => {
-    if (!query.trim()) return;
-    setIsLoading(true);
-    try {
-      const data = await apiFetch(
-        `/clients/search/?name=${encodeURIComponent(query)}`
-      );
-      setResults(data || []);
-    } catch (err) {
-      console.error("Error searching clients:", err);
-      setResults([]);
-    }
-    setIsLoading(false);
-  };
+  const filtered = filteredClients.filter((c) => {
+    const fullName = `${c.FirstName} ${c.LastName || ""}`.toLowerCase();
+    return fullName.includes(query.toLowerCase());
+  });
 
   if (!isOpen) return null;
 
@@ -60,17 +67,39 @@ export default function ClientSearchModal({ isOpen, onClose, onClientSelect }) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             className="flex-1 border rounded px-3 py-2"
             placeholder="Nombre o documento..."
           />
           <button
-            onClick={handleSearch}
-            className="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+            type="button"
+            onClick={() => setShowFilters(true)}
+            className="px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm"
           >
-            Buscar
+            Mostrar Filtros
           </button>
         </div>
+        {showFilters && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-start justify-center pt-10 z-60">
+            <div className="bg-white rounded-md shadow-lg p-4 w-full max-w-xl space-y-4">
+              <div className="flex justify-between items-center pb-2 border-b">
+                <h4 className="text-lg font-semibold">Filtros</h4>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <TableFilters
+                modelName="clients"
+                data={clients}
+                onFilterChange={setFilteredClients}
+              />
+            </div>
+          </div>
+        )}
         <div className="max-h-96 overflow-y-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0">
@@ -90,8 +119,8 @@ export default function ClientSearchModal({ isOpen, onClose, onClientSelect }) {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {results.length > 0 ? (
-                results.map((c) => (
+              {filtered.length > 0 ? (
+                filtered.map((c) => (
                   <tr key={c.clientID} className="hover:bg-gray-50">
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
                       {c.clientID}

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { carBrandOperations } from "../utils/graphqlClient";
+import TableFilters from "./TableFilters";
 
 export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) {
   const [brands, setBrands] = useState([]);
+  const [filteredBrands, setFilteredBrands] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -12,10 +15,14 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
       setIsLoading(true);
       carBrandOperations
         .getAllCarBrands()
-        .then((data) => setBrands(data || []))
+        .then((data) => {
+          setBrands(data || []);
+          setFilteredBrands(data || []);
+        })
         .catch((err) => {
           console.error("Error fetching brands:", err);
           setBrands([]);
+          setFilteredBrands([]);
         })
         .finally(() => setIsLoading(false));
     }
@@ -23,7 +30,7 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
 
   if (!isOpen) return null;
 
-  const filtered = brands.filter((b) =>
+  const filtered = filteredBrands.filter((b) =>
     b.Name.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -41,7 +48,7 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
             </svg>
           </button>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 items-center">
           <input
             type="text"
             value={query}
@@ -49,7 +56,36 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
             className="flex-1 border rounded px-3 py-2"
             placeholder="Nombre de marca..."
           />
+          <button
+            type="button"
+            onClick={() => setShowFilters(true)}
+            className="px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm"
+          >
+            Mostrar Filtros
+          </button>
         </div>
+        {showFilters && (
+          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-start justify-center pt-10 z-60">
+            <div className="bg-white rounded-md shadow-lg p-4 w-full max-w-xl space-y-4">
+              <div className="flex justify-between items-center pb-2 border-b">
+                <h4 className="text-lg font-semibold">Filtros</h4>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <TableFilters
+                modelName="carbrands"
+                data={brands}
+                onFilterChange={setFilteredBrands}
+              />
+            </div>
+          </div>
+        )}
         <div className="max-h-80 overflow-y-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0">
