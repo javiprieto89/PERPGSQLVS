@@ -38,7 +38,6 @@ export default function Brands() {
         }
     };
 
-
     const handleCreate = () => {
         openReactWindow(
             () => (

@@ -46,7 +46,6 @@ export default function SaleConditions() {
         }
     };
 
-
     const handleCreate = () => {
         openReactWindow(
             () => (

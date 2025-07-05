@@ -38,7 +38,6 @@ export default function Items() {
         }
     };
 
-
     const handleCreate = () => {
         openReactWindow(
             () => (

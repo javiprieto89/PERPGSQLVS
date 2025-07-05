@@ -37,7 +37,6 @@ export default function CreditCards() {
         }
     };
 
-
     const handleCreate = () => {
         openReactWindow(
             () => (
