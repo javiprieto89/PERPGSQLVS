@@ -2,7 +2,11 @@
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.carmodels import CarModelsInDB
-from app.graphql.crud.carmodels import get_carmodels, get_carmodels_by_id
+from app.graphql.crud.carmodels import (
+    get_carmodels,
+    get_carmodels_by_id,
+    get_carmodels_by_brand
+)
 from app.db import get_db
 from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
@@ -27,6 +31,17 @@ class CarmodelsQuery:
         try:
             carmodel = get_carmodels_by_id(db, id)
             return obj_to_schema(CarModelsInDB, carmodel) if carmodel else None
+        finally:
+            db_gen.close()
+
+    @strawberry.field
+    def carmodels_by_brand(self, info: Info, carBrandID: int) -> List[CarModelsInDB]:
+        """Obtener modelos filtrados por marca"""
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            models = get_carmodels_by_brand(db, carBrandID)
+            return list_to_schema(CarModelsInDB, models)
         finally:
             db_gen.close()
 

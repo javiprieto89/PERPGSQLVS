@@ -8,7 +8,10 @@ def obj_to_schema(schema_type: Type[Any], obj: Any):
     data = {}
     obj_dict = getattr(obj, "__dict__", {})
     for f in fields(schema_type):
-        data[f.name] = obj_dict.get(f.name)
+        if f.name in obj_dict:
+            data[f.name] = obj_dict.get(f.name)
+        else:
+            data[f.name] = getattr(obj, f.name, None)
     return schema_type(**data)
 
 

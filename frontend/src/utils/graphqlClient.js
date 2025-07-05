@@ -435,6 +435,7 @@ export const QUERIES = {
                 CarModelID
                 CarBrandID
                 Model
+                CarBrandName
             }
         }
     `,
@@ -444,6 +445,17 @@ export const QUERIES = {
                 CarModelID
                 CarBrandID
                 Model
+                CarBrandName
+            }
+        }
+    `,
+    GET_CARMODELS_BY_BRAND: `
+        query GetCarModelsByBrand($brandID: Int!) {
+            carmodelsByBrand(carBrandID: $brandID) {
+                CarModelID
+                CarBrandID
+                Model
+                CarBrandName
             }
         }
     `,
@@ -456,6 +468,9 @@ export const QUERIES = {
                 LicensePlate
                 Year
                 CarModelID
+                CarModelName
+                CarBrandID
+                CarBrandName
                 ClientID
                 LastServiceMileage
                 IsDebtor
@@ -470,6 +485,9 @@ export const QUERIES = {
                 LicensePlate
                 Year
                 CarModelID
+                CarModelName
+                CarBrandID
+                CarBrandName
                 ClientID
                 LastServiceMileage
                 IsDebtor
@@ -1497,6 +1515,16 @@ export const carModelOperations = {
             return data.carmodelsById;
         } catch (error) {
             console.error("Error obteniendo modelo de auto:", error);
+            throw error;
+        }
+    },
+
+    async getCarModelsByBrand(brandID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CARMODELS_BY_BRAND, { brandID: parseInt(brandID) });
+            return data.carmodelsByBrand || [];
+        } catch (error) {
+            console.error("Error obteniendo modelos de auto por marca:", error);
             throw error;
         }
     },

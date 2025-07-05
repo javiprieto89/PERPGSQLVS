@@ -73,7 +73,8 @@ export default function Cars() {
                         <div key={c.CarID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-2">{c.LicensePlate}</h3>
                             <p className="text-sm mb-1">Año: {c.Year || '—'}</p>
-                            <p className="text-sm mb-1">Modelo ID: {c.CarModelID}</p>
+                            <p className="text-sm mb-1">Marca: {c.CarBrandName}</p>
+                            <p className="text-sm mb-1">Modelo: {c.CarModelName}</p>
                             <button onClick={() => handleEdit(c)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}

@@ -31,6 +31,9 @@ class CarsInDB:
     LicensePlate: str
     Year: Optional[int] = None
     CarModelID: int
+    CarModelName: Optional[str] = None
+    CarBrandID: Optional[int] = None
+    CarBrandName: Optional[str] = None
     ClientID: int
     LastServiceMileage: Optional[int] = None
     IsDebtor: Optional[bool] = None

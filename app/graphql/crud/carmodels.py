@@ -1,15 +1,39 @@
 # carmodels.py
 from sqlalchemy.orm import Session
 from app.models.carmodels import CarModels
+from app.models.carbrands import CarBrands
 from app.graphql.schemas.carmodels import CarModelsCreate, CarModelsUpdate
 
 
 def get_carmodels(db: Session):
-    return db.query(CarModels).all()
+    results = db.query(CarModels, CarBrands.Name.label("CarBrandName"))\
+        .join(CarBrands, CarBrands.CarBrandID == CarModels.CarBrandID).all()
+    models = []
+    for m, brand_name in results:
+        setattr(m, "CarBrandName", brand_name)
+        models.append(m)
+    return models
 
 
 def get_carmodels_by_id(db: Session, carmodelid: int):
-    return db.query(CarModels).filter(CarModels.CarModelID == carmodelid).first()
+    result = db.query(CarModels, CarBrands.Name.label("CarBrandName"))\
+        .join(CarBrands, CarBrands.CarBrandID == CarModels.CarBrandID)\
+        .filter(CarModels.CarModelID == carmodelid).first()
+    if result:
+        m, brand_name = result
+        setattr(m, "CarBrandName", brand_name)
+        return m
+    return None
+
+def get_carmodels_by_brand(db: Session, carbrand_id: int):
+    results = db.query(CarModels, CarBrands.Name.label("CarBrandName"))\
+        .join(CarBrands, CarBrands.CarBrandID == CarModels.CarBrandID)\
+        .filter(CarModels.CarBrandID == carbrand_id).all()
+    models = []
+    for m, brand_name in results:
+        setattr(m, "CarBrandName", brand_name)
+        models.append(m)
+    return models
 
 
 def create_carmodels(db: Session, data: CarModelsCreate):

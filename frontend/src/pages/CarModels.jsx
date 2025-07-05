@@ -72,7 +72,7 @@ export default function CarModels() {
                     {models.map(m => (
                         <div key={m.CarModelID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-2">{m.Model}</h3>
-                            <p className="text-sm mb-2">Marca ID: {m.CarBrandID}</p>
+                            <p className="text-sm mb-2">Marca: {m.CarBrandName}</p>
                             <button onClick={() => handleEdit(m)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}

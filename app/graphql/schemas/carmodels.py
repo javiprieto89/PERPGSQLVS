@@ -17,3 +17,4 @@ class CarModelsInDB:
     CarModelID: int
     CarBrandID: int
     Model: str
+    CarBrandName: Optional[str] = None
