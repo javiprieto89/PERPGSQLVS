@@ -40,13 +40,13 @@ export default function Items() {
 
     const handleCreate = () => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <ItemCreate
                     onSave={() => {
-                        window.opener.postMessage('reload-items', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-items', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Nuevo Ítem'
@@ -59,14 +59,14 @@ export default function Items() {
 
     const handleEdit = (item) => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <ItemCreate
                     item={item}
                     onSave={() => {
-                        window.opener.postMessage('reload-items', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-items', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Editar Ítem'

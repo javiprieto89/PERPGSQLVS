@@ -39,13 +39,13 @@ export default function CreditCards() {
 
     const handleCreate = () => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <CreditCardCreate
                     onSave={() => {
-                        window.opener.postMessage('reload-creditcards', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-creditcards', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Nueva Tarjeta'
@@ -58,14 +58,14 @@ export default function CreditCards() {
 
     const handleEdit = (card) => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <CreditCardCreate
                     card={card}
                     onSave={() => {
-                        window.opener.postMessage('reload-creditcards', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-creditcards', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Editar Tarjeta'

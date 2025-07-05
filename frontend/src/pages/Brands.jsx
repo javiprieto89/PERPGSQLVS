@@ -40,13 +40,13 @@ export default function Brands() {
 
     const handleCreate = () => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <BrandCreate
                     onSave={() => {
-                        window.opener.postMessage('reload-brands', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-brands', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Nueva Marca'
@@ -59,14 +59,14 @@ export default function Brands() {
 
     const handleEdit = (brand) => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <BrandCreate
                     brand={brand}
                     onSave={() => {
-                        window.opener.postMessage('reload-brands', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-brands', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Editar Marca'

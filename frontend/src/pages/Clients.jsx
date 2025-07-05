@@ -110,13 +110,13 @@ export default function Clients() {
 
     const handleCreateClient = () => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <ClientCreate
                     onSave={() => {
-                        window.opener.postMessage('reload-clients', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-clients', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Nuevo Cliente'
@@ -125,14 +125,14 @@ export default function Clients() {
 
     const handleEditClient = (client) => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <ClientCreate
                     client={client}
                     onSave={() => {
-                        window.opener.postMessage('reload-clients', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-clients', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Editar Cliente'

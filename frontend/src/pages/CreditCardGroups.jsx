@@ -39,13 +39,13 @@ export default function CreditCardGroups() {
 
     const handleCreate = () => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <CreditCardGroupCreate
                     onSave={() => {
-                        window.opener.postMessage('reload-cardgroups', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-cardgroups', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Nuevo Grupo'
@@ -58,14 +58,14 @@ export default function CreditCardGroups() {
 
     const handleEdit = (group) => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <CreditCardGroupCreate
                     group={group}
                     onSave={() => {
-                        window.opener.postMessage('reload-cardgroups', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-cardgroups', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Editar Grupo'

@@ -38,15 +38,15 @@ export default function ItemSubcategories() {
         }
     };
 
-    const handleCreate = () => {
+  const handleCreate = () => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <ItemSubcategoryCreate
                     onSave={() => {
-                        window.opener.postMessage('reload-itemsubcategories', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-itemsubcategories', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Nueva Subcategoría'
@@ -59,14 +59,14 @@ export default function ItemSubcategories() {
 
     const handleEdit = (subcat) => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <ItemSubcategoryCreate
                     subcategory={subcat}
                     onSave={() => {
-                        window.opener.postMessage('reload-itemsubcategories', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-itemsubcategories', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Editar Subcategoría'

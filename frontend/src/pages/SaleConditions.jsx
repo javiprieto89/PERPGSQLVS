@@ -48,15 +48,15 @@ export default function SaleConditions() {
 
     const handleCreate = () => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <SaleConditionCreate
                     cards={cards}
                     groups={groups}
                     onSave={() => {
-                        window.opener.postMessage('reload-saleconditions', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-saleconditions', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Nueva Condición'
@@ -69,16 +69,17 @@ export default function SaleConditions() {
 
     const handleEdit = (sc) => {
         openReactWindow(
-            () => (
+
+            (popup) => (
                 <SaleConditionCreate
                     saleCondition={sc}
                     cards={cards}
                     groups={groups}
                     onSave={() => {
-                        window.opener.postMessage('reload-saleconditions', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-saleconditions', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Editar Condición'

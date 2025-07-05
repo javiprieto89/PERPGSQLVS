@@ -41,13 +41,13 @@ export default function ItemCategories() {
 
     const handleCreate = () => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <ItemCategoryCreate
                     onSave={() => {
-                        window.opener.postMessage('reload-itemcategories', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-itemcategories', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Nueva Categoría'
@@ -60,14 +60,14 @@ export default function ItemCategories() {
 
     const handleEdit = (category) => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <ItemCategoryCreate
                     category={category}
                     onSave={() => {
-                        window.opener.postMessage('reload-itemcategories', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-itemcategories', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Editar Categoría'

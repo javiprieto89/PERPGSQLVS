@@ -90,13 +90,13 @@ export default function Suppliers() {
 
     const handleCreateSupplier = () => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <SupplierCreate
                     onSave={() => {
-                        window.opener.postMessage('reload-suppliers', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-suppliers', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Nuevo Proveedor'
@@ -105,14 +105,14 @@ export default function Suppliers() {
 
     const handleEditSupplier = (supplier) => {
         openReactWindow(
-            () => (
+            (popup) => (
                 <SupplierCreate
                     supplier={supplier}
                     onSave={() => {
-                        window.opener.postMessage('reload-suppliers', '*');
-                        window.close();
+                        popup.opener.postMessage('reload-suppliers', '*');
+                        popup.close();
                     }}
-                    onClose={() => window.close()}
+                    onClose={() => popup.close()}
                 />
             ),
             'Editar Proveedor'
