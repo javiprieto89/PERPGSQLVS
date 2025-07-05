@@ -60,6 +60,9 @@ class ItemsInDB:
     LastModified: Optional[date]  # Corregido nombre del campo (era lastModified)
     WarehouseID: int
     IsActive: bool
+    BrandName: Optional[str] = None
+    CategoryName: Optional[str] = None
+    SubcategoryName: Optional[str] = None
 
 
 

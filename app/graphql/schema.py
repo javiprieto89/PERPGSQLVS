@@ -3,6 +3,7 @@
 import strawberry
 from typing import List, Optional
 from sqlalchemy import func, and_
+from sqlalchemy.orm import joinedload
 from datetime import datetime
 
 # Importar todos los resolvers existentes
@@ -66,6 +67,7 @@ from app.graphql.resolvers.auth import AuthQuery
 
 # Importar schemas para los tipos de datos
 from app.graphql.schemas.items import ItemsInDB, ItemSearchResult
+from app.utils.item_helpers import item_to_in_db
 from app.graphql.schemas.clients import ClientsInDB
 from app.graphql.schemas.orders import OrdersInDB
 from app.graphql.schemas.auth import (
@@ -199,7 +201,11 @@ class AdvancedResolver:
         db = next(db_gen)
         try:
             search_term = f"%{query}%"
-            items = db.query(Items).filter(
+            items = db.query(Items).options(
+                joinedload(Items.brands_),
+                joinedload(Items.itemCategories_),
+                joinedload(Items.itemSubcategories_),
+            ).filter(
                 Items.CompanyID == company_id,
                 (Items.Code.ilike(search_term) | Items.Description.ilike(search_term))
             ).limit(limit // 3).all()
@@ -219,7 +225,7 @@ class AdvancedResolver:
             total_results = len(items) + len(clients) + len(orders)
 
             return GlobalSearchResult(
-                items=[ItemsInDB(**item.__dict__) for item in items],
+                items=[item_to_in_db(item) for item in items],
                 clients=[ClientsInDB(**client.__dict__) for client in clients],
                 orders=[OrdersInDB(**order.__dict__) for order in orders],
                 stats=SearchStats(
