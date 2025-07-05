@@ -15956,6 +15956,9 @@
     <Content Include="frontend\src\App.css" />
     <Content Include="frontend\src\App.jsx" />
     <Content Include="frontend\src\assets\react.svg" />
+    <Content Include="frontend\src\components\CarBrandSearchModal.jsx" />
+    <Content Include="frontend\src\components\CarModelSearchModal.jsx" />
+    <Content Include="frontend\src\components\ClientSearchModal.jsx" />
     <Content Include="frontend\src\components\Header.jsx" />
     <Content Include="frontend\src\components\ItemSearchModal.jsx" />
     <Content Include="frontend\src\components\Layout.jsx" />
