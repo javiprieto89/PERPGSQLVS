@@ -17,3 +17,4 @@ class ItemSubcategoriesInDB:
     ItemSubcategoryID: int
     ItemCategoryID: int
     SubcategoryName: str
+    CategoryName: Optional[str] = None
