@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import { carBrandOperations } from "../utils/graphqlClient";
 import CarBrandCreate from "./CarBrandCreate";
 import TableFilters from "../components/TableFilters";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function CarBrands() {
     const [allCarBrands, setAllCarBrands] = useState([]);
     const [carBrands, setCarBrands] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [editingCarBrand, setEditingCarBrand] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => { loadCarBrands(); }, []);
@@ -29,15 +28,29 @@ export default function CarBrands() {
         }
     };
 
-    const handleSaved = () => {
-        loadCarBrands();
-        setShowModal(false);
-        setEditingCarBrand(null);
-    };
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-carbrands') {
+                loadCarBrands();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
 
     const handleCreate = () => {
-        setEditingCarBrand(null);
-        setShowModal(true);
+        openReactWindow(
+            (popup) => (
+                <CarBrandCreate
+                    onSave={() => {
+                        popup.opener.postMessage('reload-carbrands', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Nueva Marca de Auto'
+        );
     };
 
     const handleFilterChange = (filtered) => {
@@ -45,8 +58,19 @@ export default function CarBrands() {
     };
 
     const handleEdit = (cb) => {
-        setEditingCarBrand(cb);
-        setShowModal(true);
+        openReactWindow(
+            (popup) => (
+                <CarBrandCreate
+                    carBrand={cb}
+                    onSave={() => {
+                        popup.opener.postMessage('reload-carbrands', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Editar Marca de Auto'
+        );
     };
 
     return (
@@ -91,17 +115,6 @@ export default function CarBrands() {
                             <button onClick={() => handleEdit(cb)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}
-                </div>
-            )}
-            {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-lg max-w-md w-full">
-                        <CarBrandCreate
-                            onClose={() => { setShowModal(false); setEditingCarBrand(null); }}
-                            onSave={handleSaved}
-                            carBrand={editingCarBrand}
-                        />
-                    </div>
                 </div>
             )}
         </div>
