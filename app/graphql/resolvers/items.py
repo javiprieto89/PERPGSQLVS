@@ -7,6 +7,8 @@ from app.graphql.schemas.items import ItemsInDB, ItemSearchResult
 from app.models.items import Items
 from app.models.itemstock import Itemstock
 from app.db import get_db
+from app.graphql.crud.items import get_items, get_items_by_id
+from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
 @strawberry.input
@@ -76,30 +78,8 @@ class ItemsQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            items = db.query(Items).all()
-            result = []
-            for item in items:
-                # Convertir manualmente con funciones seguras
-                item_data = {
-                    'ItemID': safe_int(getattr(item, 'ItemID', 0)),
-                    'CompanyID': safe_int(getattr(item, 'CompanyID', 0)),
-                    'BranchID': safe_int(getattr(item, 'BranchID', 0)),
-                    'BrandID': safe_int(getattr(item, 'BrandID', 0)),
-                    'Code': safe_str(getattr(item, 'Code', '')),
-                    'Description': safe_str(getattr(item, 'Description', '')),
-                    'ItemCategoryID': safe_int(getattr(item, 'ItemCategoryID', 0)),
-                    'ItemSubcategoryID': safe_int(getattr(item, 'ItemSubcategoryID', 0)),
-                    'SupplierID': safe_int(getattr(item, 'SupplierID', 0)),
-                    'ControlStock': safe_bool(getattr(item, 'ControlStock', False)),
-                    'ReplenishmentStock': safe_int(getattr(item, 'ReplenishmentStock', 0)),
-                    'IsOffer': safe_bool(getattr(item, 'IsOffer', False)),
-                    'OEM': safe_str(getattr(item, 'OEM', None)),
-                    'LastModified': getattr(item, 'LastModified', None),
-                    'WarehouseID': safe_int(getattr(item, 'WarehouseID', 0)),
-                    'IsActive': safe_bool(getattr(item, 'IsActive', False))
-                }
-                result.append(ItemsInDB(**item_data))
-            return result
+            items = get_items(db)
+            return list_to_schema(ItemsInDB, items)
         finally:
             db_gen.close()
 
@@ -108,30 +88,8 @@ class ItemsQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            item = db.query(Items).filter(Items.ItemID == id).first()
-            if not item:
-                return None
-            
-            # Convertir manualmente con funciones seguras
-            item_data = {
-                'ItemID': safe_int(getattr(item, 'ItemID', 0)),
-                'CompanyID': safe_int(getattr(item, 'CompanyID', 0)),
-                'BranchID': safe_int(getattr(item, 'BranchID', 0)),
-                'BrandID': safe_int(getattr(item, 'BrandID', 0)),
-                'Code': safe_str(getattr(item, 'Code', '')),
-                'Description': safe_str(getattr(item, 'Description', '')),
-                'ItemCategoryID': safe_int(getattr(item, 'ItemCategoryID', 0)),
-                'ItemSubcategoryID': safe_int(getattr(item, 'ItemSubcategoryID', 0)),
-                'SupplierID': safe_int(getattr(item, 'SupplierID', 0)),
-                'ControlStock': safe_bool(getattr(item, 'ControlStock', False)),
-                'ReplenishmentStock': safe_int(getattr(item, 'ReplenishmentStock', 0)),
-                'IsOffer': safe_bool(getattr(item, 'IsOffer', False)),
-                'OEM': safe_str(getattr(item, 'OEM', None)),
-                'LastModified': getattr(item, 'LastModified', None),
-                'WarehouseID': safe_int(getattr(item, 'WarehouseID', 0)),
-                'IsActive': safe_bool(getattr(item, 'IsActive', False))
-            }
-            return ItemsInDB(**item_data)
+            item = get_items_by_id(db, id)
+            return obj_to_schema(ItemsInDB, item) if item else None
         finally:
             db_gen.close()
     

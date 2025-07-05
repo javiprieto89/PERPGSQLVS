@@ -2,21 +2,49 @@
 from sqlalchemy.orm import Session
 from dataclasses import asdict
 
-from app.models.itemsubcategories import  ItemSubcategories
+from app.models.itemsubcategories import ItemSubcategories
+from app.models.itemcategories import ItemCategories
 from app.graphql.schemas.itemsubcategories import ItemSubcategoriesCreate, ItemSubcategoriesUpdate
 
 def get_itemsubcategories(db: Session):
-    return db.query(ItemSubcategories).all()
+    """Obtener subcategorías con el nombre de categoría"""
+    results = db.query(
+        ItemSubcategories,
+        ItemCategories.CategoryName.label("CategoryName"),
+    ).join(ItemCategories, ItemCategories.ItemCategoryID == ItemSubcategories.ItemCategoryID).all()
+
+    records = []
+    for subcat, cat_name in results:
+        setattr(subcat, "CategoryName", cat_name)
+        records.append(subcat)
+    return records
 
 def get_itemsubcategories_by_id(db: Session, subcategoryid: int):
-    return db.query(ItemSubcategories).filter(
-        ItemSubcategories.itemSubcategoryID == subcategoryid
-    ).first()
+    """Obtener subcategoría por ID con nombre de categoría"""
+    result = db.query(
+        ItemSubcategories,
+        ItemCategories.CategoryName.label("CategoryName"),
+    ).join(ItemCategories, ItemCategories.ItemCategoryID == ItemSubcategories.ItemCategoryID)
+    result = result.filter(ItemSubcategories.ItemSubcategoryID == subcategoryid).first()
+    if result:
+        subcat, cat_name = result
+        setattr(subcat, "CategoryName", cat_name)
+        return subcat
+    return None
 
 def get_itemsubcategories_by_category_id(db: Session, category_id: int):
-    return db.query(ItemSubcategories).filter(
-        ItemSubcategories.ItemCategoryID == category_id
-    ).all()
+    """Obtener subcategorías filtradas por categoría incluyendo su nombre"""
+    results = db.query(
+        ItemSubcategories,
+        ItemCategories.CategoryName.label("CategoryName"),
+    ).join(ItemCategories, ItemCategories.ItemCategoryID == ItemSubcategories.ItemCategoryID)
+    results = results.filter(ItemSubcategories.ItemCategoryID == category_id).all()
+
+    records = []
+    for subcat, cat_name in results:
+        setattr(subcat, "CategoryName", cat_name)
+        records.append(subcat)
+    return records
 
 def create_itemsubcategories(db: Session, data: ItemSubcategoriesCreate):
     obj = ItemSubcategories(**asdict(data))

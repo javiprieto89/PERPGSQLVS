@@ -5,11 +5,11 @@ from app.graphql.schemas.itemsubcategories import ItemSubcategoriesInDB
 from app.graphql.crud.itemsubcategories import (
     get_itemsubcategories,
     get_itemsubcategories_by_id,
-    get_itemsubcategories_by_category_id,  # AGREGADO
+    get_itemsubcategories_by_category_id,
 )
 from app.db import get_db
-from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
+from app.utils import list_to_schema, obj_to_schema
 
 
 @strawberry.type
