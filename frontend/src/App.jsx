@@ -8,6 +8,8 @@ import Clients from "./pages/Clients";
 import Suppliers from "./pages/Suppliers";
 import Brands from "./pages/Brands";
 import CarBrands from "./pages/CarBrands";
+import CarModels from "./pages/CarModels";
+import Cars from "./pages/Cars";
 import ItemCategories from "./pages/ItemCategories";
 import ItemSubcategories from "./pages/ItemSubcategories";
 import Items from "./pages/Items";
@@ -195,6 +197,8 @@ export default function App() {
                     <Route path="itemsubcategories" element={<ItemSubcategories />} />
                     <Route path="items" element={<Items />} />
                     <Route path="carbrands" element={<CarBrands />} />
+                    <Route path="carmodels" element={<CarModels />} />
+                    <Route path="cars" element={<Cars />} />
                     <Route path="documents" element={<Documents />} />
                     {/* Ruta fallback: todo lo desconocido a dashboard */}
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />

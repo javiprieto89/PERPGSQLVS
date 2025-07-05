@@ -428,6 +428,67 @@ export const QUERIES = {
         }
     `,
 
+    // MODELOS DE AUTO
+    GET_ALL_CARMODELS: `
+        query GetAllCarModels {
+            allCarmodels {
+                CarModelID
+                CarBrandID
+                Model
+            }
+        }
+    `,
+    GET_CARMODEL_BY_ID: `
+        query GetCarModelById($id: Int!) {
+            carmodelsById(id: $id) {
+                CarModelID
+                CarBrandID
+                Model
+            }
+        }
+    `,
+
+    // AUTOS
+    GET_ALL_CARS: `
+        query GetAllCars {
+            allCars {
+                CarID
+                LicensePlate
+                Year
+                CarModelID
+                ClientID
+                LastServiceMileage
+                IsDebtor
+                DiscountID
+            }
+        }
+    `,
+    GET_CAR_BY_ID: `
+        query GetCarById($id: Int!) {
+            carsById(id: $id) {
+                CarID
+                LicensePlate
+                Year
+                CarModelID
+                ClientID
+                LastServiceMileage
+                IsDebtor
+                DiscountID
+            }
+        }
+    `,
+
+    // DESCUENTOS
+    GET_ALL_DISCOUNTS: `
+        query GetAllDiscounts {
+            allDiscounts {
+                DiscountID
+                DiscountName
+                Percentage
+            }
+        }
+    `,
+
     // GRUPOS DE TARJETAS DE CRÉDITO
     GET_ALL_CREDITCARDGROUPS: `
         query GetAllCreditCardGroups {
@@ -761,6 +822,66 @@ export const MUTATIONS = {
     DELETE_CARBRAND: `
         mutation DeleteCarBrand($carBrandID: Int!) {
             deleteCarbrand(carBrandID: $carBrandID)
+        }
+    `,
+
+    // MODELOS DE AUTO
+    CREATE_CARMODEL: `
+        mutation CreateCarModel($input: CarModelsCreate!) {
+            createCarmodel(data: $input) {
+                CarModelID
+                CarBrandID
+                Model
+            }
+        }
+    `,
+    UPDATE_CARMODEL: `
+        mutation UpdateCarModel($carModelID: Int!, $input: CarModelsUpdate!) {
+            updateCarmodel(carModelID: $carModelID, data: $input) {
+                CarModelID
+                CarBrandID
+                Model
+            }
+        }
+    `,
+    DELETE_CARMODEL: `
+        mutation DeleteCarModel($carModelID: Int!) {
+            deleteCarmodel(carModelID: $carModelID)
+        }
+    `,
+
+    // AUTOS
+    CREATE_CAR: `
+        mutation CreateCar($input: CarsCreate!) {
+            createCar(data: $input) {
+                CarID
+                LicensePlate
+                Year
+                CarModelID
+                ClientID
+                LastServiceMileage
+                IsDebtor
+                DiscountID
+            }
+        }
+    `,
+    UPDATE_CAR: `
+        mutation UpdateCar($carID: Int!, $input: CarsUpdate!) {
+            updateCar(carID: $carID, data: $input) {
+                CarID
+                LicensePlate
+                Year
+                CarModelID
+                ClientID
+                LastServiceMileage
+                IsDebtor
+                DiscountID
+            }
+        }
+    `,
+    DELETE_CAR: `
+        mutation DeleteCar($carID: Int!) {
+            deleteCar(carID: $carID)
         }
     `,
 
@@ -1354,6 +1475,132 @@ export const carBrandOperations = {
             return data.deleteCarbrand;
         } catch (error) {
             console.error("Error eliminando marca de auto:", error);
+            throw error;
+        }
+    }
+};
+
+export const carModelOperations = {
+    async getAllCarModels() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_CARMODELS);
+            return data.allCarmodels || [];
+        } catch (error) {
+            console.error("Error obteniendo modelos de auto:", error);
+            throw error;
+        }
+    },
+
+    async getCarModelById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CARMODEL_BY_ID, { id });
+            return data.carmodelsById;
+        } catch (error) {
+            console.error("Error obteniendo modelo de auto:", error);
+            throw error;
+        }
+    },
+
+    async createCarModel(carmodelData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_CARMODEL, {
+                input: carmodelData
+            });
+            return data.createCarmodel;
+        } catch (error) {
+            console.error("Error creando modelo de auto:", error);
+            throw error;
+        }
+    },
+
+    async updateCarModel(id, carmodelData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CARMODEL, {
+                carModelID: id,
+                input: carmodelData
+            });
+            return data.updateCarmodel;
+        } catch (error) {
+            console.error("Error actualizando modelo de auto:", error);
+            throw error;
+        }
+    },
+
+    async deleteCarModel(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_CARMODEL, {
+                carModelID: id
+            });
+            return data.deleteCarmodel;
+        } catch (error) {
+            console.error("Error eliminando modelo de auto:", error);
+            throw error;
+        }
+    }
+};
+
+export const carOperations = {
+    async getAllCars() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_CARS);
+            return data.allCars || [];
+        } catch (error) {
+            console.error("Error obteniendo autos:", error);
+            throw error;
+        }
+    },
+
+    async getCarById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CAR_BY_ID, { id });
+            return data.carsById;
+        } catch (error) {
+            console.error("Error obteniendo auto:", error);
+            throw error;
+        }
+    },
+
+    async createCar(carData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_CAR, { input: carData });
+            return data.createCar;
+        } catch (error) {
+            console.error("Error creando auto:", error);
+            throw error;
+        }
+    },
+
+    async updateCar(id, carData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CAR, {
+                carID: id,
+                input: carData
+            });
+            return data.updateCar;
+        } catch (error) {
+            console.error("Error actualizando auto:", error);
+            throw error;
+        }
+    },
+
+    async deleteCar(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_CAR, { carID: id });
+            return data.deleteCar;
+        } catch (error) {
+            console.error("Error eliminando auto:", error);
+            throw error;
+        }
+    }
+};
+
+export const discountOperations = {
+    async getAllDiscounts() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_DISCOUNTS);
+            return data.allDiscounts || [];
+        } catch (error) {
+            console.error("Error obteniendo descuentos:", error);
             throw error;
         }
     }
