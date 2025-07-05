@@ -14,6 +14,7 @@ import MyWindowPortal from "./MyWindowPortal";
 
 export default function Sidebar() {
   const [openSections, setOpenSections] = useState({});
+  const [openSubmenus, setOpenSubmenus] = useState({});
   const [popup, setPopup] = useState(null);
 
   useEffect(() => {
@@ -25,14 +26,26 @@ export default function Sidebar() {
         localStorage.removeItem("openSections");
       }
     }
+    const storedSubs = localStorage.getItem("openSubmenus");
+    if (storedSubs) {
+      try {
+        setOpenSubmenus(JSON.parse(storedSubs));
+      } catch {
+        localStorage.removeItem("openSubmenus");
+      }
+    }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("openSections", JSON.stringify(openSections));
-  }, [openSections]);
+    localStorage.setItem("openSubmenus", JSON.stringify(openSubmenus));
+  }, [openSections, openSubmenus]);
 
   const toggleSection = (title) =>
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));
+
+  const toggleSubmenu = (key) =>
+    setOpenSubmenus((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const openPopup = (Component, title, width = 1000, height = 700) => {
     const tempOrderId = `temp-${Date.now()}-${Math.floor(
@@ -51,21 +64,31 @@ export default function Sidebar() {
       items: [
         { label: "Clientes", to: "/clients" },
         { label: "Proveedores", to: "/suppliers" },
-        { label: "Marcas", to: "/brands" },
-        { label: "Condiciones", to: "/saleconditions" },
-        { label: "Grupos Tarjetas", to: "/creditcardgroups" },
-        { label: "Tarjetas", to: "/creditcards" },
-        { label: "Categorías", to: "/itemcategories" },
-        { label: "Subcategorías", to: "/itemsubcategories" },
-        { label: "Ítems", to: "/items" },
-      ],
-    },
-    {
-      title: "Autos",
-      items: [
-        { label: "Marcas de autos", to: "/carbrands" },
-        { label: "Modelos de autos", to: "/carmodels" },
-        { label: "Autos", to: "/cars" },
+        {
+          label: "Productos",
+          submenu: [
+            { label: "Categorías", to: "/itemcategories" },
+            { label: "Subcategorías", to: "/itemsubcategories" },
+            { label: "Marcas", to: "/brands" },
+            { label: "Ítems", to: "/items" },
+          ],
+        },
+        {
+          label: "Ventas",
+          submenu: [
+            { label: "Grupos Tarjetas", to: "/creditcardgroups" },
+            { label: "Tarjetas", to: "/creditcards" },
+            { label: "Condiciones", to: "/saleconditions" },
+          ],
+        },
+        {
+          label: "Autos",
+          submenu: [
+            { label: "Marcas de autos", to: "/carbrands" },
+            { label: "Modelos de autos", to: "/carmodels" },
+            { label: "Autos", to: "/cars" },
+          ],
+        },
       ],
     },
     {
@@ -128,33 +151,78 @@ export default function Sidebar() {
 
                 {isOpen && (
                   <ul className="mt-1 ml-4 space-y-1">
-                    {section.items.map((item) => (
-                      <li key={item.label}>
-                        {item.to ? (
-                          <NavLink
-                            to={item.to}
-                            className={({ isActive }) =>
-                              `flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 ${
-                                isActive
-                                  ? "bg-gray-200 font-medium"
-                                  : "text-gray-700"
-                              }`
-                            }
-                          >
-                            <FileText size={16} />
-                            {item.label}
-                          </NavLink>
-                        ) : (
-                          <button
-                            onClick={item.action}
-                            className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 text-gray-700 w-full text-left"
-                          >
-                            <FileText size={16} />
-                            {item.label}
-                          </button>
-                        )}
-                      </li>
-                    ))}
+                    {section.items.map((item) => {
+                      const key = `${section.title}-${item.label}`;
+                      if (item.submenu) {
+                        const subOpen = openSubmenus[key];
+                        return (
+                          <li key={item.label}>
+                            <button
+                              onClick={() => toggleSubmenu(key)}
+                              className="flex items-center justify-between w-full px-2 py-1 rounded hover:bg-gray-100 text-gray-700"
+                            >
+                              <span className="flex items-center gap-2">
+                                <FileText size={16} />{item.label}
+                              </span>
+                              {subOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                            </button>
+                            {subOpen && (
+                              <ul className="mt-1 ml-4 space-y-1">
+                                {item.submenu.map((sub) => (
+                                  <li key={sub.label}>
+                                    {sub.to ? (
+                                      <NavLink
+                                        to={sub.to}
+                                        className={({ isActive }) =>
+                                          `flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 ${
+                                            isActive ? "bg-gray-200 font-medium" : "text-gray-700"`
+                                        }
+                                      >
+                                        <FileText size={16} />
+                                        {sub.label}
+                                      </NavLink>
+                                    ) : (
+                                      <button
+                                        onClick={sub.action}
+                                        className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 text-gray-700 w-full text-left"
+                                      >
+                                        <FileText size={16} />
+                                        {sub.label}
+                                      </button>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </li>
+                        );
+                      }
+                      return (
+                        <li key={item.label}>
+                          {item.to ? (
+                            <NavLink
+                              to={item.to}
+                              className={({ isActive }) =>
+                                `flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 ${
+                                  isActive ? "bg-gray-200 font-medium" : "text-gray-700"
+                                }`
+                              }
+                            >
+                              <FileText size={16} />
+                              {item.label}
+                            </NavLink>
+                          ) : (
+                            <button
+                              onClick={item.action}
+                              className="flex items-center gap-2 px-2 py-1 rounded hover:bg-gray-100 text-gray-700 w-full text-left"
+                            >
+                              <FileText size={16} />
+                              {item.label}
+                            </button>
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </div>
