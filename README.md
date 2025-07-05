@@ -1,6 +1,6 @@
 # PERPGSQLVS
 
-PERPGSQLVS is a small full‑stack project composed of a FastAPI back‑end and a React front‑end. The API exposes GraphQL and REST endpoints while the front‑end uses Vite and Tailwind CSS.
+PERPGSQLVS is a small full‑stack project composed of a Starlette‑based back‑end and a React front‑end. The API exposes GraphQL and REST endpoints while the front‑end uses Vite and Tailwind CSS.
 
 ## Configuration
 
