@@ -44,17 +44,6 @@ export default function OrderCreate({ userInfo }) {
   });
   const [showClientDropdown, setShowClientDropdown] = useState(false);
   const [showItemSearchModal, setShowItemSearchModal] = useState(false); // Estado para el modal de búsqueda de ítems
-  const [itemFilters, setItemFilters] = useState({
-    // Estado para los filtros del modal de ítems
-    code: "",
-    description: "",
-    brand_id: "",
-    category_id: "",
-    subcategory_id: "",
-    supplier_id: "",
-    oem: "",
-  });
-  const [searchedItems, setSearchedItems] = useState([]); // Estado para los ítems buscados en el modal
 
   useEffect(() => {
     const fetchData = async () => {

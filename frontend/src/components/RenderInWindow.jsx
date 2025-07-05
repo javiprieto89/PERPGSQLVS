@@ -3,8 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 
 export default function RenderInWindow({
-  children,
-  onClose,
+  children,  
   title,
   width = 800,
   height = 600,

@@ -6,8 +6,6 @@ export default function ItemSearchModal({
   isOpen,
   onClose,
   onItemSelect,
-  companyId,
-  branchId,
 }) {
   const [filters, setFilters] = useState({
     item_id: "", // Mantener como string simple si no necesita matchType
@@ -87,7 +85,7 @@ export default function ItemSearchModal({
   }, [filters.category_id]);
 
   const handleFilterChange = (e) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
 
     if (name.endsWith("_matchType")) {
       const filterName = name.replace("_matchType", "");

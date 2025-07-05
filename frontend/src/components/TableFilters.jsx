@@ -154,10 +154,10 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                     }
                 }
             }
-            // eslint-disable-next-line
+             
         }
         if (filterFields.some(f => f.dependsOn)) loadDependentOptions();
-        // eslint-disable-next-line
+         
     }, [filters, filterFields]);
 
     // 4. Filtrar los datos en memoria según los filtros aplicados

@@ -2331,6 +2331,7 @@
     <Content Include="Como iniciar.txt" />
     <Content Include="eslint.config.cjs" />
     <Content Include="frontend\.gitignore" />
+    <Content Include="frontend\detect-unused-vars.cjs" />
     <Content Include="frontend\dist\output.css" />
     <Content Include="frontend\eslint.config.js" />
     <Content Include="frontend\index.html" />
@@ -15965,8 +15966,6 @@
     <Content Include="frontend\src\components\RequireAuth.jsx" />
     <Content Include="frontend\src\components\Sidebar.jsx" />
     <Content Include="frontend\src\components\TableFilters.jsx" />
-    <Content Include="frontend\src\components\_ItemSearchModal.jsx" />
-    <Content Include="frontend\src\components\_RenderInWindow.jsx" />
     <Content Include="frontend\src\context\UserContext.jsx" />
     <Content Include="frontend\src\index.css" />
     <Content Include="frontend\src\input.css" />
@@ -15974,7 +15973,6 @@
     <Content Include="frontend\src\output.css" />
     <Content Include="frontend\src\pages\BrandCreate.jsx" />
     <Content Include="frontend\src\pages\Brands.jsx" />
-    <Content Include="frontend\src\pages\c.jsx" />
     <Content Include="frontend\src\pages\ClientCreate.jsx" />
     <Content Include="frontend\src\pages\Clients.jsx" />
     <Content Include="frontend\src\pages\Dashboard.jsx" />
