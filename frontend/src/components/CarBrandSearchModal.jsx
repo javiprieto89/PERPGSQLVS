@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { carBrandOperations } from "../utils/graphqlClient";
+import TableFilters from "./TableFilters";
 
 export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) {
   const [brands, setBrands] = useState([]);
+  const [filteredBrands, setFilteredBrands] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -12,10 +15,14 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
       setIsLoading(true);
       carBrandOperations
         .getAllCarBrands()
-        .then((data) => setBrands(data || []))
+        .then((data) => {
+          setBrands(data || []);
+          setFilteredBrands(data || []);
+        })
         .catch((err) => {
           console.error("Error fetching brands:", err);
           setBrands([]);
+          setFilteredBrands([]);
         })
         .finally(() => setIsLoading(false));
     }
@@ -23,7 +30,7 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
 
   if (!isOpen) return null;
 
-  const filtered = brands.filter((b) =>
+  const filtered = filteredBrands.filter((b) =>
     b.Name.toLowerCase().includes(query.toLowerCase())
   );
 
@@ -41,7 +48,7 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
             </svg>
           </button>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 items-center">
           <input
             type="text"
             value={query}
@@ -49,7 +56,21 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
             className="flex-1 border rounded px-3 py-2"
             placeholder="Nombre de marca..."
           />
+          <button
+            type="button"
+            onClick={() => setShowFilters(!showFilters)}
+            className="px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm"
+          >
+            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
+          </button>
         </div>
+        {showFilters && (
+          <TableFilters
+            modelName="carbrands"
+            data={brands}
+            onFilterChange={setFilteredBrands}
+          />
+        )}
         <div className="max-h-80 overflow-y-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0">
