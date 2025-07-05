@@ -1,4 +1,4 @@
-﻿// eslint.config.cjs
+// eslint.config.cjs
 const js = require("@eslint/js");
 const globals = require("globals");
 const react = require("eslint-plugin-react");
