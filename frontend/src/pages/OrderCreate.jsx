@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import apiFetch from "../utils/apiFetch";
 import ItemSearchModal from "../components/ItemSearchModal"; // Importar el modal
+import ClientSearchModal from "../components/ClientSearchModal";
 import MyWindowPortal from "../components/MyWindowPortal"; // Importar el portal
 
 export default function OrderCreate({ userInfo }) {
@@ -44,6 +45,7 @@ export default function OrderCreate({ userInfo }) {
   });
   const [showClientDropdown, setShowClientDropdown] = useState(false);
   const [showItemSearchModal, setShowItemSearchModal] = useState(false); // Estado para el modal de búsqueda de ítems
+  const [showClientSearchModal, setShowClientSearchModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -277,11 +279,11 @@ export default function OrderCreate({ userInfo }) {
                 >
                   Buscar Cliente por Nombre
                 </label>
-                <input
-                  type="text"
-                  id="clientSearch"
-                  value={clientSearch}
-                  onChange={handleClientSearchChange}
+              <input
+                type="text"
+                id="clientSearch"
+                value={clientSearch}
+                onChange={handleClientSearchChange}
                   onBlur={() => {
                     setTimeout(() => {
                       const activeElement = document.activeElement;
@@ -301,9 +303,29 @@ export default function OrderCreate({ userInfo }) {
                   }}
                   placeholder="Escriba para buscar..."
                   className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
-                  autoComplete="off"
-                />
-                {showClientDropdown && (
+                autoComplete="off"
+              />
+              <button
+                type="button"
+                onClick={() => setShowClientSearchModal(true)}
+                className="absolute right-2 top-9 text-gray-500 hover:text-gray-700"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+              {showClientDropdown && (
                   <ul
                     id="client-dropdown-list"
                     className="absolute z-30 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
@@ -763,6 +785,20 @@ export default function OrderCreate({ userInfo }) {
             // Así que el onClose que ya tiene debería funcionar para cerrar el portal.
           />
         </MyWindowPortal>
+      )}
+      {showClientSearchModal && (
+        <ClientSearchModal
+          isOpen={true}
+          onClose={() => setShowClientSearchModal(false)}
+          onClientSelect={(c) => {
+            handleClientSelection({
+              clientID: c.clientID,
+              firstName: c.firstName,
+              lastName: c.lastName,
+            });
+            setShowClientSearchModal(false);
+          }}
+        />
       )}
     </div>
   );
