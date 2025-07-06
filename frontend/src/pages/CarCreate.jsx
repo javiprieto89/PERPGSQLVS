@@ -97,14 +97,14 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
 
         try {
             const carData = {
-                carBrandID: parseInt(car.carBrandID),
-                carModelID: parseInt(car.carModelID),
-                clientID: parseInt(car.clientID),
-                licensePlate: car.licensePlate,
-                year: car.year ? parseInt(car.year) : null,
-                lastServiceMileage: car.lastServiceMileage ? parseInt(car.lastServiceMileage) : null,
-                isDebtor: car.isDebtor,
-                discountID: parseInt(car.discountID)
+                CarBrandID: parseInt(car.carBrandID),
+                CarModelID: parseInt(car.carModelID),
+                ClientID: parseInt(car.clientID),
+                LicensePlate: car.licensePlate,
+                Year: car.year ? parseInt(car.year) : null,
+                LastServiceMileage: car.lastServiceMileage ? parseInt(car.lastServiceMileage) : null,
+                IsDebtor: car.isDebtor,
+                DiscountID: parseInt(car.discountID)
             };
 
             let result;
