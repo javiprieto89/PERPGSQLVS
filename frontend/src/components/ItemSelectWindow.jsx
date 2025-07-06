@@ -7,15 +7,26 @@ export default function ItemSelectWindow({ onSelect, onClose }) {
   const [search, setSearch] = useState("");
   const [quantities, setQuantities] = useState({});
 
+  const fetchItems = async (term = "") => {
+    try {
+      const data = await itemOperations.searchItems(term, 1, 100);
+      setItems(data);
+    } catch (err) {
+      console.error("Error fetching items:", err);
+      setItems([]);
+    }
+  };
+
   useEffect(() => {
-    itemOperations
-      .getAllItems()
-      .then((data) => setItems(data || []))
-      .catch((err) => {
-        console.error("Error fetching items:", err);
-        setItems([]);
-      });
+    fetchItems();
   }, []);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchItems(search);
+    }, 300);
+    return () => clearTimeout(delay);
+  }, [search]);
 
   const filtered = items.filter((it) =>
     `${it.Code || ""} ${it.description || ""}`
@@ -53,6 +64,7 @@ export default function ItemSelectWindow({ onSelect, onClose }) {
               <tr key={item.itemID} className="hover:bg-gray-50">
                 <td className="px-2 py-1 whitespace-nowrap">{item.Code}</td>
                 <td className="px-2 py-1 whitespace-nowrap">{item.description}</td>
+                <td className="px-2 py-1 text-right">{item.price?.toFixed(2) ?? "-"}</td>
                 <td className="px-2 py-1 text-center">
                   <input
                     type="number"

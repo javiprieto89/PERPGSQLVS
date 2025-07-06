@@ -4,9 +4,10 @@ import {
   pricelistOperations,
   warehouseOperations,
   saleConditionOperations,
-  itemOperations,
   orderOperations,
 } from "../utils/graphqlClient";
+import ItemSelectWindow from "./ItemSelectWindow";
+import { openReactWindow } from "../utils/openReactWindow";
 import { v4 as uuidv4 } from "uuid";
 
 export default function OrderModal({ onClose }) {
@@ -14,11 +15,7 @@ export default function OrderModal({ onClose }) {
   const [priceLists, setPriceLists] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [salesConditions, setSalesConditions] = useState([]);
-  const [items, setItems] = useState([]);
   const [tempItems, setTempItems] = useState([]);
-  const [selectedItemId, setSelectedItemId] = useState("");
-  const [quantity, setQuantity] = useState(1);
-  const [price, setPrice] = useState("");
 
   const [order, setOrder] = useState({
     clientId: "",
@@ -30,38 +27,58 @@ export default function OrderModal({ onClose }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [c, p, w, s, i] = await Promise.all([
+      const [c, p, w, s] = await Promise.all([
         clientOperations.getAllClients(),
         pricelistOperations.getAllPricelists(),
         warehouseOperations.getAllWarehouses(),
         saleConditionOperations.getAllSaleConditions(),
-        itemOperations.getAllItems(),
       ]);
       setClients(c);
       setPriceLists(p);
       setWarehouses(w);
       setSalesConditions(s);
-      setItems(i);
     };
     fetchData();
   }, []);
 
-  const handleAddItem = () => {
-    const item = items.find((i) => i.itemID === parseInt(selectedItemId));
-    if (!item) return;
-    const newItem = {
-      tempId: uuidv4(),
-      itemId: item.itemID,
-      code: item.code,
-      description: item.description,
-      quantity,
-      price: parseFloat(price || 0),
-    };
-    setTempItems((prev) => [...prev, newItem]);
-    setSelectedItemId("");
-    setQuantity(1);
-    setPrice("");
+  const openItemWindow = () => {
+    openReactWindow(
+      (popup) => (
+        <ItemSelectWindow
+          onSelect={(item, qty) => {
+            popup.opener.postMessage(
+              { type: "item-selected", item, quantity: qty },
+              "*"
+            );
+            popup.close();
+          }}
+          onClose={() => popup.close()}
+        />
+      ),
+      "Seleccionar Ítem"
+    );
   };
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data && e.data.type === "item-selected") {
+        const { item, quantity } = e.data;
+        setTempItems((prev) => [
+          ...prev,
+          {
+            tempId: uuidv4(),
+            itemId: item.ItemID || item.itemID,
+            code: item.Code,
+            description: item.description,
+            quantity,
+            price: item.price || 0,
+          },
+        ]);
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, []);
 
   const handleDeleteItem = (id) => {
     setTempItems((prev) => prev.filter((i) => i.tempId !== id));
@@ -175,46 +192,14 @@ export default function OrderModal({ onClose }) {
           </select>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          <select
-            value={selectedItemId}
-            onChange={(e) => setSelectedItemId(e.target.value)}
-            className="border p-2 rounded"
+        <div className="mb-4">
+          <button
+            onClick={openItemWindow}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            <option value="">Seleccionar artículo</option>
-            {items.map((i) => (
-              <option key={i.itemID} value={i.itemID}>
-                {i.code} - {i.description}
-              </option>
-            ))}
-          </select>
-
-          <input
-            type="number"
-            min={1}
-            value={quantity}
-            onChange={(e) => setQuantity(parseInt(e.target.value))}
-            className="border p-2 rounded"
-            placeholder="Cantidad"
-          />
-
-          <input
-            type="number"
-            min={0}
-            step={0.01}
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="border p-2 rounded"
-            placeholder="Precio"
-          />
+            Agregar Ítem
+          </button>
         </div>
-
-        <button
-          onClick={handleAddItem}
-          className="mb-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Agregar ítem
-        </button>
 
         {tempItems.length > 0 && (
           <div className="mb-4">
