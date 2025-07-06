@@ -13,6 +13,8 @@ import Cars from "./pages/Cars";
 import ItemCategories from "./pages/ItemCategories";
 import ItemSubcategories from "./pages/ItemSubcategories";
 import Items from "./pages/Items";
+import PriceLists from "./pages/PriceLists";
+import Warehouses from "./pages/Warehouses";
 import SaleConditions from "./pages/SaleConditions";
 import CreditCardGroups from "./pages/CreditCardGroups";
 import CreditCards from "./pages/CreditCards";
@@ -196,6 +198,8 @@ export default function App() {
                     <Route path="itemcategories" element={<ItemCategories />} />
                     <Route path="itemsubcategories" element={<ItemSubcategories />} />
                     <Route path="items" element={<Items />} />
+                    <Route path="pricelists" element={<PriceLists />} />
+                    <Route path="warehouses" element={<Warehouses />} />
                     <Route path="carbrands" element={<CarBrands />} />
                     <Route path="carmodels" element={<CarModels />} />
                     <Route path="cars" element={<Cars />} />
