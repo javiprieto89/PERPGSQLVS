@@ -12,7 +12,6 @@ import {
 } from "../utils/graphqlClient";
 import ItemSearchModal from "../components/ItemSearchModal"; // Importar el modal
 import ClientSearchModal from "../components/ClientSearchModal";
-import MyWindowPortal from "../components/MyWindowPortal"; // Importar el portal
 
 export default function OrderCreate({ userInfo }) {
   const [formData, setFormData] = useState({
@@ -760,27 +759,14 @@ export default function OrderCreate({ userInfo }) {
       </div>
 
       {showItemSearchModal && (
-        <MyWindowPortal
-          title="Buscar Ítems"
-          width={1000} // Ajustar según necesidad
-          height={700} // Ajustar según necesidad
-        >
-          <ItemSearchModal
-            isOpen={true} // El modal dentro del portal siempre está "abierto" si el portal existe
-            onClose={() => setShowItemSearchModal(false)} // Esta onClose cerrará el portal
-            onItemSelect={(item) => {
-              handleSelectItemFromModal(item);
-              setShowItemSearchModal(false); // Cerrar el portal después de seleccionar
-            }}
-            companyId={userInfo?.companyId}
-            branchId={userInfo?.branchId}
-            // Pasamos una función para que el modal pueda cerrar su propia ventana/portal
-            // Esto es útil si el modal tiene su propio botón de "Cerrar" interno que deba
-            // funcionar independientemente del onClose que se pasa desde OrderCreate.
-            // Sin embargo, el ItemSearchModal ya usa la prop onClose para esto.
-            // Así que el onClose que ya tiene debería funcionar para cerrar el portal.
-          />
-        </MyWindowPortal>
+        <ItemSearchModal
+          isOpen={true}
+          onClose={() => setShowItemSearchModal(false)}
+          onItemSelect={(item) => {
+            handleSelectItemFromModal(item);
+            setShowItemSearchModal(false);
+          }}
+        />
       )}
       {showClientSearchModal && (
         <ClientSearchModal
