@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import apiFetch from "../utils/apiFetch";
+import {
+  clientOperations,
+  pricelistOperations,
+  warehouseOperations,
+  saleConditionOperations,
+  itemOperations,
+  orderOperations,
+} from "../utils/graphqlClient";
 import { v4 as uuidv4 } from "uuid";
 
 export default function OrderModal({ onClose }) {
@@ -22,11 +29,21 @@ export default function OrderModal({ onClose }) {
   });
 
   useEffect(() => {
-    apiFetch("/clients/").then(setClients);
-    apiFetch("/pricelists").then(setPriceLists);
-    apiFetch("/warehouses").then(setWarehouses);
-    apiFetch("/salesconditions").then(setSalesConditions);
-    apiFetch("/items/").then(setItems);
+    const fetchData = async () => {
+      const [c, p, w, s, i] = await Promise.all([
+        clientOperations.getAllClients(),
+        pricelistOperations.getAllPricelists(),
+        warehouseOperations.getAllWarehouses(),
+        saleConditionOperations.getAllSaleConditions(),
+        itemOperations.getAllItems(),
+      ]);
+      setClients(c);
+      setPriceLists(p);
+      setWarehouses(w);
+      setSalesConditions(s);
+      setItems(i);
+    };
+    fetchData();
   }, []);
 
   const handleAddItem = () => {
@@ -70,12 +87,15 @@ export default function OrderModal({ onClose }) {
 
   const handleSave = async () => {
     try {
-      await apiFetch("/orders", {
-        method: "POST",
-        body: {
-          ...order,
-          items: tempItems.map(({ tempId, ...rest }) => rest),
-        },
+      await orderOperations.createOrder({
+        ...order,
+        Items: tempItems.map(({ tempId, itemId, code, description, quantity, price }) => ({
+          OrderID: 0,
+          ItemID: itemId,
+          Quantity: quantity,
+          UnitPrice: price,
+          Description: description,
+        })),
       });
       alert("Pedido guardado");
       onClose();

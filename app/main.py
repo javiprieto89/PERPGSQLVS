@@ -119,204 +119,8 @@ async def root(request: Request):
     })
 
 # =======================
-# Endpoint de Login REST
-# =======================
-async def login_endpoint(request: Request):
-    """Endpoint REST para login"""
-    try:
-        body = await request.json()
-        nickname = body.get("nickname")
-        password = body.get("password")
-        
-        if not nickname or not password:
-            return JSONResponse(
-                {"detail": "Nickname y password son requeridos"}, 
-                status_code=400
-            )
-        
-        # Obtener conexión de base de datos
-        from app.db import get_db
-        db_gen = get_db()
-        db = next(db_gen)
-        
-        try:
-            # Autenticar usuario
-            user = authenticate_user(db, nickname, password)
-            if not user:
-                return JSONResponse(
-                    {"detail": "Credenciales inválidas"}, 
-                    status_code=401
-                )
-            
-            user_dict = user.__dict__
-            
-            # Crear token
-            access_token = create_access_token(data={"sub": user_dict['Nickname']})
-            
-            # Obtener accesos del usuario
-            from app.graphql.crud.useraccess import get_useraccess_by_userid        
-            
-            # Reutilizar la misma conexión db
-            user_accesses = get_useraccess_by_userid(db, user_dict['UserID'])
-            
-            # Construir respuesta
-            user_data = {
-                "userID": user_dict['UserID'],
-                "nickname": user_dict['Nickname'],
-                "firstName": user_dict.get('FirstName', ''),
-                "lastName": user_dict.get('LastName', ''),
-                "email": user_dict.get('Email', ''),
-                "userAccesses": []
-            }
-            
-            # Procesar accesos del usuario
-            for ua in user_accesses:
-                ua_dict = ua.__dict__
-                access_data = {
-                    "userID": ua_dict['UserID'],
-                    "companyID": ua_dict['CompanyID'],
-                    "branchID": ua_dict['BranchID'],
-                    "roleID": ua_dict['RoleID'],
-                    "companyName": "",
-                    "branchName": "",
-                    "roleName": ""
-                }
-                
-                # Obtener nombres relacionados de forma segura
-                try:
-                    if hasattr(ua, 'companyData_') and ua.companyData_:
-                        access_data["companyName"] = ua.companyData_.__dict__['Name']
-                except:
-                    pass
-                    
-                try:
-                    if hasattr(ua, 'branches_') and ua.branches_:
-                        access_data["branchName"] = ua.branches_.__dict__['Name']
-                except:
-                    pass
-                    
-                try:
-                    if hasattr(ua, 'roles_') and ua.roles_:
-                        access_data["roleName"] = ua.roles_.__dict__['RoleName']
-                except:
-                    pass
-                
-                user_data["userAccesses"].append(access_data)
-            
-            return JSONResponse({
-                "access_token": access_token,
-                "token_type": "bearer",
-                "user": user_data
-            })
-            
-        finally:
-            db_gen.close()
-        
-    except Exception as e:
-        logger.error(f"Error en login: {e}")
-        return JSONResponse(
-            {"detail": "Error interno del servidor"}, 
-            status_code=500
-        )
-
-# =======================
-# Endpoint de Logout REST
-# =======================
-async def logout_endpoint(request: Request):
-    """Endpoint REST para logout"""
-    try:
-        # Por ahora solo retornamos OK
-        # En el futuro podríamos invalidar el token o limpiar sesiones
-        return JSONResponse({
-            "message": "Logout exitoso"
-        })
-    except Exception as e:
-        logger.error(f"Error en logout: {e}")
-        return JSONResponse(
-            {"detail": "Error interno del servidor"},
-            status_code=500
-        )
-
-# =======================
 # Endpoints REST adicionales
 # =======================
-async def list_pricelists(request: Request):
-    from app.graphql.crud.pricelists import get_pricelists
-    from app.db import get_db
-    from app.graphql.schemas.pricelists import PriceListsInDB
-    from app.utils import list_to_schema
-
-    db_gen = get_db()
-    db = next(db_gen)
-    try:
-        records = get_pricelists(db)
-        data = [asdict(obj) for obj in list_to_schema(PriceListsInDB, records)]
-        return JSONResponse(data)
-    finally:
-        db_gen.close()
-
-
-async def list_saleconditions(request: Request):
-    from app.graphql.crud.saleconditions import get_saleconditions
-    from app.db import get_db
-    from app.graphql.schemas.saleconditions import SaleConditionsInDB
-    from app.utils import list_to_schema
-
-    db_gen = get_db()
-    db = next(db_gen)
-    try:
-        records = get_saleconditions(db)
-        data = [asdict(obj) for obj in list_to_schema(SaleConditionsInDB, records)]
-        return JSONResponse(data)
-    finally:
-        db_gen.close()
-
-
-async def list_warehouses(request: Request):
-    from app.graphql.crud.warehouses import get_warehouses
-    from app.db import get_db
-    from app.graphql.schemas.warehouses import WarehousesInDB
-    from app.utils import list_to_schema
-
-    db_gen = get_db()
-    db = next(db_gen)
-    try:
-        records = get_warehouses(db)
-        data = [asdict(obj) for obj in list_to_schema(WarehousesInDB, records)]
-        return JSONResponse(data)
-    finally:
-        db_gen.close()
-
-
-async def list_items(request: Request):
-    from app.graphql.crud.items import get_items
-    from app.db import get_db
-    from app.utils.item_helpers import item_to_in_db
-
-    db_gen = get_db()
-    db = next(db_gen)
-    try:
-        records = get_items(db)
-        data = [asdict(item_to_in_db(obj)) for obj in records]
-        return JSONResponse(data)
-    finally:
-        db_gen.close()
-
-
-async def list_clients(request: Request):
-    from app.graphql.crud.clients import get_clients
-    from app.db import get_db
-    from app.graphql.schemas.clients import ClientsInDB
-    from app.utils import list_to_schema
-
-    db_gen = get_db()
-    db = next(db_gen)
-    try:
-        records = get_clients(db)
-        data = [asdict(obj) for obj in list_to_schema(ClientsInDB, records)]
-        return JSONResponse(data)
-    finally:
-        db_gen.close()
 
 # =======================
 # GraphQL app
@@ -331,13 +135,6 @@ app = Starlette(
             Route("/", root),
             Route("/health", health_check),
             Route("/metrics", get_metrics),
-            Route("/pricelists", list_pricelists),
-            Route("/salesconditions", list_saleconditions),
-            Route("/warehouses", list_warehouses),
-            Route("/items/", list_items),
-            Route("/clients/", list_clients),
-            Route("/login", login_endpoint, methods=["POST"]),
-            Route("/logout", logout_endpoint, methods=["POST"]),
             Mount("/graphql/", graphql_app),  # Con barra al final
             Mount("/graphql", graphql_app),   # Sin barra (compatibilidad)
         ],
@@ -345,11 +142,15 @@ app = Starlette(
 
 # Middlewares globales
 app.add_middleware(
-    CORSMiddleware, 
-    allow_origins=["*"], 
-    allow_methods=["*"], 
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5173",
+        "http://localhost:5173",
+    ],
+    allow_methods=["*"],
     allow_headers=["*"],
-    allow_credentials=True
+    allow_credentials=True,
+    allow_origin_regex="https?://127\.0\.0\.1(:\d+)?"
 )
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(ProcessTimeMiddleware)
