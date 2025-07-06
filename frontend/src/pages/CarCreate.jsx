@@ -1,13 +1,12 @@
 ﻿// frontend/src/pages/CarCreate.jsx
-import React, { useState, useEffect } from 'react';
-import { graphqlClient, QUERIES, MUTATIONS } from '../utils/graphqlClient';
-import { carBrandOperations, carModelOperations, clientOperations } from '../utils/graphqlClient';
+import { useState, useEffect, useCallback } from 'react';
+import { carOperations } from '../utils/graphqlClient';
 import CarBrandSearchModal from '../components/CarBrandSearchModal';
 import CarModelSearchModal from '../components/CarModelSearchModal';
 import ClientSearchModal from '../components/ClientSearchModal';
 
 export default function CarCreate({ initialData = null, onClose, onSave }) {
-    const [form, setForm] = useState({
+    const [car, setCar] = useState({
         carBrandID: '',
         carModelID: '',
         clientID: '',
@@ -18,60 +17,76 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
         discountID: ''
     });
 
-    const [brands, setBrands] = useState([]);
-    const [models, setModels] = useState([]);
-    const [clients, setClients] = useState([]);
-    const [discounts, setDiscounts] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [formData, setFormData] = useState({
+        carBrands: [],
+        carModels: [],
+        clients: [],
+        discounts: []
+    });
 
-    // Estados para los modales
+    const [loading, setLoading] = useState(false);
+    const [loadingForm, setLoadingForm] = useState(true);
+    const [error, setError] = useState('');
+    const [isEdit, setIsEdit] = useState(false);
+
     const [showBrandModal, setShowBrandModal] = useState(false);
     const [showModelModal, setShowModelModal] = useState(false);
     const [showClientModal, setShowClientModal] = useState(false);
 
+    const loadFormData = useCallback(async () => {
+        try {
+            setLoadingForm(true);
+            const data = await carOperations.getCarFormData();
+            setFormData(data);
+            if (!isEdit) {
+                setCar(prev => ({
+                    ...prev,
+                    carBrandID: data.carBrands[0]?.CarBrandID || '',
+                    carModelID: data.carModels[0]?.CarModelID || '',
+                    clientID: data.clients[0]?.ClientID || '',
+                    discountID: data.discounts[0]?.DiscountID || ''
+                }));
+            }
+        } catch (err) {
+            console.error('Error cargando datos del formulario:', err);
+            setError('Error cargando los datos del formulario: ' + err.message);
+        } finally {
+            setLoadingForm(false);
+        }
+    }, [isEdit]);
+
     useEffect(() => {
-        loadInitialData();
+        loadFormData();
+    }, [loadFormData]);
+
+    useEffect(() => {
         if (initialData) {
-            setForm(initialData);
+            setIsEdit(true);
+            setCar({
+                carBrandID: initialData.CarBrandID || '',
+                carModelID: initialData.CarModelID || '',
+                clientID: initialData.ClientID || '',
+                licensePlate: initialData.LicensePlate || '',
+                year: initialData.Year || '',
+                lastServiceMileage: initialData.LastServiceMileage || '',
+                isDebtor: initialData.IsDebtor || false,
+                discountID: initialData.DiscountID || ''
+            });
         }
     }, [initialData]);
 
-    const loadInitialData = async () => {
-        try {
-            setLoading(true);
-            const [brandsData, clientsData, discountsData] = await Promise.all([
-                carBrandOperations.getAllCarBrands(),
-                clientOperations.getAllClients(),
-                graphqlClient.query(QUERIES.GET_ALL_DISCOUNTS)
-            ]);
-            setBrands(brandsData || []);
-            setClients(clientsData || []);
-            setDiscounts(discountsData?.allDiscounts || []);
-        } catch (error) {
-            console.error('Error loading initial data:', error);
-            setError('Error cargando datos iniciales: ' + error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Cargar modelos cuando cambia la marca
-    useEffect(() => {
-        if (form.carBrandID) {
-            carModelOperations.getCarModelsByBrand(parseInt(form.carBrandID))
-                .then(setModels)
-                .catch(console.error);
-        } else {
-            setModels([]);
-        }
-    }, [form.carBrandID]);
+    // Actualizar modelos disponibles cuando cambia la marca
+    const availableModels = formData.carModels.filter(m => m.CarBrandID === parseInt(car.carBrandID));
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setForm(prev => ({
+        let processed = type === 'checkbox' ? checked : value;
+        if (name.includes('ID') || name === 'year' || name === 'lastServiceMileage') {
+            processed = value === '' ? '' : parseInt(value);
+        }
+        setCar(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: processed
         }));
     };
 
@@ -82,26 +97,21 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
 
         try {
             const carData = {
-                carBrandID: parseInt(form.carBrandID),
-                carModelID: parseInt(form.carModelID),
-                clientID: parseInt(form.clientID),
-                licensePlate: form.licensePlate,
-                year: form.year ? parseInt(form.year) : null,
-                lastServiceMileage: form.lastServiceMileage ? parseInt(form.lastServiceMileage) : null,
-                isDebtor: form.isDebtor,
-                discountID: parseInt(form.discountID)
+                carBrandID: parseInt(car.carBrandID),
+                carModelID: parseInt(car.carModelID),
+                clientID: parseInt(car.clientID),
+                licensePlate: car.licensePlate,
+                year: car.year ? parseInt(car.year) : null,
+                lastServiceMileage: car.lastServiceMileage ? parseInt(car.lastServiceMileage) : null,
+                isDebtor: car.isDebtor,
+                discountID: parseInt(car.discountID)
             };
 
             let result;
-            if (initialData) {
-                result = await graphqlClient.mutation(MUTATIONS.UPDATE_CAR, {
-                    carID: initialData.carID,
-                    input: carData
-                });
+            if (isEdit) {
+                result = await carOperations.updateCar(initialData.CarID, carData);
             } else {
-                result = await graphqlClient.mutation(MUTATIONS.CREATE_CAR, {
-                    input: carData
-                });
+                result = await carOperations.createCar(carData);
             }
 
             if (onSave) onSave(result);
@@ -115,7 +125,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
 
     // Función para manejar la selección de cliente desde el modal
     const handleClientSelect = (client) => {
-        setForm(prev => ({
+        setCar(prev => ({
             ...prev,
             clientID: client.ClientID || client.clientID
         }));
@@ -124,7 +134,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
 
     // Función para manejar la selección de marca desde el modal
     const handleBrandSelect = (brand) => {
-        setForm(prev => ({
+        setCar(prev => ({
             ...prev,
             carBrandID: brand.CarBrandID,
             carModelID: '' // Reset model when brand changes
@@ -134,13 +144,29 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
 
     // Función para manejar la selección de modelo desde el modal
     const handleModelSelect = (model) => {
-        setForm(prev => ({
+        setCar(prev => ({
             ...prev,
             carModelID: model.CarModelID,
             carBrandID: model.CarBrandID
         }));
         setShowModelModal(false);
     };
+
+    if (loadingForm) {
+        return (
+            <div className="p-6 max-w-2xl mx-auto">
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-center">
+                        <svg className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p className="text-gray-600">Cargando formulario...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -161,13 +187,13 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                             <select
                                 id="carBrandID"
                                 name="carBrandID"
-                                value={form.carBrandID}
+                                value={car.carBrandID}
                                 onChange={handleChange}
                                 className="flex-1 border p-2 rounded"
                                 required
                             >
                                 <option value="">Seleccione</option>
-                                {brands.map(b => (
+                                {formData.carBrands.map(b => (
                                     <option key={b.CarBrandID} value={b.CarBrandID}>
                                         {b.Name}
                                     </option>
@@ -194,14 +220,14 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                             <select
                                 id="carModelID"
                                 name="carModelID"
-                                value={form.carModelID}
+                                value={car.carModelID}
                                 onChange={handleChange}
                                 className="flex-1 border p-2 rounded"
                                 required
-                                disabled={!form.carBrandID}
+                                disabled={!car.carBrandID}
                             >
                                 <option value="">Seleccione</option>
-                                {models.map(m => (
+                                {availableModels.map(m => (
                                     <option key={m.CarModelID} value={m.CarModelID}>
                                         {m.Model}
                                     </option>
@@ -228,13 +254,13 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                             <select
                                 id="clientID"
                                 name="clientID"
-                                value={form.clientID}
+                                value={car.clientID}
                                 onChange={handleChange}
                                 className="flex-1 border p-2 rounded"
                                 required
                             >
                                 <option value="">Seleccione</option>
-                                {clients.map(c => (
+                                {formData.clients.map(c => (
                                     <option key={c.ClientID} value={c.ClientID}>
                                         {c.FirstName} {c.LastName}
                                     </option>
@@ -261,7 +287,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                             id="licensePlate"
                             type="text"
                             name="licensePlate"
-                            value={form.licensePlate}
+                            value={car.licensePlate}
                             onChange={handleChange}
                             className="w-full border p-2 rounded"
                             required
@@ -277,7 +303,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                             id="year"
                             type="number"
                             name="year"
-                            value={form.year}
+                            value={car.year}
                             onChange={handleChange}
                             className="w-full border p-2 rounded"
                         />
@@ -292,7 +318,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                             id="lastServiceMileage"
                             type="number"
                             name="lastServiceMileage"
-                            value={form.lastServiceMileage}
+                            value={car.lastServiceMileage}
                             onChange={handleChange}
                             className="w-full border p-2 rounded"
                         />
@@ -304,7 +330,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                             <input
                                 type="checkbox"
                                 name="isDebtor"
-                                checked={form.isDebtor}
+                                checked={car.isDebtor}
                                 onChange={handleChange}
                                 className="mr-2"
                             />
@@ -319,13 +345,13 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                         </label>
                         <select
                             name="discountID"
-                            value={form.discountID}
+                            value={car.discountID}
                             onChange={handleChange}
                             className="w-full border p-2 rounded"
                             required
                         >
                             <option value="">Seleccione</option>
-                            {discounts.map(d => (
+                            {formData.discounts.map(d => (
                                 <option key={d.DiscountID} value={d.DiscountID}>
                                     {d.DiscountName}
                                 </option>
@@ -345,7 +371,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                         </button>
                         <button
                             type="submit"
-                            disabled={loading || !form.licensePlate || !form.carBrandID || !form.carModelID || !form.clientID || !form.discountID}
+                            disabled={loading || !car.licensePlate || !car.carBrandID || !car.carModelID || !car.clientID || !car.discountID}
                             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                         >
                             {loading ? 'Guardando...' : 'Guardar'}
@@ -368,7 +394,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                     isOpen={true}
                     onClose={() => setShowModelModal(false)}
                     onModelSelect={handleModelSelect}
-                    selectedCarBrandID={form.carBrandID || null} // CAMBIO: Nombre más consistente
+                    selectedCarBrandID={car.carBrandID || null}
                 />
             )}
 
