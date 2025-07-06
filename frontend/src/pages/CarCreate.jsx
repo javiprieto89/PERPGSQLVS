@@ -44,7 +44,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
         } finally {
             setLoadingForm(false);
         }
-    }, [isEdit]);
+    }, []);
 
     useEffect(() => {
         loadFormData();
