@@ -1643,6 +1643,25 @@ export const carModelOperations = {
     }
 };
 
+function sanitizeCarPayload(data) {
+    const allowed = [
+        'CarModelID',
+        'ClientID',
+        'LicensePlate',
+        'Year',
+        'LastServiceMileage',
+        'IsDebtor',
+        'DiscountID'
+    ];
+    const payload = {};
+    for (const field of allowed) {
+        if (data[field] !== undefined) {
+            payload[field] = data[field];
+        }
+    }
+    return payload;
+}
+
 export const carOperations = {
     async getAllCars() {
         try {
@@ -1681,7 +1700,7 @@ export const carOperations = {
 
     async createCar(carData) {
         try {
-            const data = await graphqlClient.mutation(MUTATIONS.CREATE_CAR, { input: carData });
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_CAR, { input: sanitizeCarPayload(carData) });
             return data.createCar;
         } catch (error) {
             console.error("Error creando auto:", error);
@@ -1693,7 +1712,7 @@ export const carOperations = {
         try {
             const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CAR, {
                 carID: id,
-                input: carData
+                input: sanitizeCarPayload(carData)
             });
             return data.updateCar;
         } catch (error) {
