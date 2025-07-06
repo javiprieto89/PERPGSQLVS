@@ -104,7 +104,7 @@ export default function Cars() {
         openReactWindow(
             (popup) => (
                 <CarCreate
-                    car={c}
+                    initialData={c}
                     onSave={() => {
                         popup.opener.postMessage('reload-cars', '*');
                         popup.close();

@@ -248,6 +248,49 @@ export const QUERIES = {
         }
     `,
 
+    // FORMULARIO DE PROVEEDORES
+    GET_SUPPLIER_FORM_DATA: `
+        query GetSupplierFormData {
+            docTypes: allDoctypes {
+                DocTypeID
+                Name
+            }
+            countries: allCountries {
+                CountryID
+                Name
+            }
+            provinces: allProvinces {
+                ProvinceID
+                CountryID
+                Name
+            }
+        }
+    `,
+
+    // FORMULARIO DE AUTOS
+    GET_CAR_FORM_DATA: `
+        query GetCarFormData {
+            carBrands: allCarbrands {
+                CarBrandID
+                Name
+            }
+            carModels: allCarmodels {
+                CarModelID
+                CarBrandID
+                Model
+            }
+            clients: allClients {
+                ClientID
+                FirstName
+                LastName
+            }
+            discounts: allDiscounts {
+                DiscountID
+                DiscountName
+            }
+        }
+    `,
+
     // ITEMS
     GET_ALL_ITEMS: `
         query GetAllItems {
@@ -1401,7 +1444,7 @@ export const supplierOperations = {
     // Obtener datos para formulario de proveedor
     async getSupplierFormData() {
         try {
-            const data = await graphqlClient.query(QUERIES.GET_CLIENT_FORM_DATA);
+            const data = await graphqlClient.query(QUERIES.GET_SUPPLIER_FORM_DATA);
             return {
                 documentTypes: data.docTypes || [],
                 countries: data.countries || [],
@@ -1607,6 +1650,21 @@ export const carOperations = {
             return data.allCars || [];
         } catch (error) {
             console.error("Error obteniendo autos:", error);
+            throw error;
+        }
+    },
+
+    async getCarFormData() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CAR_FORM_DATA);
+            return {
+                carBrands: data.carBrands || [],
+                carModels: data.carModels || [],
+                clients: data.clients || [],
+                discounts: data.discounts || []
+            };
+        } catch (error) {
+            console.error("Error obteniendo datos del formulario de autos:", error);
             throw error;
         }
     },
