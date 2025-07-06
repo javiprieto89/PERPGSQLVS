@@ -12,6 +12,8 @@ import {
 } from "../utils/graphqlClient";
 import ItemSearchModal from "../components/ItemSearchModal"; // Importar el modal
 import ClientSearchModal from "../components/ClientSearchModal";
+import ItemSelectWindow from "../components/ItemSelectWindow";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function OrderCreate({ userInfo }) {
   const [formData, setFormData] = useState({
@@ -167,6 +169,24 @@ export default function OrderCreate({ userInfo }) {
     // Opcionalmente, enfocar el campo de cantidad o precio después de seleccionar
   };
 
+  const openItemWindow = () => {
+    openReactWindow(
+      (popup) => (
+        <ItemSelectWindow
+          onSelect={(item, qty) => {
+            popup.opener.postMessage(
+              { type: "item-selected", item, quantity: qty },
+              "*"
+            );
+            popup.close();
+          }}
+          onClose={() => popup.close()}
+        />
+      ),
+      "Agregar Ítem"
+    );
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // TODO: Add calculation for subtotal, total, vat before submitting
@@ -211,6 +231,25 @@ export default function OrderCreate({ userInfo }) {
       total: sub + vatAmount,
     }));
   }, [items]);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data && e.data.type === "item-selected") {
+        const { item, quantity } = e.data;
+        setItems((prev) => [
+          ...prev,
+          {
+            code: item.Code,
+            description: item.description,
+            quantity,
+            price: item.price || 0,
+          },
+        ]);
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, []);
 
   return (
     <div className="container mx-auto p-4 md:p-6 bg-gray-100 min-h-screen">
@@ -674,7 +713,7 @@ export default function OrderCreate({ userInfo }) {
               <div className="col-span-4 sm:col-span-1 flex items-end">
                 <button
                   type="button"
-                  onClick={addItem}
+                  onClick={openItemWindow}
                   className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-3 border border-transparent rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                 >
                   Añadir
