@@ -3,7 +3,7 @@ import { creditCardOperations, creditCardGroupOperations } from "../utils/graphq
 
 export default function CreditCardCreate({ onClose, onSave, card: initialCard = null }) {
     const [card, setCard] = useState({
-        CreditCardGroupID: 0,
+        CreditCardGroupID: "",
         CardName: "",
         Surcharge: 0,
         Installments: 0,
@@ -24,9 +24,6 @@ export default function CreditCardCreate({ onClose, onSave, card: initialCard = 
             setLoadingForm(true);
             const data = await creditCardGroupOperations.getAllGroups();
             setGroups(data);
-            if (data.length > 0 && !initialCard) {
-                setCard(c => ({ ...c, CreditCardGroupID: data[0].CreditCardGroupID }));
-            }
         } finally {
             setLoadingForm(false);
         }
@@ -49,7 +46,11 @@ export default function CreditCardCreate({ onClose, onSave, card: initialCard = 
         const { name, value, type, checked } = e.target;
         setCard(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : (name.includes('ID') || name === 'Installments') ? parseInt(value) || 0 : value
+            [name]: type === 'checkbox'
+                ? checked
+                : (name.includes('ID') || name === 'Installments')
+                    ? (value === '' ? '' : parseInt(value))
+                    : value
         }));
     };
 
@@ -90,6 +91,7 @@ export default function CreditCardCreate({ onClose, onSave, card: initialCard = 
                         onChange={handleChange}
                         className="w-full border border-gray-300 p-2 rounded"
                     >
+                        <option value="">Seleccione</option>
                         {groups.map(g => (
                             <option key={g.CreditCardGroupID} value={g.CreditCardGroupID}>{g.GroupName}</option>
                         ))}
