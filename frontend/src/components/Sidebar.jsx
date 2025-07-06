@@ -71,6 +71,8 @@ export default function Sidebar() {
                         { label: "Subcategorías", to: "/itemsubcategories" },
                         { label: "Marcas", to: "/brands" },
                         { label: "Ítems", to: "/items" },
+                        { label: "Depósitos", to: "/warehouses" },
+                        { label: "Listas de precios", to: "/pricelists" },
                     ],
                 },
                 {
