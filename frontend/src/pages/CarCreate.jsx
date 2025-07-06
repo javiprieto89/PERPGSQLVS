@@ -33,7 +33,16 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
     useEffect(() => {
         loadInitialData();
         if (initialData) {
-            setForm(initialData);
+            setForm({
+                carBrandID: initialData.carBrandID ?? initialData.CarBrandID ?? '',
+                carModelID: initialData.carModelID ?? initialData.CarModelID ?? '',
+                clientID: initialData.clientID ?? initialData.ClientID ?? '',
+                licensePlate: initialData.licensePlate ?? initialData.LicensePlate ?? '',
+                year: initialData.year ?? initialData.Year ?? '',
+                lastServiceMileage: initialData.lastServiceMileage ?? initialData.LastServiceMileage ?? '',
+                isDebtor: initialData.isDebtor ?? initialData.IsDebtor ?? false,
+                discountID: initialData.discountID ?? initialData.DiscountID ?? ''
+            });
         }
     }, [initialData]);
 
@@ -94,8 +103,9 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
 
             let result;
             if (initialData) {
+                const id = initialData.carID ?? initialData.CarID;
                 result = await graphqlClient.mutation(MUTATIONS.UPDATE_CAR, {
-                    carID: initialData.carID,
+                    carID: id,
                     input: carData
                 });
             } else {
