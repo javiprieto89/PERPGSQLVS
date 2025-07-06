@@ -9,7 +9,7 @@ def get_pricelists(db: Session):
 
 
 def get_pricelists_by_id(db: Session, pricelistid: int):
-    return db.query(PriceLists).filter(PriceLists.priceListID == pricelistid).first()
+    return db.query(PriceLists).filter(PriceLists.PriceListID == pricelistid).first()
 
 
 def create_pricelists(db: Session, data: PriceListsCreate):
