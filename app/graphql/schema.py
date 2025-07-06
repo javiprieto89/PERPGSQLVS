@@ -63,6 +63,7 @@ from app.graphql.mutations.carmodels import CarModelsMutations
 from app.graphql.mutations.cars import CarsMutations
 from app.graphql.mutations.warehouses import WarehousesMutations
 from app.graphql.mutations.pricelists import PricelistsMutations
+from app.graphql.mutations.orders import OrdersMutations
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
 from app.graphql.resolvers.auth import AuthQuery
@@ -348,6 +349,7 @@ class Mutation(
     CreditCardsMutations,
     WarehousesMutations,
     PricelistsMutations,
+    OrdersMutations,
 ):
     """Mutaciones principales"""
     

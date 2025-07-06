@@ -235,6 +235,34 @@ export const QUERIES = {
         }
     `,
 
+    // SERVICETYPES
+    GET_ALL_SERVICETYPES: `
+        query GetAllServicetypes {
+            allServicetypes {
+                ServiceTypeID
+                Type
+            }
+        }
+    `,
+    GET_SERVICETYPE_BY_ID: `
+        query GetServicetypeById($id: Int!) {
+            servicetypesById(id: $id) {
+                ServiceTypeID
+                Type
+            }
+        }
+    `,
+
+    // ORDER STATUS
+    GET_ALL_ORDERSTATUS: `
+        query GetAllOrderstatus {
+            allOrderstatus {
+                OrderStatusID
+                Status
+            }
+        }
+    `,
+
     GET_VENDORS: `
         query GetVendors {
             allVendors {
@@ -1160,6 +1188,14 @@ export const MUTATIONS = {
     DELETE_WAREHOUSE: `
         mutation DeleteWarehouse($warehouseID: Int!) {
             deleteWarehouse(warehouseID: $warehouseID)
+        }
+    `,
+
+    CREATE_ORDER: `
+        mutation CreateOrder($input: OrdersCreate!) {
+            createOrder(data: $input) {
+                OrderID
+            }
         }
     `
 };
@@ -2196,6 +2232,31 @@ export const warehouseOperations = {
     async deleteWarehouse(id) {
         const data = await graphqlClient.mutation(MUTATIONS.DELETE_WAREHOUSE, { warehouseID: id });
         return data.deleteWarehouse;
+    }
+};
+
+export const serviceTypeOperations = {
+    async getAllServicetypes() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_SERVICETYPES);
+        return data.allServicetypes || [];
+    },
+    async getServicetypeById(id) {
+        const data = await graphqlClient.query(QUERIES.GET_SERVICETYPE_BY_ID, { id });
+        return data.servicetypesById;
+    }
+};
+
+export const orderStatusOperations = {
+    async getAllOrderstatus() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_ORDERSTATUS);
+        return data.allOrderstatus || [];
+    }
+};
+
+export const orderOperations = {
+    async createOrder(orderData) {
+        const data = await graphqlClient.mutation(MUTATIONS.CREATE_ORDER, { input: orderData });
+        return data.createOrder;
     }
 };
 

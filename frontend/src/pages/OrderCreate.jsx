@@ -1,6 +1,15 @@
 // src/pages/OrderCreate.jsx
 import React, { useEffect, useState } from "react";
-import apiFetch from "../utils/apiFetch";
+import {
+  clientOperations,
+  carOperations,
+  serviceTypeOperations,
+  saleConditionOperations,
+  discountOperations,
+  orderStatusOperations,
+  pricelistOperations,
+  orderOperations,
+} from "../utils/graphqlClient";
 import ItemSearchModal from "../components/ItemSearchModal"; // Importar el modal
 import ClientSearchModal from "../components/ClientSearchModal";
 import MyWindowPortal from "../components/MyWindowPortal"; // Importar el portal
@@ -50,28 +59,33 @@ export default function OrderCreate({ userInfo }) {
   useEffect(() => {
     const fetchData = async () => {
       const [st, sc, d, os, pl] = await Promise.all([
-        apiFetch("/servicetype/"),
-        apiFetch("/saleconditions/"),
-        apiFetch("/discounts/"),
-        apiFetch("/orderstatus/"),
-        apiFetch("/pricelists/"),
+        serviceTypeOperations.getAllServicetypes(),
+        saleConditionOperations.getAllSaleConditions(),
+        discountOperations.getAllDiscounts(),
+        orderStatusOperations.getAllOrderstatus(),
+        pricelistOperations.getAllPricelists(),
       ]);
-      setServiceTypes(st || []);
-      setSaleConditions(sc || []);
-      setDiscounts(d || []);
-      setStatuses(os || []);
-      setPriceLists(pl || []);
+      setServiceTypes(st);
+      setSaleConditions(sc);
+      setDiscounts(d);
+      setStatuses(os);
+      setPriceLists(pl);
     };
     fetchData();
   }, []);
 
   useEffect(() => {
     if (formData.clientId) {
-      apiFetch(`/cars/byclient/${formData.clientId}/`).then(setCars); // Added trailing slash
-      apiFetch(`/clients/${formData.clientId}/`) // Added trailing slash
+      carOperations
+        .getAllCars()
+        .then((all) =>
+          setCars(all.filter((c) => c.ClientID === Number(formData.clientId)))
+        );
+      clientOperations
+        .getClientById(Number(formData.clientId))
         .then((client) => {
-          if (client && client.firstName) {
-            setClientSearch(`${client.firstName} ${client.lastName || ""}`);
+          if (client && client.FirstName) {
+            setClientSearch(`${client.FirstName} ${client.LastName || ""}`);
             setFilteredClients([]);
             setShowClientDropdown(false);
           } else {
@@ -95,16 +109,19 @@ export default function OrderCreate({ userInfo }) {
       setShowClientDropdown(false);
       return;
     }
-    const handler = setTimeout(() => {
-      apiFetch(`/clients/search/?name=${encodeURIComponent(clientSearch)}`) // Added trailing slash to base path
-        .then((data) => {
-          setFilteredClients(data || []);
-          setShowClientDropdown(true);
-        })
-        .catch(() => {
-          setFilteredClients([]);
-          setShowClientDropdown(false);
-        });
+    const handler = setTimeout(async () => {
+      try {
+        const clients = await clientOperations.getAllClients();
+        const term = clientSearch.toLowerCase();
+        const filtered = clients.filter((c) =>
+          `${c.FirstName} ${c.LastName || ""}`.toLowerCase().includes(term)
+        );
+        setFilteredClients(filtered);
+        setShowClientDropdown(true);
+      } catch {
+        setFilteredClients([]);
+        setShowClientDropdown(false);
+      }
     }, 300);
     return () => clearTimeout(handler);
   }, [clientSearch]);
@@ -135,24 +152,9 @@ export default function OrderCreate({ userInfo }) {
       return;
     }
 
-    // Enviar al backend
-    try {
-      const response = await apiFetch("/temporderdetails/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...currentItem,
-          orderId: formData.orderId, // Asegúrate de tener este dato
-        }),
-      });
-
-      // Actualizar el estado local con la respuesta del backend
-      setItems((prev) => [...prev, response]);
-      setCurrentItem({ code: "", description: "", quantity: 1, price: 0 });
-    } catch (error) {
-      console.error("Error al agregar el ítem:", error);
-      alert("Error al agregar el ítem: " + error.message);
-    }
+    const newItem = { ...currentItem };
+    setItems((prev) => [...prev, newItem]);
+    setCurrentItem({ code: "", description: "", quantity: 1, price: 0 });
   };
   const handleSelectItemFromModal = (selectedItem) => {
     setCurrentItem((prev) => ({
@@ -172,14 +174,8 @@ export default function OrderCreate({ userInfo }) {
     const orderData = { ...formData, items };
     console.log("Enviando orden:", orderData);
     try {
-      const response = await apiFetch("/orders/", {
-        // Added trailing slash
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
-      });
-      alert("Orden creada correctamente. ID: " + response.orderID); // Assuming response contains orderID
-      // Reset form or redirect
+      const response = await orderOperations.createOrder(orderData);
+      alert("Orden creada correctamente. ID: " + response.OrderID);
     } catch (error) {
       console.error("Error al crear la orden:", error);
       alert("Error al crear la orden: " + error.message);
@@ -195,8 +191,8 @@ export default function OrderCreate({ userInfo }) {
   };
 
   const handleClientSelection = (client) => {
-    setFormData((prev) => ({ ...prev, clientId: client.clientID }));
-    setClientSearch(`${client.firstName} ${client.lastName || ""}`);
+    setFormData((prev) => ({ ...prev, clientId: client.ClientID }));
+    setClientSearch(`${client.FirstName} ${client.LastName || ""}`);
     setFilteredClients([]);
     setShowClientDropdown(false);
   };
