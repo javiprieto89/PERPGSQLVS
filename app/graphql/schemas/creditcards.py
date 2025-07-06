@@ -26,6 +26,7 @@ class CreditCardsUpdate:
 class CreditCardsInDB:
     CreditCardID: int
     CreditCardGroupID: int
+    GroupName: Optional[str] = None
     CardName: str
     Surcharge: Optional[float] = None
     Installments: Optional[int] = None

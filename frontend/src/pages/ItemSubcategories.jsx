@@ -112,7 +112,7 @@ export default function ItemSubcategories() {
                     {subcategories.map(sc => (
                         <div key={sc.ItemSubcategoryID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-2">{sc.SubcategoryName}</h3>
-                            <p className="text-sm mb-2">Categoría ID: {sc.ItemCategoryID}</p>
+                            <p className="text-sm mb-2">Categoría: {sc.CategoryName}</p>
                             <button onClick={() => handleEdit(sc)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
                         </div>
                     ))}

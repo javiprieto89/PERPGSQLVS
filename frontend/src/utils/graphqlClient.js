@@ -409,6 +409,7 @@ export const QUERIES = {
                 ItemSubcategoryID
                 ItemCategoryID
                 SubcategoryName
+                CategoryName
             }
         }
     `,
@@ -418,6 +419,7 @@ export const QUERIES = {
                 ItemSubcategoryID
                 ItemCategoryID
                 SubcategoryName
+                CategoryName
             }
         }
     `,
@@ -560,6 +562,7 @@ export const QUERIES = {
             allCreditcards {
                 CreditCardID
                 CreditCardGroupID
+                GroupName
                 CardName
                 Surcharge
                 Installments
@@ -572,6 +575,7 @@ export const QUERIES = {
             creditcardById(id: $id) {
                 CreditCardID
                 CreditCardGroupID
+                GroupName
                 CardName
                 Surcharge
                 Installments

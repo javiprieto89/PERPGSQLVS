@@ -1,3 +1,4 @@
+# app/graphql/mutations/itemsubcategories.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.itemsubcategories import (
@@ -9,10 +10,12 @@ from app.graphql.crud.itemsubcategories import (
     create_itemsubcategories,
     update_itemsubcategories,
     delete_itemsubcategories,
+    get_itemsubcategories_by_id,
 )
 from app.utils import obj_to_schema
 from app.db import get_db
 from strawberry.types import Info
+
 
 @strawberry.type
 class ItemSubcategoriesMutations:
@@ -21,7 +24,7 @@ class ItemSubcategoriesMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            obj = create_itemsubcategories(db, data)
+            obj = create_itemsubcategories(db, data)          
             return obj_to_schema(ItemSubcategoriesInDB, obj)
         finally:
             db_gen.close()
@@ -32,7 +35,10 @@ class ItemSubcategoriesMutations:
         db = next(db_gen)
         try:
             updated = update_itemsubcategories(db, subcategoryID, data)
-            return obj_to_schema(ItemSubcategoriesInDB, updated) if updated else None
+            if updated:
+                full = get_itemsubcategories_by_id(db, subcategoryID)
+                return obj_to_schema(ItemSubcategoriesInDB, full)
+            return None
         finally:
             db_gen.close()
 

@@ -111,7 +111,7 @@ export default function CreditCards() {
                     {cards.map(c => (
                         <div key={c.CreditCardID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-1">{c.CardName}</h3>
-                            <p className="text-sm">Grupo ID: {c.CreditCardGroupID}</p>
+                            <p className="text-sm">Grupo: {c.GroupName}</p>
                             <p className="text-sm">Recargo: {c.Surcharge}</p>
                             <p className="text-sm mb-2">Activo: {c.IsActive ? 'Sí' : 'No'}</p>
                             <button onClick={() => handleEdit(c)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
