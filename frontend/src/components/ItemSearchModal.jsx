@@ -1,6 +1,12 @@
 // frontend/src/components/ItemSearchModal.jsx
 import React, { useState, useEffect } from "react";
-import apiFetch from "../utils/apiFetch";
+import {
+  brandOperations,
+  itemCategoryOperations,
+  itemSubcategoryOperations,
+  supplierOperations,
+  itemOperations,
+} from "../utils/graphqlClient";
 
 export default function ItemSearchModal({
   isOpen,
@@ -31,14 +37,11 @@ export default function ItemSearchModal({
       // Cargar datos para los filtros de selección cuando el modal se abre
       const fetchFilterData = async () => {
         try {
-          const [brandsData, categoriesData, suppliersData] = await Promise.all(
-            [
-              apiFetch("/brands/"), // Añadir barra final
-              apiFetch("/itemcategories/"), // Añadir barra final
-              apiFetch("/suppliers/"), // Añadir barra final
-              // Subcategorías podrían cargarse dinámicamente al seleccionar una categoría
-            ]
-          );
+          const [brandsData, categoriesData, suppliersData] = await Promise.all([
+            brandOperations.getAllBrands(),
+            itemCategoryOperations.getAllItemcategories(),
+            supplierOperations.getAllSuppliers(),
+          ]);
           setBrands(brandsData || []);
           setCategories(categoriesData || []);
           setSuppliers(suppliersData || []);
@@ -73,7 +76,8 @@ export default function ItemSearchModal({
   // Cargar subcategorías cuando cambie la categoría seleccionada
   useEffect(() => {
     if (filters.category_id) {
-      apiFetch(`/itemsubcategories/bycategory/${filters.category_id}`) // No lleva barra final
+      itemSubcategoryOperations
+        .getItemSubcategoriesByCategory(filters.category_id)
         .then((data) => setSubcategories(data || []))
         .catch((error) => {
           console.error("Error fetching subcategories:", error);
@@ -118,36 +122,22 @@ export default function ItemSearchModal({
 
   const handleSearch = async () => {
     setIsLoading(true);
-    const queryParams = new URLSearchParams();
-    // Añadir companyID y branchID fijos si son necesarios para la búsqueda y no vienen del usuario
-    // queryParams.append("company_id", companyId);
-    // queryParams.append("branch_id", branchId);
-
-    for (const key in filters) {
-      if (filters[key]) {
-        if (
-          typeof filters[key] === "object" &&
-          filters[key].hasOwnProperty("value")
-        ) {
-          // Para filtros con value y matchType
-          if (filters[key].value) {
-            queryParams.append(key, filters[key].value);
-            queryParams.append(`${key}_matchType`, filters[key].matchType);
-          }
-        } else {
-          // Para filtros simples
-          queryParams.append(key, filters[key]);
-        }
-      }
-    }
     try {
-      const queryString = queryParams.toString();
-      console.log("ItemSearchModal - Query Params:", queryString); // Log de los query params
-      const data = await apiFetch(`/items/search?${queryString}`);
-      console.log("ItemSearchModal - Data received:", data); // Log de la data recibida
-      setResults(data || []);
+      const items = await itemOperations.getAllItems();
+      const filtered = items.filter((it) => {
+        const byCode = filters.code.value
+          ? it.Code?.toLowerCase().includes(filters.code.value.toLowerCase())
+          : true;
+        const byDesc = filters.description.value
+          ? it.Description?.toLowerCase().includes(
+              filters.description.value.toLowerCase()
+            )
+          : true;
+        return byCode && byDesc;
+      });
+      setResults(filtered);
     } catch (error) {
-      console.error("ItemSearchModal - Error searching items:", error); // Mejorar log de error
+      console.error("ItemSearchModal - Error searching items:", error);
       setResults([]);
     }
     setIsLoading(false);
