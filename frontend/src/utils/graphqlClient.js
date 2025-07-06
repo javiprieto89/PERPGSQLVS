@@ -2254,6 +2254,10 @@ export const orderStatusOperations = {
 };
 
 export const orderOperations = {
+    async getAllOrders() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_ORDERS);
+        return data.allOrders || [];
+    },
     async createOrder(orderData) {
         const data = await graphqlClient.mutation(MUTATIONS.CREATE_ORDER, { input: orderData });
         return data.createOrder;
