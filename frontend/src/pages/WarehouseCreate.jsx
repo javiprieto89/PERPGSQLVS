@@ -4,8 +4,7 @@ import { warehouseOperations } from "../utils/graphqlClient";
 
 export default function WarehouseCreate({ onClose, onSave, warehouse: initialWarehouse = null }) {
     const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [isActive, setIsActive] = useState(true);
+    const [address, setAddress] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
@@ -14,8 +13,7 @@ export default function WarehouseCreate({ onClose, onSave, warehouse: initialWar
         if (initialWarehouse) {
             setIsEdit(true);
             setName(initialWarehouse.Name || "");
-            setDescription(initialWarehouse.Description || "");
-            setIsActive(initialWarehouse.IsActive !== false);
+            setAddress(initialWarehouse.Addres || "");
         }
     }, [initialWarehouse]);
 
@@ -24,7 +22,7 @@ export default function WarehouseCreate({ onClose, onSave, warehouse: initialWar
         setLoading(true);
         setError(null);
         try {
-            const payload = { CompanyID: 1, BranchID: 1, Name: name, Description: description, IsActive: isActive };
+            const payload = { Name: name, Addres: address };
             let result;
             if (isEdit) {
                 result = await warehouseOperations.updateWarehouse(initialWarehouse.WarehouseID, payload);
@@ -51,14 +49,8 @@ export default function WarehouseCreate({ onClose, onSave, warehouse: initialWar
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full border p-2 rounded" required />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">Descripción</label>
-                    <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full border p-2 rounded" />
-                </div>
-                <div>
-                    <label className="inline-flex items-center">
-                        <input type="checkbox" className="mr-2" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
-                        <span>Activo</span>
-                    </label>
+                    <label className="block text-sm font-medium mb-1">Dirección</label>
+                    <textarea value={address} onChange={(e) => setAddress(e.target.value)} className="w-full border p-2 rounded" />
                 </div>
                 <div className="flex justify-end space-x-4 pt-4 border-t">
                     <button type="button" onClick={onClose} disabled={loading} className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50">

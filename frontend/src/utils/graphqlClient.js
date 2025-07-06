@@ -220,11 +220,8 @@ export const QUERIES = {
         query GetWarehouses {
             allWarehouses {
                 WarehouseID
-                CompanyID
-                BranchID
                 Name
-                Description
-                IsActive
+                Addres
             }
         }
     `,
@@ -232,11 +229,8 @@ export const QUERIES = {
         query GetWarehouseById($id: Int!) {
             warehousesById(id: $id) {
                 WarehouseID
-                CompanyID
-                BranchID
                 Name
-                Description
-                IsActive
+                Addres
             }
         }
     `,
@@ -1149,11 +1143,8 @@ export const MUTATIONS = {
         mutation CreateWarehouse($input: WarehousesCreate!) {
             createWarehouse(data: $input) {
                 WarehouseID
-                CompanyID
-                BranchID
                 Name
-                Description
-                IsActive
+                Addres
             }
         }
     `,
@@ -1161,11 +1152,8 @@ export const MUTATIONS = {
         mutation UpdateWarehouse($warehouseID: Int!, $input: WarehousesUpdate!) {
             updateWarehouse(warehouseID: $warehouseID, data: $input) {
                 WarehouseID
-                CompanyID
-                BranchID
                 Name
-                Description
-                IsActive
+                Addres
             }
         }
     `,
