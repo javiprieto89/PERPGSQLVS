@@ -8,7 +8,7 @@ export default function ClientCreate({
     client: initialClient = null // Para edición
 }) {
     const [client, setClient] = useState({
-        docTypeID: 1,
+        docTypeID: "",
         docNumber: "",
         firstName: "",
         lastName: "",
@@ -18,10 +18,10 @@ export default function ClientCreate({
         city: "",
         postalCode: "",
         isActive: true,
-        countryID: 1,
-        provinceID: 1,
-        priceListID: 1,
-        vendorID: 1,
+        countryID: "",
+        provinceID: "",
+        priceListID: "",
+        vendorID: "",
     });
 
     const [formData, setFormData] = useState({
@@ -49,17 +49,6 @@ export default function ClientCreate({
 
             setFormData(data);
 
-            // Establecer valores por defecto si no es edición
-            if (!isEdit && data.documentTypes.length > 0) {
-                setClient(prev => ({
-                    ...prev,
-                    docTypeID: data.documentTypes[0].DocTypeID,
-                    countryID: data.countries[0]?.CountryID || 1,
-                    provinceID: data.provinces[0]?.ProvinceID || 1,
-                    priceListID: data.priceLists[0]?.PriceListID || 1,
-                    vendorID: data.vendors[0]?.VendorID || 1,
-                }));
-            }
         } catch (error) {
             console.error("Error cargando datos del formulario:", error);
             setError("Error cargando los datos del formulario: " + error.message);
@@ -78,7 +67,7 @@ export default function ClientCreate({
         if (initialClient) {
             setIsEdit(true);
             setClient({
-                docTypeID: parseInt(initialClient.DocTypeID) || 1,
+                docTypeID: initialClient.DocTypeID ? parseInt(initialClient.DocTypeID) : "",
                 docNumber: initialClient.DocNumber || "",
                 firstName: initialClient.FirstName || "",
                 lastName: initialClient.LastName || "",
@@ -88,10 +77,10 @@ export default function ClientCreate({
                 city: initialClient.City || "",
                 postalCode: initialClient.PostalCode || "",
                 isActive: initialClient.IsActive !== false,
-                countryID: parseInt(initialClient.CountryID) || 1,
-                provinceID: parseInt(initialClient.ProvinceID) || 1,
-                priceListID: parseInt(initialClient.PriceListID) || 1,
-                vendorID: parseInt(initialClient.VendorID) || 1,
+                countryID: initialClient.CountryID ? parseInt(initialClient.CountryID) : "",
+                provinceID: initialClient.ProvinceID ? parseInt(initialClient.ProvinceID) : "",
+                priceListID: initialClient.PriceListID ? parseInt(initialClient.PriceListID) : "",
+                vendorID: initialClient.VendorID ? parseInt(initialClient.VendorID) : "",
             });
         }
     }, [initialClient]);
@@ -103,7 +92,7 @@ export default function ClientCreate({
         if (type === "checkbox") {
             processedValue = checked;
         } else if (name.includes("ID")) {
-            processedValue = parseInt(value) || 0;
+            processedValue = value === "" ? "" : parseInt(value);
         } else {
             processedValue = value;
         }
@@ -116,13 +105,11 @@ export default function ClientCreate({
         // Si cambia el país, actualizar la provincia
         if (name === "countryID") {
             const countryProvinces = formData.provinces.filter(p => p.CountryID === parseInt(value));
-            if (countryProvinces.length > 0) {
-                setClient(prev => ({
-                    ...prev,
-                    countryID: parseInt(value),
-                    provinceID: countryProvinces[0].ProvinceID
-                }));
-            }
+            setClient(prev => ({
+                ...prev,
+                countryID: value === "" ? "" : parseInt(value),
+                provinceID: countryProvinces.length > 0 ? countryProvinces[0].ProvinceID : ""
+            }));
         }
     };
 
@@ -164,7 +151,9 @@ export default function ClientCreate({
     };
 
     // Filtrar provincias por país seleccionado
-    const availableProvinces = formData.provinces.filter(p => p.CountryID === client.countryID);
+    const availableProvinces = formData.provinces.filter(
+        p => p.CountryID === parseInt(client.countryID)
+    );
 
     if (loadingForm) {
         return (
@@ -209,6 +198,7 @@ export default function ClientCreate({
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
                             >
+                                <option value="">Seleccione</option>
                                 {formData.documentTypes.map(dt => (
                                     <option key={dt.DocTypeID} value={dt.DocTypeID}>
                                         {dt.Name}
@@ -320,14 +310,15 @@ export default function ClientCreate({
                                     name="countryID"
                                     value={client.countryID}
                                     onChange={handleChange}
-                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    required
-                                >
-                                    {formData.countries.map(country => (
-                                        <option key={country.CountryID} value={country.CountryID}>
-                                            {country.Name}
-                                        </option>
-                                    ))}
+                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                required
+                            >
+                                <option value="">Seleccione</option>
+                                {formData.countries.map(country => (
+                                    <option key={country.CountryID} value={country.CountryID}>
+                                        {country.Name}
+                                    </option>
+                                ))}
                                 </select>
                             </div>
 
@@ -337,14 +328,15 @@ export default function ClientCreate({
                                     name="provinceID"
                                     value={client.provinceID}
                                     onChange={handleChange}
-                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    required
-                                >
-                                    {availableProvinces.length > 0 ? (
-                                        availableProvinces.map(province => (
-                                            <option key={province.ProvinceID} value={province.ProvinceID}>
-                                                {province.Name}
-                                            </option>
+                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                required
+                            >
+                                <option value="">Seleccione</option>
+                                {availableProvinces.length > 0 ? (
+                                    availableProvinces.map(province => (
+                                        <option key={province.ProvinceID} value={province.ProvinceID}>
+                                            {province.Name}
+                                        </option>
                                         ))
                                     ) : (
                                         <option value="">No hay provincias disponibles</option>
@@ -396,6 +388,7 @@ export default function ClientCreate({
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
                             >
+                                <option value="">Seleccione</option>
                                 {formData.priceLists.map(priceList => (
                                     <option key={priceList.PriceListID} value={priceList.PriceListID}>
                                         {priceList.Name} {priceList.Description && `- ${priceList.Description}`}
@@ -413,6 +406,7 @@ export default function ClientCreate({
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
                             >
+                                <option value="">Seleccione</option>
                                 {formData.vendors.map(vendor => (
                                     <option key={vendor.VendorID} value={vendor.VendorID}>
                                         {vendor.VendorName}
