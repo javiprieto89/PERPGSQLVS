@@ -97,7 +97,6 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
 
         try {
             const carData = {
-                CarBrandID: parseInt(car.carBrandID),
                 CarModelID: parseInt(car.carModelID),
                 ClientID: parseInt(car.clientID),
                 LicensePlate: car.licensePlate,
