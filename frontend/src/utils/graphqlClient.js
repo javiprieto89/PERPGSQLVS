@@ -206,6 +206,40 @@ export const QUERIES = {
             }
         }
     `,
+    GET_PRICELIST_BY_ID: `
+        query GetPricelistById($id: Int!) {
+            pricelistsById(id: $id) {
+                PriceListID
+                Name
+                Description
+                IsActive
+            }
+        }
+    `,
+    GET_ALL_WAREHOUSES: `
+        query GetWarehouses {
+            allWarehouses {
+                WarehouseID
+                CompanyID
+                BranchID
+                Name
+                Description
+                IsActive
+            }
+        }
+    `,
+    GET_WAREHOUSE_BY_ID: `
+        query GetWarehouseById($id: Int!) {
+            warehousesById(id: $id) {
+                WarehouseID
+                CompanyID
+                BranchID
+                Name
+                Description
+                IsActive
+            }
+        }
+    `,
 
     GET_VENDORS: `
         query GetVendors {
@@ -1084,6 +1118,60 @@ export const MUTATIONS = {
     DELETE_ITEM: `
         mutation DeleteItem($itemID: Int!) {
             deleteItem(itemID: $itemID)
+        }
+    `,
+    CREATE_PRICELIST: `
+        mutation CreatePricelist($input: PriceListsCreate!) {
+            createPricelist(data: $input) {
+                PriceListID
+                Name
+                Description
+                IsActive
+            }
+        }
+    `,
+    UPDATE_PRICELIST: `
+        mutation UpdatePricelist($pricelistID: Int!, $input: PriceListsUpdate!) {
+            updatePricelist(pricelistID: $pricelistID, data: $input) {
+                PriceListID
+                Name
+                Description
+                IsActive
+            }
+        }
+    `,
+    DELETE_PRICELIST: `
+        mutation DeletePricelist($pricelistID: Int!) {
+            deletePricelist(pricelistID: $pricelistID)
+        }
+    `,
+    CREATE_WAREHOUSE: `
+        mutation CreateWarehouse($input: WarehousesCreate!) {
+            createWarehouse(data: $input) {
+                WarehouseID
+                CompanyID
+                BranchID
+                Name
+                Description
+                IsActive
+            }
+        }
+    `,
+    UPDATE_WAREHOUSE: `
+        mutation UpdateWarehouse($warehouseID: Int!, $input: WarehousesUpdate!) {
+            updateWarehouse(warehouseID: $warehouseID, data: $input) {
+                WarehouseID
+                CompanyID
+                BranchID
+                Name
+                Description
+                IsActive
+            }
+        }
+    `,
+    DELETE_WAREHOUSE: `
+        mutation DeleteWarehouse($warehouseID: Int!) {
+            deleteWarehouse(warehouseID: $warehouseID)
         }
     `
 };
@@ -2074,6 +2162,52 @@ export const provinceOperations = {
             console.error("Error obteniendo provincias por país:", error);
             throw error;
         }
+    }
+};
+
+export const pricelistOperations = {
+    async getAllPricelists() {
+        const data = await graphqlClient.query(QUERIES.GET_PRICE_LISTS);
+        return data.allPricelists || [];
+    },
+    async getPricelistById(id) {
+        const data = await graphqlClient.query(QUERIES.GET_PRICELIST_BY_ID, { id });
+        return data.pricelistsById;
+    },
+    async createPricelist(input) {
+        const data = await graphqlClient.mutation(MUTATIONS.CREATE_PRICELIST, { input });
+        return data.createPricelist;
+    },
+    async updatePricelist(id, input) {
+        const data = await graphqlClient.mutation(MUTATIONS.UPDATE_PRICELIST, { pricelistID: id, input });
+        return data.updatePricelist;
+    },
+    async deletePricelist(id) {
+        const data = await graphqlClient.mutation(MUTATIONS.DELETE_PRICELIST, { pricelistID: id });
+        return data.deletePricelist;
+    }
+};
+
+export const warehouseOperations = {
+    async getAllWarehouses() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_WAREHOUSES);
+        return data.allWarehouses || [];
+    },
+    async getWarehouseById(id) {
+        const data = await graphqlClient.query(QUERIES.GET_WAREHOUSE_BY_ID, { id });
+        return data.warehousesById;
+    },
+    async createWarehouse(input) {
+        const data = await graphqlClient.mutation(MUTATIONS.CREATE_WAREHOUSE, { input });
+        return data.createWarehouse;
+    },
+    async updateWarehouse(id, input) {
+        const data = await graphqlClient.mutation(MUTATIONS.UPDATE_WAREHOUSE, { warehouseID: id, input });
+        return data.updateWarehouse;
+    },
+    async deleteWarehouse(id) {
+        const data = await graphqlClient.mutation(MUTATIONS.DELETE_WAREHOUSE, { warehouseID: id });
+        return data.deleteWarehouse;
     }
 };
 
