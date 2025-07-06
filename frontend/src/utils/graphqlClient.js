@@ -392,6 +392,20 @@ export const QUERIES = {
         }
     `,
 
+    SEARCH_ITEMS: `
+        query SearchItems($filters: ItemFilters, $pagination: ItemPagination) {
+            searchItems(filters: $filters, pagination: $pagination) {
+                items {
+                    ItemID
+                    Code
+                    Description
+                    Price
+                }
+                total
+            }
+        }
+    `,
+
     // ORDENES
     GET_ALL_ORDERS: `
         query GetAllOrders {
@@ -2159,6 +2173,20 @@ export const itemOperations = {
             return data.deleteItem;
         } catch (error) {
             console.error("Error eliminando ítem:", error);
+            throw error;
+        }
+    },
+
+    async searchItems(search = "", page = 1, limit = 50) {
+        try {
+            const variables = {
+                filters: search ? { search } : null,
+                pagination: { page, limit },
+            };
+            const data = await graphqlClient.query(QUERIES.SEARCH_ITEMS, variables);
+            return data.searchItems?.items || [];
+        } catch (error) {
+            console.error("Error buscando ítems:", error);
             throw error;
         }
     }

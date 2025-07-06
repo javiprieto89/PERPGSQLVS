@@ -1,28 +1,43 @@
 import { useEffect, useState } from "react";
 import OrderModal from "../components/OrderModal";
 import { orderOperations } from "../utils/graphqlClient";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function Orders() {
-  const [showModal, setShowModal] = useState(false);
   const [orders, setOrders] = useState([]);
 
+  const fetchOrders = async () => {
+    try {
+      const data = await orderOperations.getAllOrders();
+      setOrders(data);
+    } catch (err) {
+      console.error("Error fetching orders", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const data = await orderOperations.getAllOrders();
-        setOrders(data);
-      } catch (err) {
-        console.error("Error fetching orders", err);
+    fetchOrders();
+    const handler = (e) => {
+      if (e.data === "reload-orders") {
+        fetchOrders();
       }
     };
-    fetchOrders();
-  }, [showModal]);
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, []);
+
+  const handleCreate = () => {
+    openReactWindow(
+      (popup) => <OrderModal onClose={() => popup.close()} />,
+      "Cargar Pedido"
+    );
+  };
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Pedidos</h1>
       <button
-        onClick={() => setShowModal(true)}
+        onClick={handleCreate}
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       >
         Cargar Pedido
@@ -49,7 +64,6 @@ export default function Orders() {
           </tbody>
         </table>
       )}
-      {showModal && <OrderModal onClose={() => setShowModal(false)} />}
     </div>
   );
 }
