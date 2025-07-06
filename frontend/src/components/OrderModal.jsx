@@ -98,6 +98,9 @@ export default function OrderModal({ onClose }) {
         })),
       });
       alert("Pedido guardado");
+      if (window.opener) {
+        window.opener.postMessage('reload-orders', '*');
+      }
       onClose();
     } catch (err) {
       console.error(err);
