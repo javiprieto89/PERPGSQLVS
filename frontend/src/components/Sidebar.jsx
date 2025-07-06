@@ -51,8 +51,24 @@ export default function Sidebar() {
         const tempOrderId = `temp-${Date.now()}-${Math.floor(
             Math.random() * 1000
         )}`;
+        const left = window.screenX + 100;
+        const top = window.screenY + 100;
+        const win = window.open(
+            "",
+            title,
+            `width=${width},height=${height},left=${left},top=${top}`
+        );
+        if (!win) {
+            alert("La ventana emergente fue bloqueada por el navegador.");
+            return;
+        }
         setPopup(
-            <MyWindowPortal title={title} width={width} height={height}>
+            <MyWindowPortal
+                title={title}
+                width={width}
+                height={height}
+                existingWindow={win}
+            >
                 <Component tempOrderId={tempOrderId} />
             </MyWindowPortal>
         );

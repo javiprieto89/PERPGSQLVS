@@ -7,6 +7,7 @@ export default function MyWindowPortal({
   title = "Ventana",
   width = 800,
   height = 600,
+  existingWindow = null,
 }) {
   const containerRef = useRef(document.createElement("div"));
   const newWindow = useRef(null);
@@ -16,12 +17,13 @@ export default function MyWindowPortal({
     const left = window.screenX + 100;
     const top = window.screenY + 100;
 
-    newWindow.current = window.open(
-      "",
-      title,
-      `width=${width},height=${height},left=${left},top=${top}`
-    );
-    console.log(newWindow.current);
+    newWindow.current =
+      existingWindow ||
+      window.open(
+        "",
+        title,
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
     if (newWindow.current) {
       newWindow.current.document.title = title;
 
