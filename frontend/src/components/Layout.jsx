@@ -19,28 +19,33 @@ export default function Layout({
 
     // Estado interno para compatibilidad con el código existente
     const [internalSelectedAccess, setInternalSelectedAccess] = useState({
-        company: "",
-        branch: "",
+        Company: "",
+        Branch: "",
         Role: "",
     });
 
     // Carga inicial: accesos y selección guardados en sessionStorage
     useEffect(() => {
-        // Usar AuthHelper para obtener datos actualizados
-        const authSelectedAccess = AuthHelper.getSelectedAccess();
+        let access = selectedAccess || AuthHelper.getSelectedAccess();
 
-        if (authSelectedAccess) {
-            setInternalSelectedAccess({
-                company: authSelectedAccess.Company || authSelectedAccess.companyName || "",
-                branch: authSelectedAccess.Branch || authSelectedAccess.branchName || "",
-                Role: authSelectedAccess.Role || authSelectedAccess.roleName || "",
-            });
-        } else {
-            // Fallback al método anterior
+        if (!access) {
             const storedSelected = sessionStorage.getItem("selected_access");
             if (storedSelected) {
-                setInternalSelectedAccess(JSON.parse(storedSelected));
+                try {
+                    access = JSON.parse(storedSelected);
+                } catch (e) {
+                    console.error("Error parsing stored selected access", e);
+                }
             }
+        }
+
+        if (access) {
+            const normalized = AuthHelper.normalizeAccess(access);
+            setInternalSelectedAccess({
+                Company: normalized.Company,
+                Branch: normalized.Branch,
+                Role: normalized.Role,
+            });
         }
     }, [selectedAccess]);
 
