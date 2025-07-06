@@ -205,10 +205,8 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
             }
         }
 
-        // Solo llamar onFilterChange si hay cambios
-        if (JSON.stringify(filtered) !== JSON.stringify(memoizedData)) {
-            onFilterChange(filtered);
-        }
+        // Notificar siempre el resultado de filtrado
+        onFilterChange(filtered);
     }, [filters, memoizedData, filterFields, onFilterChange]);
 
     // Aplicar filtros cuando cambian los filtros
