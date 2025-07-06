@@ -8,7 +8,7 @@ from datetime import datetime
 class OrderDetailsCreate:
     OrderID: int
     ItemID: int
-    Wuantity: int
+    Quantity: int
     UnitPrice: float
     Description: Optional[str] = None
     LastModified: Optional[datetime] = None
