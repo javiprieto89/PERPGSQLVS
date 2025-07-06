@@ -55,7 +55,7 @@ export default function ClientCreate({
         } finally {
             setLoadingForm(false);
         }
-    }, [isEdit]);
+    }, []);
 
     // Cargar datos del formulario al montar el componente
     useEffect(() => {
