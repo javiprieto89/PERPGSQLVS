@@ -3,7 +3,7 @@ import { supplierOperations } from "../utils/graphqlClient";
 
 export default function SupplierCreate({ onClose, onSave, supplier: initialSupplier = null }) {
     const [supplier, setSupplier] = useState({
-        docTypeID: 1,
+        docTypeID: "",
         docNumber: "",
         firstName: "",
         lastName: "",
@@ -13,8 +13,8 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
         city: "",
         postalCode: "",
         isActive: true,
-        countryID: 1,
-        provinceID: 1,
+        countryID: "",
+        provinceID: "",
     });
 
     const [formData, setFormData] = useState({
@@ -33,14 +33,6 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
             setLoadingForm(true);
             const data = await supplierOperations.getSupplierFormData();
             setFormData(data);
-            if (!isEdit && data.documentTypes.length > 0) {
-                setSupplier(prev => ({
-                    ...prev,
-                    docTypeID: data.documentTypes[0].DocTypeID,
-                    countryID: data.countries[0]?.CountryID || 1,
-                    provinceID: data.provinces[0]?.ProvinceID || 1,
-                }));
-            }
         } catch (err) {
             console.error("Error cargando datos del formulario:", err);
             setError("Error cargando los datos del formulario: " + err.message);
@@ -57,7 +49,7 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
         if (initialSupplier) {
             setIsEdit(true);
             setSupplier({
-                docTypeID: parseInt(initialSupplier.DocTypeID) || 1,
+                docTypeID: initialSupplier.DocTypeID ? parseInt(initialSupplier.DocTypeID) : "",
                 docNumber: initialSupplier.DocNumber || "",
                 firstName: initialSupplier.FirstName || "",
                 lastName: initialSupplier.LastName || "",
@@ -67,8 +59,8 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
                 city: initialSupplier.City || "",
                 postalCode: initialSupplier.PostalCode || "",
                 isActive: initialSupplier.IsActive !== false,
-                countryID: parseInt(initialSupplier.CountryID) || 1,
-                provinceID: parseInt(initialSupplier.ProvinceID) || 1,
+                countryID: initialSupplier.CountryID ? parseInt(initialSupplier.CountryID) : "",
+                provinceID: initialSupplier.ProvinceID ? parseInt(initialSupplier.ProvinceID) : "",
             });
         }
     }, [initialSupplier]);
@@ -79,7 +71,7 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
         if (type === "checkbox") {
             processedValue = checked;
         } else if (name.includes("ID")) {
-            processedValue = parseInt(value) || 0;
+            processedValue = value === "" ? "" : parseInt(value);
         } else {
             processedValue = value;
         }
@@ -88,14 +80,10 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
             [name]: processedValue,
         }));
         if (name === "countryID") {
-            const provs = formData.provinces.filter(p => p.CountryID === parseInt(value));
-            if (provs.length > 0) {
-                setSupplier(prev => ({
-                    ...prev,
-                    countryID: parseInt(value),
-                    provinceID: provs[0].ProvinceID,
-                }));
-            }
+            setSupplier(prev => ({
+                ...prev,
+                provinceID: "",
+            }));
         }
     };
 
@@ -159,6 +147,7 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 required
                             >
+                                <option value="">Seleccione</option>
                                 {formData.documentTypes.map(dt => (
                                     <option key={dt.DocTypeID} value={dt.DocTypeID}>{dt.Name}</option>
                                 ))}
@@ -262,6 +251,7 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
                                     className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     required
                                 >
+                                    <option value="">Seleccione</option>
                                     {formData.countries.map(c => (
                                         <option key={c.CountryID} value={c.CountryID}>{c.Name}</option>
                                     ))}
@@ -276,6 +266,7 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
                                     className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                     required
                                 >
+                                    <option value="">Seleccione</option>
                                     {availableProvinces.length > 0 ? (
                                         availableProvinces.map(p => (
                                             <option key={p.ProvinceID} value={p.ProvinceID}>{p.Name}</option>

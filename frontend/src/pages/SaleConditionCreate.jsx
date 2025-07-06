@@ -5,7 +5,7 @@ export default function SaleConditionCreate({ onClose, onSave, saleCondition: in
     const [name, setName] = useState("");
     const [dueDate, setDueDate] = useState("");
     const [surcharge, setSurcharge] = useState(0);
-    const [creditCardID, setCreditCardID] = useState(0);
+    const [creditCardID, setCreditCardID] = useState("");
     const [cards, setCards] = useState([]);
     const [isActive, setIsActive] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -18,9 +18,6 @@ export default function SaleConditionCreate({ onClose, onSave, saleCondition: in
             try {
                 const data = await creditCardOperations.getAllCards();
                 setCards(data);
-                if (data.length > 0 && !initialSC) {
-                    setCreditCardID(data[0].CreditCardID);
-                }
             } finally {
                 setLoadingForm(false);
             }
@@ -35,7 +32,7 @@ export default function SaleConditionCreate({ onClose, onSave, saleCondition: in
             setDueDate(initialSC.DueDate || "");
             setSurcharge(initialSC.Surcharge || 0);
             setIsActive(initialSC.IsActive !== false);
-            setCreditCardID(initialSC.CreditCardID || 0);
+            setCreditCardID(initialSC.CreditCardID ? initialSC.CreditCardID : "");
         }
     }, [initialSC]);
 
@@ -104,9 +101,10 @@ export default function SaleConditionCreate({ onClose, onSave, saleCondition: in
                     <label className="block text-sm font-medium mb-1">Tarjeta de Crédito</label>
                     <select
                         value={creditCardID}
-                        onChange={(e) => setCreditCardID(parseInt(e.target.value))}
+                        onChange={(e) => setCreditCardID(e.target.value === "" ? "" : parseInt(e.target.value))}
                         className="w-full border border-gray-300 p-2 rounded"
                     >
+                        <option value="">Seleccione</option>
                         {cards.map(card => (
                             <option key={card.CreditCardID} value={card.CreditCardID}>{card.CardName}</option>
                         ))}

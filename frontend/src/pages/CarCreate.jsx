@@ -38,15 +38,6 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
             setLoadingForm(true);
             const data = await carOperations.getCarFormData();
             setFormData(data);
-            if (!isEdit) {
-                setCar(prev => ({
-                    ...prev,
-                    carBrandID: data.carBrands[0]?.CarBrandID || '',
-                    carModelID: data.carModels[0]?.CarModelID || '',
-                    clientID: data.clients[0]?.ClientID || '',
-                    discountID: data.discounts[0]?.DiscountID || ''
-                }));
-            }
         } catch (err) {
             console.error('Error cargando datos del formulario:', err);
             setError('Error cargando los datos del formulario: ' + err.message);
