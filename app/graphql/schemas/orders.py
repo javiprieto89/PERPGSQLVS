@@ -1,9 +1,13 @@
-# ap/graphql/schemas/orders.py
+# app/graphql/schemas/orders.py
 import strawberry
 from typing import List, Optional
 from datetime import datetime
 from dataclasses import field
-from app.graphql.schemas.orderdetails import OrderDetailsInDB
+from app.graphql.schemas.orderdetails import (
+    OrderDetailsCreate,
+    OrderDetailsUpdate,
+    OrderDetailsInDB,
+)
 
 
 @strawberry.input
@@ -23,11 +27,11 @@ class OrdersCreate:
     Subtotal: Optional[float] = None
     Total: Optional[float] = None
     VAT: Optional[float] = None
-    UerID: Optional[int] = None
+    UserID: Optional[int] = None
     DocumentID: Optional[int] = None
     StatusID: Optional[int] = None
     PriceListID: Optional[int] = None
-    Items: List[OrderDetailsInDB] = field(default_factory=list)  # CORREGIDO
+    Items: List[OrderDetailsCreate] = field(default_factory=list)
 
 
 @strawberry.input
@@ -51,7 +55,7 @@ class OrdersUpdate:
     DocumentID: Optional[int] = None
     StatusID: Optional[int] = None
     PriceListID: Optional[int] = None
-    Items: Optional[List[OrderDetailsInDB]] = None
+    Items: Optional[List[OrderDetailsUpdate]] = None
 
 
 @strawberry.type
