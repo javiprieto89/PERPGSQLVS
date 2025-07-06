@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import JSONResponse
+from dataclasses import asdict
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.gzip import GZipMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -232,9 +233,90 @@ async def logout_endpoint(request: Request):
     except Exception as e:
         logger.error(f"Error en logout: {e}")
         return JSONResponse(
-            {"detail": "Error interno del servidor"}, 
+            {"detail": "Error interno del servidor"},
             status_code=500
         )
+
+# =======================
+# Endpoints REST adicionales
+# =======================
+async def list_pricelists(request: Request):
+    from app.graphql.crud.pricelists import get_pricelists
+    from app.db import get_db
+    from app.graphql.schemas.pricelists import PriceListsInDB
+    from app.utils import list_to_schema
+
+    db_gen = get_db()
+    db = next(db_gen)
+    try:
+        records = get_pricelists(db)
+        data = [asdict(obj) for obj in list_to_schema(PriceListsInDB, records)]
+        return JSONResponse(data)
+    finally:
+        db_gen.close()
+
+
+async def list_saleconditions(request: Request):
+    from app.graphql.crud.saleconditions import get_saleconditions
+    from app.db import get_db
+    from app.graphql.schemas.saleconditions import SaleConditionsInDB
+    from app.utils import list_to_schema
+
+    db_gen = get_db()
+    db = next(db_gen)
+    try:
+        records = get_saleconditions(db)
+        data = [asdict(obj) for obj in list_to_schema(SaleConditionsInDB, records)]
+        return JSONResponse(data)
+    finally:
+        db_gen.close()
+
+
+async def list_warehouses(request: Request):
+    from app.graphql.crud.warehouses import get_warehouses
+    from app.db import get_db
+    from app.graphql.schemas.warehouses import WarehousesInDB
+    from app.utils import list_to_schema
+
+    db_gen = get_db()
+    db = next(db_gen)
+    try:
+        records = get_warehouses(db)
+        data = [asdict(obj) for obj in list_to_schema(WarehousesInDB, records)]
+        return JSONResponse(data)
+    finally:
+        db_gen.close()
+
+
+async def list_items(request: Request):
+    from app.graphql.crud.items import get_items
+    from app.db import get_db
+    from app.utils.item_helpers import item_to_in_db
+
+    db_gen = get_db()
+    db = next(db_gen)
+    try:
+        records = get_items(db)
+        data = [asdict(item_to_in_db(obj)) for obj in records]
+        return JSONResponse(data)
+    finally:
+        db_gen.close()
+
+
+async def list_clients(request: Request):
+    from app.graphql.crud.clients import get_clients
+    from app.db import get_db
+    from app.graphql.schemas.clients import ClientsInDB
+    from app.utils import list_to_schema
+
+    db_gen = get_db()
+    db = next(db_gen)
+    try:
+        records = get_clients(db)
+        data = [asdict(obj) for obj in list_to_schema(ClientsInDB, records)]
+        return JSONResponse(data)
+    finally:
+        db_gen.close()
 
 # =======================
 # GraphQL app
@@ -245,15 +327,20 @@ graphql_app = GraphQL(schema)
 # App final Starlette
 # =======================
 app = Starlette(
-    routes=[
-        Route("/", root),
-        Route("/health", health_check),
-        Route("/metrics", get_metrics),
-        Route("/login", login_endpoint, methods=["POST"]),
-        Route("/logout", logout_endpoint, methods=["POST"]),
-        Mount("/graphql/", graphql_app),  # Con barra al final
-        Mount("/graphql", graphql_app),   # Sin barra (compatibilidad)
-    ],
+        routes=[
+            Route("/", root),
+            Route("/health", health_check),
+            Route("/metrics", get_metrics),
+            Route("/pricelists", list_pricelists),
+            Route("/salesconditions", list_saleconditions),
+            Route("/warehouses", list_warehouses),
+            Route("/items/", list_items),
+            Route("/clients/", list_clients),
+            Route("/login", login_endpoint, methods=["POST"]),
+            Route("/logout", logout_endpoint, methods=["POST"]),
+            Mount("/graphql/", graphql_app),  # Con barra al final
+            Mount("/graphql", graphql_app),   # Sin barra (compatibilidad)
+        ],
 )
 
 # Middlewares globales

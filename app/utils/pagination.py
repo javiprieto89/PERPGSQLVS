@@ -34,7 +34,7 @@ class PageInfo:
 
 @strawberry.type
 class PaginatedResponse(Generic[T]):
-    """Respuesta paginada gen閞ica"""
+    """Respuesta paginada gen茅rica"""
     items: List[T]
     page_info: PageInfo
 
@@ -44,12 +44,12 @@ def paginate_query(
     transform_fn: Optional[Callable[[Any], T]] = None
 ) -> PaginatedResponse[T]:
     """
-    Funci髇 gen閞ica para paginar cualquier query de SQLAlchemy
+    Funci贸n gen茅rica para paginar cualquier query de SQLAlchemy
     
     Args:
         query: Query de SQLAlchemy
-        pagination: Par醡etros de paginaci髇
-        transform_fn: Funci髇 para transformar cada item del resultado
+        pagination: Par谩metros de paginaci贸n
+        transform_fn: Funci贸n para transformar cada item del resultado
     
     Returns:
         PaginatedResponse con los datos paginados
@@ -62,19 +62,19 @@ def paginate_query(
     # Contar total de items
     total_items = query.count()
     
-    # Calcular informaci髇 de p醙inas
+    # Calcular informaci贸n de p谩ginas
     total_pages = math.ceil(total_items / limit) if total_items > 0 else 0
     has_next = offset + limit < total_items
     has_previous = page > 1
     
-    # Obtener items de la p醙ina actual
+    # Obtener items de la p谩gina actual
     items = query.offset(offset).limit(limit).all()
     
-    # Transformar items si se proporciona funci髇
+    # Transformar items si se proporciona funci贸n
     if transform_fn:
         items = [transform_fn(item) for item in items]
     
-    # Crear informaci髇 de p醙ina
+    # Crear informaci贸n de p谩gina
     page_info = PageInfo(
         current_page=page,
         per_page=limit,
@@ -90,19 +90,19 @@ def paginate_query(
 
 @strawberry.type
 class ClientsPaginatedResponse:
-    """Respuesta paginada espec韋ica para clientes"""
+    """Respuesta paginada espec铆fica para clientes"""
     items: List['ClientsInDB']
     page_info: PageInfo
 
 @strawberry.type
 class ItemsPaginatedResponse:
-    """Respuesta paginada espec韋ica para items"""
+    """Respuesta paginada espec铆fica para items"""
     items: List['ItemsInDB']
     page_info: PageInfo
 
 @strawberry.type
 class OrdersPaginatedResponse:
-    """Respuesta paginada espec韋ica para 髍denes"""
+    """Respuesta paginada espec铆fica para 贸rdenes"""
     items: List['OrdersInDB']
     page_info: PageInfo
 
@@ -113,7 +113,7 @@ def apply_sorting(query: Query, model_class: Any, sort: Optional[SortInput] = No
     Args:
         query: Query de SQLAlchemy
         model_class: Clase del modelo SQLAlchemy
-        sort: Par醡etros de ordenamiento
+        sort: Par谩metros de ordenamiento
     
     Returns:
         Query con ordenamiento aplicado
@@ -142,7 +142,7 @@ def apply_date_range_filter(query: Query, date_field, start_date=None, end_date=
     return query
 
 def apply_text_search_filter(query: Query, fields: List[Any], search_term: str) -> Query:
-    """Aplica filtro de b鷖queda de texto en m鷏tiples campos"""
+    """Aplica filtro de b煤squeda de texto en m煤ltiples campos"""
     if not search_term:
         return query
     

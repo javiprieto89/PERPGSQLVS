@@ -18,7 +18,7 @@ class SimpleCache:
             if datetime.utcnow() < self._expiry[key]:
                 return self._cache[key]['data']
             else:
-                # ExpirÛ, limpiar
+                # Expir√≥, limpiar
                 self.delete(key)
         return None
     
@@ -38,7 +38,7 @@ class SimpleCache:
         self._expiry.clear()
     
     def size(self) -> int:
-        """Retorna el n˙mero de items en cache"""
+        """Retorna el n√∫mero de items en cache"""
         return len(self._cache)
 
 # Instancia global del cache
@@ -68,7 +68,7 @@ def cached(ttl_seconds: int = 300, key_prefix: str = ""):
             if cached_result is not None:
                 return cached_result
             
-            # Ejecutar funciÛn y cachear resultado
+            # Ejecutar funci√≥n y cachear resultado
             result = func(*args, **kwargs)
             cache.set(func_key, result, ttl_seconds)
             return result
@@ -76,9 +76,9 @@ def cached(ttl_seconds: int = 300, key_prefix: str = ""):
         return wrapper
     return decorator
 
-# Decoradores especÌficos para diferentes tipos de datos
+# Decoradores espec√≠ficos para diferentes tipos de datos
 def cache_static_data(ttl_seconds: int = 3600):
-    """Cache para datos est·ticos como paÌses, provincias, marcas"""
+    """Cache para datos est√°ticos como pa√≠ses, provincias, marcas"""
     return cached(ttl_seconds, "static")
 
 def cache_dynamic_data(ttl_seconds: int = 300):
@@ -86,12 +86,12 @@ def cache_dynamic_data(ttl_seconds: int = 300):
     return cached(ttl_seconds, "dynamic")
 
 def cache_user_data(ttl_seconds: int = 600):
-    """Cache para datos especÌficos del usuario"""
+    """Cache para datos espec√≠ficos del usuario"""
     return cached(ttl_seconds, "user")
 
-# Funciones de utilidad para limpiar cache especÌfico
+# Funciones de utilidad para limpiar cache espec√≠fico
 def invalidate_cache_pattern(pattern: str) -> None:
-    """Invalida entradas de cache que coincidan con un patrÛn"""
+    """Invalida entradas de cache que coincidan con un patr√≥n"""
     keys_to_delete = []
     for key in cache._cache.keys():
         if pattern in key:
@@ -101,11 +101,11 @@ def invalidate_cache_pattern(pattern: str) -> None:
         cache.delete(key)
 
 def invalidate_user_cache(user_id: int) -> None:
-    """Invalida todo el cache relacionado con un usuario especÌfico"""
+    """Invalida todo el cache relacionado con un usuario espec√≠fico"""
     invalidate_cache_pattern(f"user:{user_id}")
 
 def invalidate_company_cache(company_id: int) -> None:
-    """Invalida cache relacionado con una empresa especÌfica"""
+    """Invalida cache relacionado con una empresa espec√≠fica"""
     invalidate_cache_pattern(f"company:{company_id}")
 
 def invalidate_items_cache() -> None:
@@ -113,12 +113,12 @@ def invalidate_items_cache() -> None:
     invalidate_cache_pattern("items")
     invalidate_cache_pattern("stock")
 
-# Middleware para limpiar cache autom·ticamente en mutaciones
+# Middleware para limpiar cache autom√°ticamente en mutaciones
 class CacheInvalidationMixin:
-    """Mixin para invalidar cache autom·ticamente despuÈs de mutaciones"""
+    """Mixin para invalidar cache autom√°ticamente despu√©s de mutaciones"""
     
     def invalidate_related_cache(self, operation_type: str, **kwargs):
-        """Invalida cache relacionado basado en el tipo de operaciÛn"""
+        """Invalida cache relacionado basado en el tipo de operaci√≥n"""
         if operation_type in ['create_item', 'update_item', 'delete_item']:
             invalidate_items_cache()
         elif operation_type in ['create_order', 'update_order']:
