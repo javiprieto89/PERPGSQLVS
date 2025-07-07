@@ -142,23 +142,6 @@ export default function OrderCreate({ userInfo }) {
     setCurrentItem((prev) => ({ ...prev, [name]: value }));
   };
 
-  const addItem = async () => {
-    if (
-      parseFloat(currentItem.price) < 0 ||
-      parseInt(currentItem.quantity) <= 0
-    ) {
-      alert("El precio y la cantidad deben ser valores válidos.");
-      return;
-    }
-    if (!currentItem.code && !currentItem.description) {
-      alert("Debe ingresar un código o descripción para el ítem.");
-      return;
-    }
-
-    const newItem = { ...currentItem };
-    setItems((prev) => [...prev, newItem]);
-    setCurrentItem({ code: "", description: "", quantity: 1, price: 0 });
-  };
   const handleSelectItemFromModal = (selectedItem) => {
     setCurrentItem((prev) => ({
       ...prev, // Mantener cantidad si ya la había puesto, o resetearla
@@ -762,6 +745,7 @@ export default function OrderCreate({ userInfo }) {
                 </div>
               </div>
             )}
+          </section>
           {/* Sección Totales y Guardar */}
           <section className="p-6 border border-gray-200 rounded-lg shadow-md bg-white">
             <h2 className="text-xl font-medium text-indigo-700 mb-6">

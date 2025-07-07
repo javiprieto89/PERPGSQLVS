@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import OrderModal from "../components/OrderModal";
+import OrdersCreate from "./OrdersCreate";
 import { orderOperations } from "../utils/graphqlClient";
 import { openReactWindow } from "../utils/openReactWindow";
 
@@ -28,7 +28,7 @@ export default function Orders() {
 
   const handleCreate = () => {
     openReactWindow(
-      (popup) => <OrderModal onClose={() => popup.close()} />,
+      (popup) => <OrdersCreate onClose={() => popup.close()} />,
       "Cargar Pedido"
     );
   };

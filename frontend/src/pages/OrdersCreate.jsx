@@ -1,3 +1,4 @@
+// frontend/src/pages/OrdersCreate.jsx
 import { useEffect, useState } from "react";
 import {
   clientOperations,
@@ -6,13 +7,13 @@ import {
   saleConditionOperations,
   orderOperations,
 } from "../utils/graphqlClient";
-import ItemSelectWindow from "./ItemSelectWindow";
-import ClientSearchModal from "./ClientSearchModal";
-import SaleConditionSearchModal from "./SaleConditionSearchModal";
+import ItemSelectWindow from "../components/ItemSelectWindow";
+import ClientSearchModal from "../components/ClientSearchModal";
+import SaleConditionSearchModal from "../components/SaleConditionSearchModal";
 import { openReactWindow } from "../utils/openReactWindow";
 import { v4 as uuidv4 } from "uuid";
 
-export default function OrderModal({ onClose }) {
+export default function OrdersCreate({ onClose }) {
   const [clients, setClients] = useState([]);
   const [priceLists, setPriceLists] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
@@ -110,7 +111,7 @@ export default function OrderModal({ onClose }) {
     try {
       await orderOperations.createOrder({
         ...order,
-        Items: tempItems.map(({ tempId, itemId, code, description, quantity, price }) => ({
+        Items: tempItems.map(({ itemId, description, quantity, price }) => ({
           OrderID: 0,
           ItemID: itemId,
           Quantity: quantity,
