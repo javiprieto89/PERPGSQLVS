@@ -1,5 +1,5 @@
 // frontend/src/components/ItemSearchModal.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   brandOperations,
   itemCategoryOperations,
@@ -31,6 +31,11 @@ export default function ItemSearchModal({
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
+
+  const filtersRef = useRef(filters);
+  useEffect(() => {
+    filtersRef.current = filters;
+  }, [filters]);
 
   useEffect(() => {
     if (isOpen) {
@@ -70,8 +75,7 @@ export default function ItemSearchModal({
       // Se ejecutará con los filtros reseteados (vacíos)
       handleSearch();
     }
-  }, [isOpen]); // CUIDADO: Si handleSearch no está memoizada (useCallback), esto podría causar un bucle si handleSearch cambia la referencia en cada render.
-  // Por ahora, asumamos que handleSearch es estable o que el efecto solo se dispara cuando isOpen cambia de false a true.
+  }, [isOpen, handleSearch]);
 
   // Cargar subcategorías cuando cambie la categoría seleccionada
   useEffect(() => {
@@ -107,7 +111,7 @@ export default function ItemSearchModal({
     } else if (
       filters[name] &&
       typeof filters[name] === "object" &&
-      filters[name].hasOwnProperty("value")
+      Object.prototype.hasOwnProperty.call(filters[name], "value")
     ) {
       // Es un filtro con value y matchType (code, description, oem)
       setFilters((prev) => ({
@@ -120,17 +124,20 @@ export default function ItemSearchModal({
     }
   };
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
+    const currentFilters = filtersRef.current;
     setIsLoading(true);
     try {
       const items = await itemOperations.getAllItems();
       const filtered = items.filter((it) => {
-        const byCode = filters.code.value
-          ? it.Code?.toLowerCase().includes(filters.code.value.toLowerCase())
+        const byCode = currentFilters.code.value
+          ? it.Code?.toLowerCase().includes(
+              currentFilters.code.value.toLowerCase()
+            )
           : true;
-        const byDesc = filters.description.value
+        const byDesc = currentFilters.description.value
           ? it.Description?.toLowerCase().includes(
-              filters.description.value.toLowerCase()
+              currentFilters.description.value.toLowerCase()
             )
           : true;
         return byCode && byDesc;
@@ -141,7 +148,7 @@ export default function ItemSearchModal({
       setResults([]);
     }
     setIsLoading(false);
-  };
+  }, []);
 
   if (!isOpen) return null;
 
