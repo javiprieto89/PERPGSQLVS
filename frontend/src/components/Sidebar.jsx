@@ -10,12 +10,11 @@ import {
 } from "lucide-react";
 
 import OrderCreate from "../pages/OrderCreate";
-import MyWindowPortal from "./MyWindowPortal";
+import { openReactWindow } from "../utils/openReactWindow";
 
 export default function Sidebar() {
     const [openSections, setOpenSections] = useState({});
     const [openSubmenus, setOpenSubmenus] = useState({});
-    const [popup, setPopup] = useState(null);
 
     useEffect(() => {
         const stored = localStorage.getItem("openSections");
@@ -48,30 +47,7 @@ export default function Sidebar() {
         setOpenSubmenus((prev) => ({ ...prev, [key]: !prev[key] }));
 
     const openPopup = (Component, title, width = 1000, height = 700) => {
-        const tempOrderId = `temp-${Date.now()}-${Math.floor(
-            Math.random() * 1000
-        )}`;
-        const left = window.screenX + 100;
-        const top = window.screenY + 100;
-        const win = window.open(
-            "",
-            title,
-            `width=${width},height=${height},left=${left},top=${top}`
-        );
-        if (!win) {
-            alert("La ventana emergente fue bloqueada por el navegador.");
-            return;
-        }
-        setPopup(
-            <MyWindowPortal
-                title={title}
-                width={width}
-                height={height}
-                existingWindow={win}
-            >
-                <Component tempOrderId={tempOrderId} />
-            </MyWindowPortal>
-        );
+        openReactWindow(() => <Component />, title, { width, height });
     };
 
     const sections = [
@@ -256,7 +232,6 @@ export default function Sidebar() {
                     })}
                 </nav>
             </aside>
-            {popup}
         </>
     );
 }
