@@ -37,6 +37,32 @@ export default function ItemSearchModal({
     filtersRef.current = filters;
   }, [filters]);
 
+  const handleSearch = useCallback(async () => {
+    const currentFilters = filtersRef.current;
+    setIsLoading(true);
+    try {
+      const items = await itemOperations.getAllItems();
+      const filtered = items.filter((it) => {
+        const byCode = currentFilters.code.value
+          ? it.Code?.toLowerCase().includes(
+              currentFilters.code.value.toLowerCase()
+            )
+          : true;
+        const byDesc = currentFilters.description.value
+          ? it.Description?.toLowerCase().includes(
+              currentFilters.description.value.toLowerCase()
+            )
+          : true;
+        return byCode && byDesc;
+      });
+      setResults(filtered);
+    } catch (error) {
+      console.error("ItemSearchModal - Error searching items:", error);
+      setResults([]);
+    }
+    setIsLoading(false);
+  }, []);
+
   useEffect(() => {
     if (isOpen) {
       // Cargar datos para los filtros de selección cuando el modal se abre
@@ -123,33 +149,6 @@ export default function ItemSearchModal({
       setFilters((prev) => ({ ...prev, [name]: value }));
     }
   };
-
-  const handleSearch = useCallback(async () => {
-    const currentFilters = filtersRef.current;
-    setIsLoading(true);
-    try {
-      const items = await itemOperations.getAllItems();
-      const filtered = items.filter((it) => {
-        const byCode = currentFilters.code.value
-          ? it.Code?.toLowerCase().includes(
-              currentFilters.code.value.toLowerCase()
-            )
-          : true;
-        const byDesc = currentFilters.description.value
-          ? it.Description?.toLowerCase().includes(
-              currentFilters.description.value.toLowerCase()
-            )
-          : true;
-        return byCode && byDesc;
-      });
-      setResults(filtered);
-    } catch (error) {
-      console.error("ItemSearchModal - Error searching items:", error);
-      setResults([]);
-    }
-    setIsLoading(false);
-  }, []);
-
   if (!isOpen) return null;
 
   return (
