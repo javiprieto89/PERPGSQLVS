@@ -12,7 +12,7 @@ def get_orderstatus(db: Session):
 def get_orderstatus_by_id(db: Session, orderstatusid: int):
     return (
         db.query(OrderStatus).filter(
-            OrderStatus.orderStatusID == orderstatusid).first()
+            OrderStatus.OrderStatusID == orderstatusid).first()
     )
 
 

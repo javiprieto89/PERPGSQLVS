@@ -80,7 +80,7 @@ class OrdersInDB:
     DocumentID: Optional[int]    
     PriceListID: Optional[int]
     ServiceTypeID: Optional[int]
-    OrderstatusID: Optional[int]
+    OrderStatusID: Optional[int]
     WarehouseID: Optional[int]
     Items: Optional[List[OrderDetailsInDB]] = None
 

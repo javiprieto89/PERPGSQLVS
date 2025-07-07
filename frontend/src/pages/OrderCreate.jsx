@@ -419,9 +419,9 @@ export default function OrderCreate({ userInfo }) {
                         : "Seleccionar un cliente primero..."}
                     </option>
                     {cars.map((car) => (
-                      <option key={car.carID} value={car.carID}>
+                      <option key={car.CarID} value={car.CarID}>
                         {car.CarBrandName} {car.CarModelName} (
-                        {car.licensePlate})
+                        {car.LicensePlate})
                       </option>
                     ))}
                   </select>
@@ -443,7 +443,7 @@ export default function OrderCreate({ userInfo }) {
                   >
                     <option value="">Seleccionar tipo de servicio...</option>
                     {serviceTypes.map((st) => (
-                      <option key={st.serviceTypeID} value={st.serviceTypeID}>
+                      <option key={st.ServiceTypeID} value={st.ServiceTypeID}>
                         {st.Type}
                       </option>
                     ))}
@@ -530,8 +530,8 @@ export default function OrderCreate({ userInfo }) {
                 >
                   <option value="">Seleccionar condición...</option>
                   {saleConditions.map((sc) => (
-                    <option key={sc.saleConditionID} value={sc.saleConditionID}>
-                      {sc.name}
+                    <option key={sc.SaleConditionID} value={sc.SaleConditionID}>
+                      {sc.Name}
                     </option>
                   ))}
                 </select>
@@ -561,8 +561,8 @@ export default function OrderCreate({ userInfo }) {
                 >
                   <option value="">Seleccionar descuento...</option>
                   {discounts.map((d) => (
-                    <option key={d.discountID} value={d.discountID}>
-                      {d.discountName} - {d.percentage}%
+                    <option key={d.DiscountID} value={d.DiscountID}>
+                      {d.DiscountName} - {d.Percentage}%
                     </option>
                   ))}
                 </select>
@@ -583,8 +583,8 @@ export default function OrderCreate({ userInfo }) {
                 >
                   <option value="">Seleccionar lista de precios...</option>
                   {priceLists.map((pl) => (
-                    <option key={pl.priceListID} value={pl.priceListID}>
-                      {pl.name}
+                    <option key={pl.PriceListID} value={pl.PriceListID}>
+                      {pl.Name}
                     </option>
                   ))}
                 </select>
@@ -605,8 +605,8 @@ export default function OrderCreate({ userInfo }) {
                 >
                   <option value="">Seleccionar estado...</option>
                   {statuses.map((s) => (
-                    <option key={s.orderStatusID} value={s.orderStatusID}>
-                      {s.status}
+                    <option key={s.OrderStatusID} value={s.OrderStatusID}>
+                      {s.Status}
                     </option>
                   ))}
                 </select>
@@ -813,7 +813,7 @@ export default function OrderCreate({ userInfo }) {
           isOpen={true}
           onClose={() => setShowSaleConditionModal(false)}
           onSelect={(sc) => {
-            setFormData((prev) => ({ ...prev, saleConditionId: sc.saleConditionID }));
+            setFormData((prev) => ({ ...prev, saleConditionId: sc.SaleConditionID }));
             setShowSaleConditionModal(false);
           }}
         />
