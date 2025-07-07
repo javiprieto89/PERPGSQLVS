@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import OrdersCreate from "./OrdersCreate";
+import OrderCreate from "./OrderCreate";
 import { orderOperations } from "../utils/graphqlClient";
 import { openReactWindow } from "../utils/openReactWindow";
 
@@ -27,10 +27,7 @@ export default function Orders() {
   }, []);
 
   const handleCreate = () => {
-    openReactWindow(
-      (popup) => <OrdersCreate onClose={() => popup.close()} />,
-      "Cargar Pedido"
-    );
+    openReactWindow(() => <OrderCreate />, "Cargar Pedido");
   };
 
   return (
