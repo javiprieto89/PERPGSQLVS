@@ -51,11 +51,11 @@ export default function Orders() {
           </thead>
           <tbody>
             {orders.map((o) => (
-              <tr key={o.orderID} className="border-t">
-                <td className="px-2 text-center">{o.orderID}</td>
-                <td className="px-2">{o.date?.slice(0, 10)}</td>
-                <td className="px-2 text-center">{o.clientID ?? ""}</td>
-                <td className="px-2 text-right">{o.total?.toFixed(2)}</td>
+              <tr key={o.OrderID} className="border-t">
+                <td className="px-2 text-center">{o.OrderID}</td>
+                <td className="px-2">{o.Date?.slice(0, 10)}</td>
+                <td className="px-2 text-center">{o.ClientID ?? ""}</td>
+                <td className="px-2 text-right">{o.Total?.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
