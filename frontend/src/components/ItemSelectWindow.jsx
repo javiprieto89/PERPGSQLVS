@@ -55,7 +55,6 @@ export default function ItemSelectWindow({ onSelect, onClose }) {
             <tr>
               <th className="px-2 py-1 text-left">Código</th>
               <th className="px-2 py-1 text-left">Descripción</th>
-              <th className="px-2 py-1 text-right">Precio</th>
               <th className="px-2 py-1 text-center">Cantidad</th>
               <th className="px-2 py-1"></th>
             </tr>
