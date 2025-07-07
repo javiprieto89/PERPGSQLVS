@@ -20,9 +20,9 @@ class OrderStatus(Base):
         PrimaryKeyConstraint('OrderstatusID', name='PK__OrderSta__BC674F4170B3E561'),
     )
 
-    OrderstatusID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    OrderStatusID = Column("OrderstatusID", Integer, Identity(start=1, increment=1), primary_key=True)
     Status = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    orders: Mapped[List['Orders']] = relationship('Orders', foreign_keys='[Orders.OrderstatusID]', back_populates='orderStatus_')
+    orders: Mapped[List['Orders']] = relationship('Orders', foreign_keys='[Orders.OrderStatusID]', back_populates='orderStatus_')
  
