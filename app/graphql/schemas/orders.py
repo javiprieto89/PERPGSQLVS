@@ -29,7 +29,7 @@ class OrdersCreate:
     VAT: Optional[float] = None
     UserID: Optional[int] = None
     DocumentID: Optional[int] = None
-    StatusID: Optional[int] = None
+    OrderStatusID: Optional[int] = None
     PriceListID: Optional[int] = None
     Items: List[OrderDetailsCreate] = field(default_factory=list)
 
@@ -53,7 +53,7 @@ class OrdersUpdate:
     VAT: Optional[float] = None
     UserID: Optional[int] = None
     DocumentID: Optional[int] = None
-    StatusID: Optional[int] = None
+    OrderStatusID: Optional[int] = None
     PriceListID: Optional[int] = None
     Items: Optional[List[OrderDetailsUpdate]] = None
 
@@ -77,8 +77,7 @@ class OrdersInDB:
     Total: Optional[float]
     VAT: Optional[float]
     UserID: Optional[int]
-    DocumentID: Optional[int]
-    StatusID: Optional[int]
+    DocumentID: Optional[int]    
     PriceListID: Optional[int]
     ServiceTypeID: Optional[int]
     OrderstatusID: Optional[int]

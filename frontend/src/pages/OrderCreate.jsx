@@ -35,7 +35,7 @@ export default function OrderCreate({ userInfo }) {
     vat: 0,
     userId: userInfo?.userId || "",
     documentID: "",
-    statusId: "",
+    orderStatusId: "",
     priceListId: "",
   });
 
@@ -591,15 +591,15 @@ export default function OrderCreate({ userInfo }) {
               </div>
               <div>
                 <label
-                  htmlFor="statusId"
+                  htmlFor="orderStatusID"
                   className="block text-sm font-medium text-gray-600 mb-1"
                 >
                   Estado del Pedido
                 </label>
                 <select
-                  name="statusId"
-                  id="statusId"
-                  value={formData.statusId}
+                  name="orderStatusID"
+                  id="orderStatusID"
+                  value={formData.orderStatusID}
                   onChange={handleChange}
                   className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
                 >

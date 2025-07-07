@@ -37,11 +37,10 @@ class Orders(Base):
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__Orders__CompanyI__02084FDA'),
         ForeignKeyConstraint(['DiscountID'], ['Discounts.DiscountID'], name='FK__Orders__Discount__04E4BC85'),
         ForeignKeyConstraint(['DocumentID'], ['DocumentTypes.DocumentTypeID'], name='FK__Orders__Document__06CD04F7'),
-        ForeignKeyConstraint(['OrderstatusID'], ['OrderStatus.OrderstatusID'], name='FK_Orders_OrderStatus'),
+        ForeignKeyConstraint(['OrderStatusID'], ['OrderStatus.OrderstatusID'], name='FK_Orders_OrderStatus'),
         ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK__Orders__PriceLis__08B54D69'),
         ForeignKeyConstraint(['SaleConditionID'], ['SaleConditions.SaleConditionID'], name='FK__Orders__SaleCond__03F0984C'),
-        ForeignKeyConstraint(['ServiceTypeID'], ['ServiceType.ServiceTypeID'], name='FK_Orders_ServiceType'),
-        ForeignKeyConstraint(['StatusID'], ['OrderStatus.OrderstatusID'], name='FK__Orders__statusID__07C12930'),
+        ForeignKeyConstraint(['ServiceTypeID'], ['ServiceType.ServiceTypeID'], name='FK_Orders_ServiceType'),        
         ForeignKeyConstraint(['UserID'], ['Users.UserID'], name='FK__Orders__userID__05D8E0BE'),
         ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_Orders_Warehouses'),
         PrimaryKeyConstraint('OrderID', name='PK__Orders__C3905BAF2829B144'),
@@ -61,10 +60,9 @@ class Orders(Base):
     Total = Column(DECIMAL(10, 2))
     VAT = Column(DECIMAL(10, 2))
     UserID = Column(Integer)
-    DocumentID = Column(Integer)
-    StatusID = Column(Integer)
+    DocumentID = Column(Integer)    
     PriceListID = Column(Integer)
-    OrderstatusID = Column(Integer)
+    OrderStatusID = Column(Integer)
     WarehouseID = Column(Integer)
     CarID = Column(Integer)
     IsService = Column(Boolean)
@@ -80,12 +78,10 @@ class Orders(Base):
     companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='orders')
     discounts_: Mapped['Discounts'] = relationship('Discounts', back_populates='orders')
     documentTypes_: Mapped['DocumentTypes'] = relationship('DocumentTypes', back_populates='orders')
-    orderStatus_: Mapped['OrderStatus'] = relationship('OrderStatus', foreign_keys=[OrderstatusID], back_populates='orders')
-    orderStatus1: Mapped['OrderStatus'] = relationship('OrderStatus', foreign_keys=[StatusID], back_populates='orders_')
+    orderStatus_: Mapped['OrderStatus'] = relationship('OrderStatus', foreign_keys=[OrderStatusID], back_populates='orders')    
     priceLists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='orders')
     saleConditions_: Mapped['SaleConditions'] = relationship('SaleConditions', back_populates='orders')
-    serviceType_: Mapped[Optional['ServiceType']] = relationship('ServiceType', back_populates='orders')
-    orderStatus1: Mapped['OrderStatus'] = relationship('OrderStatus', foreign_keys=[StatusID], back_populates='orders_')
+    serviceType_: Mapped[Optional['ServiceType']] = relationship('ServiceType', back_populates='orders')    
     users_: Mapped['Users'] = relationship('Users', back_populates='orders')
     warehouses_: Mapped['Warehouses'] = relationship('Warehouses', back_populates='orders')
     orderDetails: Mapped[List['OrderDetails']] = relationship('OrderDetails', back_populates='orders_')

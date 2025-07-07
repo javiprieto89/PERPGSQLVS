@@ -172,8 +172,8 @@ class AdvancedResolver:
                 orders_query = orders_query.filter(Orders.Date_ <= filters.date_to)
 
             total_orders = orders_query.count()
-            pending_orders = orders_query.filter(Orders.StatusID.in_([1, 2])).count()
-            completed_orders = orders_query.filter(Orders.StatusID == 3).count()
+            pending_orders = orders_query.filter(Orders.OrderStatusID.in_([1, 2])).count()
+            completed_orders = orders_query.filter(Orders.OrderStatusID == 3).count()
 
             sales_query = orders_query.filter(Orders.Total.isnot(None))
             monthly_sales = sales_query.with_entities(func.sum(Orders.Total)).scalar() or 0.0

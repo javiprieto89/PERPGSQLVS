@@ -427,10 +427,9 @@ export const QUERIES = {
                 Total
                 VAT
                 UserID
-                DocumentID
-                StatusID
+                DocumentID                
                 PriceListID
-                OrderstatusID
+                OrderStatusID
                 WarehouseID
             }
         }
@@ -714,7 +713,7 @@ export const QUERIES = {
             orders: allOrders {
                 OrderID
                 CompanyID
-                StatusID
+                OrderStatusID
                 Total
                 Date
             }
@@ -1367,8 +1366,8 @@ export const dashboardHelpers = {
             activeItems: filteredItems.filter(i => i.IsActive).length,
             lowStockItems: lowStockItems.length,
             totalOrders: filteredOrders.length,
-            pendingOrders: filteredOrders.filter(o => [1, 2].includes(o.StatusID)).length,
-            completedOrders: filteredOrders.filter(o => o.StatusID === 3).length,
+            pendingOrders: filteredOrders.filter(o => [1, 2].includes(o.OrderStatusID)).length,
+            completedOrders: filteredOrders.filter(o => o.OrderStatusID === 3).length,
             monthlySales: monthlyOrders.reduce((sum, order) => sum + (parseFloat(order.Total) || 0), 0),
             monthlyOrdersCount: monthlyOrders.length
         };

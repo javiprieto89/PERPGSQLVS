@@ -25,4 +25,4 @@ class OrderStatus(Base):
 
     # Relaciones
     orders: Mapped[List['Orders']] = relationship('Orders', foreign_keys='[Orders.OrderstatusID]', back_populates='orderStatus_')
-    orders_: Mapped[List['Orders']] = relationship('Orders', foreign_keys='[Orders.StatusID]', back_populates='orderStatus1')
+ 
