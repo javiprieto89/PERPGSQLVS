@@ -150,7 +150,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True,
-    allow_origin_regex=r"https?://127\.0\.0\.1(:\d+)?"
+    allow_origin_regex=r"https?://127.0.0.1(:\d+)?"
 )
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(ProcessTimeMiddleware)

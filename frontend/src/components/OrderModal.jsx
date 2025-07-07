@@ -7,6 +7,8 @@ import {
   orderOperations,
 } from "../utils/graphqlClient";
 import ItemSelectWindow from "./ItemSelectWindow";
+import ClientSearchModal from "./ClientSearchModal";
+import SaleConditionSearchModal from "./SaleConditionSearchModal";
 import { openReactWindow } from "../utils/openReactWindow";
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,6 +18,8 @@ export default function OrderModal({ onClose }) {
   const [warehouses, setWarehouses] = useState([]);
   const [salesConditions, setSalesConditions] = useState([]);
   const [tempItems, setTempItems] = useState([]);
+  const [showClientModal, setShowClientModal] = useState(false);
+  const [showSCModal, setShowSCModal] = useState(false);
 
   const [order, setOrder] = useState({
     clientId: "",
@@ -131,35 +135,82 @@ export default function OrderModal({ onClose }) {
         <h2 className="text-xl font-bold mb-4">Cargar Pedido</h2>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
-          <select
-            value={order.clientId}
-            onChange={(e) =>
-              setOrder({ ...order, clientId: parseInt(e.target.value) })
-            }
-            className="border p-2 rounded"
-          >
-            <option value="">Cliente</option>
-            {clients.map((c) => (
-              <option key={c.clientID} value={c.clientID}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              value={order.clientId}
+              onChange={(e) =>
+                setOrder({ ...order, clientId: parseInt(e.target.value) })
+              }
+              className="border p-2 rounded w-full"
+            >
+              <option value="">Cliente</option>
+              {clients.map((c) => (
+                <option key={c.clientID} value={c.clientID}>
+                  {c.firstName || c.FirstName} {c.lastName || c.LastName || ""}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => setShowClientModal(true)}
+              className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
+          </div>
 
-          <select
-            value={order.salesConditionId}
-            onChange={(e) =>
-              setOrder({ ...order, salesConditionId: parseInt(e.target.value) })
-            }
-            className="border p-2 rounded"
-          >
-            <option value="">Condición de venta</option>
-            {salesConditions.map((s) => (
-              <option key={s.salesConditionID} value={s.salesConditionID}>
-                {s.description}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              value={order.salesConditionId}
+              onChange={(e) =>
+                setOrder({
+                  ...order,
+                  salesConditionId: parseInt(e.target.value),
+                })
+              }
+              className="border p-2 rounded w-full"
+            >
+              <option value="">Condición de venta</option>
+              {salesConditions.map((s) => (
+                <option key={s.saleConditionID} value={s.saleConditionID}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => setShowSCModal(true)}
+              className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </button>
+          </div>
 
           <select
             value={order.priceListId}
@@ -280,6 +331,26 @@ export default function OrderModal({ onClose }) {
           </button>
         </div>
       </div>
+      {showClientModal && (
+        <ClientSearchModal
+          isOpen={showClientModal}
+          onClose={() => setShowClientModal(false)}
+          onClientSelect={(client) => {
+            setOrder({ ...order, clientId: client.ClientID || client.clientID });
+            setShowClientModal(false);
+          }}
+        />
+      )}
+      {showSCModal && (
+        <SaleConditionSearchModal
+          isOpen={showSCModal}
+          onClose={() => setShowSCModal(false)}
+          onSelect={(sc) => {
+            setOrder({ ...order, salesConditionId: sc.saleConditionID });
+            setShowSCModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }

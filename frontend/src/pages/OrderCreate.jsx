@@ -14,6 +14,7 @@ import ItemSearchModal from "../components/ItemSearchModal"; // Importar el moda
 import ClientSearchModal from "../components/ClientSearchModal";
 import ItemSelectWindow from "../components/ItemSelectWindow";
 import { openReactWindow } from "../utils/openReactWindow";
+import SaleConditionSearchModal from "../components/SaleConditionSearchModal";
 
 export default function OrderCreate({ userInfo }) {
   const [formData, setFormData] = useState({
@@ -56,6 +57,7 @@ export default function OrderCreate({ userInfo }) {
   const [showClientDropdown, setShowClientDropdown] = useState(false);
   const [showItemSearchModal, setShowItemSearchModal] = useState(false); // Estado para el modal de búsqueda de ítems
   const [showClientSearchModal, setShowClientSearchModal] = useState(false);
+  const [showSaleConditionModal, setShowSaleConditionModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -529,7 +531,7 @@ export default function OrderCreate({ userInfo }) {
                   placeholder="Observaciones sobre el pedido o servicio..."
                 ></textarea>
               </div>
-              <div>
+              <div className="relative">
                 <label
                   htmlFor="saleConditionId"
                   className="block text-sm font-medium text-gray-600 mb-1"
@@ -550,6 +552,15 @@ export default function OrderCreate({ userInfo }) {
                     </option>
                   ))}
                 </select>
+                <button
+                  type="button"
+                  onClick={() => setShowSaleConditionModal(true)}
+                  className="absolute right-2 top-9 text-gray-500 hover:text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
               </div>
               <div>
                 <label
@@ -721,44 +732,36 @@ export default function OrderCreate({ userInfo }) {
               </div>
             </div>
 
-            {items.length > 0 && (
+
+{items.length > 0 && (
               <div className="flow-root mt-6">
-                <h3 className="text-md font-medium text-gray-700 mb-3">
-                  Ítems Agregados:
-                </h3>
-                <ul
-                  Role="list"
-                  className="-my-6 divide-y divide-gray-200 border border-gray-200 rounded-md"
-                >
-                  {items.map((item, index) => (
-                    <li
-                      key={item.id || index}
-                      className="flex py-4 px-4 hover:bg-gray-50"
-                    >
-                      {" "}
-                      {/* Added item.id for key */}
-                      <div className="ml-4 flex flex-1 flex-col">
-                        <div>
-                          <div className="flex justify-between text-base font-medium text-gray-900">
-                            <h3>{item.description || item.code || "Ítem"}</h3>
-                            <p className="ml-4">
-                              ${(item.quantity * item.price).toFixed(2)}
-                            </p>
-                          </div>
-                          <p className="mt-1 text-sm text-gray-500">
-                            Código: {item.code || "N/A"} | Cant: {item.quantity}{" "}
-                            x ${parseFloat(item.price).toFixed(2)}
-                          </p>
-                        </div>
-                        {/* TODO: Add remove item button */}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <h3 className="text-md font-medium text-gray-700 mb-3">Ítems Agregados:</h3>
+                <div className="overflow-x-auto border border-gray-200 rounded-md">
+                  <table className="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-2 text-left">Código</th>
+                        <th className="px-4 py-2 text-left">Descripción</th>
+                        <th className="px-4 py-2 text-right">Cantidad</th>
+                        <th className="px-4 py-2 text-right">Precio</th>
+                        <th className="px-4 py-2 text-right">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {items.map((item, index) => (
+                        <tr key={item.id || index} className="hover:bg-gray-50">
+                          <td className="px-4 py-2 whitespace-nowrap">{item.code || "N/A"}</td>
+                          <td className="px-4 py-2 whitespace-nowrap">{item.description}</td>
+                          <td className="px-4 py-2 text-right">{item.quantity}</td>
+                          <td className="px-4 py-2 text-right">{parseFloat(item.price).toFixed(2)}</td>
+                          <td className="px-4 py-2 text-right">{(item.quantity * item.price).toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
-          </section>
-
           {/* Sección Totales y Guardar */}
           <section className="p-6 border border-gray-200 rounded-lg shadow-md bg-white">
             <h2 className="text-xl font-medium text-indigo-700 mb-6">
@@ -818,6 +821,16 @@ export default function OrderCreate({ userInfo }) {
               lastName: c.lastName,
             });
             setShowClientSearchModal(false);
+          }}
+        />
+      )}
+      {showSaleConditionModal && (
+        <SaleConditionSearchModal
+          isOpen={true}
+          onClose={() => setShowSaleConditionModal(false)}
+          onSelect={(sc) => {
+            setFormData((prev) => ({ ...prev, saleConditionId: sc.saleConditionID }));
+            setShowSaleConditionModal(false);
           }}
         />
       )}
