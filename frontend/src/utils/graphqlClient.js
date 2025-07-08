@@ -274,6 +274,28 @@ export const QUERIES = {
         }
     `,
 
+    GET_ALL_USERS: `
+        query GetAllUsers {
+            allUsers {
+                UserID
+                Nickname
+                FullName
+                IsActive
+            }
+        }
+    `,
+
+    GET_USER_BY_ID: `
+        query GetUserById($id: Int!) {
+            usersById(id: $id) {
+                UserID
+                Nickname
+                FullName
+                IsActive
+            }
+        }
+    `,
+
     // COMBOS PARA FORMULARIOS
     GET_CLIENT_FORM_DATA: `
         query GetClientFormData {
@@ -1734,6 +1756,40 @@ export const supplierOperations = {
             };
         } catch (error) {
             console.error("Error obteniendo datos del formulario:", error);
+            throw error;
+        }
+    }
+};
+
+export const vendorOperations = {
+    async getAllVendors() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_VENDORS);
+            return data.allVendors || [];
+        } catch (error) {
+            console.error("Error obteniendo vendedores:", error);
+            throw error;
+        }
+    }
+};
+
+export const userOperations = {
+    async getAllUsers() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_USERS);
+            return data.allUsers || [];
+        } catch (error) {
+            console.error("Error obteniendo usuarios:", error);
+            throw error;
+        }
+    },
+
+    async getUserById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_USER_BY_ID, { id });
+            return data.usersById;
+        } catch (error) {
+            console.error("Error obteniendo usuario:", error);
             throw error;
         }
     }
