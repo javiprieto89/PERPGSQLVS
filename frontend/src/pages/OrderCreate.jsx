@@ -83,6 +83,23 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 priceListId: String(initialOrder.PriceListID || ""),
                 warehouseId: String(initialOrder.WarehouseID || "")
             });
+
+            orderOperations
+                .getOrderById(initialOrder.OrderID)
+                .then((ord) => {
+                    if (ord && ord.Items) {
+                        const parsed = ord.Items.map((d) => ({
+                            itemID: d.ItemID,
+                            code: "",
+                            description: d.Description || "",
+                            quantity: d.Quantity,
+                            price: d.UnitPrice,
+                            subtotal: d.Quantity * d.UnitPrice,
+                        }));
+                        setItems(parsed);
+                    }
+                })
+                .catch(() => {});
         }
     }, [initialOrder]);
 

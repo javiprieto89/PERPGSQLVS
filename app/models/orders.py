@@ -87,3 +87,9 @@ class Orders(Base):
     orderDetails: Mapped[List['OrderDetails']] = relationship('OrderDetails', back_populates='orders_')
     orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='orders_')
     tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship('TempOrderDetails', back_populates='orders_')
+
+    @property
+    def Items(self) -> List['OrderDetails']:
+        """Alias de acceso para los detalles de la orden."""
+        return self.orderDetails
+

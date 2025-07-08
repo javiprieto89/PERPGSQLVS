@@ -482,6 +482,13 @@ export const QUERIES = {
                 PriceListID
                 OrderStatusID
                 WarehouseID
+                Items {
+                    OrderDetailID
+                    ItemID
+                    Quantity
+                    UnitPrice
+                    Description
+                }
             }
         }
     `,
