@@ -72,6 +72,16 @@ export default function CreditCardGroups() {
         );
     };
 
+    const handleDelete = async (id) => {
+        if (!confirm('¿Borrar grupo?')) return;
+        try {
+            await creditCardGroupOperations.deleteGroup(id);
+            loadGroups();
+        } catch (err) {
+            alert('Error al borrar grupo: ' + err.message);
+        }
+    };
+
     return (
         <div className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -111,7 +121,10 @@ export default function CreditCardGroups() {
                     {groups.map(g => (
                         <div key={g.CreditCardGroupID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-2">{g.GroupName}</h3>
-                            <button onClick={() => handleEdit(g)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                            <div className="flex space-x-2">
+                                <button onClick={() => handleEdit(g)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                                <button onClick={() => handleDelete(g.CreditCardGroupID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
+                            </div>
                         </div>
                     ))}
                 </div>

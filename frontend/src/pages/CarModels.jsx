@@ -71,6 +71,16 @@ export default function CarModels() {
         );
     };
 
+    const handleDelete = async (id) => {
+        if (!confirm('¿Borrar modelo de auto?')) return;
+        try {
+            await carModelOperations.deleteCarModel(id);
+            loadModels();
+        } catch (err) {
+            alert('Error al borrar modelo de auto: ' + err.message);
+        }
+    };
+
     return (
         <div className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -97,7 +107,10 @@ export default function CarModels() {
                         <div key={m.CarModelID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-2">{m.Model}</h3>
                             <p className="text-sm mb-2">Marca: {m.CarBrandName}</p>
-                            <button onClick={() => handleEdit(m)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                            <div className="flex space-x-2">
+                                <button onClick={() => handleEdit(m)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                                <button onClick={() => handleDelete(m.CarModelID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
+                            </div>
                         </div>
                     ))}
                 </div>

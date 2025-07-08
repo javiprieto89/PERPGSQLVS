@@ -86,6 +86,16 @@ export default function SaleConditions() {
         );
     };
 
+    const handleDelete = async (id) => {
+        if (!confirm('¿Borrar condición?')) return;
+        try {
+            await saleConditionOperations.deleteSaleCondition(id);
+            loadSCs();
+        } catch (err) {
+            alert('Error al borrar condición: ' + err.message);
+        }
+    };
+
     return (
         <div className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -134,7 +144,10 @@ export default function SaleConditions() {
                                 </p>
                                 <p className="text-sm mb-1">Vencimiento: {sc.DueDate}</p>
                                 <p className="text-sm mb-2">Activo: {sc.IsActive ? 'Sí' : 'No'}</p>
-                                <button onClick={() => handleEdit(sc)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                                <div className="flex space-x-2">
+                                    <button onClick={() => handleEdit(sc)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                                    <button onClick={() => handleDelete(sc.SaleConditionID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
+                                </div>
                             </div>
                         );
                     })}

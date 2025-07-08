@@ -73,6 +73,16 @@ export default function CarBrands() {
         );
     };
 
+    const handleDelete = async (id) => {
+        if (!confirm('¿Borrar marca de auto?')) return;
+        try {
+            await carBrandOperations.deleteCarBrand(id);
+            loadCarBrands();
+        } catch (err) {
+            alert('Error al borrar marca de auto: ' + err.message);
+        }
+    };
+
     return (
         <div className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -112,7 +122,10 @@ export default function CarBrands() {
                     {carBrands.map(cb => (
                         <div key={cb.CarBrandID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-2">{cb.Name}</h3>
-                            <button onClick={() => handleEdit(cb)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                            <div className="flex space-x-2">
+                                <button onClick={() => handleEdit(cb)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                                <button onClick={() => handleDelete(cb.CarBrandID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
+                            </div>
                         </div>
                     ))}
                 </div>
