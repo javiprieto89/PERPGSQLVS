@@ -74,6 +74,16 @@ export default function PriceLists() {
         );
     };
 
+    const handleDelete = async (id) => {
+        if (!confirm('¿Borrar lista de precios?')) return;
+        try {
+            await pricelistOperations.deletePricelist(id);
+            loadLists();
+        } catch (err) {
+            alert('Error al borrar lista de precios: ' + err.message);
+        }
+    };
+
     return (
         <div className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -115,7 +125,10 @@ export default function PriceLists() {
                             <h3 className="text-lg font-semibold mb-2">{pl.Name}</h3>
                             <p className="text-sm mb-2">{pl.Description}</p>
                             <p className="text-sm mb-2">Activo: {pl.IsActive ? 'Sí' : 'No'}</p>
-                            <button onClick={() => handleEdit(pl)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                            <div className="flex space-x-2">
+                                <button onClick={() => handleEdit(pl)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                                <button onClick={() => handleDelete(pl.PriceListID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
+                            </div>
                         </div>
                     ))}
                 </div>

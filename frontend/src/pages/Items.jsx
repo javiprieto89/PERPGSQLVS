@@ -73,6 +73,16 @@ export default function Items() {
         );
     };
 
+    const handleDelete = async (id) => {
+        if (!confirm('¿Borrar ítem?')) return;
+        try {
+            await itemOperations.deleteItem(id);
+            loadItems();
+        } catch (err) {
+            alert('Error al borrar ítem: ' + err.message);
+        }
+    };
+
     return (
         <div className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -113,7 +123,10 @@ export default function Items() {
                         <div key={it.ItemID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-2">{it.Description}</h3>
                             <p className="text-sm mb-2">Código: {it.Code}</p>
-                            <button onClick={() => handleEdit(it)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                            <div className="flex space-x-2">
+                                <button onClick={() => handleEdit(it)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                                <button onClick={() => handleDelete(it.ItemID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
+                            </div>
                         </div>
                     ))}
                 </div>
