@@ -1,6 +1,8 @@
 # crud/clients.py
 from sqlalchemy.orm import Session
+from sqlalchemy import exists
 from app.models.clients import Clients
+from app.models.orders import Orders
 from app.graphql.schemas.clients import ClientsCreate, ClientsUpdate
 
 
@@ -34,6 +36,10 @@ def update_clients(db: Session, clientid: int, data: ClientsUpdate):
 def delete_clients(db: Session, clientid: int):
     obj = get_clients_by_id(db, clientid)
     if obj:
+        # Check for existing orders before deleting
+        has_orders = db.query(exists().where(Orders.ClientID == clientid)).scalar()
+        if has_orders:
+            raise ValueError("Client has associated orders and cannot be deleted")
         db.delete(obj)
         db.commit()
     return obj

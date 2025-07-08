@@ -10,11 +10,13 @@ from app.graphql.crud.clients import (
 from app.utils import obj_to_schema
 from app.db import get_db
 from strawberry.types import Info
+from app.graphql.schemas.delete_response import DeleteResponse
+
 
 @strawberry.type
 class ClientsMutations:
     @strawberry.mutation
-    def create_client(self, info: Info, data: ClientsCreate) -> ClientsInDB: 
+    def create_client(self, info: Info, data: ClientsCreate) -> ClientsInDB:
         db_gen = get_db()
         db = next(db_gen)
         try:
@@ -24,7 +26,9 @@ class ClientsMutations:
             db_gen.close()
 
     @strawberry.mutation
-    def update_client(self, info: Info, clientID: int, data: ClientsUpdate) -> Optional[ClientsInDB]:
+    def update_client(
+        self, info: Info, clientID: int, data: ClientsUpdate
+    ) -> Optional[ClientsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
@@ -36,17 +40,24 @@ class ClientsMutations:
             db_gen.close()
 
     @strawberry.mutation
-    def delete_client(self, info: Info, clientID: int) -> bool:
+    def delete_client(self, info: Info, clientID: int) -> DeleteResponse:
         db_gen = get_db()
         db = next(db_gen)
         try:
             deleted_client = delete_clients(db, clientID)
-            return deleted_client is not None
+            success = deleted_client is not None
+            message = "Client deleted" if success else "Client not found"
+            return DeleteResponse(success=success, message=message)
+        except ValueError as e:
+            db.rollback()
+            return DeleteResponse(success=False, message=str(e))
         finally:
             db_gen.close()
 
     @strawberry.mutation
-    def toggle_client_status(self, info: Info, clientID: int, isActive: bool) -> Optional[ClientsInDB]:
+    def toggle_client_status(
+        self, info: Info, clientID: int, isActive: bool
+    ) -> Optional[ClientsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:

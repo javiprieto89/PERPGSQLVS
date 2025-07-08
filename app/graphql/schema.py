@@ -64,6 +64,9 @@ from app.graphql.mutations.cars import CarsMutations
 from app.graphql.mutations.warehouses import WarehousesMutations
 from app.graphql.mutations.pricelists import PricelistsMutations
 from app.graphql.mutations.orders import OrdersMutations
+from app.graphql.mutations.servicetype import ServiceTypeMutations
+from app.graphql.mutations.documenttypes import DocumentTypesMutations
+from app.graphql.mutations.useractions import UserActionsMutations
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
 from app.graphql.resolvers.auth import AuthQuery
@@ -74,18 +77,30 @@ from app.utils.item_helpers import item_to_in_db
 from app.graphql.schemas.clients import ClientsInDB
 from app.graphql.schemas.orders import OrdersInDB
 from app.graphql.schemas.auth import (
-    UserInfo, LoginInput, LoginResponse, UserCreateInput, 
-    PasswordChangeInput, AuthResponse
+    UserInfo,
+    LoginInput,
+    LoginResponse,
+    UserCreateInput,
+    PasswordChangeInput,
+    AuthResponse,
 )
 
 # Importar funciones de autenticación
-from app.auth import authenticate_user, create_user_token, get_userinfo_from_token, create_user, update_user_password, get_user_by_id
+from app.auth import (
+    authenticate_user,
+    create_user_token,
+    get_userinfo_from_token,
+    create_user,
+    update_user_password,
+    get_user_by_id,
+)
 
 # Intentar importar utilidades de filtros
 try:
     from app.utils.filter_schemas import FILTER_SCHEMAS
 except ImportError:
     FILTER_SCHEMAS = {}
+
 
 # Tipos adicionales para funcionalidades avanzadas
 @strawberry.type
@@ -100,11 +115,13 @@ class DashboardStats:
     total_orders: int
     completed_orders: int
 
+
 @strawberry.type
 class SearchStats:
     total_results: int
     search_time_ms: float
     filters_applied: List[str]
+
 
 @strawberry.input
 class DashboardFilters:
@@ -113,12 +130,14 @@ class DashboardFilters:
     date_from: Optional[datetime] = None
     date_to: Optional[datetime] = None
 
+
 @strawberry.type
 class GlobalSearchResult:
     items: List[ItemsInDB]
     clients: List[ClientsInDB]
     orders: List[OrdersInDB]
     stats: SearchStats
+
 
 @strawberry.type
 class FilterField:
@@ -128,11 +147,13 @@ class FilterField:
     relationModel: Optional[str] = None
     dependsOn: Optional[str] = None
 
+
 @strawberry.type
 class ServerInfo:
     version: str
     timestamp: int
     environment: str
+
 
 # Resolver para funcionalidades avanzadas
 class AdvancedResolver:
@@ -150,17 +171,21 @@ class AdvancedResolver:
             orders_company_filter = Orders.CompanyID == filters.company_id
 
             total_items = db.query(Items).filter(company_filter).count()
-            active_items = db.query(Items).filter(
-                company_filter,
-                Items.IsActive == True
-            ).count()
+            active_items = (
+                db.query(Items).filter(company_filter, Items.IsActive == True).count()
+            )
 
-            low_stock_items = db.query(Items).join(Itemstock).filter(
-                company_filter,
-                Items.IsActive == True,
-                Items.ControlStock == True,
-                Itemstock.Quantity <= Items.ReplenishmentStock
-            ).count()
+            low_stock_items = (
+                db.query(Items)
+                .join(Itemstock)
+                .filter(
+                    company_filter,
+                    Items.IsActive == True,
+                    Items.ControlStock == True,
+                    Itemstock.Quantity <= Items.ReplenishmentStock,
+                )
+                .count()
+            )
 
             total_clients = db.query(Clients).count()
             active_clients = db.query(Clients).filter(Clients.IsActive == True).count()
@@ -172,11 +197,15 @@ class AdvancedResolver:
                 orders_query = orders_query.filter(Orders.Date_ <= filters.date_to)
 
             total_orders = orders_query.count()
-            pending_orders = orders_query.filter(Orders.OrderStatusID.in_([1, 2])).count()
+            pending_orders = orders_query.filter(
+                Orders.OrderStatusID.in_([1, 2])
+            ).count()
             completed_orders = orders_query.filter(Orders.OrderStatusID == 3).count()
 
             sales_query = orders_query.filter(Orders.Total.isnot(None))
-            monthly_sales = sales_query.with_entities(func.sum(Orders.Total)).scalar() or 0.0
+            monthly_sales = (
+                sales_query.with_entities(func.sum(Orders.Total)).scalar() or 0.0
+            )
 
             return DashboardStats(
                 total_items=total_items,
@@ -187,13 +216,16 @@ class AdvancedResolver:
                 pending_orders=pending_orders,
                 monthly_sales=float(monthly_sales),
                 total_orders=total_orders,
-                completed_orders=completed_orders
+                completed_orders=completed_orders,
             )
         finally:
             db_gen.close()
 
-    def search_global(self, info, query: str, company_id: int, limit: int = 50) -> GlobalSearchResult:
+    def search_global(
+        self, info, query: str, company_id: int, limit: int = 50
+    ) -> GlobalSearchResult:
         import time
+
         start_time = time.time()
         from app.db import get_db
         from app.models.items import Items
@@ -204,25 +236,43 @@ class AdvancedResolver:
         db = next(db_gen)
         try:
             search_term = f"%{query}%"
-            items = db.query(Items).options(
-                joinedload(Items.brands_),
-                joinedload(Items.itemCategories_),
-                joinedload(Items.itemSubcategories_),
-            ).filter(
-                Items.CompanyID == company_id,
-                (Items.Code.ilike(search_term) | Items.Description.ilike(search_term))
-            ).limit(limit // 3).all()
+            items = (
+                db.query(Items)
+                .options(
+                    joinedload(Items.brands_),
+                    joinedload(Items.itemCategories_),
+                    joinedload(Items.itemSubcategories_),
+                )
+                .filter(
+                    Items.CompanyID == company_id,
+                    (
+                        Items.Code.ilike(search_term)
+                        | Items.Description.ilike(search_term)
+                    ),
+                )
+                .limit(limit // 3)
+                .all()
+            )
 
-            clients = db.query(Clients).filter(
-                (Clients.FirstName.ilike(search_term) |
-                 Clients.LastName.ilike(search_term) |
-                 Clients.Email.ilike(search_term))
-            ).limit(limit // 3).all()
+            clients = (
+                db.query(Clients)
+                .filter(
+                    (
+                        Clients.FirstName.ilike(search_term)
+                        | Clients.LastName.ilike(search_term)
+                        | Clients.Email.ilike(search_term)
+                    )
+                )
+                .limit(limit // 3)
+                .all()
+            )
 
-            orders = db.query(Orders).filter(
-                Orders.CompanyID == company_id,
-                Orders.Notes.ilike(search_term)
-            ).limit(limit // 3).all()
+            orders = (
+                db.query(Orders)
+                .filter(Orders.CompanyID == company_id, Orders.Notes.ilike(search_term))
+                .limit(limit // 3)
+                .all()
+            )
 
             search_time = (time.time() - start_time) * 1000
             total_results = len(items) + len(clients) + len(orders)
@@ -234,11 +284,12 @@ class AdvancedResolver:
                 stats=SearchStats(
                     total_results=total_results,
                     search_time_ms=search_time,
-                    filters_applied=[f"company_id:{company_id}", f"query:{query}"]
-                )
+                    filters_applied=[f"company_id:{company_id}", f"query:{query}"],
+                ),
             )
         finally:
             db_gen.close()
+
 
 # QUERY PRINCIPAL - Agregar AuthQuery aquí
 @strawberry.type
@@ -288,9 +339,9 @@ class Query(
     AuthQuery,  # AGREGADO: Queries de autenticación
 ):
     """Query principal con todas las consultas disponibles"""
-    
+
     # ========== FUNCIONALIDADES AVANZADAS ==========
-    
+
     @strawberry.field
     def filter_fields(self, model: str) -> List[FilterField]:
         """Obtener campos de filtro para un modelo"""
@@ -302,7 +353,8 @@ class Query(
                 type=f["type"],
                 relationModel=f.get("relationModel"),
                 dependsOn=f.get("dependsOn"),
-            ) for f in filtros
+            )
+            for f in filtros
         ]
 
     @strawberry.field
@@ -312,7 +364,9 @@ class Query(
         return resolver.get_dashboard_stats(info, filters)
 
     @strawberry.field
-    def search_global(self, info, query: str, company_id: int, limit: int = 50) -> GlobalSearchResult:
+    def search_global(
+        self, info, query: str, company_id: int, limit: int = 50
+    ) -> GlobalSearchResult:
         """Búsqueda global en toda la aplicación"""
         resolver = AdvancedResolver()
         return resolver.search_global(info, query, company_id, limit)
@@ -326,11 +380,11 @@ class Query(
     def server_info(self, info) -> ServerInfo:
         """Información del servidor"""
         import time
+
         return ServerInfo(
-            version="1.0.0",
-            timestamp=int(time.time()),
-            environment="development"
+            version="1.0.0", timestamp=int(time.time()), environment="development"
         )
+
 
 # MUTATION PRINCIPAL - COMPLETAMENTE CORREGIDO
 @strawberry.type
@@ -350,140 +404,128 @@ class Mutation(
     WarehousesMutations,
     PricelistsMutations,
     OrdersMutations,
+    ServiceTypeMutations,
+    DocumentTypesMutations,
+    UserActionsMutations,
 ):
     """Mutaciones principales"""
-    
+
     # ========== MUTACIONES DE AUTENTICACIÓN ==========
     @strawberry.mutation
     def login(self, input: LoginInput) -> LoginResponse:
         """Login de usuario"""
         from app.db import get_db
-        
+
         db_gen = get_db()
         db = next(db_gen)
         try:
             # Autenticar usuario
             user = authenticate_user(db, input.nickname, input.password)
-            
+
             if not user:
                 return LoginResponse(
                     success=False,
                     message="Credenciales inválidas",
                     token=None,
-                    user=None
+                    user=None,
                 )
-            
+
             # Crear token
             token = create_user_token(user)
-            
+
             # Obtener información del usuario
             user_info = get_userinfo_from_token(token)
-            
+
             return LoginResponse(
-                success=True,
-                message="Login exitoso",
-                token=token,
-                user=user_info
+                success=True, message="Login exitoso", token=token, user=user_info
             )
-            
+
         except Exception as e:
             return LoginResponse(
-                success=False,
-                message=f"Error interno: {str(e)}",
-                token=None,
-                user=None
+                success=False, message=f"Error interno: {str(e)}", token=None, user=None
             )
         finally:
             db_gen.close()
-    
+
     @strawberry.mutation
     def create_user(self, input: UserCreateInput) -> AuthResponse:
         """Crear nuevo usuario"""
         from app.db import get_db
         from app.auth import get_user_by_nickname
-        
+
         db_gen = get_db()
         db = next(db_gen)
         try:
             # Verificar si el usuario ya existe
             existing_user = get_user_by_nickname(db, input.nickname)
-            
+
             if existing_user:
-                return AuthResponse(
-                    success=False,
-                    message="El usuario ya existe"
-                )
-            
+                return AuthResponse(success=False, message="El usuario ya existe")
+
             # Crear usuario
             new_user = create_user(
                 db=db,
                 nickname=input.nickname,
                 fullname=input.fullname,
                 password=input.password,
-                is_active=input.is_active
+                is_active=input.is_active,
             )
-            
+
             new_user_dict = new_user.__dict__
             return AuthResponse(
                 success=True,
-                message=f"Usuario {new_user_dict['Nickname']} creado exitosamente"
+                message=f"Usuario {new_user_dict['Nickname']} creado exitosamente",
             )
-            
+
         except Exception as e:
             return AuthResponse(
-                success=False,
-                message=f"Error creando usuario: {str(e)}"
+                success=False, message=f"Error creando usuario: {str(e)}"
             )
         finally:
             db_gen.close()
-    
+
     @strawberry.mutation
     def change_password(self, input: PasswordChangeInput) -> AuthResponse:
         """Cambiar contraseña de usuario"""
         from app.db import get_db
-        
+
         db_gen = get_db()
         db = next(db_gen)
         try:
             # Verificar usuario actual
             user = get_user_by_id(db, input.user_id)
             if not user:
-                return AuthResponse(
-                    success=False,
-                    message="Usuario no encontrado"
-                )
-            
+                return AuthResponse(success=False, message="Usuario no encontrado")
+
             user_dict = user.__dict__
             # Verificar contraseña actual
-            authenticated_user = authenticate_user(db, user_dict['Nickname'], input.current_password)
+            authenticated_user = authenticate_user(
+                db, user_dict["Nickname"], input.current_password
+            )
             if not authenticated_user:
                 return AuthResponse(
-                    success=False,
-                    message="Contraseña actual incorrecta"
+                    success=False, message="Contraseña actual incorrecta"
                 )
-            
+
             # Actualizar contraseña
             success = update_user_password(db, input.user_id, input.new_password)
-            
+
             if success:
                 return AuthResponse(
-                    success=True,
-                    message="Contraseña actualizada exitosamente"
+                    success=True, message="Contraseña actualizada exitosamente"
                 )
             else:
                 return AuthResponse(
-                    success=False,
-                    message="Error actualizando contraseña"
+                    success=False, message="Error actualizando contraseña"
                 )
-                
+
         except Exception as e:
             return AuthResponse(
-                success=False,
-                message=f"Error cambiando contraseña: {str(e)}"
+                success=False, message=f"Error cambiando contraseña: {str(e)}"
             )
         finally:
             db_gen.close()
-    
+
     # ========== MUTACIONES AVANZADAS ==========
     @strawberry.mutation
     def bulk_activate_items(self, info, item_ids: List[int]) -> bool:
@@ -494,11 +536,9 @@ class Mutation(
         db_gen = get_db()
         db = next(db_gen)
         try:
-            db.query(Items).filter(
-                Items.ItemID.in_(item_ids)
-            ).update(
+            db.query(Items).filter(Items.ItemID.in_(item_ids)).update(
                 {"IsActive": True, "LastModified": datetime.now().date()},
-                synchronize_session=False
+                synchronize_session=False,
             )
             db.commit()
             return True
@@ -507,7 +547,7 @@ class Mutation(
             return False
         finally:
             db_gen.close()
-    
+
     @strawberry.mutation
     def bulk_deactivate_items(self, info, item_ids: List[int]) -> bool:
         """Desactivar múltiples items"""
@@ -517,11 +557,9 @@ class Mutation(
         db_gen = get_db()
         db = next(db_gen)
         try:
-            db.query(Items).filter(
-                Items.ItemID.in_(item_ids)
-            ).update(
+            db.query(Items).filter(Items.ItemID.in_(item_ids)).update(
                 {"IsActive": False, "LastModified": datetime.now().date()},
-                synchronize_session=False
+                synchronize_session=False,
             )
             db.commit()
             return True
@@ -531,8 +569,6 @@ class Mutation(
         finally:
             db_gen.close()
 
+
 # Schema principal con Query y Mutation
-schema = strawberry.Schema(
-    query=Query,
-    mutation=Mutation
-)
+schema = strawberry.Schema(query=Query, mutation=Mutation)
