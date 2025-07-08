@@ -116,6 +116,16 @@ export default function Cars() {
         );
     };
 
+    const handleDelete = async (id) => {
+        if (!confirm('¿Borrar auto?')) return;
+        try {
+            await carOperations.deleteCar(id);
+            loadCars();
+        } catch (err) {
+            alert('Error al borrar auto: ' + err.message);
+        }
+    };
+
     // Cleanup de filtros al desmontar
     useEffect(() => {
         return () => {
@@ -267,12 +277,18 @@ export default function Cars() {
                                     )}
                                 </div>
 
-                                <div className="mt-4 pt-4 border-t border-gray-200">
+                                <div className="mt-4 pt-4 border-t border-gray-200 flex space-x-2">
                                     <button
                                         onClick={() => handleEdit(c)}
-                                        className="w-full px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                                        className="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
                                     >
                                         Editar Auto
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(c.CarID)}
+                                        className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                                    >
+                                        Eliminar
                                     </button>
                                 </div>
                             </div>
