@@ -73,6 +73,16 @@ export default function ItemSubcategories() {
         );
     };
 
+    const handleDelete = async (id) => {
+        if (!confirm('¿Borrar subcategoría?')) return;
+        try {
+            await itemSubcategoryOperations.deleteItemSubcategory(id);
+            loadSubcategories();
+        } catch (err) {
+            alert('Error al borrar subcategoría: ' + err.message);
+        }
+    };
+
     return (
         <div className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -113,7 +123,10 @@ export default function ItemSubcategories() {
                         <div key={sc.ItemSubcategoryID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-2">{sc.SubcategoryName}</h3>
                             <p className="text-sm mb-2">Categoría: {sc.CategoryName}</p>
-                            <button onClick={() => handleEdit(sc)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                            <div className="flex space-x-2">
+                                <button onClick={() => handleEdit(sc)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                                <button onClick={() => handleDelete(sc.ItemSubcategoryID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
+                            </div>
                         </div>
                     ))}
                 </div>

@@ -74,6 +74,16 @@ export default function ItemCategories() {
         );
     };
 
+    const handleDelete = async (id) => {
+        if (!confirm('¿Borrar categoría?')) return;
+        try {
+            await itemCategoryOperations.deleteItemCategory(id);
+            loadCategories();
+        } catch (err) {
+            alert('Error al borrar categoría: ' + err.message);
+        }
+    };
+
     return (
         <div className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -113,7 +123,10 @@ export default function ItemCategories() {
                     {categories.map(cat => (
                         <div key={cat.ItemCategoryID} className="bg-white rounded shadow p-4">
                             <h3 className="text-lg font-semibold mb-2">{cat.CategoryName}</h3>
-                            <button onClick={() => handleEdit(cat)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                            <div className="flex space-x-2">
+                                <button onClick={() => handleEdit(cat)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                                <button onClick={() => handleDelete(cat.ItemCategoryID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
+                            </div>
                         </div>
                     ))}
                 </div>

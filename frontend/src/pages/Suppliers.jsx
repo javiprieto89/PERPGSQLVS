@@ -119,6 +119,16 @@ export default function Suppliers() {
         );
     };
 
+    const handleDeleteSupplier = async (id) => {
+        if (!confirm('¿Borrar proveedor?')) return;
+        try {
+            await supplierOperations.deleteSupplier(id);
+            loadSuppliers();
+        } catch (err) {
+            alert('Error al borrar proveedor: ' + err.message);
+        }
+    };
+
     const handleViewDetails = (supplier) => {
         setSelectedSupplier(supplier);
     };
@@ -256,6 +266,9 @@ export default function Suppliers() {
                                     </button>
                                     <button onClick={() => handleEditSupplier(supplier)} className="px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200">
                                         Editar
+                                    </button>
+                                    <button onClick={() => handleDeleteSupplier(supplier.SupplierID)} className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                                        Eliminar
                                     </button>
                                 </div>
                             </div>
