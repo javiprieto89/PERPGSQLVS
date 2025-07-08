@@ -10,10 +10,8 @@ import {
   pricelistOperations,
   orderOperations,
 } from "../utils/graphqlClient";
-import ItemSearchModal from "../components/ItemSearchModal"; // Importar el modal
 import ClientSearchModal from "../components/ClientSearchModal";
-import ItemSelectWindow from "../components/ItemSelectWindow";
-import { openReactWindow } from "../utils/openReactWindow";
+import ItemSelectModal from "../components/ItemSelectModal";
 import SaleConditionSearchModal from "../components/SaleConditionSearchModal";
 
 export default function OrderCreate({ userInfo }) {
@@ -48,14 +46,8 @@ export default function OrderCreate({ userInfo }) {
   const [statuses, setStatuses] = useState([]);
   const [priceLists, setPriceLists] = useState([]);
   const [items, setItems] = useState([]);
-  const [currentItem, setCurrentItem] = useState({
-    code: "",
-    description: "",
-    quantity: 1,
-    price: 0,
-  });
   const [showClientDropdown, setShowClientDropdown] = useState(false);
-  const [showItemSearchModal, setShowItemSearchModal] = useState(false); // Estado para el modal de búsqueda de ítems
+  const [showItemModal, setShowItemModal] = useState(false); // Ventana emergente para agregar ítems
   const [showClientSearchModal, setShowClientSearchModal] = useState(false);
   const [showSaleConditionModal, setShowSaleConditionModal] = useState(false);
 
@@ -137,40 +129,18 @@ export default function OrderCreate({ userInfo }) {
     }));
   };
 
-  const handleItemChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentItem((prev) => ({ ...prev, [name]: value }));
+  const handleAddItem = (item, quantity, price) => {
+    setItems((prev) => [
+      ...prev,
+      {
+        code: item.Code,
+        description: item.description,
+        quantity,
+        price: price ?? item.price ?? 0,
+      },
+    ]);
   };
 
-  const handleSelectItemFromModal = (selectedItem) => {
-    setCurrentItem((prev) => ({
-      ...prev, // Mantener cantidad si ya la había puesto, o resetearla
-      code: selectedItem.code || "",
-      description: selectedItem.description || "",
-      price: selectedItem.price || 0, // El precio vendrá del ítem seleccionado
-      // Aquí podrías querer resetear la cantidad a 1 o mantener la que estaba
-      // quantity: 1,
-    }));
-    // Opcionalmente, enfocar el campo de cantidad o precio después de seleccionar
-  };
-
-  const openItemWindow = () => {
-    openReactWindow(
-      (popup) => (
-        <ItemSelectWindow
-          onSelect={(item, qty) => {
-            popup.opener.postMessage(
-              { type: "item-selected", item, quantity: qty },
-              "*"
-            );
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Agregar Ítem"
-    );
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -217,24 +187,6 @@ export default function OrderCreate({ userInfo }) {
     }));
   }, [items]);
 
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.data && e.data.type === "item-selected") {
-        const { item, quantity } = e.data;
-        setItems((prev) => [
-          ...prev,
-          {
-            code: item.Code,
-            description: item.description,
-            quantity,
-            price: item.price || 0,
-          },
-        ]);
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, []);
 
   return (
     <div className="container mx-auto p-4 md:p-6 bg-gray-100 min-h-screen">
@@ -622,97 +574,15 @@ export default function OrderCreate({ userInfo }) {
             </h2>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-medium text-indigo-700">
-                <span className="border-b-2 border-indigo-200 pb-1">
-                  Ítems del Pedido
-                </span>
+                <span className="border-b-2 border-indigo-200 pb-1">Ítems del Pedido</span>
               </h2>
               <button
                 type="button"
-                onClick={() => setShowItemSearchModal(true)}
+                onClick={() => setShowItemModal(true)}
                 className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
               >
-                Buscar Ítem Avanzado
+                Agregar Ítem
               </button>
-            </div>
-            <div className="grid grid-cols-12 gap-x-6 gap-y-4 items-end p-4 border border-gray-200 rounded-md mb-6 bg-gray-50/30">
-              <div className="col-span-6 sm:col-span-3">
-                <label
-                  htmlFor="itemCode"
-                  className="block text-sm font-medium text-gray-600 mb-1"
-                >
-                  Código
-                </label>
-                <input
-                  type="text"
-                  name="code"
-                  id="itemCode"
-                  value={currentItem.code}
-                  onChange={handleItemChange}
-                  placeholder="Código Manual"
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 sm:text-sm"
-                />
-              </div>
-              <div className="col-span-6 sm:col-span-4">
-                <label
-                  htmlFor="itemdescription"
-                  className="block text-sm font-medium text-gray-600 mb-1"
-                >
-                  Descripción
-                </label>
-                <input
-                  type="text"
-                  name="description"
-                  id="itemdescription"
-                  value={currentItem.description}
-                  onChange={handleItemChange}
-                  placeholder="Descripción"
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 sm:text-sm"
-                />
-              </div>
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="itemQuantity"
-                  className="block text-sm font-medium text-gray-600 mb-1"
-                >
-                  Cantidad
-                </label>
-                <input
-                  type="number"
-                  name="quantity"
-                  id="itemQuantity"
-                  value={currentItem.quantity}
-                  onChange={handleItemChange}
-                  min="1"
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 sm:text-sm"
-                />
-              </div>
-              <div className="col-span-4 sm:col-span-2">
-                <label
-                  htmlFor="itemPrice"
-                  className="block text-sm font-medium text-gray-600 mb-1"
-                >
-                  Precio Unit.
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  id="itemPrice"
-                  value={currentItem.price}
-                  onChange={handleItemChange}
-                  min="0"
-                  step="0.01"
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3 sm:text-sm"
-                />
-              </div>
-              <div className="col-span-4 sm:col-span-1 flex items-end">
-                <button
-                  type="button"
-                  onClick={openItemWindow}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-3 border border-transparent rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                >
-                  Añadir
-                </button>
-              </div>
             </div>
 
 
@@ -784,16 +654,6 @@ export default function OrderCreate({ userInfo }) {
         </form>
       </div>
 
-      {showItemSearchModal && (
-        <ItemSearchModal
-          isOpen={true}
-          onClose={() => setShowItemSearchModal(false)}
-          onItemSelect={(item) => {
-            handleSelectItemFromModal(item);
-            setShowItemSearchModal(false);
-          }}
-        />
-      )}
       {showClientSearchModal && (
         <ClientSearchModal
           isOpen={true}
@@ -806,6 +666,13 @@ export default function OrderCreate({ userInfo }) {
             });
             setShowClientSearchModal(false);
           }}
+        />
+      )}
+      {showItemModal && (
+        <ItemSelectModal
+          isOpen={true}
+          onClose={() => setShowItemModal(false)}
+          onSelect={(item, qty, price) => handleAddItem(item, qty, price)}
         />
       )}
       {showSaleConditionModal && (
