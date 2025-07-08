@@ -129,14 +129,14 @@ export default function OrderCreate({ userInfo }) {
     }));
   };
 
-  const handleAddItem = (item, quantity) => {
+  const handleAddItem = (item, quantity, price) => {
     setItems((prev) => [
       ...prev,
       {
         code: item.Code,
         description: item.description,
         quantity,
-        price: item.price || 0,
+        price: price ?? item.price ?? 0,
       },
     ]);
   };
@@ -672,7 +672,7 @@ export default function OrderCreate({ userInfo }) {
         <ItemSelectModal
           isOpen={true}
           onClose={() => setShowItemModal(false)}
-          onSelect={(item, qty) => handleAddItem(item, qty)}
+          onSelect={(item, qty, price) => handleAddItem(item, qty, price)}
         />
       )}
       {showSaleConditionModal && (

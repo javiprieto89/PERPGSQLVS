@@ -6,6 +6,7 @@ export default function ItemSelectModal({ isOpen, onSelect, onClose }) {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
   const [quantities, setQuantities] = useState({});
+  const [prices, setPrices] = useState({});
 
   useEffect(() => {
     if (!isOpen) return;
@@ -45,7 +46,8 @@ export default function ItemSelectModal({ isOpen, onSelect, onClose }) {
 
   const handleSelect = (item) => {
     const qty = parseInt(quantities[item.itemID] || 1, 10);
-    onSelect(item, qty);
+    const price = parseFloat(prices[item.itemID] ?? item.price ?? 0);
+    onSelect(item, qty, price);
     onClose();
   };
 
@@ -87,6 +89,7 @@ export default function ItemSelectModal({ isOpen, onSelect, onClose }) {
               <tr>
                 <th className="px-2 py-1 text-left">Código</th>
                 <th className="px-2 py-1 text-left">Descripción</th>
+                <th className="px-2 py-1 text-right">Precio</th>
                 <th className="px-2 py-1 text-center">Cantidad</th>
                 <th className="px-2 py-1" />
               </tr>
@@ -96,6 +99,20 @@ export default function ItemSelectModal({ isOpen, onSelect, onClose }) {
                 <tr key={item.itemID} className="hover:bg-gray-50">
                   <td className="px-2 py-1 whitespace-nowrap">{item.Code}</td>
                   <td className="px-2 py-1 whitespace-nowrap">{item.description}</td>
+                  <td className="px-2 py-1 text-right">
+                    <input
+                      type="number"
+                      step="0.01"
+                      className="border w-20 p-1 rounded text-right"
+                      value={prices[item.itemID] ?? item.price ?? 0}
+                      onChange={(e) =>
+                        setPrices((prev) => ({
+                          ...prev,
+                          [item.itemID]: e.target.value,
+                        }))
+                      }
+                    />
+                  </td>
                   <td className="px-2 py-1 text-center">
                     <input
                       type="number"
