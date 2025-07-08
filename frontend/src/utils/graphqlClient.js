@@ -878,7 +878,10 @@ export const MUTATIONS = {
     // ELIMINAR CLIENTE
     DELETE_CLIENT: `
         mutation DeleteClient($clientID: Int!) {
-            deleteClient(clientID: $clientID)
+            deleteClient(clientID: $clientID) {
+                success
+                message
+            }
         }
     `,
 
@@ -937,7 +940,10 @@ export const MUTATIONS = {
     // ELIMINAR PROVEEDOR
     DELETE_SUPPLIER: `
         mutation DeleteSupplier($supplierID: Int!) {
-            deleteSupplier(supplierID: $supplierID)
+            deleteSupplier(supplierID: $supplierID) {
+                success
+                message
+            }
         }
     `,
 
@@ -972,7 +978,10 @@ export const MUTATIONS = {
     `,
     DELETE_BRAND: `
         mutation DeleteBrand($brandID: Int!) {
-            deleteBrand(brandID: $brandID)
+            deleteBrand(brandID: $brandID) {
+                success
+                message
+            }
         }
     `,
 
@@ -995,7 +1004,10 @@ export const MUTATIONS = {
     `,
     DELETE_ITEMCATEGORY: `
         mutation DeleteItemCategory($categoryID: Int!) {
-            deleteItemcategory(categoryID: $categoryID)
+            deleteItemcategory(categoryID: $categoryID) {
+                success
+                message
+            }
         }
     `,
 
@@ -1020,7 +1032,10 @@ export const MUTATIONS = {
     `,
     DELETE_ITEMSUBCATEGORY: `
         mutation DeleteItemSubcategory($subcategoryID: Int!) {
-            deleteItemsubcategory(subcategoryID: $subcategoryID)
+            deleteItemsubcategory(subcategoryID: $subcategoryID) {
+                success
+                message
+            }
         }
     `,
     // MARCAS DE AUTO
@@ -1042,7 +1057,10 @@ export const MUTATIONS = {
     `,
     DELETE_CARBRAND: `
         mutation DeleteCarBrand($carBrandID: Int!) {
-            deleteCarbrand(carBrandID: $carBrandID)
+            deleteCarbrand(carBrandID: $carBrandID) {
+                success
+                message
+            }
         }
     `,
 
@@ -1067,7 +1085,10 @@ export const MUTATIONS = {
     `,
     DELETE_CARMODEL: `
         mutation DeleteCarModel($carModelID: Int!) {
-            deleteCarmodel(carModelID: $carModelID)
+            deleteCarmodel(carModelID: $carModelID) {
+                success
+                message
+            }
         }
     `,
 
@@ -1102,7 +1123,10 @@ export const MUTATIONS = {
     `,
     DELETE_CAR: `
         mutation DeleteCar($carID: Int!) {
-            deleteCar(carID: $carID)
+            deleteCar(carID: $carID) {
+                success
+                message
+            }
         }
     `,
 
@@ -1125,7 +1149,10 @@ export const MUTATIONS = {
     `,
     DELETE_CREDITCARDGROUP: `
         mutation DeleteCreditCardGroup($id: Int!) {
-            deleteCreditcardgroup(id: $id)
+            deleteCreditcardgroup(id: $id) {
+                success
+                message
+            }
         }
     `,
 
@@ -1156,7 +1183,10 @@ export const MUTATIONS = {
     `,
     DELETE_CREDITCARD: `
         mutation DeleteCreditCard($id: Int!) {
-            deleteCreditcard(id: $id)
+            deleteCreditcard(id: $id) {
+                success
+                message
+            }
         }
     `,
 
@@ -1187,7 +1217,10 @@ export const MUTATIONS = {
     `,
     DELETE_SALECONDITION: `
         mutation DeleteSaleCondition($saleConditionID: Int!) {
-            deleteSalecondition(saleConditionID: $saleConditionID)
+            deleteSalecondition(saleConditionID: $saleConditionID) {
+                success
+                message
+            }
         }
     `,
 
@@ -1210,7 +1243,10 @@ export const MUTATIONS = {
     `,
     DELETE_ITEM: `
         mutation DeleteItem($itemID: Int!) {
-            deleteItem(itemID: $itemID)
+            deleteItem(itemID: $itemID) {
+                success
+                message
+            }
         }
     `,
     CREATE_PRICELIST: `
@@ -1235,7 +1271,10 @@ export const MUTATIONS = {
     `,
     DELETE_PRICELIST: `
         mutation DeletePricelist($pricelistID: Int!) {
-            deletePricelist(pricelistID: $pricelistID)
+            deletePricelist(pricelistID: $pricelistID) {
+                success
+                message
+            }
         }
     `,
     CREATE_WAREHOUSE: `
@@ -1258,7 +1297,10 @@ export const MUTATIONS = {
     `,
     DELETE_WAREHOUSE: `
         mutation DeleteWarehouse($warehouseID: Int!) {
-            deleteWarehouse(warehouseID: $warehouseID)
+            deleteWarehouse(warehouseID: $warehouseID) {
+                success
+                message
+            }
         }
     `,
 
@@ -1321,7 +1363,10 @@ export const MUTATIONS = {
 
     DELETE_ORDER: `
         mutation DeleteOrder($orderID: Int!) {
-            deleteOrder(orderID: $orderID)
+            deleteOrder(orderID: $orderID) {
+                success
+                message
+            }
         }
     `
 };
