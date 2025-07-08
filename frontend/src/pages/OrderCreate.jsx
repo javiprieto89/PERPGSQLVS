@@ -16,7 +16,7 @@ import ClientSearchModal from "../components/ClientSearchModal";
 import SaleConditionSearchModal from "../components/SaleConditionSearchModal";
 import ItemConfirmationModal from "../components/ItemConfirmationModal";
 
-export default function OrderCreate({ userInfo }) {
+export default function OrderCreate({ onClose, onSave, order: initialOrder = null, userInfo }) {
     const [formData, setFormData] = useState({
         companyId: userInfo?.companyId || "1",
         branchId: userInfo?.branchId || "1",
@@ -39,6 +39,7 @@ export default function OrderCreate({ userInfo }) {
         priceListId: "",
         warehouseId: "",
     });
+    const [isEdit, setIsEdit] = useState(false);
 
     const [filteredClients, setFilteredClients] = useState([]);
     const [clientSearch, setClientSearch] = useState("");
@@ -56,6 +57,34 @@ export default function OrderCreate({ userInfo }) {
     const [showSaleConditionModal, setShowSaleConditionModal] = useState(false);
     const [showItemConfirmationModal, setShowItemConfirmationModal] = useState(false);
     const [selectedItemForConfirmation, setSelectedItemForConfirmation] = useState(null);
+
+    useEffect(() => {
+        if (initialOrder) {
+            setIsEdit(true);
+            setFormData({
+                companyId: String(initialOrder.CompanyID),
+                branchId: String(initialOrder.BranchID),
+                date: initialOrder.Date_?.slice(0, 10) || new Date().toISOString().slice(0, 10),
+                clientId: String(initialOrder.ClientID || ""),
+                carId: initialOrder.CarID ? String(initialOrder.CarID) : "",
+                isService: Boolean(initialOrder.IsService),
+                serviceTypeId: initialOrder.ServiceTypeID ? String(initialOrder.ServiceTypeID) : "",
+                mileage: initialOrder.Mileage ? String(initialOrder.Mileage) : "",
+                nextServiceMileage: initialOrder.NextServiceMileage ? String(initialOrder.NextServiceMileage) : "",
+                notes: initialOrder.Notes || "",
+                saleConditionId: String(initialOrder.SaleConditionID || ""),
+                discountId: String(initialOrder.DiscountID || ""),
+                subtotal: Number(initialOrder.Subtotal || 0),
+                total: Number(initialOrder.Total || 0),
+                vat: Number(initialOrder.VAT || 0),
+                userId: String(initialOrder.UserID || ""),
+                documentID: String(initialOrder.DocumentID || ""),
+                orderStatusId: String(initialOrder.OrderStatusID || ""),
+                priceListId: String(initialOrder.PriceListID || ""),
+                warehouseId: String(initialOrder.WarehouseID || "")
+            });
+        }
+    }, [initialOrder]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -260,8 +289,13 @@ export default function OrderCreate({ userInfo }) {
         console.log("Enviando orden:", orderData);
 
         try {
-            const response = await orderOperations.createOrder(orderData);
-            alert("Orden creada correctamente. ID: " + response.OrderID);
+            let response;
+            if (isEdit && initialOrder?.OrderID) {
+                response = await orderOperations.updateOrder(initialOrder.OrderID, orderData);
+            } else {
+                response = await orderOperations.createOrder(orderData);
+            }
+            alert("Orden guardada correctamente. ID: " + response.OrderID);
 
             // Limpiar formulario después de crear exitosamente
             setFormData({
@@ -288,6 +322,8 @@ export default function OrderCreate({ userInfo }) {
             });
             setItems([]);
             setClientSearch("");
+            onSave && onSave(response);
+            onClose && onClose();
         } catch (error) {
             console.error("Error al crear la orden:", error);
             alert("Error al crear la orden: " + error.message);
@@ -325,7 +361,7 @@ export default function OrderCreate({ userInfo }) {
         <div className="container mx-auto p-4 md:p-6 bg-gray-100 min-h-screen">
             <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl space-y-8 max-w-5xl mx-auto">
                 <h1 className="text-3xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-4 mb-8">
-                    Cargar Nuevo Pedido
+                    {isEdit ? 'Editar Pedido' : 'Cargar Nuevo Pedido'}
                 </h1>
                 <form onSubmit={handleSubmit} className="space-y-10">
                     {/* Sección Datos Generales */}
@@ -791,7 +827,7 @@ export default function OrderCreate({ userInfo }) {
                             type="submit"
                             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150 text-lg"
                         >
-                            Guardar Pedido
+                            {isEdit ? 'Guardar Cambios' : 'Guardar Pedido'}
                         </button>
                     </section>
                 </form>
