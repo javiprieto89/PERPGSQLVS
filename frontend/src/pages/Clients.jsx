@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { graphqlClient, QUERIES, diagnosticGraphQL } from "../utils/graphqlClient";
+import { graphqlClient, QUERIES, diagnosticGraphQL, clientOperations } from "../utils/graphqlClient";
 import ClientCreate from "./ClientCreate";
 import { openReactWindow } from "../utils/openReactWindow";
 import TableFilters from "../components/TableFilters";
@@ -137,6 +137,16 @@ export default function Clients() {
             ),
             'Editar Cliente'
         );
+    };
+
+    const handleDeleteClient = async (clientID) => {
+        if (!confirm('¿Borrar cliente?')) return;
+        try {
+            await clientOperations.deleteClient(clientID);
+            loadClients();
+        } catch (err) {
+            alert('Error al borrar cliente: ' + err.message);
+        }
     };
 
     const handleViewDetails = (client) => {
@@ -348,6 +358,12 @@ export default function Clients() {
                                         className="px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200"
                                     >
                                         Editar
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteClient(client.ClientID)}
+                                        className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700"
+                                    >
+                                        Eliminar
                                     </button>
                                 </div>
                             </div>
