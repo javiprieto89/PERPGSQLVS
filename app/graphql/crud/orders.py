@@ -68,6 +68,8 @@ def delete_orders(db: Session, orderid: int):
     if obj:
         # Delete associated order details first to avoid foreign key issues
         db.query(OrderDetails).filter(OrderDetails.OrderID == orderid).delete(synchronize_session=False)
+        # Persist removal of details before deleting the order itself
+        db.commit()
         db.delete(obj)
         db.commit()
     return obj
