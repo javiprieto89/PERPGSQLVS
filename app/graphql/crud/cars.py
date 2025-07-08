@@ -2,6 +2,9 @@
 from sqlalchemy.orm import Session
 from app.models.cars import Cars
 from app.models.carmodels import CarModels
+from sqlalchemy import exists
+from app.models.orders import Orders
+from app.models.orderhistory import OrderHistory
 from app.models.carbrands import CarBrands
 from app.models.clients import Clients  # AGREGADO: Importar el modelo de clientes
 from app.graphql.schemas.cars import CarsCreate, CarsUpdate
@@ -13,7 +16,7 @@ def get_cars(db: Session):
         CarModels.Model.label("CarModelName"),
         CarBrands.Name.label("CarBrandName"),
         CarBrands.CarBrandID.label("CarBrandID"),
-        # AGREGADO: Informaci髇 del cliente
+        # AGREGADO: Informaci贸n del cliente
         Clients.FirstName.label("ClientFirstName"),
         Clients.LastName.label("ClientLastName")
     ).join(CarModels, Cars.CarModelID == CarModels.CarModelID)\
@@ -25,7 +28,7 @@ def get_cars(db: Session):
         setattr(c, "CarModelName", model_name)
         setattr(c, "CarBrandName", brand_name)
         setattr(c, "CarBrandID", brand_id)
-        # AGREGADO: Agregar informaci髇 del cliente
+        # AGREGADO: Agregar informaci贸n del cliente
         setattr(c, "ClientFirstName", client_first_name)
         setattr(c, "ClientLastName", client_last_name)
         # AGREGADO: Crear nombre completo del cliente
@@ -41,7 +44,7 @@ def get_cars_by_id(db: Session, carid: int):
         CarModels.Model.label("CarModelName"),
         CarBrands.Name.label("CarBrandName"),
         CarBrands.CarBrandID.label("CarBrandID"),
-        # AGREGADO: Informaci髇 del cliente
+        # AGREGADO: Informaci贸n del cliente
         Clients.FirstName.label("ClientFirstName"),
         Clients.LastName.label("ClientLastName")
     ).join(CarModels, Cars.CarModelID == CarModels.CarModelID)\
@@ -54,7 +57,7 @@ def get_cars_by_id(db: Session, carid: int):
         setattr(c, "CarModelName", model_name)
         setattr(c, "CarBrandName", brand_name)
         setattr(c, "CarBrandID", brand_id)
-        # AGREGADO: Agregar informaci髇 del cliente
+        # AGREGADO: Agregar informaci贸n del cliente
         setattr(c, "ClientFirstName", client_first_name)
         setattr(c, "ClientLastName", client_last_name)
         client_full_name = f"{client_first_name or ''} {client_last_name or ''}".strip()
@@ -69,7 +72,7 @@ def get_cars_by_client_id(db: Session, client_id: int):
         CarModels.Model.label("CarModelName"),
         CarBrands.Name.label("CarBrandName"),
         CarBrands.CarBrandID.label("CarBrandID"),
-        # AGREGADO: Informaci髇 del cliente
+        # AGREGADO: Informaci贸n del cliente
         Clients.FirstName.label("ClientFirstName"),
         Clients.LastName.label("ClientLastName")
     ).join(CarModels, Cars.CarModelID == CarModels.CarModelID)\
@@ -82,7 +85,7 @@ def get_cars_by_client_id(db: Session, client_id: int):
         setattr(c, "CarModelName", model_name)
         setattr(c, "CarBrandName", brand_name)
         setattr(c, "CarBrandID", brand_id)
-        # AGREGADO: Agregar informaci髇 del cliente
+        # AGREGADO: Agregar informaci贸n del cliente
         setattr(c, "ClientFirstName", client_first_name)
         setattr(c, "ClientLastName", client_last_name)
         client_full_name = f"{client_first_name or ''} {client_last_name or ''}".strip()
@@ -113,6 +116,10 @@ def update_cars(db: Session, carid: int, data: CarsUpdate):
 def delete_cars(db: Session, carid: int):
     obj = get_cars_by_id(db, carid)
     if obj:
+        linked_orders = db.query(exists().where(Orders.CarID == carid)).scalar()
+        linked_history = db.query(exists().where(OrderHistory.CarID == carid)).scalar()
+        if linked_orders or linked_history:
+            raise ValueError("Cannot delete car because it is referenced by existing orders")
         db.delete(obj)
         db.commit()
     return obj

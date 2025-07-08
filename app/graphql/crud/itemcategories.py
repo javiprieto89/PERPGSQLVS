@@ -1,4 +1,7 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import exists
+from app.models.items import Items
+from app.models.itemsubcategories import ItemSubcategories
 from app.models.itemcategories import ItemCategories
 from app.graphql.schemas.itemcategories import (
     ItemCategoriesCreate,
@@ -39,6 +42,16 @@ def update_itemcategories(db: Session, categoryid: int, data: ItemCategoriesUpda
 def delete_itemcategories(db: Session, categoryid: int):
     obj = get_itemcategories_by_id(db, categoryid)
     if obj:
+        linked_sub = db.query(
+            exists().where(ItemSubcategories.ItemCategoryID == categoryid)
+        ).scalar()
+        linked_items = db.query(
+            exists().where(Items.ItemCategoryID == categoryid)
+        ).scalar()
+        if linked_sub or linked_items:
+            raise ValueError(
+                "Cannot delete item category because it is referenced by other records"
+            )
         db.delete(obj)
         db.commit()
     return obj

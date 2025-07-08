@@ -1,5 +1,7 @@
 # carmodels.py
 from sqlalchemy.orm import Session
+from sqlalchemy import exists
+from app.models.cars import Cars
 from app.models.carmodels import CarModels
 from app.models.carbrands import CarBrands
 from app.graphql.schemas.carmodels import CarModelsCreate, CarModelsUpdate
@@ -58,6 +60,11 @@ def update_carmodels(db: Session, carmodelid: int, data: CarModelsUpdate):
 def delete_carmodels(db: Session, carmodelid: int):
     obj = get_carmodels_by_id(db, carmodelid)
     if obj:
+        linked_cars = db.query(exists().where(Cars.CarModelID == carmodelid)).scalar()
+        if linked_cars:
+            raise ValueError(
+                "Cannot delete car model because it is referenced by existing cars"
+            )
         db.delete(obj)
         db.commit()
     return obj
