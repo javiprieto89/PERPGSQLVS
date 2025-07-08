@@ -147,7 +147,7 @@ export default function OrderCreate({ userInfo }) {
         console.log("Item confirmado:", itemWithDetails);
 
         const newItem = {
-            itemID: itemWithDetails.itemID,
+            itemID: itemWithDetails.itemID,            
             code: itemWithDetails.code,
             description: itemWithDetails.description,
             quantity: itemWithDetails.quantity,
@@ -250,6 +250,7 @@ export default function OrderCreate({ userInfo }) {
             WarehouseID: parseInt(finalFormData.warehouseId),
             Items: items.map((item) => ({
                 ItemID: parseInt(item.itemID),
+                WarehouseID: parseInt(finalFormData.warehouseId),
                 Quantity: parseInt(item.quantity),
                 UnitPrice: parseFloat(item.price),
                 Description: item.description || null,

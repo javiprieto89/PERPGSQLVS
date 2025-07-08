@@ -1437,9 +1437,9 @@ export const orderHelpers = {
             FormattedDate: order.Date_ ? new Date(order.Date_).toLocaleDateString() : '',
             FormattedTotal: order.Total ? `${order.Total.toFixed(2)}` : '$0.00',
             ServiceText: order.IsService ? 'Sí' : 'No',
-            StatusDisplay: order.OrderStatusID === 1 ? 'Pendiente' :
-                order.OrderStatusID === 2 ? 'En proceso' :
-                    order.OrderStatusID === 3 ? 'Completada' : 'Desconocido'
+            StatusDisplay: order.OrderStatusID === 1 ? 'Pendiente' : 
+                          order.OrderStatusID === 2 ? 'En proceso' : 
+                          order.OrderStatusID === 3 ? 'Completada' : 'Desconocido'
         };
     },
 
@@ -1459,7 +1459,7 @@ export const orderHelpers = {
             PriceListID: parseInt(formData.PriceListID),
             OrderStatusID: parseInt(formData.OrderStatusID),
             WarehouseID: parseInt(formData.WarehouseID),
-
+            
             // Campos opcionales
             CarID: formData.CarID ? parseInt(formData.CarID) : null,
             IsService: Boolean(formData.IsService),
@@ -1467,7 +1467,7 @@ export const orderHelpers = {
             Mileage: formData.Mileage ? parseInt(formData.Mileage) : null,
             NextServiceMileage: formData.NextServiceMileage ? parseInt(formData.NextServiceMileage) : null,
             Notes: formData.Notes?.trim() || null,
-
+            
             // Items de la orden
             Items: formData.Items || []
         };
@@ -2485,7 +2485,7 @@ export const orderOperations = {
         try {
             // Preparar datos para actualización (solo campos no nulos)
             const preparedData = {};
-
+            
             if (orderData.CompanyID) preparedData.CompanyID = parseInt(orderData.CompanyID);
             if (orderData.BranchID) preparedData.BranchID = parseInt(orderData.BranchID);
             if (orderData.Date_) preparedData.Date_ = new Date(orderData.Date_);

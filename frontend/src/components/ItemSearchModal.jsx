@@ -132,7 +132,7 @@ export default function ItemSearchModal({
                 try {
                     const [brandsData, categoriesData, suppliersData] = await Promise.all([
                         brandOperations.getAllBrands(),
-                        itemCategoryOperations.getAllItemcategories(),
+                        itemCategoryOperations.getAllItemCategories(),
                         supplierOperations.getAllSuppliers(),
                     ]);
                     setBrands(brandsData || []);
@@ -219,7 +219,7 @@ export default function ItemSearchModal({
     };
 
     if (!isOpen) return null;
-
+    
     return (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-40 flex justify-center items-start pt-10">
             <div className="relative mx-auto p-5 border w-full max-w-6xl shadow-lg rounded-md bg-white space-y-4">
@@ -285,10 +285,10 @@ export default function ItemSearchModal({
                                 onChange={handleFilterChange}
                                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
                             >
-                                <option value="contains">Contiene</option>
-                                <option value="equals">Es igual</option>
-                                <option value="startsWith">Comienza con</option>
-                                <option value="endsWith">Termina con</option>
+                                <option key="contains" value="contains">Contiene</option>
+                                <option key="equals" value="equals">Es igual</option>
+                                <option key="startsWith" value="startsWith">Comienza con</option>
+                                <option key="endsWith" value="endsWith">Termina con</option>
                             </select>
                         </div>
                     </div>
@@ -315,10 +315,10 @@ export default function ItemSearchModal({
                                 onChange={handleFilterChange}
                                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
                             >
-                                <option value="contains">Contiene</option>
-                                <option value="equals">Es igual</option>
-                                <option value="startsWith">Comienza con</option>
-                                <option value="endsWith">Termina con</option>
+                                <option key="contains" value="contains">Contiene</option>
+                                <option key="equals" value="equals">Es igual</option>
+                                <option key="startsWith" value="startsWith">Comienza con</option>
+                                <option key="endsWith" value="endsWith">Termina con</option>
                             </select>
                         </div>
                     </div>
@@ -335,9 +335,9 @@ export default function ItemSearchModal({
                             onChange={handleFilterChange}
                             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
                         >
-                            <option value="">Todas</option>
-                            {brands.map((brand) => (
-                                <option key={brand.brandID} value={brand.brandID}>
+                            <option value="">Todas</option>                            
+                            {brands.map((brand, idx) => (
+                                <option key={brand.brandID || `brand-${idx}`} value={brand.brandID}>
                                     {brand.name}
                                 </option>
                             ))}
@@ -357,8 +357,8 @@ export default function ItemSearchModal({
                             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
                         >
                             <option value="">Todas</option>
-                            {categories.map((cat) => (
-                                <option key={cat.categoryID} value={cat.categoryID}>
+                            {categories.map((cat, idx) => (
+                                <option key={cat.categoryID || `cat-${idx}`} value={cat.categoryID}>
                                     {cat.name}
                                 </option>
                             ))}
@@ -379,8 +379,8 @@ export default function ItemSearchModal({
                             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm disabled:bg-gray-100"
                         >
                             <option value="">Todas</option>
-                            {subcategories.map((sub) => (
-                                <option key={sub.subcategoryID} value={sub.subcategoryID}>
+                            {subcategories.map((sub, idx) => (
+                                <option key={sub.subcategoryID || `sub-${idx}`} value={sub.subcategoryID}>
                                     {sub.subcategoryName}
                                 </option>
                             ))}
@@ -400,8 +400,8 @@ export default function ItemSearchModal({
                             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
                         >
                             <option value="">Todos</option>
-                            {suppliers.map((sup) => (
-                                <option key={sup.supplierID} value={sup.supplierID}>
+                            {suppliers.map((sup, idx) => (
+                                <option key={sup.supplierID || `sup-${idx}`} value={sup.supplierID}>
                                     {`${sup.firstName} ${sup.lastName || ""}`.trim()}
                                 </option>
                             ))}
@@ -430,10 +430,10 @@ export default function ItemSearchModal({
                                 onChange={handleFilterChange}
                                 className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
                             >
-                                <option value="contains">Contiene</option>
-                                <option value="equals">Es igual</option>
-                                <option value="startsWith">Comienza con</option>
-                                <option value="endsWith">Termina con</option>
+                                <option key="contains" value="contains">Contiene</option>
+                                <option key="equals" value="equals">Es igual</option>
+                                <option key="startsWith" value="startsWith">Comienza con</option>
+                                <option key="endsWith" value="endsWith">Termina con</option>
                             </select>
                         </div>
                     </div>
@@ -467,8 +467,8 @@ export default function ItemSearchModal({
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {results.length > 0 ? (
-                                results.map((item) => (
-                                    <tr key={item.itemID} className="hover:bg-gray-50">
+                                results.map((item, idx) => (
+                                    <tr key={item.itemID || `item-${idx}`} className="hover:bg-gray-50">
                                         <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
                                             {item.itemID}
                                         </td>
@@ -501,7 +501,7 @@ export default function ItemSearchModal({
                                     </tr>
                                 ))
                             ) : (
-                                <tr>
+                                <tr key="no-results">
                                     <td
                                         colSpan="8"
                                         className="px-4 py-10 text-center text-sm text-gray-500"

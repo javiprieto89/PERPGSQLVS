@@ -37,6 +37,7 @@ def create_orders(db: Session, data: OrdersCreate):
             Quantity=item.Quantity,
             UnitPrice=item.UnitPrice,
             Description=item.Description,
+            WarehouseID=order.WarehouseID,
         )
         db.add(detail)
 
