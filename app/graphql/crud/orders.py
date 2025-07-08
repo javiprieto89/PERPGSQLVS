@@ -1,4 +1,4 @@
-# app/graphql/crud/orders.py
+﻿# app/graphql/crud/orders.py
 from sqlalchemy.orm import Session
 from dataclasses import asdict
 
@@ -21,20 +21,22 @@ def create_orders(db: Session, data: OrdersCreate):
 
     # Crear orden sin los ítems
     order_data = asdict(data)
-    # eliminar los ítems del dict para no pasarlos al modelo
-    order_data.pop("Items", None)  # Corregido: Items con mayúscula
+    # Eliminar los ítems del dict para no pasarlos al modelo
+    order_data.pop("Items", None)
+    
+    # Crear el objeto Orders con los datos correctos
     order = Orders(**order_data)
     db.add(order)
     db.flush()  # necesario para obtener orderID antes de los detalles
 
-    # Crear detalles con nombres de atributos correctos
+    # Crear detalles de la orden
     for item in items_data:
         detail = OrderDetails(
-            OrderID=order.OrderID,  # Corregido: OrderID con mayúsculas
-            ItemID=item.ItemID,     # Corregido: ItemID con mayúsculas
-            Quantity=item.Quantity, # Corregido: Quantity con mayúscula
-            UnitPrice=item.UnitPrice,  # Corregido: UnitPrice con mayúsculas
-            Description=item.Description,  # Corregido: Description con mayúscula
+            OrderID=order.OrderID,
+            ItemID=item.ItemID,
+            Quantity=item.Quantity,
+            UnitPrice=item.UnitPrice,
+            Description=item.Description,
         )
         db.add(detail)
 
@@ -48,10 +50,13 @@ def update_orders(db: Session, orderid: int, data: OrdersUpdate):
     if obj:
         update_data = asdict(data)
         # No se actualizan ítems desde esta función
-        update_data.pop("Items", None)  # Corregido: Items con mayúscula
+        update_data.pop("Items", None)
+        
+        # Actualizar solo los campos que no son None
         for k, v in update_data.items():
             if v is not None:
                 setattr(obj, k, v)
+        
         db.commit()
         db.refresh(obj)
     return obj

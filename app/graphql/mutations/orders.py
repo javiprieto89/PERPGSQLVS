@@ -1,4 +1,4 @@
-# app/graphql/mutations/orders.py
+﻿# app/graphql/mutations/orders.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.orders import OrdersCreate, OrdersUpdate, OrdersInDB

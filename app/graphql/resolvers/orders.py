@@ -1,4 +1,4 @@
-# app/graphql/resolvers/orders.py
+﻿# app/graphql/resolvers/orders.py
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.orders import OrdersInDB

@@ -406,14 +406,43 @@ export const QUERIES = {
         }
     `,
 
-    // ORDENES
+    // ORDENES - CORREGIDO
     GET_ALL_ORDERS: `
         query GetAllOrders {
             allOrders {
                 OrderID
                 CompanyID
                 BranchID
-                Date
+                Date_
+                ClientID
+                CarID
+                IsService
+                ServiceTypeID
+                Mileage
+                NextServiceMileage
+                Notes
+                SaleConditionID
+                DiscountID
+                Subtotal
+                Total
+                VAT
+                UserID
+                DocumentID                
+                PriceListID
+                OrderStatusID
+                WarehouseID
+            }
+        }
+    `,
+
+    // NUEVA QUERY PARA ORDER BY ID
+    GET_ORDER_BY_ID: `
+        query GetOrderById($id: Int!) {
+            ordersById(id: $id) {
+                OrderID
+                CompanyID
+                BranchID
+                Date_
                 ClientID
                 CarID
                 IsService
@@ -696,7 +725,7 @@ export const QUERIES = {
         }
     `,
 
-    // DASHBOARD COMPLETO
+    // DASHBOARD COMPLETO - CORREGIDO
     GET_DASHBOARD_DATA: `
         query GetDashboardData {
             clients: allClients {
@@ -715,7 +744,7 @@ export const QUERIES = {
                 CompanyID
                 OrderStatusID
                 Total
-                Date
+                Date_
             }
             itemstock: allItemstock {
                 ItemID
@@ -1204,11 +1233,66 @@ export const MUTATIONS = {
         }
     `,
 
+    // ======= ORDENES - NUEVAS MUTACIONES CORREGIDAS =======
     CREATE_ORDER: `
         mutation CreateOrder($input: OrdersCreate!) {
             createOrder(data: $input) {
                 OrderID
+                CompanyID
+                BranchID
+                Date_
+                ClientID
+                CarID
+                IsService
+                ServiceTypeID
+                Mileage
+                NextServiceMileage
+                Notes
+                SaleConditionID
+                DiscountID
+                Subtotal
+                Total
+                VAT
+                UserID
+                DocumentID
+                PriceListID
+                OrderStatusID
+                WarehouseID
             }
+        }
+    `,
+
+    UPDATE_ORDER: `
+        mutation UpdateOrder($orderID: Int!, $input: OrdersUpdate!) {
+            updateOrder(orderID: $orderID, data: $input) {
+                OrderID
+                CompanyID
+                BranchID
+                Date_
+                ClientID
+                CarID
+                IsService
+                ServiceTypeID
+                Mileage
+                NextServiceMileage
+                Notes
+                SaleConditionID
+                DiscountID
+                Subtotal
+                Total
+                VAT
+                UserID
+                DocumentID
+                PriceListID
+                OrderStatusID
+                WarehouseID
+            }
+        }
+    `,
+
+    DELETE_ORDER: `
+        mutation DeleteOrder($orderID: Int!) {
+            deleteOrder(orderID: $orderID)
         }
     `
 };
@@ -1317,6 +1401,79 @@ export const supplierHelpers = {
     }
 };
 
+// ===== FUNCIONES AUXILIARES DE ÓRDENES - NUEVAS =====
+export const orderHelpers = {
+    validateOrderData(orderData) {
+        const errors = [];
+
+        // Campos requeridos
+        if (!orderData.CompanyID) errors.push("ID de compañía es requerido");
+        if (!orderData.BranchID) errors.push("ID de sucursal es requerido");
+        if (!orderData.Date_) errors.push("Fecha es requerida");
+        if (!orderData.ClientID) errors.push("Cliente es requerido");
+        if (!orderData.SaleConditionID) errors.push("Condición de venta es requerida");
+        if (!orderData.DiscountID) errors.push("Descuento es requerido");
+        if (orderData.Subtotal === undefined || orderData.Subtotal === null) errors.push("Subtotal es requerido");
+        if (orderData.Total === undefined || orderData.Total === null) errors.push("Total es requerido");
+        if (orderData.VAT === undefined || orderData.VAT === null) errors.push("IVA es requerido");
+        if (!orderData.UserID) errors.push("Usuario es requerido");
+        if (!orderData.DocumentID) errors.push("ID de documento es requerido");
+        if (!orderData.PriceListID) errors.push("Lista de precios es requerida");
+        if (!orderData.OrderStatusID) errors.push("Estado de orden es requerido");
+        if (!orderData.WarehouseID) errors.push("Depósito es requerido");
+
+        // Validaciones de tipo
+        if (orderData.Subtotal && orderData.Subtotal < 0) errors.push("El subtotal no puede ser negativo");
+        if (orderData.Total && orderData.Total < 0) errors.push("El total no puede ser negativo");
+        if (orderData.VAT && orderData.VAT < 0) errors.push("El IVA no puede ser negativo");
+        if (orderData.Mileage && orderData.Mileage < 0) errors.push("El kilometraje no puede ser negativo");
+
+        return errors;
+    },
+
+    formatOrderForDisplay(order) {
+        return {
+            ...order,
+            FormattedDate: order.Date_ ? new Date(order.Date_).toLocaleDateString() : '',
+            FormattedTotal: order.Total ? `${order.Total.toFixed(2)}` : '$0.00',
+            ServiceText: order.IsService ? 'Sí' : 'No',
+            StatusDisplay: order.OrderStatusID === 1 ? 'Pendiente' :
+                order.OrderStatusID === 2 ? 'En proceso' :
+                    order.OrderStatusID === 3 ? 'Completada' : 'Desconocido'
+        };
+    },
+
+    prepareOrderData(formData) {
+        return {
+            CompanyID: parseInt(formData.CompanyID),
+            BranchID: parseInt(formData.BranchID),
+            Date_: new Date(formData.Date_),
+            ClientID: parseInt(formData.ClientID),
+            SaleConditionID: parseInt(formData.SaleConditionID),
+            DiscountID: parseInt(formData.DiscountID),
+            Subtotal: parseFloat(formData.Subtotal),
+            Total: parseFloat(formData.Total),
+            VAT: parseFloat(formData.VAT),
+            UserID: parseInt(formData.UserID),
+            DocumentID: parseInt(formData.DocumentID),
+            PriceListID: parseInt(formData.PriceListID),
+            OrderStatusID: parseInt(formData.OrderStatusID),
+            WarehouseID: parseInt(formData.WarehouseID),
+
+            // Campos opcionales
+            CarID: formData.CarID ? parseInt(formData.CarID) : null,
+            IsService: Boolean(formData.IsService),
+            ServiceTypeID: formData.ServiceTypeID ? parseInt(formData.ServiceTypeID) : null,
+            Mileage: formData.Mileage ? parseInt(formData.Mileage) : null,
+            NextServiceMileage: formData.NextServiceMileage ? parseInt(formData.NextServiceMileage) : null,
+            Notes: formData.Notes?.trim() || null,
+
+            // Items de la orden
+            Items: formData.Items || []
+        };
+    }
+};
+
 export const dashboardHelpers = {
     processDashboardData(data, companyId = null) {
         const clients = data.clients || [];
@@ -1342,10 +1499,10 @@ export const dashboardHelpers = {
         const currentMonth = now.getMonth();
         const currentYear = now.getFullYear();
 
-        // Filtrar órdenes del mes actual
+        // Filtrar órdenes del mes actual - CORREGIDO
         const monthlyOrders = filteredOrders.filter(order => {
-            if (!order.Date) return false;
-            const orderDate = new Date(order.Date);
+            if (!order.Date_) return false; // Corregido: usar Date_ en lugar de Date
+            const orderDate = new Date(order.Date_);
             return orderDate.getMonth() === currentMonth &&
                 orderDate.getFullYear() === currentYear;
         });
@@ -2280,14 +2437,138 @@ export const orderStatusOperations = {
     }
 };
 
+// ===== FUNCIONES DE ÓRDENES - NUEVAS Y COMPLETAS =====
 export const orderOperations = {
     async getAllOrders() {
-        const data = await graphqlClient.query(QUERIES.GET_ALL_ORDERS);
-        return data.allOrders || [];
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_ORDERS);
+            return data.allOrders || [];
+        } catch (error) {
+            console.error("Error obteniendo órdenes:", error);
+            throw error;
+        }
     },
+
+    async getOrderById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ORDER_BY_ID, { id });
+            return data.ordersById;
+        } catch (error) {
+            console.error("Error obteniendo orden:", error);
+            throw error;
+        }
+    },
+
     async createOrder(orderData) {
-        const data = await graphqlClient.mutation(MUTATIONS.CREATE_ORDER, { input: orderData });
-        return data.createOrder;
+        try {
+            // Validar datos requeridos
+            const errors = orderHelpers.validateOrderData(orderData);
+            if (errors.length > 0) {
+                throw new Error(`Errores de validación: ${errors.join(', ')}`);
+            }
+
+            // Preparar datos
+            const preparedData = orderHelpers.prepareOrderData(orderData);
+
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_ORDER, {
+                input: preparedData
+            });
+
+            return data.createOrder;
+        } catch (error) {
+            console.error("Error creando orden:", error);
+            throw error;
+        }
+    },
+
+    async updateOrder(id, orderData) {
+        try {
+            // Preparar datos para actualización (solo campos no nulos)
+            const preparedData = {};
+
+            if (orderData.CompanyID) preparedData.CompanyID = parseInt(orderData.CompanyID);
+            if (orderData.BranchID) preparedData.BranchID = parseInt(orderData.BranchID);
+            if (orderData.Date_) preparedData.Date_ = new Date(orderData.Date_);
+            if (orderData.ClientID) preparedData.ClientID = parseInt(orderData.ClientID);
+            if (orderData.CarID) preparedData.CarID = parseInt(orderData.CarID);
+            if (orderData.IsService !== undefined) preparedData.IsService = Boolean(orderData.IsService);
+            if (orderData.ServiceTypeID) preparedData.ServiceTypeID = parseInt(orderData.ServiceTypeID);
+            if (orderData.Mileage) preparedData.Mileage = parseInt(orderData.Mileage);
+            if (orderData.NextServiceMileage) preparedData.NextServiceMileage = parseInt(orderData.NextServiceMileage);
+            if (orderData.Notes !== undefined) preparedData.Notes = orderData.Notes?.trim() || null;
+            if (orderData.SaleConditionID) preparedData.SaleConditionID = parseInt(orderData.SaleConditionID);
+            if (orderData.DiscountID) preparedData.DiscountID = parseInt(orderData.DiscountID);
+            if (orderData.Subtotal !== undefined) preparedData.Subtotal = parseFloat(orderData.Subtotal);
+            if (orderData.Total !== undefined) preparedData.Total = parseFloat(orderData.Total);
+            if (orderData.VAT !== undefined) preparedData.VAT = parseFloat(orderData.VAT);
+            if (orderData.UserID) preparedData.UserID = parseInt(orderData.UserID);
+            if (orderData.DocumentID) preparedData.DocumentID = parseInt(orderData.DocumentID);
+            if (orderData.OrderStatusID) preparedData.OrderStatusID = parseInt(orderData.OrderStatusID);
+            if (orderData.PriceListID) preparedData.PriceListID = parseInt(orderData.PriceListID);
+            if (orderData.WarehouseID) preparedData.WarehouseID = parseInt(orderData.WarehouseID);
+
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_ORDER, {
+                orderID: id,
+                input: preparedData
+            });
+
+            return data.updateOrder;
+        } catch (error) {
+            console.error("Error actualizando orden:", error);
+            throw error;
+        }
+    },
+
+    async deleteOrder(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_ORDER, {
+                orderID: id
+            });
+
+            return data.deleteOrder;
+        } catch (error) {
+            console.error("Error eliminando orden:", error);
+            throw error;
+        }
+    },
+
+    // Función auxiliar para obtener datos del formulario de órdenes
+    async getOrderFormData() {
+        try {
+            const [
+                clients,
+                cars,
+                saleConditions,
+                discounts,
+                priceLists,
+                warehouses,
+                serviceTypes,
+                orderStatus
+            ] = await Promise.all([
+                clientOperations.getAllClients(),
+                carOperations.getAllCars(),
+                saleConditionOperations.getAllSaleConditions(),
+                discountOperations.getAllDiscounts(),
+                pricelistOperations.getAllPricelists(),
+                warehouseOperations.getAllWarehouses(),
+                serviceTypeOperations.getAllServicetypes(),
+                orderStatusOperations.getAllOrderstatus()
+            ]);
+
+            return {
+                clients: clients.filter(c => c.IsActive),
+                cars,
+                saleConditions: saleConditions.filter(sc => sc.IsActive),
+                discounts,
+                priceLists: priceLists.filter(pl => pl.IsActive),
+                warehouses,
+                serviceTypes,
+                orderStatus
+            };
+        } catch (error) {
+            console.error("Error obteniendo datos del formulario de órdenes:", error);
+            throw error;
+        }
     }
 };
 
@@ -2315,8 +2596,18 @@ export const diagnosticGraphQL = async () => {
         return false;
     }
 
-    // 3. Probar datos del formulario
-    console.log("3. Probando datos del formulario...");
+    // 3. Probar consulta de órdenes
+    console.log("3. Probando consulta de órdenes...");
+    try {
+        const orders = await orderOperations.getAllOrders();
+        console.log("   ✅ Órdenes obtenidas:", orders.length);
+    } catch (error) {
+        console.error("   ❌ Error obteniendo órdenes:", error.message);
+        return false;
+    }
+
+    // 4. Probar datos del formulario
+    console.log("4. Probando datos del formulario...");
     try {
         const formData = await clientOperations.getClientFormData();
         console.log("   ✅ Tipos de documento:", formData.documentTypes.length);

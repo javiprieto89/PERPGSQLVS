@@ -1,4 +1,4 @@
-# app/graphql/schemas/orders.py
+﻿# app/graphql/schemas/orders.py
 import strawberry
 from typing import List, Optional
 from datetime import datetime
@@ -14,23 +14,24 @@ from app.graphql.schemas.orderdetails import (
 class OrdersCreate:
     CompanyID: int
     BranchID: int
-    Date: datetime
-    ClientID: Optional[int] = None
+    Date_: datetime  # Mapea al campo Date_ del modelo SQLAlchemy
+    ClientID: int
+    SaleConditionID: int
+    DiscountID: int
+    Subtotal: float
+    Total: float
+    VAT: float
+    UserID: int
+    DocumentID: int
+    PriceListID: int
+    OrderStatusID: int
+    WarehouseID: int
     CarID: Optional[int] = None
     IsService: Optional[bool] = None
-    ServiceType: Optional[str] = None
+    ServiceTypeID: Optional[int] = None
     Mileage: Optional[int] = None
     NextServiceMileage: Optional[int] = None
     Notes: Optional[str] = None
-    SaleConditionID: Optional[int] = None
-    DiscountID: Optional[int] = None
-    Subtotal: Optional[float] = None
-    Total: Optional[float] = None
-    VAT: Optional[float] = None
-    UserID: Optional[int] = None
-    DocumentID: Optional[int] = None
-    OrderStatusID: Optional[int] = None
-    PriceListID: Optional[int] = None
     Items: List[OrderDetailsCreate] = field(default_factory=list)
 
 
@@ -38,11 +39,11 @@ class OrdersCreate:
 class OrdersUpdate:
     CompanyID: Optional[int] = None
     BranchID: Optional[int] = None
-    Date: Optional[datetime] = None
+    Date_: Optional[datetime] = None
     ClientID: Optional[int] = None
     CarID: Optional[int] = None
     IsService: Optional[bool] = None
-    ServiceType: Optional[str] = None
+    ServiceTypeID: Optional[int] = None
     Mileage: Optional[int] = None
     NextServiceMileage: Optional[int] = None
     Notes: Optional[str] = None
@@ -55,32 +56,31 @@ class OrdersUpdate:
     DocumentID: Optional[int] = None
     OrderStatusID: Optional[int] = None
     PriceListID: Optional[int] = None
+    WarehouseID: Optional[int] = None
     Items: Optional[List[OrderDetailsUpdate]] = None
 
 
 @strawberry.type
 class OrdersInDB:
     OrderID: int
-    CompanyID: Optional[int]
-    BranchID: Optional[int]
-    Date: Optional[datetime]
-    ClientID: Optional[int]
-    CarID: Optional[int]
-    IsService: Optional[bool]
-    ServiceType: Optional[str]
-    Mileage: Optional[int]
-    NextServiceMileage: Optional[int]
-    Notes: Optional[str]
-    SaleConditionID: Optional[int]
-    DiscountID: Optional[int]
-    Subtotal: Optional[float]
-    Total: Optional[float]
-    VAT: Optional[float]
-    UserID: Optional[int]
-    DocumentID: Optional[int]    
-    PriceListID: Optional[int]
-    ServiceTypeID: Optional[int]
-    OrderStatusID: Optional[int]
-    WarehouseID: Optional[int]
+    CompanyID: int
+    BranchID: int
+    Date_: datetime  # Mapea al campo Date_ del modelo SQLAlchemy
+    ClientID: int
+    SaleConditionID: int
+    DiscountID: int
+    Subtotal: float
+    Total: float
+    VAT: float
+    UserID: int
+    DocumentID: int    
+    PriceListID: int
+    OrderStatusID: int
+    WarehouseID: int
+    CarID: Optional[int] = None
+    IsService: Optional[bool] = None
+    ServiceTypeID: Optional[int] = None
+    Mileage: Optional[int] = None
+    NextServiceMileage: Optional[int] = None
+    Notes: Optional[str] = None
     Items: Optional[List[OrderDetailsInDB]] = None
-

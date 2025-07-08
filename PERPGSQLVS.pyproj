@@ -15971,6 +15971,7 @@
     <Content Include="frontend\src\components\CarModelSearchModal.jsx" />
     <Content Include="frontend\src\components\ClientSearchModal.jsx" />
     <Content Include="frontend\src\components\Header.jsx" />
+    <Content Include="frontend\src\components\ItemConfirmationModal.jsx" />
     <Content Include="frontend\src\components\ItemSearchModal.jsx" />
     <Content Include="frontend\src\components\ItemSelectWindow.jsx" />
     <Content Include="frontend\src\components\Layout.jsx" />
