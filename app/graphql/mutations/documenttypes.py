@@ -1,4 +1,4 @@
-# app/graphql/mutations/documenttypes.py
+﻿# app/graphql/mutations/documenttypes.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.documenttypes import (

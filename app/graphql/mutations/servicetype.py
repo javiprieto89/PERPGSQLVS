@@ -1,4 +1,4 @@
-# app/graphql/mutations/servicetype.py
+﻿# app/graphql/mutations/servicetype.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.servicetype import (

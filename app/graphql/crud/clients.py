@@ -37,7 +37,7 @@ def delete_clients(db: Session, clientid: int):
     obj = get_clients_by_id(db, clientid)
     if obj:
         # Check for existing orders before deleting
-        has_orders = db.query(exists().where(Orders.ClientID == clientid)).scalar()
+        has_orders = db.query(Orders).filter(Orders.ClientID == clientid).first() is not None
         if has_orders:
             raise ValueError("Client has associated orders and cannot be deleted")
         db.delete(obj)

@@ -1,4 +1,4 @@
-# app/graphql/schemas/delete_response.py
+﻿# app/graphql/schemas/delete_response.py
 import strawberry
 
 
