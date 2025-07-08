@@ -1,5 +1,9 @@
 from sqlalchemy.orm import Session
 from app.models.warehouses import Warehouses
+from sqlalchemy import exists
+from app.models.items import Items
+from app.models.orderdetails import OrderDetails
+from app.models.orders import Orders
 from app.graphql.schemas.warehouses import WarehousesCreate, WarehousesUpdate
 
 
@@ -33,6 +37,15 @@ def update_warehouses(db: Session, warehouseid: int, data: WarehousesUpdate):
 def delete_warehouses(db: Session, warehouseid: int):
     obj = get_warehouses_by_id(db, warehouseid)
     if obj:
+        linked_items = db.query(exists().where(Items.WarehouseID == warehouseid)).scalar()
+        linked_orders = db.query(exists().where(Orders.WarehouseID == warehouseid)).scalar()
+        linked_order_details = db.query(
+            exists().where(OrderDetails.WarehouseID == warehouseid)
+        ).scalar()
+        if linked_items or linked_orders or linked_order_details:
+            raise ValueError(
+                "Cannot delete warehouse because it is referenced by existing records"
+            )
         db.delete(obj)
         db.commit()
     return obj

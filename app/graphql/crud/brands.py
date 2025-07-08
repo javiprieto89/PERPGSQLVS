@@ -1,5 +1,7 @@
 # brands.py
 from sqlalchemy.orm import Session
+from sqlalchemy import exists
+from app.models.items import Items
 from app.models.brands import Brands
 from app.graphql.schemas.brands import BrandsCreate, BrandsUpdate
 
@@ -34,6 +36,11 @@ def update_brands(db: Session, brandid: int, data: BrandsUpdate):
 def delete_brands(db: Session, brandid: int):
     obj = get_brands_by_id(db, brandid)
     if obj:
+        linked_items = db.query(exists().where(Items.BrandID == brandid)).scalar()
+        if linked_items:
+            raise ValueError(
+                "Cannot delete brand because it is referenced by existing items"
+            )
         db.delete(obj)
         db.commit()
     return obj

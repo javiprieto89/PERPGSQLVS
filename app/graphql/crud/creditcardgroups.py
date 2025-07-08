@@ -1,6 +1,8 @@
 # app/graphql/crud/creditcardgroups.py
 
 from sqlalchemy.orm import Session
+from sqlalchemy import exists
+from app.models.creditcards import CreditCards
 from app.models.creditcardgroups import CreditCardGroups
 from app.graphql.schemas.creditcardgroups import CreditCardGroupsCreate, CreditCardGroupsUpdate
 
@@ -39,6 +41,13 @@ def update_creditcardgroup(db: Session, id: int, data: CreditCardGroupsUpdate):
 def delete_creditcardgroup(db: Session, id: int):
     obj = get_creditcardgroup_by_id(db, id)
     if obj:
+        linked_cards = db.query(
+            exists().where(CreditCards.CreditCardGroupID == id)
+        ).scalar()
+        if linked_cards:
+            raise ValueError(
+                "Cannot delete credit card group because it is referenced by existing credit cards"
+            )
         db.delete(obj)
         db.commit()
     return obj
