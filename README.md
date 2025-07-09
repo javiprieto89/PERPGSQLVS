@@ -1,6 +1,6 @@
 # PERPGSQLVS
 
-PERPGSQLVS es un pequeño proyecto full-stack compuesto por un backend basado en Starlette y un frontend en React. La API expone endpoints GraphQL y REST, mientras que el frontend utiliza Vite y Tailwind CSS.
+PERPGSQLVS es un pequeño proyecto full-stack compuesto por un backend basado en Python GraphQL y un frontend en React. La API expone endpoints GraphQL, mientras que el frontend utiliza Vite y Tailwind CSS.
 
 ## Configuración
 
@@ -8,7 +8,7 @@ Copiá el archivo `.env.template` como `.env` y ajustá las variables necesarias
 
 ## Estructura del proyecto
 
-- `app/`: lógica de negocio, modelos, resolvers GraphQL, API REST
+- `app/`: lógica de negocio, modelos, resolvers GraphQL, esquemas
 - `frontend/`: aplicación React con Vite y Tailwind CSS
 - `db/`: scripts y diagramas de la base de datos
 
@@ -40,7 +40,19 @@ sqlcmd -S .\SQLEXPRESS -i db\init_database.sql
 2. Archivo → Abrir → `init_database.sql`
 3. Ejecutá todo el script (F5)
 
-## SETUP
+## INICIO RÁPIDO
+
+Para desarrollo diario, usá el **inicio rápido** que levanta ambos servidores inmediatamente:
+
+```bash
+python deploy_full_stack.py
+```
+
+Esto iniciará:
+- **Backend** (Python GraphQL): http://localhost:8000
+- **Frontend** (React + Vite): http://localhost:5173
+
+## SETUP MANUAL
 
 ### Backend
 
@@ -53,7 +65,7 @@ perpgsqlvs\scripts\activate  # en Windows
 # instalar dependencias
 pip install -r requirements.txt
 
-# iniciar la API
+# iniciar la API GraphQL
 uvicorn app.main:app --reload
 ```
 
@@ -76,16 +88,66 @@ Ejecutá `npm run lint` desde la raíz del repositorio o dentro de `frontend/` p
 
 ## DEPLOYMENT
 
-El script `deploy.py` automatiza un flujo básico de despliegue. Ejecutá:
+El script `deploy_full_stack.py` incluye varios modos para diferentes situaciones:
 
+### 🚀 Inicio rápido (recomendado para desarrollo)
 ```bash
-python deploy.py
+python deploy_full_stack.py        # Sin parámetros = inicio rápido
+python deploy_full_stack.py start  # Equivalente
+```
+**Qué hace:** Inicia backend y frontend inmediatamente sin verificaciones pesadas.
+
+### 🔧 Setup completo (primera vez o cambios importantes)
+```bash
+python deploy_full_stack.py setup
+```
+**Qué hace:** 
+- Verificaciones completas de prerequisitos
+- Instalación/actualización de dependencias
+- Build de producción del frontend
+- Configuración de archivos `.env`
+- Actualización de base de datos
+- Inicio de servidores
+
+### 🎯 Modos específicos
+```bash
+python deploy_full_stack.py backend-only   # Solo servidor Python GraphQL
+python deploy_full_stack.py frontend-only  # Solo TailwindCSS + Vite
+python deploy_full_stack.py check          # Solo verificar prerequisitos
+python deploy_full_stack.py help           # Mostrar ayuda completa
 ```
 
-O directamente para producción:
+## URLs del proyecto
 
-```bash
-python deploy.py start
-```
+Una vez iniciado, tendrás acceso a:
 
-Esto verifica dependencias, instala paquetes, opcionalmente realiza un backup y ejecuta la API con Uvicorn.
+- **Frontend**: http://localhost:5173
+- **Backend GraphQL**: http://localhost:8000
+- **GraphQL Playground**: http://localhost:8000/docs (o /graphql dependiendo de tu configuración)
+
+## Tecnologías utilizadas
+
+### Backend
+- **Python** con **uvicorn**
+- **GraphQL** (Strawberry o similar)
+- **SQL Server** como base de datos
+- **SQLAlchemy** para ORM
+
+### Frontend  
+- **React** con **Vite**
+- **TailwindCSS** para estilos
+- **NPM** para gestión de paquetes
+
+## Flujo de trabajo recomendado
+
+1. **Primer setup**: `python deploy_full_stack.py setup`
+2. **Desarrollo diario**: `python deploy_full_stack.py`
+3. **Solo una parte**: `python deploy_full_stack.py backend-only` o `frontend-only`
+4. **Verificar entorno**: `python deploy_full_stack.py check`
+
+## Scripts adicionales
+
+El proyecto también incluye:
+- `deploy.py`: Script original solo para backend
+- `Git-PushToBranch.ps1`: Script PowerShell para Git
+- `Kill-Port8000.ps1`: Script para liberar el puerto 8000

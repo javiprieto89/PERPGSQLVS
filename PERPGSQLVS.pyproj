@@ -239,7 +239,6 @@
     <Compile Include="app\utils\generic_filters.py" />
     <Compile Include="app\utils\pagination.py" />
     <Compile Include="frontend\node_modules\flatted\python\flatted.py" />
-    <Compile Include="PERPGSQLVS.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\annotated_types\test_cases.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\annotated_types\__init__.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\anyio\abc\_eventloop.py" />
@@ -1987,7 +1986,7 @@
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\ext\dataclasses\dataclasses.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\ext\dataclasses\__init__.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\ext\mypy_plugin.py" />
-    <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__init__.py" />    
+    <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__init__.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\federation\argument.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\federation\enum.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\federation\field.py" />
@@ -16030,6 +16029,7 @@
     <Content Include="frontend\vite.config.js" />
     <Content Include="Git-PushToBranch.ps1" />
     <Content Include="Kill-Port8000.ps1" />
+    <Content Include="Listar-SinGitIgnore.ps1" />
     <Content Include="node_modules\.bin\uuid" />
     <Content Include="node_modules\.bin\uuid.cmd" />
     <Content Include="node_modules\.bin\uuid.ps1" />
@@ -18597,7 +18597,7 @@
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\ext\dataclasses\__pycache__\__init__.cpython-313.pyc" />
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\ext\LICENSE" />
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__pycache__\mypy_plugin.cpython-313.pyc" />
-    <Content Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__pycache__\__init__.cpython-313.pyc" />    
+    <Content Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__pycache__\__init__.cpython-313.pyc" />
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\federation\__pycache__\argument.cpython-313.pyc" />
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\federation\__pycache__\enum.cpython-313.pyc" />
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\federation\__pycache__\field.cpython-313.pyc" />
@@ -20050,7 +20050,7 @@
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\ext\" />
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\ext\dataclasses\" />
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\ext\dataclasses\__pycache__\" />
-    <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__pycache__\" />    
+    <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__pycache__\" />
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\federation\" />
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\federation\__pycache__\" />
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\field_extensions\" />
