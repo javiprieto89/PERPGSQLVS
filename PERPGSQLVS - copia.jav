@@ -1987,7 +1987,10 @@
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\ext\dataclasses\dataclasses.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\ext\dataclasses\__init__.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\ext\mypy_plugin.py" />
-    <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__init__.py" />    
+    <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__init__.py" />
+    <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\fastapi\context.py" />
+    <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\fastapi\router.py" />
+    <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\fastapi\__init__.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\federation\argument.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\federation\enum.py" />
     <Compile Include="perpgsqlvs\Lib\site-packages\strawberry\federation\field.py" />
@@ -18597,7 +18600,10 @@
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\ext\dataclasses\__pycache__\__init__.cpython-313.pyc" />
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\ext\LICENSE" />
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__pycache__\mypy_plugin.cpython-313.pyc" />
-    <Content Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__pycache__\__init__.cpython-313.pyc" />    
+    <Content Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__pycache__\__init__.cpython-313.pyc" />
+    <Content Include="perpgsqlvs\Lib\site-packages\strawberry\fastapi\__pycache__\context.cpython-313.pyc" />
+    <Content Include="perpgsqlvs\Lib\site-packages\strawberry\fastapi\__pycache__\router.cpython-313.pyc" />
+    <Content Include="perpgsqlvs\Lib\site-packages\strawberry\fastapi\__pycache__\__init__.cpython-313.pyc" />
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\federation\__pycache__\argument.cpython-313.pyc" />
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\federation\__pycache__\enum.cpython-313.pyc" />
     <Content Include="perpgsqlvs\Lib\site-packages\strawberry\federation\__pycache__\field.cpython-313.pyc" />
@@ -20050,7 +20056,9 @@
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\ext\" />
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\ext\dataclasses\" />
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\ext\dataclasses\__pycache__\" />
-    <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__pycache__\" />    
+    <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\ext\__pycache__\" />
+    <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\fastapi\" />
+    <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\fastapi\__pycache__\" />
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\federation\" />
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\federation\__pycache__\" />
     <Folder Include="perpgsqlvs\Lib\site-packages\strawberry\field_extensions\" />
