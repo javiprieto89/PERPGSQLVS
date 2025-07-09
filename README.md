@@ -1,57 +1,91 @@
 # PERPGSQLVS
 
-PERPGSQLVS is a small full‑stack project composed of a Starlette‑based back‑end and a React front‑end. The API exposes GraphQL and REST endpoints while the front‑end uses Vite and Tailwind CSS.
+PERPGSQLVS es un pequeño proyecto full-stack compuesto por un backend basado en Starlette y un frontend en React. La API expone endpoints GraphQL y REST, mientras que el frontend utiliza Vite y Tailwind CSS.
 
-## Configuration
+## Configuración
 
-Copy `.env.template` to `.env` and adjust the variables for your environment. At minimum set `SQLALCHEMY_DATABASE_URL`, `ENVIRONMENT`, `DEBUG` and `SECRET_KEY`.
+Copiá el archivo `.env.template` como `.env` y ajustá las variables necesarias para tu entorno. Al menos deberías establecer `SQLALCHEMY_DATABASE_URL`, `ENVIRONMENT`, `DEBUG` y `SECRET_KEY`.
 
-## Setup
+## Estructura del proyecto
 
-### Back‑end
+- `app/`: lógica de negocio, modelos, resolvers GraphQL, API REST
+- `frontend/`: aplicación React con Vite y Tailwind CSS
+- `db/`: scripts y diagramas de la base de datos
+
+## Base de datos (carpeta `db/`)
+
+Incluye todo lo necesario para crear y entender la base:
+
+- `init_database.sql`: script SQL completo que crea todas las tablas, relaciones y datos de prueba
+- `LubricentroDB2.dbml`: modelo en formato dbml para importar en [dbdiagram.io](https://dbdiagram.io)
+- `LubricentroDB2_diagrama.png`: imagen del diagrama entidad-relación generado a partir del .dbml
+
+### Restaurar base desde SQL Server Management Studio (SSMS)
+
+1. Abrí SSMS y conectate a tu servidor
+2. Abrí el archivo `init_database.sql` desde la carpeta `db/`
+3. Ejecutalo (Ctrl + E o botón "Ejecutar")
+
+### Restaurar desde consola con `sqlcmd`
 
 ```bash
-# create and activate a virtual environment
-python -m venv perpenv
-perpenv\scripts\activate  # on Windows
-# or source perpenv/bin/activate on Linux/macOS
+sqlcmd -S .\SQLEXPRESS -i db\init_database.sql
+```
 
-# install Python dependencies
+> Cambiá `.\SQLEXPRESS` por el nombre de tu servidor SQL si es diferente.
+
+### Restaurar desde Azure Data Studio
+
+1. Abrí Azure Data Studio
+2. Archivo → Abrir → `init_database.sql`
+3. Ejecutá todo el script (F5)
+
+## SETUP
+
+### Backend
+
+```bash
+# crear y activar entorno virtual
+python -m venv perpgsqlvs
+perpgsqlvs\scripts\activate  # en Windows
+# o source perpgsqlvs/bin/activate en Linux/macOS
+
+# instalar dependencias
 pip install -r requirements.txt
 
-# start the API
+# iniciar la API
 uvicorn app.main:app --reload
 ```
 
-### Front‑end
+### Frontend
 
 ```bash
 cd frontend
 npm install
 
-# watch Tailwind and generate CSS
+# compilar Tailwind en modo observación
 npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch
 
-# start the development server
+# iniciar servidor de desarrollo
 npm run dev
 ```
 
 ### ESLint
 
-Run `npm run lint` from the repository root or inside `frontend/` to lint the JavaScript/React code.
+Ejecutá `npm run lint` desde la raíz del repositorio o dentro de `frontend/` para analizar el código JS/React.
 
-## Deployment
+## DEPLOYMENT
 
-The `deploy.py` script automates a simple deployment workflow. Execute:
+El script `deploy.py` automatiza un flujo básico de despliegue. Ejecutá:
 
 ```bash
 python deploy.py
 ```
 
-or start a production server directly with:
+O directamente para producción:
 
 ```bash
 python deploy.py start
 ```
 
-This checks prerequisites, installs dependencies, optionally backs up the current deployment and runs the API under Uvicorn.
+Esto verifica dependencias, instala paquetes, opcionalmente realiza un backup y ejecuta la API con Uvicorn.
