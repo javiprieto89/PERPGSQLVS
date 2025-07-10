@@ -305,6 +305,7 @@ export const QUERIES = {
             }
         }
     `,
+
     GET_ROLE_BY_ID: `
         query GetRoleById($id: Int!) {
             rolesById(id: $id) {
@@ -313,7 +314,6 @@ export const QUERIES = {
             }
         }
     `,
-
     // ROLES Y USUARIOS (UserAccess)
     GET_ALL_USERACCESS: `
         query GetAllUseraccess {
@@ -325,6 +325,7 @@ export const QUERIES = {
             }
         }
     `,
+
     GET_USERACCESS_BY_ID: `
         query GetUseraccessById($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
             useraccessById(userID: $userID, companyID: $companyID, branchID: $branchID, roleID: $roleID) {
@@ -2113,6 +2114,30 @@ export const userAccessOperations = {
             return res.deleteUseraccess;
         } catch (error) {
             console.error("Error eliminando asignación:", error);
+            throw error;
+        }
+    }
+};
+
+export const roleOperations = {
+    async getAllRoles() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_ROLES);
+            return data.allRoles || [];
+        } catch (error) {
+            console.error("Error obteniendo roles:", error);
+            throw error;
+        }
+    }
+};
+
+export const userAccessOperations = {
+    async getAllUserAccess() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_USERACCESS);
+            return data.allUseraccess || [];
+        } catch (error) {
+            console.error("Error obteniendo roles y usuarios:", error);
             throw error;
         }
     }
