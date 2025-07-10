@@ -3,16 +3,20 @@ import { useEffect, useState } from "react";
 import { userAccessOperations } from "../utils/graphqlClient";
 import UserAccessForm from "./UserAccessForm";
 import { openReactWindow } from "../utils/openReactWindow";
+import TableFilters from "../components/TableFilters";
 
 export default function RolesUsers() {
+    const [allRecords, setAllRecords] = useState([]);
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showFilters, setShowFilters] = useState(false);
 
     const loadData = async () => {
         try {
             setLoading(true);
             const data = await userAccessOperations.getAllUserAccess();
+            setAllRecords(data);
             setRecords(data);
         } catch (err) {
             console.error("Error cargando asignaciones:", err);
@@ -33,6 +37,10 @@ export default function RolesUsers() {
         window.addEventListener('message', handler);
         return () => window.removeEventListener('message', handler);
     }, []);
+
+    const handleFilterChange = (filtered) => {
+        setRecords(filtered);
+    };
 
     const handleCreate = () => {
         openReactWindow(
@@ -82,7 +90,25 @@ export default function RolesUsers() {
 
     return (
         <div className="p-6">
-            <h1 className="text-3xl font-bold mb-4">Roles y Usuarios</h1>
+            <div className="flex items-center justify-between mb-4">
+                <h1 className="text-3xl font-bold">Roles y Usuarios</h1>
+                <div className="flex space-x-2">
+                    <button onClick={() => setShowFilters(!showFilters)} className="px-4 py-2 bg-purple-600 text-white rounded">
+                        {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
+                    </button>
+                    <button onClick={loadData} className="px-4 py-2 bg-blue-600 text-white rounded">
+                        Recargar
+                    </button>
+                    <button onClick={handleCreate} className="px-4 py-2 bg-green-600 text-white rounded">
+                        Nueva Asignación
+                    </button>
+                </div>
+            </div>
+            {showFilters && (
+                <div className="mb-6">
+                    <TableFilters modelName="useraccess" data={allRecords} onFilterChange={handleFilterChange} />
+                </div>
+            )}
             {loading ? (
                 <p>Cargando...</p>
             ) : error ? (
@@ -102,20 +128,6 @@ export default function RolesUsers() {
                     ))}
                 </ul>
             )}
-            <div className="mt-4 space-x-2">
-                <button
-                    onClick={loadData}
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
-                >
-                    Recargar
-                </button>
-                <button
-                    onClick={handleCreate}
-                    className="px-4 py-2 bg-green-600 text-white rounded"
-                >
-                    Nueva Asignación
-                </button>
-            </div>
         </div>
     );
 }

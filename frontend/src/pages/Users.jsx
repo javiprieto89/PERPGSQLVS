@@ -3,16 +3,20 @@ import { useEffect, useState } from "react";
 import { userOperations } from "../utils/graphqlClient";
 import UserForm from "./UserForm";
 import { openReactWindow } from "../utils/openReactWindow";
+import TableFilters from "../components/TableFilters";
 
 export default function Users() {
+    const [allUsers, setAllUsers] = useState([]);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showFilters, setShowFilters] = useState(false);
 
     const loadUsers = async () => {
         try {
             setLoading(true);
             const data = await userOperations.getAllUsers();
+            setAllUsers(data);
             setUsers(data);
         } catch (err) {
             console.error("Error cargando usuarios:", err);
@@ -33,6 +37,10 @@ export default function Users() {
         window.addEventListener('message', handler);
         return () => window.removeEventListener('message', handler);
     }, []);
+
+    const handleFilterChange = (filtered) => {
+        setUsers(filtered);
+    };
 
     const handleCreate = () => {
         openReactWindow(
@@ -77,7 +85,34 @@ export default function Users() {
 
     return (
         <div className="p-6">
-            <h1 className="text-3xl font-bold mb-4">Usuarios</h1>
+            <div className="flex items-center justify-between mb-4">
+                <h1 className="text-3xl font-bold">Usuarios</h1>
+                <div className="flex space-x-2">
+                    <button
+                        onClick={() => setShowFilters(!showFilters)}
+                        className="px-4 py-2 bg-purple-600 text-white rounded"
+                    >
+                        {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
+                    </button>
+                    <button
+                        onClick={loadUsers}
+                        className="px-4 py-2 bg-blue-600 text-white rounded"
+                    >
+                        Recargar
+                    </button>
+                    <button
+                        onClick={handleCreate}
+                        className="px-4 py-2 bg-green-600 text-white rounded"
+                    >
+                        Nuevo Usuario
+                    </button>
+                </div>
+            </div>
+            {showFilters && (
+                <div className="mb-6">
+                    <TableFilters modelName="users" data={allUsers} onFilterChange={handleFilterChange} />
+                </div>
+            )}
             {loading ? (
                 <p>Cargando...</p>
             ) : error ? (
@@ -97,20 +132,6 @@ export default function Users() {
                     ))}
                 </ul>
             )}
-            <div className="mt-4 space-x-2">
-                <button
-                    onClick={loadUsers}
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
-                >
-                    Recargar
-                </button>
-                <button
-                    onClick={handleCreate}
-                    className="px-4 py-2 bg-green-600 text-white rounded"
-                >
-                    Nuevo Usuario
-                </button>
-            </div>
         </div>
     );
 }

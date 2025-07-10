@@ -3,7 +3,11 @@ import base64
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.branches import BranchesInDB
-from app.graphql.crud.branches import get_branches, get_branches_by_id
+from app.graphql.crud.branches import (
+    get_branches,
+    get_branches_by_id,
+    get_branches_by_company,
+)
 from app.db import get_db
 from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
@@ -43,6 +47,22 @@ class BranchesQuery:
             data = item.__dict__.copy()
             data["logo"] = encode_logo(data.get("logo"))
             return BranchesInDB(**data)
+        finally:
+            db_gen.close()
+
+    @strawberry.field
+    def branches_by_company(self, info: Info, companyID: int) -> List[BranchesInDB]:
+        """Obtener sucursales filtradas por CompanyID"""
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            branches = get_branches_by_company(db, companyID)
+            result = []
+            for item in branches:
+                data = item.__dict__.copy()
+                data["logo"] = encode_logo(data.get("logo"))
+                result.append(BranchesInDB(**data))
+            return result
         finally:
             db_gen.close()
 

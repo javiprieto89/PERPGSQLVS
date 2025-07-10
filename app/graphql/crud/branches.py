@@ -12,6 +12,11 @@ def get_branches_by_id(db: Session, branchID: int):
     return db.query(Branches).filter(Branches.BranchID == branchID).first()
 
 
+def get_branches_by_company(db: Session, company_id: int):
+    """Retrieve branches filtered by CompanyID"""
+    return db.query(Branches).filter(Branches.CompanyID == company_id).all()
+
+
 def create_branches(db: Session, data: BranchesCreate):
     obj = Branches(**vars(data))
     db.add(obj)
