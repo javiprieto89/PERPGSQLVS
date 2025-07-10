@@ -1,6 +1,9 @@
 // frontend/src/pages/UserAccessForm.jsx
 import { useState, useEffect } from "react";
 import { userAccessOperations, graphqlClient } from "../utils/graphqlClient";
+import CompanySearchModal from "../components/CompanySearchModal";
+import BranchSearchModal from "../components/BranchSearchModal";
+import RoleSearchModal from "../components/RoleSearchModal";
 
 export default function UserAccessForm({ onClose, onSave, record: initialRecord = null }) {
     const [userID, setUserID] = useState("");
@@ -18,6 +21,9 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
+    const [showCompanyModal, setShowCompanyModal] = useState(false);
+    const [showBranchModal, setShowBranchModal] = useState(false);
+    const [showRoleModal, setShowRoleModal] = useState(false);
 
     useEffect(() => {
         if (initialRecord) {
