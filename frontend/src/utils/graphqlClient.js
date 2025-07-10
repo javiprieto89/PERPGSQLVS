@@ -296,6 +296,28 @@ export const QUERIES = {
         }
     `,
 
+    // ROLES
+    GET_ALL_ROLES: `
+        query GetAllRoles {
+            allRoles {
+                RoleID
+                RoleName
+            }
+        }
+    `,
+
+    // ROLES Y USUARIOS (UserAccess)
+    GET_ALL_USERACCESS: `
+        query GetAllUseraccess {
+            allUseraccess {
+                UserID
+                CompanyID
+                BranchID
+                RoleID
+            }
+        }
+    `,
+
     // COMBOS PARA FORMULARIOS
     GET_CLIENT_FORM_DATA: `
         query GetClientFormData {
@@ -1842,6 +1864,30 @@ export const userOperations = {
             return data.usersById;
         } catch (error) {
             console.error("Error obteniendo usuario:", error);
+            throw error;
+        }
+    }
+};
+
+export const roleOperations = {
+    async getAllRoles() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_ROLES);
+            return data.allRoles || [];
+        } catch (error) {
+            console.error("Error obteniendo roles:", error);
+            throw error;
+        }
+    }
+};
+
+export const userAccessOperations = {
+    async getAllUserAccess() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_USERACCESS);
+            return data.allUseraccess || [];
+        } catch (error) {
+            console.error("Error obteniendo roles y usuarios:", error);
             throw error;
         }
     }
