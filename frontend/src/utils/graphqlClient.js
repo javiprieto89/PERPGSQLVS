@@ -2119,29 +2119,8 @@ export const userAccessOperations = {
     }
 };
 
-export const roleOperations = {
-    async getAllRoles() {
-        try {
-            const data = await graphqlClient.query(QUERIES.GET_ALL_ROLES);
-            return data.allRoles || [];
-        } catch (error) {
-            console.error("Error obteniendo roles:", error);
-            throw error;
-        }
-    }
-};
 
-export const userAccessOperations = {
-    async getAllUserAccess() {
-        try {
-            const data = await graphqlClient.query(QUERIES.GET_ALL_USERACCESS);
-            return data.allUseraccess || [];
-        } catch (error) {
-            console.error("Error obteniendo roles y usuarios:", error);
-            throw error;
-        }
-    }
-};
+
 
 // ===== FUNCIONES DE MARCAS =====
 export const brandOperations = {
