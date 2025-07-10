@@ -2955,6 +2955,40 @@ export const orderOperations = {
     }
 };
 
+export const companyOperations = {
+    async getAllCompanies() {
+        try {
+            const data = await graphqlClient.query(`query { allCompanydata { CompanyID Name } }`);
+            return data.allCompanydata || [];
+        } catch (error) {
+            console.error("Error obteniendo compañías:", error);
+            throw error;
+        }
+    }
+};
+
+export const branchOperations = {
+    async getAllBranches() {
+        try {
+            const data = await graphqlClient.query(`query { allBranches { BranchID Name CompanyID } }`);
+            return data.allBranches || [];
+        } catch (error) {
+            console.error("Error obteniendo sucursales:", error);
+            throw error;
+        }
+    },
+
+    async getBranchesByCompany(companyID) {
+        try {
+            const data = await graphqlClient.query(`query { branchesByCompany(companyID: ${"" + companyID}) { BranchID Name CompanyID } }`);
+            return data.branchesByCompany || [];
+        } catch (error) {
+            console.error("Error obteniendo sucursales por compañía:", error);
+            throw error;
+        }
+    }
+};
+
 // ===== DIAGNÓSTICO =====
 export const diagnosticGraphQL = async () => {
     console.log("🔍 Iniciando diagnóstico de GraphQL...");
