@@ -106,7 +106,23 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
                                 <option key={u.UserID} value={u.UserID}>{u.FullName}</option>
                             ))}
                         </select>
-                        <input value={userSearch} onChange={e => setUserSearch(e.target.value)} placeholder="Buscar" className="border p-2 rounded w-32" />
+                        <div className="relative w-32">
+                            <input
+                                value={userSearch}
+                                onChange={e => setUserSearch(e.target.value)}
+                                placeholder="Buscar"
+                                className="border p-2 rounded pl-7 w-full"
+                            />
+                            <svg
+                                className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -118,7 +134,23 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
                                 <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
                             ))}
                         </select>
-                        <input value={companySearch} onChange={e => setCompanySearch(e.target.value)} placeholder="Buscar" className="border p-2 rounded w-32" />
+                        <div className="relative w-32">
+                            <input
+                                value={companySearch}
+                                onChange={e => setCompanySearch(e.target.value)}
+                                placeholder="Buscar"
+                                className="border p-2 rounded pl-7 w-full"
+                            />
+                            <svg
+                                className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -130,7 +162,23 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
                                 <option key={b.BranchID} value={b.BranchID}>{b.Name}</option>
                             ))}
                         </select>
-                        <input value={branchSearch} onChange={e => setBranchSearch(e.target.value)} placeholder="Buscar" className="border p-2 rounded w-32" />
+                        <div className="relative w-32">
+                            <input
+                                value={branchSearch}
+                                onChange={e => setBranchSearch(e.target.value)}
+                                placeholder="Buscar"
+                                className="border p-2 rounded pl-7 w-full"
+                            />
+                            <svg
+                                className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -142,7 +190,23 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
                                 <option key={r.RoleID} value={r.RoleID}>{r.RoleName}</option>
                             ))}
                         </select>
-                        <input value={roleSearch} onChange={e => setRoleSearch(e.target.value)} placeholder="Buscar" className="border p-2 rounded w-32" />
+                        <div className="relative w-32">
+                            <input
+                                value={roleSearch}
+                                onChange={e => setRoleSearch(e.target.value)}
+                                placeholder="Buscar"
+                                className="border p-2 rounded pl-7 w-full"
+                            />
+                            <svg
+                                className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
                 <div className="flex justify-end space-x-4 pt-4 border-t">
