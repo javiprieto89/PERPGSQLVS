@@ -306,10 +306,29 @@ export const QUERIES = {
         }
     `,
 
+    GET_ROLE_BY_ID: `
+        query GetRoleById($id: Int!) {
+            rolesById(id: $id) {
+                RoleID
+                RoleName
+            }
+        }
+    `,
     // ROLES Y USUARIOS (UserAccess)
     GET_ALL_USERACCESS: `
         query GetAllUseraccess {
             allUseraccess {
+                UserID
+                CompanyID
+                BranchID
+                RoleID
+            }
+        }
+    `,
+
+    GET_USERACCESS_BY_ID: `
+        query GetUseraccessById($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
+            useraccessById(userID: $userID, companyID: $companyID, branchID: $branchID, roleID: $roleID) {
                 UserID
                 CompanyID
                 BranchID
@@ -1390,6 +1409,95 @@ export const MUTATIONS = {
                 message
             }
         }
+    `,
+
+    // ROLES
+    CREATE_ROLE: `
+        mutation CreateRole($input: RolesCreate!) {
+            createRole(data: $input) {
+                RoleID
+                RoleName
+            }
+        }
+    `,
+    UPDATE_ROLE: `
+        mutation UpdateRole($roleID: Int!, $input: RolesUpdate!) {
+            updateRole(roleID: $roleID, data: $input) {
+                RoleID
+                RoleName
+            }
+        }
+    `,
+    DELETE_ROLE: `
+        mutation DeleteRole($roleID: Int!) {
+            deleteRole(roleID: $roleID)
+        }
+    `,
+
+    // USERS
+    CREATE_USER_RECORD: `
+        mutation CreateUserRecord($input: UserCreate!) {
+            createUserRecord(data: $input) {
+                UserID
+                Nickname
+                FullName
+                IsActive
+            }
+        }
+    `,
+    UPDATE_USER_RECORD: `
+        mutation UpdateUserRecord($userID: Int!, $input: UserUpdate!) {
+            updateUserRecord(userID: $userID, data: $input) {
+                UserID
+                Nickname
+                FullName
+                IsActive
+            }
+        }
+    `,
+    DELETE_USER_RECORD: `
+        mutation DeleteUserRecord($userID: Int!) {
+            deleteUserRecord(userID: $userID)
+        }
+    `,
+
+    // USER ACCESS
+    CREATE_USERACCESS: `
+        mutation CreateUseraccess($input: UserAccessCreate!) {
+            createUseraccess(data: $input) {
+                UserID
+                CompanyID
+                BranchID
+                RoleID
+            }
+        }
+    `,
+    UPDATE_USERACCESS: `
+        mutation UpdateUseraccess(
+            $oldUserID: Int!,
+            $oldCompanyID: Int!,
+            $oldBranchID: Int!,
+            $oldRoleID: Int!,
+            $newData: UserAccessCreate!
+        ) {
+            updateUseraccess(
+                oldUserID: $oldUserID,
+                oldCompanyID: $oldCompanyID,
+                oldBranchID: $oldBranchID,
+                oldRoleID: $oldRoleID,
+                newData: $newData
+            ) {
+                UserID
+                CompanyID
+                BranchID
+                RoleID
+            }
+        }
+    `,
+    DELETE_USERACCESS: `
+        mutation DeleteUseraccess($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
+            deleteUseraccess(userID: $userID, companyID: $companyID, branchID: $branchID, roleID: $roleID)
+        }
     `
 };
 
@@ -1864,6 +1972,148 @@ export const userOperations = {
             return data.usersById;
         } catch (error) {
             console.error("Error obteniendo usuario:", error);
+            throw error;
+        }
+    },
+
+    async createUser(userData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_USER_RECORD, { input: userData });
+            return data.createUserRecord;
+        } catch (error) {
+            console.error("Error creando usuario:", error);
+            throw error;
+        }
+    },
+
+    async updateUser(id, userData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_USER_RECORD, { userID: id, input: userData });
+            return data.updateUserRecord;
+        } catch (error) {
+            console.error("Error actualizando usuario:", error);
+            throw error;
+        }
+    },
+
+    async deleteUser(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_USER_RECORD, { userID: id });
+            return data.deleteUserRecord;
+        } catch (error) {
+            console.error("Error eliminando usuario:", error);
+            throw error;
+        }
+    }
+};
+
+export const roleOperations = {
+    async getAllRoles() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_ROLES);
+            return data.allRoles || [];
+        } catch (error) {
+            console.error("Error obteniendo roles:", error);
+            throw error;
+        }
+    },
+
+    async getRoleById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ROLE_BY_ID, { id });
+            return data.rolesById;
+        } catch (error) {
+            console.error("Error obteniendo rol:", error);
+            throw error;
+        }
+    },
+
+    async createRole(roleData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_ROLE, { input: roleData });
+            return data.createRole;
+        } catch (error) {
+            console.error("Error creando rol:", error);
+            throw error;
+        }
+    },
+
+    async updateRole(id, roleData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_ROLE, { roleID: id, input: roleData });
+            return data.updateRole;
+        } catch (error) {
+            console.error("Error actualizando rol:", error);
+            throw error;
+        }
+    },
+
+    async deleteRole(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_ROLE, { roleID: id });
+            return data.deleteRole;
+        } catch (error) {
+            console.error("Error eliminando rol:", error);
+            throw error;
+        }
+    }
+};
+
+export const userAccessOperations = {
+    async getAllUserAccess() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_USERACCESS);
+            return data.allUseraccess || [];
+        } catch (error) {
+            console.error("Error obteniendo roles y usuarios:", error);
+            throw error;
+        }
+    },
+
+    async getById(userID, companyID, branchID, roleID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_USERACCESS_BY_ID, {
+                userID,
+                companyID,
+                branchID,
+                roleID
+            });
+            return data.useraccessById;
+        } catch (error) {
+            console.error("Error obteniendo asignación:", error);
+            throw error;
+        }
+    },
+
+    async create(data) {
+        try {
+            const res = await graphqlClient.mutation(MUTATIONS.CREATE_USERACCESS, { input: data });
+            return res.createUseraccess;
+        } catch (error) {
+            console.error("Error creando asignación:", error);
+            throw error;
+        }
+    },
+
+    async update(oldKeys, newData) {
+        try {
+            const res = await graphqlClient.mutation(MUTATIONS.UPDATE_USERACCESS, {
+                ...oldKeys,
+                newData
+            });
+            return res.updateUseraccess;
+        } catch (error) {
+            console.error("Error actualizando asignación:", error);
+            throw error;
+        }
+    },
+
+    async delete(keys) {
+        try {
+            const res = await graphqlClient.mutation(MUTATIONS.DELETE_USERACCESS, keys);
+            return res.deleteUseraccess;
+        } catch (error) {
+            console.error("Error eliminando asignación:", error);
             throw error;
         }
     }
