@@ -67,6 +67,9 @@ from app.graphql.mutations.orders import OrdersMutations
 from app.graphql.mutations.servicetype import ServiceTypeMutations
 from app.graphql.mutations.documenttypes import DocumentTypesMutations
 from app.graphql.mutations.useractions import UserActionsMutations
+from app.graphql.mutations.roles import RolesMutations
+from app.graphql.mutations.users import UsersMutations
+from app.graphql.mutations.useraccess import UserAccessMutation
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
 from app.graphql.resolvers.auth import AuthQuery
@@ -407,6 +410,9 @@ class Mutation(
     ServiceTypeMutations,
     DocumentTypesMutations,
     UserActionsMutations,
+    RolesMutations,
+    UsersMutations,
+    UserAccessMutation,
 ):
     """Mutaciones principales"""
 

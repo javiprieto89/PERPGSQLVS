@@ -108,14 +108,14 @@ export default function Sidebar() {
             items: [
                 { label: "Sucursales", to: "/branches" },
                 { label: "Empresa", to: "/companydata" },
-            ],
-        },
-        {
-            title: "Usuarios y Seguridad",
-            items: [
-                { label: "Usuarios", to: "/users" },
-                { label: "roles", to: "/roles" },
-                { label: "Registro de actividad", to: "/useractivitylog" },
+                { label: "Roles", to: "/roles" },
+                {
+                    label: "Usuarios",
+                    submenu: [
+                        { label: "Usuarios", to: "/users" },
+                        { label: "Roles y Usuarios", to: "/rolesusers" },
+                    ],
+                },
             ],
         },
     ];

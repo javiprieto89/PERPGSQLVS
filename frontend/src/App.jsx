@@ -20,6 +20,9 @@ import CreditCardGroups from "./pages/CreditCardGroups";
 import CreditCards from "./pages/CreditCards";
 import Documents from "./pages/Documents";
 import Orders from "./pages/Orders";
+import Roles from "./pages/Roles";
+import Users from "./pages/Users";
+import RolesUsers from "./pages/RolesUsers";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
 import LogoutSuccess from "./pages/LogoutSuccess";
@@ -206,6 +209,9 @@ export default function App() {
                     <Route path="cars" element={<Cars />} />
                     <Route path="documents" element={<Documents />} />
                     <Route path="orders" element={<Orders />} />
+                    <Route path="roles" element={<Roles />} />
+                    <Route path="users" element={<Users />} />
+                    <Route path="rolesusers" element={<RolesUsers />} />
                     {/* Ruta fallback: todo lo desconocido a dashboard */}
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Route>

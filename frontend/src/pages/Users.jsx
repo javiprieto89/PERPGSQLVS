@@ -1,0 +1,116 @@
+// frontend/src/pages/Users.jsx
+import { useEffect, useState } from "react";
+import { userOperations } from "../utils/graphqlClient";
+import UserForm from "./UserForm";
+import { openReactWindow } from "../utils/openReactWindow";
+
+export default function Users() {
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const loadUsers = async () => {
+        try {
+            setLoading(true);
+            const data = await userOperations.getAllUsers();
+            setUsers(data);
+        } catch (err) {
+            console.error("Error cargando usuarios:", err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => { loadUsers(); }, []);
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.data === 'reload-users') {
+                loadUsers();
+            }
+        };
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+    }, []);
+
+    const handleCreate = () => {
+        openReactWindow(
+            (popup) => (
+                <UserForm
+                    onSave={() => {
+                        popup.opener.postMessage('reload-users', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Nuevo Usuario'
+        );
+    };
+
+    const handleEdit = (user) => {
+        openReactWindow(
+            (popup) => (
+                <UserForm
+                    user={user}
+                    onSave={() => {
+                        popup.opener.postMessage('reload-users', '*');
+                        popup.close();
+                    }}
+                    onClose={() => popup.close()}
+                />
+            ),
+            'Editar Usuario'
+        );
+    };
+
+    const handleDelete = async (id) => {
+        if (!confirm('¿Borrar usuario?')) return;
+        try {
+            await userOperations.deleteUser(id);
+            loadUsers();
+        } catch (err) {
+            alert('Error al borrar usuario: ' + err.message);
+        }
+    };
+
+    return (
+        <div className="p-6">
+            <h1 className="text-3xl font-bold mb-4">Usuarios</h1>
+            {loading ? (
+                <p>Cargando...</p>
+            ) : error ? (
+                <p className="text-red-600">{error}</p>
+            ) : (
+                <ul className="space-y-2">
+                    {users.map((u) => (
+                        <li key={u.UserID} className="border p-2 rounded flex justify-between items-center">
+                            <span>
+                                <strong>{u.FullName}</strong> ({u.Nickname}) - ID: {u.UserID}
+                            </span>
+                            <span className="space-x-2">
+                                <button onClick={() => handleEdit(u)} className="px-2 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200">Editar</button>
+                                <button onClick={() => handleDelete(u.UserID)} className="px-2 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700">Eliminar</button>
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+            <div className="mt-4 space-x-2">
+                <button
+                    onClick={loadUsers}
+                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                >
+                    Recargar
+                </button>
+                <button
+                    onClick={handleCreate}
+                    className="px-4 py-2 bg-green-600 text-white rounded"
+                >
+                    Nuevo Usuario
+                </button>
+            </div>
+        </div>
+    );
+}
