@@ -1,12 +1,20 @@
 // frontend/src/pages/UserAccessForm.jsx
 import { useState, useEffect } from "react";
-import { userAccessOperations } from "../utils/graphqlClient";
+import { userAccessOperations, graphqlClient } from "../utils/graphqlClient";
 
 export default function UserAccessForm({ onClose, onSave, record: initialRecord = null }) {
     const [userID, setUserID] = useState("");
     const [companyID, setCompanyID] = useState("");
     const [branchID, setBranchID] = useState("");
     const [roleID, setRoleID] = useState("");
+    const [users, setUsers] = useState([]);
+    const [companies, setCompanies] = useState([]);
+    const [branches, setBranches] = useState([]);
+    const [roles, setRoles] = useState([]);
+    const [userSearch, setUserSearch] = useState("");
+    const [companySearch, setCompanySearch] = useState("");
+    const [branchSearch, setBranchSearch] = useState("");
+    const [roleSearch, setRoleSearch] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
@@ -20,6 +28,35 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
             setRoleID(initialRecord.RoleID);
         }
     }, [initialRecord]);
+
+    useEffect(() => {
+        async function loadFormOptions() {
+            try {
+                const userRes = await graphqlClient.query(`query { allUsers { UserID FullName } }`);
+                setUsers(userRes.allUsers || []);
+                const companyRes = await graphqlClient.query(`query { allCompanydata { CompanyID Name } }`);
+                setCompanies(companyRes.allCompanydata || []);
+                const roleRes = await graphqlClient.query(`query { allRoles { RoleID RoleName } }`);
+                setRoles(roleRes.allRoles || []);
+            } catch (err) {
+                console.error('Error cargando combos:', err);
+            }
+        }
+        loadFormOptions();
+    }, []);
+
+    useEffect(() => {
+        async function loadBranches() {
+            if (!companyID) { setBranches([]); return; }
+            try {
+                const res = await graphqlClient.query(`query { branchesByCompany(companyID: ${companyID}) { BranchID Name } }`);
+                setBranches(res.branchesByCompany || []);
+            } catch (err) {
+                console.error('Error cargando sucursales:', err);
+            }
+        }
+        loadBranches();
+    }, [companyID]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -61,20 +98,52 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
             {error && <div className="text-red-600 mb-2">{error}</div>}
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label className="block text-sm font-medium mb-1">UserID</label>
-                    <input type="number" value={userID} onChange={e => setUserID(e.target.value)} className="w-full border p-2 rounded" required />
+                    <label className="block text-sm font-medium mb-1">Usuario</label>
+                    <div className="flex space-x-2 items-center">
+                        <select value={userID} onChange={e => setUserID(e.target.value)} className="w-full border p-2 rounded">
+                            <option value="">Seleccione</option>
+                            {users.filter(u => u.FullName.toLowerCase().includes(userSearch.toLowerCase())).map(u => (
+                                <option key={u.UserID} value={u.UserID}>{u.FullName}</option>
+                            ))}
+                        </select>
+                        <input value={userSearch} onChange={e => setUserSearch(e.target.value)} placeholder="Buscar" className="border p-2 rounded w-32" />
+                    </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">CompanyID</label>
-                    <input type="number" value={companyID} onChange={e => setCompanyID(e.target.value)} className="w-full border p-2 rounded" required />
+                    <label className="block text-sm font-medium mb-1">Compañía</label>
+                    <div className="flex space-x-2 items-center">
+                        <select value={companyID} onChange={e => setCompanyID(e.target.value)} className="w-full border p-2 rounded">
+                            <option value="">Seleccione</option>
+                            {companies.filter(c => c.Name.toLowerCase().includes(companySearch.toLowerCase())).map(c => (
+                                <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
+                            ))}
+                        </select>
+                        <input value={companySearch} onChange={e => setCompanySearch(e.target.value)} placeholder="Buscar" className="border p-2 rounded w-32" />
+                    </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">BranchID</label>
-                    <input type="number" value={branchID} onChange={e => setBranchID(e.target.value)} className="w-full border p-2 rounded" required />
+                    <label className="block text-sm font-medium mb-1">Sucursal</label>
+                    <div className="flex space-x-2 items-center">
+                        <select value={branchID} onChange={e => setBranchID(e.target.value)} className="w-full border p-2 rounded">
+                            <option value="">Seleccione</option>
+                            {branches.filter(b => b.Name.toLowerCase().includes(branchSearch.toLowerCase())).map(b => (
+                                <option key={b.BranchID} value={b.BranchID}>{b.Name}</option>
+                            ))}
+                        </select>
+                        <input value={branchSearch} onChange={e => setBranchSearch(e.target.value)} placeholder="Buscar" className="border p-2 rounded w-32" />
+                    </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">RoleID</label>
-                    <input type="number" value={roleID} onChange={e => setRoleID(e.target.value)} className="w-full border p-2 rounded" required />
+                    <label className="block text-sm font-medium mb-1">Rol</label>
+                    <div className="flex space-x-2 items-center">
+                        <select value={roleID} onChange={e => setRoleID(e.target.value)} className="w-full border p-2 rounded">
+                            <option value="">Seleccione</option>
+                            {roles.filter(r => r.RoleName.toLowerCase().includes(roleSearch.toLowerCase())).map(r => (
+                                <option key={r.RoleID} value={r.RoleID}>{r.RoleName}</option>
+                            ))}
+                        </select>
+                        <input value={roleSearch} onChange={e => setRoleSearch(e.target.value)} placeholder="Buscar" className="border p-2 rounded w-32" />
+                    </div>
                 </div>
                 <div className="flex justify-end space-x-4 pt-4 border-t">
                     <button type="button" onClick={onClose} disabled={loading} className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50">Cancelar</button>

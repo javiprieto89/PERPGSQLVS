@@ -3,16 +3,20 @@ import { useEffect, useState } from "react";
 import { roleOperations } from "../utils/graphqlClient";
 import RoleForm from "./RoleForm";
 import { openReactWindow } from "../utils/openReactWindow";
+import TableFilters from "../components/TableFilters";
 
 export default function Roles() {
+    const [allRoles, setAllRoles] = useState([]);
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showFilters, setShowFilters] = useState(false);
 
     const loadRoles = async () => {
         try {
             setLoading(true);
             const data = await roleOperations.getAllRoles();
+            setAllRoles(data);
             setRoles(data);
         } catch (err) {
             console.error("Error cargando roles:", err);
@@ -33,6 +37,10 @@ export default function Roles() {
         window.addEventListener('message', handler);
         return () => window.removeEventListener('message', handler);
     }, []);
+
+    const handleFilterChange = (filtered) => {
+        setRoles(filtered);
+    };
 
     const handleCreate = () => {
         openReactWindow(
@@ -77,7 +85,34 @@ export default function Roles() {
 
     return (
         <div className="p-6">
-            <h1 className="text-3xl font-bold mb-4">Roles</h1>
+            <div className="flex items-center justify-between mb-4">
+                <h1 className="text-3xl font-bold">Roles</h1>
+                <div className="flex space-x-2">
+                    <button
+                        onClick={() => setShowFilters(!showFilters)}
+                        className="px-4 py-2 bg-purple-600 text-white rounded"
+                    >
+                        {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
+                    </button>
+                    <button
+                        onClick={loadRoles}
+                        className="px-4 py-2 bg-blue-600 text-white rounded"
+                    >
+                        Recargar
+                    </button>
+                    <button
+                        onClick={handleCreate}
+                        className="px-4 py-2 bg-green-600 text-white rounded"
+                    >
+                        Nuevo Rol
+                    </button>
+                </div>
+            </div>
+            {showFilters && (
+                <div className="mb-6">
+                    <TableFilters modelName="roles" data={allRoles} onFilterChange={handleFilterChange} />
+                </div>
+            )}
             {loading ? (
                 <p>Cargando...</p>
             ) : error ? (
@@ -97,20 +132,6 @@ export default function Roles() {
                     ))}
                 </ul>
             )}
-            <div className="mt-4 space-x-2">
-                <button
-                    onClick={loadRoles}
-                    className="px-4 py-2 bg-blue-600 text-white rounded"
-                >
-                    Recargar
-                </button>
-                <button
-                    onClick={handleCreate}
-                    className="px-4 py-2 bg-green-600 text-white rounded"
-                >
-                    Nuevo Rol
-                </button>
-            </div>
         </div>
     );
 }
