@@ -32,6 +32,15 @@ export function openReactWindow(ComponentFn, title = "Ventana", options = {}) {
     }
   );
 
+  // Copiar sessionStorage para mantener autenticación en la nueva ventana
+  try {
+    for (const key of Object.keys(sessionStorage)) {
+      newWindow.sessionStorage.setItem(key, sessionStorage.getItem(key));
+    }
+  } catch (err) {
+    console.warn('No se pudo copiar sessionStorage:', err);
+  }
+
   // 3) Creo el contenedor React
   const container = newWindow.document.createElement("div");
   container.id = "react-window-root";
