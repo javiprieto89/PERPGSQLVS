@@ -25,12 +25,22 @@ class CompanydataQuery:
             items = get_companydata(db)
             result = []
             for item in items:
-                data = item.__dict__.copy()
-                data["logo"] = encode_logo(data.get("logo"))
-                # Convierte startdate a string ISO si es necesario
-                if data.get("startdate"):
-                    data["startdate"] = data["startdate"].isoformat()
-                result.append(CompanyDataInDB(**data))
+                raw = item.__dict__.copy()
+                raw.pop("_sa_instance_state", None)
+
+                start_date = raw.get("StartDate")
+
+                mapped = {
+                    "CompanyID": raw.get("CompanyID"),
+                    "Name": raw.get("Name"),
+                    "Address": raw.get("Address"),
+                    "CUIT": raw.get("CUIT"),
+                    "Grossincome": raw.get("GrossIncome"),
+                    "Startdate": start_date.isoformat() if start_date else None,
+                    "Logo": encode_logo(raw.get("Logo")),
+                }
+
+                result.append(CompanyDataInDB(**mapped))
             return result
         finally:
             db_gen.close()
@@ -43,11 +53,23 @@ class CompanydataQuery:
             item = get_companydata_by_id(db, id)
             if not item:
                 return None
-            data = item.__dict__.copy()
-            data["logo"] = encode_logo(data.get("logo"))
-            if data.get("startdate"):
-                data["startdate"] = data["startdate"].isoformat()
-            return CompanyDataInDB(**data)
+
+            raw = item.__dict__.copy()
+            raw.pop("_sa_instance_state", None)
+
+            start_date = raw.get("StartDate")
+
+            mapped = {
+                "CompanyID": raw.get("CompanyID"),
+                "Name": raw.get("Name"),
+                "Address": raw.get("Address"),
+                "CUIT": raw.get("CUIT"),
+                "Grossincome": raw.get("GrossIncome"),
+                "Startdate": start_date.isoformat() if start_date else None,
+                "Logo": encode_logo(raw.get("Logo")),
+            }
+
+            return CompanyDataInDB(**mapped)
         finally:
             db_gen.close()
 
