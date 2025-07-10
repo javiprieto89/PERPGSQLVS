@@ -141,15 +141,15 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
                                 placeholder="Buscar"
                                 className="border p-2 rounded pl-7 w-full"
                             />
-                            <svg
-                                className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
+                            <button
+                                type="button"
+                                onClick={() => setShowCompanyModal(true)}
+                                className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                             >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -169,15 +169,15 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
                                 placeholder="Buscar"
                                 className="border p-2 rounded pl-7 w-full"
                             />
-                            <svg
-                                className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
+                            <button
+                                type="button"
+                                onClick={() => setShowBranchModal(true)}
+                                className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                             >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -197,15 +197,15 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
                                 placeholder="Buscar"
                                 className="border p-2 rounded pl-7 w-full"
                             />
-                            <svg
-                                className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
+                            <button
+                                type="button"
+                                onClick={() => setShowRoleModal(true)}
+                                className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                             >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -214,6 +214,37 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
                     <button type="submit" disabled={loading} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50">{loading ? 'Guardando...' : 'Guardar'}</button>
                 </div>
             </form>
+            {showCompanyModal && (
+                <CompanySearchModal
+                    isOpen={true}
+                    onClose={() => setShowCompanyModal(false)}
+                    onSelect={(c) => {
+                        setCompanyID(c.CompanyID);
+                        setShowCompanyModal(false);
+                    }}
+                />
+            )}
+            {showBranchModal && (
+                <BranchSearchModal
+                    isOpen={true}
+                    companyID={companyID}
+                    onClose={() => setShowBranchModal(false)}
+                    onSelect={(b) => {
+                        setBranchID(b.BranchID);
+                        setShowBranchModal(false);
+                    }}
+                />
+            )}
+            {showRoleModal && (
+                <RoleSearchModal
+                    isOpen={true}
+                    onClose={() => setShowRoleModal(false)}
+                    onSelect={(r) => {
+                        setRoleID(r.RoleID);
+                        setShowRoleModal(false);
+                    }}
+                />
+            )}
         </div>
     );
 }
