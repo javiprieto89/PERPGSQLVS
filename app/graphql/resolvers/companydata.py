@@ -32,8 +32,8 @@ class CompanydataQuery:
                 raw.pop("_sa_instance_state", None)
 
                 start_date_val = raw.get("StartDate")
-                start_date_str = (
-                    start_date_val.isoformat()
+                start_date = (
+                    start_date_val
                     if isinstance(start_date_val, (datetime, date))
                     else None
                 )
@@ -43,7 +43,7 @@ class CompanydataQuery:
                     "Address": raw.get("Address"),
                     "CUIT": raw.get("CUIT"),
                     "Grossincome": raw.get("GrossIncome"),
-                    "Startdate": start_date_str,
+                    "Startdate": start_date,
                     "Logo": encode_logo(raw.get("Logo")),
                 }
 
@@ -65,8 +65,8 @@ class CompanydataQuery:
             raw.pop("_sa_instance_state", None)
 
             start_date_val = raw.get("StartDate")
-            start_date_str = (
-                start_date_val.isoformat()
+            start_date = (
+                start_date_val
                 if isinstance(start_date_val, (datetime, date))
                 else None
             )
@@ -76,7 +76,7 @@ class CompanydataQuery:
                 "Address": raw.get("Address"),
                 "CUIT": raw.get("CUIT"),
                 "Grossincome": raw.get("GrossIncome"),
-                "Startdate": start_date_str,
+                "Startdate": start_date,
                 "Logo": encode_logo(raw.get("Logo")),
             }
 
