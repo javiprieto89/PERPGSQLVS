@@ -1230,10 +1230,50 @@ export const orderOperations = {
 export const companyOperations = {
     async getAllCompanies() {
         try {
-            const data = await graphqlClient.query(`query { allCompanydata { CompanyID Name } }`);
+            const data = await graphqlClient.query(QUERIES.GET_ALL_COMPANIES);
             return data.allCompanydata || [];
         } catch (error) {
             console.error("Error obteniendo compañías:", error);
+            throw error;
+        }
+    },
+
+    async getCompanyById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_COMPANY_BY_ID, { id });
+            return data.companydataById;
+        } catch (error) {
+            console.error("Error obteniendo compañía:", error);
+            throw error;
+        }
+    },
+
+    async createCompany(dataInput) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_COMPANY, { input: dataInput });
+            return data.createCompany;
+        } catch (error) {
+            console.error("Error creando compañía:", error);
+            throw error;
+        }
+    },
+
+    async updateCompany(id, dataInput) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_COMPANY, { companyID: id, input: dataInput });
+            return data.updateCompany;
+        } catch (error) {
+            console.error("Error actualizando compañía:", error);
+            throw error;
+        }
+    },
+
+    async deleteCompany(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_COMPANY, { companyID: id });
+            return data.deleteCompany;
+        } catch (error) {
+            console.error("Error eliminando compañía:", error);
             throw error;
         }
     }
@@ -1242,10 +1282,20 @@ export const companyOperations = {
 export const branchOperations = {
     async getAllBranches() {
         try {
-            const data = await graphqlClient.query(`query { allBranches { BranchID Name CompanyID } }`);
+            const data = await graphqlClient.query(QUERIES.GET_ALL_BRANCHES);
             return data.allBranches || [];
         } catch (error) {
             console.error("Error obteniendo sucursales:", error);
+            throw error;
+        }
+    },
+
+    async getBranchById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_BRANCH_BY_ID, { id });
+            return data.branchesById;
+        } catch (error) {
+            console.error("Error obteniendo sucursal:", error);
             throw error;
         }
     },
@@ -1256,6 +1306,36 @@ export const branchOperations = {
             return data.branchesByCompany || [];
         } catch (error) {
             console.error("Error obteniendo sucursales por compañía:", error);
+            throw error;
+        }
+    },
+
+    async createBranch(dataInput) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_BRANCH, { input: dataInput });
+            return data.createBranch;
+        } catch (error) {
+            console.error("Error creando sucursal:", error);
+            throw error;
+        }
+    },
+
+    async updateBranch(id, dataInput) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_BRANCH, { branchID: id, input: dataInput });
+            return data.updateBranch;
+        } catch (error) {
+            console.error("Error actualizando sucursal:", error);
+            throw error;
+        }
+    },
+
+    async deleteBranch(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_BRANCH, { branchID: id });
+            return data.deleteBranch;
+        } catch (error) {
+            console.error("Error eliminando sucursal:", error);
             throw error;
         }
     }
