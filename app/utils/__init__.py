@@ -1,7 +1,19 @@
 from dataclasses import fields
-from typing import Any, Type, List, Sequence
+from typing import Any, Type, List, Sequence, get_origin, get_args, Optional
+import base64
 
 # Helper functions to map SQLAlchemy models to Strawberry schemas
+
+
+def _expects_str(field_type: Any) -> bool:
+    """Return True if the dataclass field expects a string value."""
+    if field_type is str:
+        return True
+    origin = get_origin(field_type)
+    if origin is Optional:
+        args = get_args(field_type)
+        return len(args) == 1 and args[0] is str
+    return False
 
 
 def obj_to_schema(schema_type: Type[Any], obj: Any):
@@ -9,9 +21,15 @@ def obj_to_schema(schema_type: Type[Any], obj: Any):
     obj_dict = getattr(obj, "__dict__", {})
     for f in fields(schema_type):
         if f.name in obj_dict:
-            data[f.name] = obj_dict.get(f.name)
+            value = obj_dict.get(f.name)
         else:
-            data[f.name] = getattr(obj, f.name, None)
+            value = getattr(obj, f.name, None)
+
+        if isinstance(value, (bytes, bytearray)) and _expects_str(f.type):
+            value = base64.b64encode(value).decode("utf-8")
+
+        data[f.name] = value
+
     return schema_type(**data)
 
 
