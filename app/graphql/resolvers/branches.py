@@ -29,9 +29,9 @@ class BranchesQuery:
             items = get_branches(db)
             result = []
             for item in items:
-                data = item.__dict__.copy()
-                data["logo"] = encode_logo(data.get("logo"))
-                result.append(BranchesInDB(**data))
+                obj = obj_to_schema(BranchesInDB, item)
+                obj.Logo = encode_logo(getattr(item, "Logo", None))
+                result.append(obj)
             return result
         finally:
             db_gen.close()
@@ -44,9 +44,9 @@ class BranchesQuery:
             item = get_branches_by_id(db, id)
             if not item:
                 return None
-            data = item.__dict__.copy()
-            data["logo"] = encode_logo(data.get("logo"))
-            return BranchesInDB(**data)
+            obj = obj_to_schema(BranchesInDB, item)
+            obj.Logo = encode_logo(getattr(item, "Logo", None))
+            return obj
         finally:
             db_gen.close()
 
@@ -59,9 +59,9 @@ class BranchesQuery:
             branches = get_branches_by_company(db, companyID)
             result = []
             for item in branches:
-                data = item.__dict__.copy()
-                data["logo"] = encode_logo(data.get("logo"))
-                result.append(BranchesInDB(**data))
+                obj = obj_to_schema(BranchesInDB, item)
+                obj.Logo = encode_logo(getattr(item, "Logo", None))
+                result.append(obj)
             return result
         finally:
             db_gen.close()

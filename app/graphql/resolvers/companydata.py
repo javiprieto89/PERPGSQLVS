@@ -28,13 +28,14 @@ class CompanydataQuery:
                 raw = item.__dict__.copy()
                 raw.pop("_sa_instance_state", None)
 
+                start_date = raw.get("StartDate")
                 mapped = {
                     "CompanyID": raw.get("CompanyID"),
                     "Name": raw.get("Name"),
                     "Address": raw.get("Address"),
                     "CUIT": raw.get("CUIT"),
                     "Grossincome": raw.get("GrossIncome"),
-                    "Startdate": raw.get("StartDate").isoformat() if raw.get("StartDate") else None,
+                    "Startdate": start_date.isoformat() if start_date else None,
                     "Logo": encode_logo(raw.get("Logo")),
                 }
 
@@ -55,13 +56,14 @@ class CompanydataQuery:
             raw = item.__dict__.copy()
             raw.pop("_sa_instance_state", None)
 
+            start_date = raw.get("StartDate")
             mapped = {
                 "CompanyID": raw.get("CompanyID"),
                 "Name": raw.get("Name"),
                 "Address": raw.get("Address"),
                 "CUIT": raw.get("CUIT"),
                 "Grossincome": raw.get("GrossIncome"),
-                "Startdate": raw.get("StartDate").isoformat() if raw.get("StartDate") else None,
+                "Startdate": start_date.isoformat() if start_date else None,
                 "Logo": encode_logo(raw.get("Logo")),
             }
 

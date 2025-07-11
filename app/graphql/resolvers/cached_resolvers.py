@@ -67,12 +67,13 @@ class CachedDataQuery:
             
             result = []
             for branch in branches:
-                data = branch.__dict__.copy()
+                obj = obj_to_schema(BranchesInDB, branch)
                 # Codificar logo en base64 si existe
-                if data.get("logo"):
+                logo_bytes = getattr(branch, "Logo", None)
+                if logo_bytes:
                     import base64
-                    data["logo"] = base64.b64encode(data["logo"]).decode("utf-8")
-                result.append(BranchesInDB(**data))
+                    obj.Logo = base64.b64encode(logo_bytes).decode("utf-8")
+                result.append(obj)
             return result
         finally:
             db_gen.close()
