@@ -26,6 +26,13 @@ def create_companydata(db: Session, data: CompanyDataCreate):
     data_dict = vars(data).copy()
     if data_dict.get("Logo"):
         data_dict["Logo"] = _decode_logo(data_dict["Logo"])
+
+    # Map GraphQL field names to SQLAlchemy attribute names
+    field_map = {"Grossincome": "GrossIncome", "Startdate": "StartDate"}
+    for src, dest in field_map.items():
+        if src in data_dict:
+            data_dict[dest] = data_dict.pop(src)
+
     obj = CompanyData(**data_dict)
     db.add(obj)
     db.commit()
@@ -40,7 +47,10 @@ def update_companydata(db: Session, companyID: int, data: CompanyDataUpdate):
             if v is not None:
                 if k == "Logo":
                     v = _decode_logo(v)
-                setattr(obj, k, v)
+
+                field_map = {"Grossincome": "GrossIncome", "Startdate": "StartDate"}
+                attr = field_map.get(k, k)
+                setattr(obj, attr, v)
         db.commit()
         db.refresh(obj)
     return obj
