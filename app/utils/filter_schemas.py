@@ -112,6 +112,10 @@ FILTER_SCHEMAS = {
         {"field": "Description", "label": "Descripción", "type": "text"},
         {"field": "IsActive", "label": "Activo", "type": "boolean"}
     ],
+    "roles": [
+        {"field": "RoleID", "label": "ID de rol", "type": "number"},
+        {"field": "RoleName", "label": "Nombre", "type": "text"}
+    ],
     "vendors": [
         {"field": "VendorID", "label": "ID de vendedor", "type": "number"},
         {"field": "VendorName", "label": "Nombre del vendedor", "type": "text"},
