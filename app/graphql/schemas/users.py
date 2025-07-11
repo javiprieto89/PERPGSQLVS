@@ -17,7 +17,6 @@ class UsersInDB:
 @strawberry.input
 @strawberry.type
 class UserCreate:
-    UserID: int
     Nickname: Optional[str] = None
     FullName: Optional[str] = None
     Password: Optional[str] = None
