@@ -749,6 +749,51 @@ export const QUERIES = {
         }
     `,
 
+    // EMPRESAS
+    GET_ALL_COMPANIES: `
+        query GetAllCompanies {
+            allCompanydata {
+                CompanyID
+                Name
+                Address
+            }
+        }
+    `,
+    GET_COMPANY_BY_ID: `
+        query GetCompanyById($id: Int!) {
+            companydataById(id: $id) {
+                CompanyID
+                Name
+                Address
+                CUIT
+            }
+        }
+    `,
+
+    // SUCURSALES
+    GET_ALL_BRANCHES: `
+        query GetAllBranches {
+            allBranches {
+                BranchID
+                CompanyID
+                Name
+                Address
+                Phone
+            }
+        }
+    `,
+    GET_BRANCH_BY_ID: `
+        query GetBranchById($id: Int!) {
+            branchesById(id: $id) {
+                BranchID
+                CompanyID
+                Name
+                Address
+                Phone
+            }
+        }
+    `,
+
     // BÚSQUEDA DE CLIENTES
     SEARCH_CLIENTS: `
         query SearchClients($searchTerm: String!, $isActive: Boolean) {

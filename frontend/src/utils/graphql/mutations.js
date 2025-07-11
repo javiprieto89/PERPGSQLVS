@@ -475,6 +475,56 @@ export const MUTATIONS = {
         }
     `,
 
+    // EMPRESAS
+    CREATE_COMPANY: `
+        mutation CreateCompany($input: CompanyDataCreate!) {
+            createCompany(data: $input) {
+                CompanyID
+                Name
+                Address
+            }
+        }
+    `,
+    UPDATE_COMPANY: `
+        mutation UpdateCompany($companyID: Int!, $input: CompanyDataUpdate!) {
+            updateCompany(companyID: $companyID, data: $input) {
+                CompanyID
+                Name
+                Address
+            }
+        }
+    `,
+    DELETE_COMPANY: `
+        mutation DeleteCompany($companyID: Int!) {
+            deleteCompany(companyID: $companyID)
+        }
+    `,
+
+    // SUCURSALES
+    CREATE_BRANCH: `
+        mutation CreateBranch($input: BranchesCreate!) {
+            createBranch(data: $input) {
+                BranchID
+                CompanyID
+                Name
+            }
+        }
+    `,
+    UPDATE_BRANCH: `
+        mutation UpdateBranch($branchID: Int!, $input: BranchesUpdate!) {
+            updateBranch(branchID: $branchID, data: $input) {
+                BranchID
+                CompanyID
+                Name
+            }
+        }
+    `,
+    DELETE_BRANCH: `
+        mutation DeleteBranch($branchID: Int!) {
+            deleteBranch(branchID: $branchID)
+        }
+    `,
+
     // ======= ORDENES - NUEVAS MUTACIONES CORREGIDAS =======
     CREATE_ORDER: `
         mutation CreateOrder($input: OrdersCreate!) {

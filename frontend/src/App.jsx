@@ -10,6 +10,8 @@ import Brands from "./pages/Brands";
 import CarBrands from "./pages/CarBrands";
 import CarModels from "./pages/CarModels";
 import Cars from "./pages/Cars";
+import Branches from "./pages/Branches";
+import CompanyData from "./pages/CompanyData";
 import ItemCategories from "./pages/ItemCategories";
 import ItemSubcategories from "./pages/ItemSubcategories";
 import Items from "./pages/Items";
@@ -204,6 +206,8 @@ export default function App() {
                     <Route path="items" element={<Items />} />
                     <Route path="pricelists" element={<PriceLists />} />
                     <Route path="warehouses" element={<Warehouses />} />
+                    <Route path="branches" element={<Branches />} />
+                    <Route path="companydata" element={<CompanyData />} />
                     <Route path="carbrands" element={<CarBrands />} />
                     <Route path="carmodels" element={<CarModels />} />
                     <Route path="cars" element={<Cars />} />
