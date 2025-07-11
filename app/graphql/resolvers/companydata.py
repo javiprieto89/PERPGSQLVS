@@ -1,12 +1,15 @@
 # app/graphql/resolvers/companydata.py
 import base64
-import strawberry
+from datetime import date, datetime
 from typing import Sequence, Optional, List
+
+import strawberry
+from strawberry.types import Info
+
 from app.graphql.schemas.companydata import CompanyDataInDB
 from app.graphql.crud.companydata import get_companydata, get_companydata_by_id
 from app.db import get_db
 from app.utils import list_to_schema, obj_to_schema
-from strawberry.types import Info
 
 
 def encode_logo(logo_bytes: Optional[bytes]) -> Optional[str]:
@@ -28,13 +31,19 @@ class CompanydataQuery:
                 raw = item.__dict__.copy()
                 raw.pop("_sa_instance_state", None)
 
+                start_date_val = raw.get("StartDate")
+                start_date_str = (
+                    start_date_val.isoformat()
+                    if isinstance(start_date_val, (datetime, date))
+                    else None
+                )
                 mapped = {
                     "CompanyID": raw.get("CompanyID"),
                     "Name": raw.get("Name"),
                     "Address": raw.get("Address"),
                     "CUIT": raw.get("CUIT"),
                     "Grossincome": raw.get("GrossIncome"),
-                    "Startdate": raw.get("StartDate").isoformat() if raw.get("StartDate") else None,
+                    "Startdate": start_date_str,
                     "Logo": encode_logo(raw.get("Logo")),
                 }
 
@@ -55,13 +64,19 @@ class CompanydataQuery:
             raw = item.__dict__.copy()
             raw.pop("_sa_instance_state", None)
 
+            start_date_val = raw.get("StartDate")
+            start_date_str = (
+                start_date_val.isoformat()
+                if isinstance(start_date_val, (datetime, date))
+                else None
+            )
             mapped = {
                 "CompanyID": raw.get("CompanyID"),
                 "Name": raw.get("Name"),
                 "Address": raw.get("Address"),
                 "CUIT": raw.get("CUIT"),
                 "Grossincome": raw.get("GrossIncome"),
-                "Startdate": raw.get("StartDate").isoformat() if raw.get("StartDate") else None,
+                "Startdate": start_date_str,
                 "Logo": encode_logo(raw.get("Logo")),
             }
 

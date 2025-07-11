@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { graphqlClient, QUERIES, diagnosticGraphQL } from "../utils/graphqlClient";
+import { graphqlClient, QUERIES, diagnosticGraphQL, supplierOperations } from "../utils/graphqlClient";
 import SupplierCreate from "./SupplierCreate";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
