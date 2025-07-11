@@ -244,5 +244,15 @@ FILTER_SCHEMAS = {
         {"field": "ItemDescription", "label": "Descripción ítem", "type": "text"},
         {"field": "Price", "label": "Precio", "type": "number"},
         {"field": "LastModified", "label": "Última modificación", "type": "text"}
+    ],
+    "useraccess": [
+        {"field": "UserID", "label": "Usuario", "type": "select", "relationModel": "User"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
+        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch"},
+        {"field": "RoleID", "label": "Rol", "type": "select", "relationModel": "Role"},
+        {"field": "UserName", "label": "Usuario (nombre)", "type": "text"},
+        {"field": "CompanyName", "label": "Compañía (nombre)", "type": "text"},
+        {"field": "BranchName", "label": "Sucursal (nombre)", "type": "text"},
+        {"field": "RoleName", "label": "Rol (nombre)", "type": "text"}
     ]
 }
