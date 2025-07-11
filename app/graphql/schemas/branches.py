@@ -1,4 +1,4 @@
-import base64
+﻿import base64
 import strawberry
 from typing import Optional
 

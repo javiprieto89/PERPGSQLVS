@@ -1,4 +1,4 @@
-# app/graphql/mutations/users.py
+﻿# app/graphql/mutations/users.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.users import UserCreate, UserUpdate, UsersInDB

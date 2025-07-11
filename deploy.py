@@ -1,5 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
-# deploy_full_stack.py - Script de deployment completo (Backend + Frontend)
+# deploy.py - Script de deployment completo (Backend + Frontend)
 import os
 import sys
 import subprocess

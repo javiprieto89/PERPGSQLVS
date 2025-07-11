@@ -1,4 +1,4 @@
-// frontend/src/components/BranchSearchModal.jsx
+﻿// frontend/src/components/BranchSearchModal.jsx
 import React, { useEffect, useState } from "react";
 import { branchOperations } from "../utils/graphqlClient";
 import TableFilters from "./TableFilters";

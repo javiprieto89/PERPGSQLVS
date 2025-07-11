@@ -1,4 +1,4 @@
-// frontend/src/pages/RoleForm.jsx
+﻿// frontend/src/pages/RoleForm.jsx
 import { useState, useEffect } from "react";
 import { roleOperations } from "../utils/graphqlClient";
 

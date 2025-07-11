@@ -1,4 +1,4 @@
-// frontend/src/components/RoleSearchModal.jsx
+﻿// frontend/src/components/RoleSearchModal.jsx
 import React, { useEffect, useState } from "react";
 import { roleOperations } from "../utils/graphqlClient";
 import TableFilters from "./TableFilters";

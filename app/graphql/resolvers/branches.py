@@ -1,4 +1,4 @@
-# app/graphql/resolvers/branches.py
+﻿# app/graphql/resolvers/branches.py
 import base64
 import strawberry
 from typing import List, Optional
