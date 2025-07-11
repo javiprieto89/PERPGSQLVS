@@ -31,7 +31,6 @@ def obj_to_schema(schema_type: Type[Any], obj: Any):
                 value = obj_dict.get(alt)
             else:
                 value = getattr(obj, alt, None)
-
         if isinstance(value, (bytes, bytearray)) and _expects_str(f.type):
             value = base64.b64encode(value).decode("utf-8")
 
