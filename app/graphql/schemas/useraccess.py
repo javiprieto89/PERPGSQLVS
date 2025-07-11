@@ -25,3 +25,7 @@ class UserAccessInDB:
     CompanyID: int
     BranchID: int
     RoleID: int
+    UserName: str | None = None
+    CompanyName: str | None = None
+    BranchName: str | None = None
+    RoleName: str | None = None
