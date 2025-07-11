@@ -482,6 +482,10 @@ export const MUTATIONS = {
                 CompanyID
                 Name
                 Address
+                CUIT
+                Grossincome
+                Startdate
+                Logo
             }
         }
     `,
@@ -491,6 +495,10 @@ export const MUTATIONS = {
                 CompanyID
                 Name
                 Address
+                CUIT
+                Grossincome
+                Startdate
+                Logo
             }
         }
     `,

@@ -2,6 +2,16 @@
 from sqlalchemy.orm import Session
 from app.models.companydata import CompanyData
 from app.graphql.schemas.companydata import CompanyDataCreate, CompanyDataUpdate
+import base64
+
+
+def _decode_logo(logo_str: str | None) -> bytes | None:
+    if logo_str is None:
+        return None
+    try:
+        return base64.b64decode(logo_str)
+    except Exception:
+        return None
 
 
 def get_companydata(db: Session):
@@ -13,7 +23,10 @@ def get_companydata_by_id(db: Session, companyID: int):
 
 
 def create_companydata(db: Session, data: CompanyDataCreate):
-    obj = CompanyData(**vars(data))
+    data_dict = vars(data).copy()
+    if data_dict.get("Logo"):
+        data_dict["Logo"] = _decode_logo(data_dict["Logo"])
+    obj = CompanyData(**data_dict)
     db.add(obj)
     db.commit()
     db.refresh(obj)
@@ -25,6 +38,8 @@ def update_companydata(db: Session, companyID: int, data: CompanyDataUpdate):
     if obj:
         for k, v in vars(data).items():
             if v is not None:
+                if k == "Logo":
+                    v = _decode_logo(v)
                 setattr(obj, k, v)
         db.commit()
         db.refresh(obj)

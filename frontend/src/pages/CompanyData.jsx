@@ -113,11 +113,21 @@ export default function CompanyData() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {companies.map((c) => (
                         <div key={c.CompanyID} className="bg-white rounded shadow p-4">
-                            <h3 className="text-lg font-semibold mb-2">{c.Name}</h3>
-                            <p className="text-sm mb-2">{c.Address}</p>
-                            <div className="flex space-x-2">
-                                <button onClick={() => handleEdit(c)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
-                                <button onClick={() => handleDelete(c.CompanyID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
+                            {c.Logo && (
+                                <img
+                                    src={`data:image/*;base64,${c.Logo}`}
+                                    alt="Logo"
+                                    className="h-16 mb-2 object-contain"
+                                />
+                            )}
+                            <h3 className="text-lg font-semibold mb-1">{c.Name}</h3>
+                            <p className="text-sm mb-1">{c.Address}</p>
+                            {c.CUIT && <p className="text-sm mb-1">CUIT: {c.CUIT}</p>}
+                            {c.Grossincome && <p className="text-sm mb-1">Ingresos brutos: {c.Grossincome}</p>}
+                            {c.Startdate && <p className="text-sm mb-1">Inicio: {c.Startdate.slice(0, 10)}</p>}
+                            <div className="flex space-x-2 mt-2">
+                                <button onClick={() => handleEdit(c)} className="px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
+                                <button onClick={() => handleDelete(c.CompanyID)} className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
                             </div>
                         </div>
                     ))}
