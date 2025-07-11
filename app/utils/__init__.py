@@ -1,5 +1,5 @@
 from dataclasses import fields
-from typing import Any, Type, List, Sequence, get_origin, get_args, Optional
+from typing import Any, Type, List, Sequence, get_origin, get_args, Union
 import base64
 
 # Helper functions to map SQLAlchemy models to Strawberry schemas
@@ -10,9 +10,9 @@ def _expects_str(field_type: Any) -> bool:
     if field_type is str:
         return True
     origin = get_origin(field_type)
-    if origin is Optional:
+    if origin is Union:
         args = get_args(field_type)
-        return len(args) == 1 and args[0] is str
+        return str in args
     return False
 
 
@@ -25,6 +25,12 @@ def obj_to_schema(schema_type: Type[Any], obj: Any):
         else:
             value = getattr(obj, f.name, None)
 
+        if value is None:
+            alt = f.name[0].upper() + f.name[1:]
+            if alt in obj_dict:
+                value = obj_dict.get(alt)
+            else:
+                value = getattr(obj, alt, None)
         if isinstance(value, (bytes, bytearray)) and _expects_str(f.type):
             value = base64.b64encode(value).decode("utf-8")
 
