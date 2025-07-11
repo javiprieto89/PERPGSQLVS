@@ -209,9 +209,13 @@ export const QUERIES = {
         query GetAllUseraccess {
             allUseraccess {
                 UserID
+                UserName
                 CompanyID
+                CompanyName
                 BranchID
+                BranchName
                 RoleID
+                RoleName
             }
         }
     `,
@@ -220,9 +224,13 @@ export const QUERIES = {
         query GetUseraccessById($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
             useraccessById(userID: $userID, companyID: $companyID, branchID: $branchID, roleID: $roleID) {
                 UserID
+                UserName
                 CompanyID
+                CompanyName
                 BranchID
+                BranchName
                 RoleID
+                RoleName
             }
         }
     `,
