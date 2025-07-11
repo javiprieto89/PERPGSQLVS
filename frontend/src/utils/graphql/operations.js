@@ -256,7 +256,11 @@ export const userOperations = {
 
     async updateUser(id, userData) {
         try {
-            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_USER_RECORD, { userID: id, input: userData });
+            // El esquema UserUpdate exige incluir el ID dentro del input
+            const data = await graphqlClient.mutation(
+                MUTATIONS.UPDATE_USER_RECORD,
+                { userID: id, input: { UserID: id, ...userData } }
+            );
             return data.updateUserRecord;
         } catch (error) {
             console.error("Error actualizando usuario:", error);
