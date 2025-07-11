@@ -5,7 +5,6 @@ from typing import Optional
 
 @strawberry.input
 class UserCreate:
-    UserID: int
     Nickname: Optional[str] = None
     FullName: Optional[str] = None
     Password: Optional[str] = None
