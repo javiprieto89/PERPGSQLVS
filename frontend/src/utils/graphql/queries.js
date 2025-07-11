@@ -756,6 +756,10 @@ export const QUERIES = {
                 CompanyID
                 Name
                 Address
+                CUIT
+                Grossincome
+                Startdate
+                Logo
             }
         }
     `,
@@ -766,6 +770,9 @@ export const QUERIES = {
                 Name
                 Address
                 CUIT
+                Grossincome
+                Startdate
+                Logo
             }
         }
     `,
