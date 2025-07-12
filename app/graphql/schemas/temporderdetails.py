@@ -5,7 +5,9 @@ from uuid import UUID
 
 @strawberry.input
 class TempOrderDetailsCreate:
-    OrderSessionID: UUID
+    OrderDetailID: Optional[int] = None
+    OrderID: Optional[int] = None
+    OrderSessionID: Optional[UUID] = None
     CompanyID: int
     BranchID: int
     UserID: int
@@ -18,6 +20,8 @@ class TempOrderDetailsCreate:
 
 @strawberry.input
 class TempOrderDetailsUpdate:
+    OrderDetailID: Optional[int] = None
+    OrderID: Optional[int] = None
     OrderSessionID: Optional[UUID] = None
     CompanyID: Optional[int] = None
     BranchID: Optional[int] = None
@@ -32,6 +36,8 @@ class TempOrderDetailsUpdate:
 @strawberry.type
 class TempOrderDetailsInDB:
     TempOrderItemID: int
+    OrderDetailID: Optional[int]
+    OrderID: Optional[int]
     OrderSessionID: UUID
     CompanyID: int
     BranchID: int

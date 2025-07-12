@@ -4,6 +4,7 @@ from dataclasses import asdict
 
 from app.models.orders import Orders
 from app.models.orderdetails import OrderDetails
+from app.models.temporderdetails import TempOrderDetails
 from app.graphql.schemas.orders import OrdersCreate, OrdersUpdate
 
 
@@ -73,3 +74,44 @@ def delete_orders(db: Session, orderid: int):
         db.delete(obj)
         db.commit()
     return obj
+
+
+def finalize_order(db: Session, orderid: int, session_id: str):
+    """Move items from TempOrderDetails to OrderDetails when the order is saved."""
+    order = get_orders_by_id(db, orderid)
+    if not order:
+        return None
+
+    temp_items = (
+        db.query(TempOrderDetails)
+        .filter(
+            TempOrderDetails.OrderID == orderid,
+            TempOrderDetails.OrderSessionID == session_id,
+        )
+        .all()
+    )
+
+    # Remove existing order details
+    db.query(OrderDetails).filter(OrderDetails.OrderID == orderid).delete(
+        synchronize_session=False
+    )
+
+    # Create new order details from temp entries
+    for t in temp_items:
+        detail = OrderDetails(
+            OrderID=orderid,
+            ItemID=t.ItemID,
+            Quantity=t.Quantity,
+            UnitPrice=t.UnitPrice,
+            Description=t.Description,
+            WarehouseID=t.WarehouseID,
+        )
+        db.add(detail)
+
+    # Remove temp items
+    for t in temp_items:
+        db.delete(t)
+
+    db.commit()
+    db.refresh(order)
+    return order
