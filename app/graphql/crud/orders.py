@@ -2,6 +2,8 @@
 from sqlalchemy.orm import Session
 from dataclasses import asdict
 
+from uuid import uuid4
+
 from app.models.orders import Orders
 from app.models.orderdetails import OrderDetails
 from app.models.temporderdetails import TempOrderDetails
@@ -30,17 +32,23 @@ def create_orders(db: Session, data: OrdersCreate):
     db.add(order)
     db.flush()  # necesario para obtener orderID antes de los detalles
 
-    # Crear detalles de la orden
+    # Guardar temporalmente los detalles de la orden
+    session_id = uuid4()
     for item in items_data:
-        detail = OrderDetails(
+        temp_detail = TempOrderDetails(
             OrderID=order.OrderID,
+            CompanyID=order.CompanyID,
+            BranchID=order.BranchID,
+            UserID=order.UserID,
             ItemID=item.ItemID,
             Quantity=item.Quantity,
+            WarehouseID=order.WarehouseID,
+            PriceListID=order.PriceListID,
             UnitPrice=item.UnitPrice,
             Description=item.Description,
-            WarehouseID=order.WarehouseID,
+            OrderSessionID=session_id,
         )
-        db.add(detail)
+        db.add(temp_detail)
 
     db.commit()
     db.refresh(order)

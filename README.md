@@ -163,3 +163,6 @@ permanente.
 Si al crear un ítem no enviás un `sessionID`, el backend generará uno
 automáticamente y lo devolverá en la respuesta. Utilizá ese mismo `sessionID`
 para los ítems siguientes y para la mutación `finalizeOrder`.
+Cuando se crea una orden enviando una lista de ítems, dichos registros también
+se almacenan en `TempOrderDetails` con un `sessionID` único hasta su
+confirmación definitiva.
