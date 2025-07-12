@@ -213,7 +213,6 @@ def add_item_to_order(
         session_uuid = uuid4()
     else:
         session_uuid = UUID(session_id)
-    
     # Crear entrada temporal
     temp_detail = TempOrderDetails(
         CompanyID=_safe_get_int(order, 'CompanyID'),
