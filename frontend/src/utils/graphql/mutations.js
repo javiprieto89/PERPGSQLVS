@@ -599,6 +599,39 @@ export const MUTATIONS = {
         }
     `,
 
+    // ====== TEMPORARY ORDER DETAILS ======
+    CREATE_TEMPORDERDETAIL: `
+        mutation CreateTemporderdetail($input: TempOrderDetailsCreate!) {
+            createTemporderdetail(data: $input) {
+                TempOrderItemID
+                OrderSessionID
+                ItemID
+                Quantity
+                UnitPrice
+                Description
+                WarehouseID
+            }
+        }
+    `,
+    UPDATE_TEMPORDERDETAIL: `
+        mutation UpdateTemporderdetail($sessionID: String!, $tempItemID: Int!, $input: TempOrderDetailsUpdate!) {
+            updateTemporderdetail(sessionID: $sessionID, tempItemID: $tempItemID, data: $input) {
+                TempOrderItemID
+                OrderSessionID
+                ItemID
+                Quantity
+                UnitPrice
+                Description
+                WarehouseID
+            }
+        }
+    `,
+    DELETE_TEMPORDERDETAIL: `
+        mutation DeleteTemporderdetail($sessionID: String!, $tempItemID: Int!) {
+            deleteTemporderdetail(sessionID: $sessionID, tempItemID: $tempItemID)
+        }
+    `,
+
     // ROLES
     CREATE_ROLE: `
         mutation CreateRole($input: RolesCreate!) {
