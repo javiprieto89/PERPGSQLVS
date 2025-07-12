@@ -14,12 +14,12 @@ def get_temporderdetails(db: Session) -> List[TempOrderDetails]:
     return db.query(TempOrderDetails).all()
 
 
-def get_temporderdetails_by_id(
-    db: Session, temporderitemid: int
+def get_temporderdetail_by_session(
+    db: Session, session_id: str
 ) -> Optional[TempOrderDetails]:
     return (
         db.query(TempOrderDetails)
-        .filter(TempOrderDetails.tempOrderItemID == temporderitemid)
+        .filter(TempOrderDetails.OrderSessionID == session_id)
         .first()
     )
 
@@ -27,7 +27,8 @@ def get_temporderdetails_by_id(
 def create_temporderdetails(
     db: Session, data: TempOrderDetailsCreate
 ) -> TempOrderDetails:
-    obj = TempOrderDetails(**asdict(data))
+    data_dict = {k: v for k, v in asdict(data).items() if v is not None}
+    obj = TempOrderDetails(**data_dict)
     db.add(obj)
     db.commit()
     db.refresh(obj)
@@ -35,9 +36,9 @@ def create_temporderdetails(
 
 
 def update_temporderdetails(
-    db: Session, temporderitemid: int, data: TempOrderDetailsUpdate
+    db: Session, session_id: str, data: TempOrderDetailsUpdate
 ) -> Optional[TempOrderDetails]:
-    obj = get_temporderdetails_by_id(db, temporderitemid)
+    obj = get_temporderdetail_by_session(db, session_id)
     if not obj:
         return None
     for field, value in asdict(data).items():
@@ -49,9 +50,9 @@ def update_temporderdetails(
 
 
 def delete_temporderdetails(
-    db: Session, temporderitemid: int
+    db: Session, session_id: str
 ) -> Optional[TempOrderDetails]:
-    obj = get_temporderdetails_by_id(db, temporderitemid)
+    obj = get_temporderdetail_by_session(db, session_id)
     if not obj:
         return None
     db.delete(obj)
@@ -64,6 +65,6 @@ def get_temporderdetails_by_session(
 ) -> List[TempOrderDetails]:
     return (
         db.query(TempOrderDetails)
-        .filter(TempOrderDetails.orderSessionID == session_id)
+        .filter(TempOrderDetails.OrderSessionID == session_id)
         .all()
     )

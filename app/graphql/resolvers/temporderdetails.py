@@ -21,12 +21,29 @@ class TemporderdetailsQuery:
             db_gen.close()
 
     @strawberry.field
-    def temporderdetails_by_id(self, info: Info, id: int) -> Optional[TempOrderDetailsInDB]:
+    def temporderdetails_by_session(
+        self, info: Info, sessionID: str
+    ) -> List[TempOrderDetailsInDB]:
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            items = db.query(TempOrderDetails).filter(
+                TempOrderDetails.OrderSessionID == sessionID
+            ).all()
+            return list_to_schema(TempOrderDetailsInDB, items)
+        finally:
+            db_gen.close()
+
+    @strawberry.field
+    def temporderdetail_by_session(
+        self, info: Info, sessionID: str
+    ) -> Optional[TempOrderDetailsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
             item = db.query(TempOrderDetails).filter(
-                TempOrderDetails.tempOrderItemID == id).first()
+                TempOrderDetails.OrderSessionID == sessionID
+            ).first()
             return obj_to_schema(TempOrderDetailsInDB, item) if item else None
         finally:
             db_gen.close()

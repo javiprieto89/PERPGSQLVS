@@ -65,6 +65,7 @@ from app.graphql.mutations.branches import BranchesMutations
 from app.graphql.mutations.companydata import CompanydataMutations
 from app.graphql.mutations.warehouses import WarehousesMutations
 from app.graphql.mutations.pricelists import PricelistsMutations
+from app.graphql.mutations.temporderdetails import TempOrderDetailsMutations
 from app.graphql.mutations.orders import OrdersMutations
 from app.graphql.mutations.servicetype import ServiceTypeMutations
 from app.graphql.mutations.documenttypes import DocumentTypesMutations
@@ -410,6 +411,7 @@ class Mutation(
     CompanydataMutations,
     WarehousesMutations,
     PricelistsMutations,
+    TempOrderDetailsMutations,
     OrdersMutations,
     ServiceTypeMutations,
     DocumentTypesMutations,

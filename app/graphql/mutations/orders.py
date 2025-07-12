@@ -2,7 +2,12 @@
 import strawberry
 from typing import Optional
 from app.graphql.schemas.orders import OrdersCreate, OrdersUpdate, OrdersInDB
-from app.graphql.crud.orders import create_orders, update_orders, delete_orders
+from app.graphql.crud.orders import (
+    create_orders,
+    update_orders,
+    delete_orders,
+    finalize_order,
+)
 from app.utils import obj_to_schema
 from app.db import get_db
 from strawberry.types import Info
@@ -36,5 +41,17 @@ class OrdersMutations:
         try:
             deleted = delete_orders(db, orderID)
             return deleted is not None
+        finally:
+            db_gen.close()
+
+    @strawberry.mutation
+    def finalize_order(
+        self, info: Info, orderID: int, sessionID: str
+    ) -> Optional[OrdersInDB]:
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            finalized = finalize_order(db, orderID, sessionID)
+            return obj_to_schema(OrdersInDB, finalized) if finalized else None
         finally:
             db_gen.close()

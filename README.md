@@ -151,3 +151,12 @@ El proyecto también incluye:
 - `deploy.py`: Script original solo para backend
 - `Git-PushToBranch.ps1`: Script PowerShell para Git
 - `Kill-Port8000.ps1`: Script para liberar el puerto 8000
+
+## Gestión temporal de ítems en órdenes
+
+Durante la creación o edición de una orden, los ítems se almacenan en la tabla
+`TempOrderDetails`. Esto permite modificarlos libremente desde el frontend sin
+afectar la orden real. Cuando se confirma la operación, se debe invocar la
+mutación `finalizeOrder` enviando el `orderID` y el `sessionID`; dicha acción
+mueve los registros temporales a `OrderDetails` y aplica los cambios de forma
+permanente.
