@@ -170,3 +170,4 @@ confirmación definitiva.
 Para modificar un ítem temporal utilizá la mutación `update_temporderdetail`.
 Debés enviar el `sessionID` devuelto al crear el ítem.
 Con ese valor se localiza exactamente el registro dentro de `TempOrderDetails`.
+
