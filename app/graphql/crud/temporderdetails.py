@@ -37,11 +37,15 @@ def get_temporderdetails(db: Session) -> List[TempOrderDetails]:
 
 
 def get_temporderdetail_by_session(
-    db: Session, session_id: str
+    db: Session, session_id: str, temp_item_id: int
 ) -> Optional[TempOrderDetails]:
+    """Obtener un TempOrderDetail específico de una sesión"""
     return (
         db.query(TempOrderDetails)
-        .filter(TempOrderDetails.OrderSessionID == session_id)
+        .filter(
+            TempOrderDetails.OrderSessionID == session_id,
+            TempOrderDetails.TempOrderItemID == temp_item_id,
+        )
         .first()
     )
 
@@ -70,10 +74,11 @@ def create_temporderdetails(
 
 
 def update_temporderdetails(
-    db: Session, session_id: str, data: TempOrderDetailsUpdate
+    db: Session, session_id: str, temp_item_id: int, data: TempOrderDetailsUpdate
 ) -> Optional[TempOrderDetails]:
-    # Buscar el registro por OrderSessionID
-    obj = get_temporderdetail_by_session(db, session_id)
+    """Actualizar un item temporal usando session y TempOrderItemID"""
+    # Buscar el registro por OrderSessionID y TempOrderItemID
+    obj = get_temporderdetail_by_session(db, session_id, temp_item_id)
     if not obj:
         return None
     
@@ -87,8 +92,9 @@ def update_temporderdetails(
     return obj
 
 
-def delete_temporderdetails(db: Session, session_id: str) -> Optional[TempOrderDetails]:
-    obj = get_temporderdetail_by_session(db, session_id)
+def delete_temporderdetails(db: Session, session_id: str, temp_item_id: int) -> Optional[TempOrderDetails]:
+    """Eliminar un item temporal específico"""
+    obj = get_temporderdetail_by_session(db, session_id, temp_item_id)
     if not obj:
         return None
     db.delete(obj)
