@@ -613,8 +613,8 @@ export const MUTATIONS = {
         }
     `,
     UPDATE_TEMPORDERDETAIL: `
-        mutation UpdateTemporderdetail($sessionID: String!, $input: TempOrderDetailsUpdate!) {
-            updateTemporderdetail(sessionID: $sessionID, data: $input) {
+        mutation UpdateTemporderdetail($sessionID: String!, $tempItemID: Int!, $input: TempOrderDetailsUpdate!) {
+            updateTemporderdetail(sessionID: $sessionID, tempItemID: $tempItemID, data: $input) {
                 OrderSessionID
                 ItemID
                 Quantity
@@ -625,8 +625,8 @@ export const MUTATIONS = {
         }
     `,
     DELETE_TEMPORDERDETAIL: `
-        mutation DeleteTemporderdetail($sessionID: String!) {
-            deleteTemporderdetail(sessionID: $sessionID)
+        mutation DeleteTemporderdetail($sessionID: String!, $tempItemID: Int!) {
+            deleteTemporderdetail(sessionID: $sessionID, tempItemID: $tempItemID)
         }
     `,
 
