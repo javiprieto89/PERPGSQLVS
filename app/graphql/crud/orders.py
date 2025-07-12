@@ -1,7 +1,7 @@
 ﻿# app/graphql/crud/orders.py - Versión type-safe
 from sqlalchemy.orm import Session
 from dataclasses import asdict
-from uuid import uuid4
+from uuid import uuid4, UUID
 from typing import Optional, Any
 
 from app.models.orders import Orders
@@ -187,7 +187,12 @@ def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Order
     return order
 
 
-def add_item_to_order(db: Session, order_id: int, session_id: str, item_data: dict) -> TempOrderDetails:
+def add_item_to_order(
+    db: Session,
+    order_id: int,
+    session_id: Optional[str],
+    item_data: dict,
+) -> TempOrderDetails:
     """
     Agregar un item a una orden en proceso (guardarlo en TempOrderDetails).
     Se usa durante la creación/edición de órdenes antes de finalizar.
@@ -197,7 +202,17 @@ def add_item_to_order(db: Session, order_id: int, session_id: str, item_data: di
         raise ValueError(f"Orden {order_id} no encontrada")
     
     # Obtener WarehouseID de forma segura
-    warehouse_id = item_data.get('WarehouseID') if 'WarehouseID' in item_data and item_data['WarehouseID'] else _safe_get_int(order, 'WarehouseID')
+    warehouse_id = (
+        item_data.get("WarehouseID")
+        if "WarehouseID" in item_data and item_data["WarehouseID"]
+        else _safe_get_int(order, "WarehouseID")
+    )
+
+    # Normalizar session ID a UUID
+    if not session_id:
+        session_uuid = uuid4()
+    else:
+        session_uuid = UUID(session_id)
     
     # Crear entrada temporal
     temp_detail = TempOrderDetails(
@@ -205,7 +220,7 @@ def add_item_to_order(db: Session, order_id: int, session_id: str, item_data: di
         BranchID=_safe_get_int(order, 'BranchID'),
         UserID=_safe_get_int(order, 'UserID'),
         OrderID=order_id,
-        OrderSessionID=session_id,
+        OrderSessionID=session_uuid,
         ItemID=item_data['ItemID'],
         Quantity=item_data['Quantity'],
         WarehouseID=warehouse_id,
