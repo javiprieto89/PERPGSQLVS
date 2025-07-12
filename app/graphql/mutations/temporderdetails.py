@@ -29,7 +29,7 @@ from strawberry.types import Info
 class AddItemToOrderInput:
     """Input para agregar item a orden en proceso"""
     OrderID: int
-    SessionID: str
+    SessionID: Optional[str] = None
     ItemID: int
     Quantity: int
     UnitPrice: float

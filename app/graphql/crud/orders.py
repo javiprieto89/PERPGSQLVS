@@ -187,7 +187,9 @@ def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Order
     return order
 
 
-def add_item_to_order(db: Session, order_id: int, session_id: str, item_data: dict) -> TempOrderDetails:
+def add_item_to_order(
+    db: Session, order_id: int, session_id: Optional[str], item_data: dict
+) -> TempOrderDetails:
     """
     Agregar un item a una orden en proceso (guardarlo en TempOrderDetails).
     Se usa durante la creación/edición de órdenes antes de finalizar.
@@ -197,7 +199,15 @@ def add_item_to_order(db: Session, order_id: int, session_id: str, item_data: di
         raise ValueError(f"Orden {order_id} no encontrada")
     
     # Obtener WarehouseID de forma segura
-    warehouse_id = item_data.get('WarehouseID') if 'WarehouseID' in item_data and item_data['WarehouseID'] else _safe_get_int(order, 'WarehouseID')
+    warehouse_id = (
+        item_data.get("WarehouseID")
+        if "WarehouseID" in item_data and item_data["WarehouseID"]
+        else _safe_get_int(order, "WarehouseID")
+    )
+
+    # Generar session ID si no se proporcionó
+    if not session_id:
+        session_id = str(uuid4())
     
     # Crear entrada temporal
     temp_detail = TempOrderDetails(
