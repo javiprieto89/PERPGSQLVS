@@ -1,4 +1,4 @@
-# app/graphql/mutations/companydata.py
+﻿# app/graphql/mutations/companydata.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.companydata import CompanyDataCreate, CompanyDataUpdate, CompanyDataInDB

@@ -1,5 +1,4 @@
-# ========== TempOrderDetails ===========
-# app/models/temporderdetails.py
+﻿# app/models/temporderdetails.py
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
@@ -16,13 +15,6 @@ from typing import Optional
 
 from sqlalchemy import Column, Integer, Unicode, DECIMAL, Uuid, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
 from sqlalchemy.orm import Mapped, relationship
-#from .branches import Branches
-#from .companydata import CompanyData
-#from .items import Items
-#from .orders import Orders
-#from .pricelists import PriceLists
-#from .users import Users
-#from .warehouses import Warehouses
 from app.db import Base
 
 
@@ -33,25 +25,29 @@ class TempOrderDetails(Base):
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__TempOrder__Compa__0C85DE4D'),
         ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK__TempOrder__ItemI__0F624AF8'),
         ForeignKeyConstraint(['OrderID'], ['Orders.OrderID'], name='FK_TempOrderDetails_Orders'),
+        ForeignKeyConstraint(['OrderDetailID'], ['OrderDetails.OrderDetailID'], name='FK_TempOrderDetails_OrderDetails'), 
         ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK_TempOrderDetails_PriceLists'),
         ForeignKeyConstraint(['UserID'], ['Users.UserID'], name='FK__TempOrder__UserI__0E6E26BF'),
         ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_TempOrderDetails_Warehouses'),
-        PrimaryKeyConstraint('TempOrderItemID', name='PK__TempOrde__AC4DF55EB1F17B71')
+        # Clave primaria compuesta siguiendo el schema de SQL Server
+        PrimaryKeyConstraint('CompanyID', 'BranchID', 'UserID', 'OrderSessionID', 'ItemID', name='PK_TempOrderDetails_Composite')
     )
 
-    TempOrderItemID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    OrderSessionID = Column(Uuid, server_default=text('(newid())'))
-    CompanyID = Column(Integer)
-    BranchID = Column(Integer)
-    UserID = Column(Integer)
-    ItemID = Column(Integer)
-    Quantity = Column(Integer)
-    WarehouseID = Column(Integer)
-    PriceListID = Column(Integer)
-    UnitPrice = Column(DECIMAL(10, 2))
-    Description = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
-    OrderDetailID = Column(Integer)
-    OrderID = Column(Integer)
+    # Campos obligatorios según la estructura de SQL Server
+    CompanyID = Column(Integer, nullable=False)
+    BranchID = Column(Integer, nullable=False)
+    UserID = Column(Integer, nullable=False)
+    OrderSessionID = Column(Uuid, server_default=text('(newid())'), nullable=False)
+    ItemID = Column(Integer, nullable=False)
+    Quantity = Column(Integer, nullable=False)
+    WarehouseID = Column(Integer, nullable=False)
+    PriceListID = Column(Integer, nullable=False)
+    UnitPrice = Column(DECIMAL(10, 2), nullable=False)
+    Description = Column(Unicode(200, 'Modern_Spanish_CI_AS'), nullable=False)
+    
+    # Campos opcionales
+    OrderID = Column(Integer, nullable=True)
+    OrderDetailID = Column(Integer, nullable=True)
 
     # Relaciones
     branches_: Mapped['Branches'] = relationship('Branches', back_populates='tempOrderDetails')

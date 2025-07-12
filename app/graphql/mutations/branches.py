@@ -1,4 +1,4 @@
-# app/graphql/mutations/branches.py
+﻿# app/graphql/mutations/branches.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.branches import BranchesCreate, BranchesUpdate, BranchesInDB
