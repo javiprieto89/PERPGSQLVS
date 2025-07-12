@@ -603,7 +603,6 @@ export const MUTATIONS = {
     CREATE_TEMPORDERDETAIL: `
         mutation CreateTemporderdetail($input: TempOrderDetailsCreate!) {
             createTemporderdetail(data: $input) {
-                TempOrderItemID
                 OrderSessionID
                 ItemID
                 Quantity
@@ -614,9 +613,8 @@ export const MUTATIONS = {
         }
     `,
     UPDATE_TEMPORDERDETAIL: `
-        mutation UpdateTemporderdetail($sessionID: String!, $tempItemID: Int!, $input: TempOrderDetailsUpdate!) {
-            updateTemporderdetail(sessionID: $sessionID, tempItemID: $tempItemID, data: $input) {
-                TempOrderItemID
+        mutation UpdateTemporderdetail($sessionID: String!, $input: TempOrderDetailsUpdate!) {
+            updateTemporderdetail(sessionID: $sessionID, data: $input) {
                 OrderSessionID
                 ItemID
                 Quantity
@@ -627,8 +625,8 @@ export const MUTATIONS = {
         }
     `,
     DELETE_TEMPORDERDETAIL: `
-        mutation DeleteTemporderdetail($sessionID: String!, $tempItemID: Int!) {
-            deleteTemporderdetail(sessionID: $sessionID, tempItemID: $tempItemID)
+        mutation DeleteTemporderdetail($sessionID: String!) {
+            deleteTemporderdetail(sessionID: $sessionID)
         }
     `,
 

@@ -219,7 +219,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 quantity: itemWithDetails.quantity,
                 price: itemWithDetails.price,
                 subtotal: itemWithDetails.quantity * itemWithDetails.price,
-                tempOrderItemID: tempItem.TempOrderItemID,
+                orderSessionID: tempItem.OrderSessionID,
             };
             setItems((prev) => [...prev, newItem]);
         } catch (error) {
@@ -233,9 +233,9 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
     const handleRemoveItem = async (index) => {
         const item = items[index];
         setItems((prev) => prev.filter((_, i) => i !== index));
-        if (sessionId && item?.tempOrderItemID) {
+        if (item?.orderSessionID) {
             try {
-                await tempOrderOperations.deleteTempItem(sessionId, item.tempOrderItemID);
+                await tempOrderOperations.deleteTempItem(item.orderSessionID);
             } catch (err) {
                 console.error("Error eliminando item temporal:", err);
             }
