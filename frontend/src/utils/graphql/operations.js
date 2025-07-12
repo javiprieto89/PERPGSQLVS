@@ -1227,6 +1227,48 @@ export const orderOperations = {
     }
 };
 
+// ===== FUNCIONES PARA ITEMS TEMPORALES =====
+export const tempOrderOperations = {
+    async createTempItem(data) {
+        try {
+            const result = await graphqlClient.mutation(
+                MUTATIONS.CREATE_TEMPORDERDETAIL,
+                { input: data }
+            );
+            return result.createTemporderdetail;
+        } catch (error) {
+            console.error("Error creando item temporal:", error);
+            throw error;
+        }
+    },
+
+    async updateTempItem(sessionID, tempItemID, data) {
+        try {
+            const result = await graphqlClient.mutation(
+                MUTATIONS.UPDATE_TEMPORDERDETAIL,
+                { sessionID, tempItemID, input: data }
+            );
+            return result.updateTemporderdetail;
+        } catch (error) {
+            console.error("Error actualizando item temporal:", error);
+            throw error;
+        }
+    },
+
+    async deleteTempItem(sessionID, tempItemID) {
+        try {
+            await graphqlClient.mutation(MUTATIONS.DELETE_TEMPORDERDETAIL, {
+                sessionID,
+                tempItemID,
+            });
+            return true;
+        } catch (error) {
+            console.error("Error eliminando item temporal:", error);
+            throw error;
+        }
+    },
+};
+
 export const companyOperations = {
     async getAllCompanies() {
         try {
