@@ -1242,11 +1242,11 @@ export const tempOrderOperations = {
         }
     },
 
-    async updateTempItem(sessionID, data) {
+    async updateTempItem(sessionID, tempItemID, data) {
         try {
             const result = await graphqlClient.mutation(
                 MUTATIONS.UPDATE_TEMPORDERDETAIL,
-                { sessionID, input: data }
+                { sessionID, tempItemID, input: data }
             );
             return result.updateTemporderdetail;
         } catch (error) {
@@ -1255,10 +1255,11 @@ export const tempOrderOperations = {
         }
     },
 
-    async deleteTempItem(sessionID) {
+    async deleteTempItem(sessionID, tempItemID) {
         try {
             await graphqlClient.mutation(MUTATIONS.DELETE_TEMPORDERDETAIL, {
                 sessionID,
+                tempItemID,
             });
             return true;
         } catch (error) {

@@ -6,6 +6,7 @@ export default function ItemConfirmationModal({
     item,
     onClose,
     onConfirm,
+    confirmLabel = "Agregar al Pedido",
 }) {
     const [quantity, setQuantity] = useState(1);
     const [price, setPrice] = useState(0);
@@ -15,7 +16,7 @@ export default function ItemConfirmationModal({
         if (item) {
             console.log("ItemConfirmationModal - Item recibido:", item); // Debug log
             setPrice(item.price || 0);
-            setQuantity(1);
+            setQuantity(item.quantity || 1);
         }
     }, [item]);
 
@@ -188,7 +189,7 @@ export default function ItemConfirmationModal({
                             onClick={handleConfirm}
                             className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Agregar al Pedido
+                            {confirmLabel}
                         </button>
                     </div>
                 </div>

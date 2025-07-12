@@ -59,6 +59,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
     const [showSaleConditionModal, setShowSaleConditionModal] = useState(false);
     const [showItemConfirmationModal, setShowItemConfirmationModal] = useState(false);
     const [selectedItemForConfirmation, setSelectedItemForConfirmation] = useState(null);
+    const [editIndex, setEditIndex] = useState(null);
 
     useEffect(() => {
         if (initialOrder) {
@@ -189,45 +190,75 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
         setSelectedItemForConfirmation(selectedItem);
         setShowItemSearchModal(false);
         setShowItemConfirmationModal(true);
+        setEditIndex(null);
     };
 
     const handleItemConfirmed = async (itemWithDetails) => {
         console.log("Item confirmado:", itemWithDetails);
 
-        const tempData = {
-            CompanyID: parseInt(formData.companyId),
-            BranchID: parseInt(formData.branchId),
-            UserID: parseInt(formData.userId),
-            ItemID: parseInt(itemWithDetails.itemID),
+        const baseData = {
             Quantity: parseInt(itemWithDetails.quantity),
-            WarehouseID: parseInt(formData.warehouseId),
-            PriceListID: parseInt(formData.priceListId),
             UnitPrice: parseFloat(itemWithDetails.price),
             Description: itemWithDetails.description || "",
         };
-        if (sessionId) {
-            tempData.OrderSessionID = sessionId;
-        }
 
-        try {
-            const tempItem = await tempOrderOperations.createTempItem(tempData);
-            setSessionId(tempItem.OrderSessionID);
-            const newItem = {
-                itemID: itemWithDetails.itemID,
-                code: itemWithDetails.code,
-                description: itemWithDetails.description,
+        if (editIndex !== null) {
+            const existing = items[editIndex];
+            const updatedItems = [...items];
+            updatedItems[editIndex] = {
+                ...existing,
                 quantity: itemWithDetails.quantity,
                 price: itemWithDetails.price,
                 subtotal: itemWithDetails.quantity * itemWithDetails.price,
-                orderSessionID: tempItem.OrderSessionID,
             };
-            setItems((prev) => [...prev, newItem]);
-        } catch (error) {
-            alert("Error guardando item temporal: " + error.message);
+            setItems(updatedItems);
+
+            if (existing.orderSessionID) {
+                try {
+                    await tempOrderOperations.updateTempItem(
+                        existing.orderSessionID,
+                        existing.itemID,
+                        baseData
+                    );
+                } catch (error) {
+                    console.error("Error actualizando item temporal:", error);
+                }
+            }
+        } else {
+            const tempData = {
+                CompanyID: parseInt(formData.companyId),
+                BranchID: parseInt(formData.branchId),
+                UserID: parseInt(formData.userId),
+                ItemID: parseInt(itemWithDetails.itemID),
+                WarehouseID: parseInt(formData.warehouseId),
+                PriceListID: parseInt(formData.priceListId),
+                ...baseData,
+            };
+            if (sessionId) {
+                tempData.OrderSessionID = sessionId;
+            }
+
+            try {
+                const tempItem = await tempOrderOperations.createTempItem(tempData);
+                setSessionId(tempItem.OrderSessionID);
+                const newItem = {
+                    itemID: itemWithDetails.itemID,
+                    code: itemWithDetails.code,
+                    description: itemWithDetails.description,
+                    quantity: itemWithDetails.quantity,
+                    price: itemWithDetails.price,
+                    subtotal: itemWithDetails.quantity * itemWithDetails.price,
+                    orderSessionID: tempItem.OrderSessionID,
+                };
+                setItems((prev) => [...prev, newItem]);
+            } catch (error) {
+                alert("Error guardando item temporal: " + error.message);
+            }
         }
 
         setShowItemConfirmationModal(false);
         setSelectedItemForConfirmation(null);
+        setEditIndex(null);
     };
 
     const handleRemoveItem = async (index) => {
@@ -235,11 +266,27 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
         setItems((prev) => prev.filter((_, i) => i !== index));
         if (item?.orderSessionID) {
             try {
-                await tempOrderOperations.deleteTempItem(item.orderSessionID);
+                await tempOrderOperations.deleteTempItem(
+                    item.orderSessionID,
+                    item.itemID
+                );
             } catch (err) {
                 console.error("Error eliminando item temporal:", err);
             }
         }
+    };
+
+    const handleEditItem = (index) => {
+        const item = items[index];
+        setSelectedItemForConfirmation({
+            itemID: item.itemID,
+            code: item.code,
+            description: item.description,
+            quantity: item.quantity,
+            price: item.price,
+        });
+        setEditIndex(index);
+        setShowItemConfirmationModal(true);
     };
 
     const handleSubmit = async (e) => {
@@ -815,13 +862,22 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                                                     <td className="px-4 py-3 text-right text-sm text-gray-700">${parseFloat(item.price).toFixed(2)}</td>
                                                     <td className="px-4 py-3 text-right text-sm text-gray-700 font-medium">${item.subtotal.toFixed(2)}</td>
                                                     <td className="px-4 py-3 text-center">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleRemoveItem(index)}
-                                                            className="text-red-600 hover:text-red-800 font-medium"
-                                                        >
-                                                            Eliminar
-                                                        </button>
+                                                        <div className="flex space-x-2 justify-center">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleEditItem(index)}
+                                                                className="text-indigo-600 hover:text-indigo-800 font-medium"
+                                                            >
+                                                                Editar
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleRemoveItem(index)}
+                                                                className="text-red-600 hover:text-red-800 font-medium"
+                                                            >
+                                                                Eliminar
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -919,8 +975,10 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                     onClose={() => {
                         setShowItemConfirmationModal(false);
                         setSelectedItemForConfirmation(null);
+                        setEditIndex(null);
                     }}
                     onConfirm={handleItemConfirmed}
+                    confirmLabel={editIndex !== null ? "Actualizar Ítem" : "Agregar al Pedido"}
                 />
             )}
         </div>
