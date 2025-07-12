@@ -160,3 +160,6 @@ afectar la orden real. Cuando se confirma la operación, se debe invocar la
 mutación `finalizeOrder` enviando el `orderID` y el `sessionID`; dicha acción
 mueve los registros temporales a `OrderDetails` y aplica los cambios de forma
 permanente.
+Si al crear un ítem no enviás un `sessionID`, el backend generará uno
+automáticamente y lo devolverá en la respuesta. Utilizá ese mismo `sessionID`
+para los ítems siguientes y para la mutación `finalizeOrder`.
