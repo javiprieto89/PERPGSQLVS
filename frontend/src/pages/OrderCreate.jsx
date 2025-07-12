@@ -10,6 +10,7 @@ import {
     pricelistOperations,
     warehouseOperations,
     orderOperations,
+    tempOrderOperations,
 } from "../utils/graphqlClient";
 import ItemSearchModal from "../components/ItemSearchModal";
 import ClientSearchModal from "../components/ClientSearchModal";
@@ -51,6 +52,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
     const [priceLists, setPriceLists] = useState([]);
     const [warehouses, setWarehouses] = useState([]);
     const [items, setItems] = useState([]);
+    const [sessionId, setSessionId] = useState(null);
     const [showClientDropdown, setShowClientDropdown] = useState(false);
     const [showItemSearchModal, setShowItemSearchModal] = useState(false);
     const [showClientSearchModal, setShowClientSearchModal] = useState(false);
@@ -189,30 +191,55 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
         setShowItemConfirmationModal(true);
     };
 
-    const handleItemConfirmed = (itemWithDetails) => {
+    const handleItemConfirmed = async (itemWithDetails) => {
         console.log("Item confirmado:", itemWithDetails);
 
-        const newItem = {
-            itemID: itemWithDetails.itemID,            
-            code: itemWithDetails.code,
-            description: itemWithDetails.description,
-            quantity: itemWithDetails.quantity,
-            price: itemWithDetails.price,
-            subtotal: itemWithDetails.quantity * itemWithDetails.price,
+        const tempData = {
+            CompanyID: parseInt(formData.companyId),
+            BranchID: parseInt(formData.branchId),
+            UserID: parseInt(formData.userId),
+            ItemID: parseInt(itemWithDetails.itemID),
+            Quantity: parseInt(itemWithDetails.quantity),
+            WarehouseID: parseInt(formData.warehouseId),
+            PriceListID: parseInt(formData.priceListId),
+            UnitPrice: parseFloat(itemWithDetails.price),
+            Description: itemWithDetails.description || "",
         };
+        if (sessionId) {
+            tempData.OrderSessionID = sessionId;
+        }
 
-        console.log("Nuevo item para agregar:", newItem);
+        try {
+            const tempItem = await tempOrderOperations.createTempItem(tempData);
+            setSessionId(tempItem.OrderSessionID);
+            const newItem = {
+                itemID: itemWithDetails.itemID,
+                code: itemWithDetails.code,
+                description: itemWithDetails.description,
+                quantity: itemWithDetails.quantity,
+                price: itemWithDetails.price,
+                subtotal: itemWithDetails.quantity * itemWithDetails.price,
+                orderSessionID: tempItem.OrderSessionID,
+            };
+            setItems((prev) => [...prev, newItem]);
+        } catch (error) {
+            alert("Error guardando item temporal: " + error.message);
+        }
 
-        setItems((prev) => [
-            ...prev,
-            newItem,
-        ]);
         setShowItemConfirmationModal(false);
         setSelectedItemForConfirmation(null);
     };
 
-    const handleRemoveItem = (index) => {
+    const handleRemoveItem = async (index) => {
+        const item = items[index];
         setItems((prev) => prev.filter((_, i) => i !== index));
+        if (item?.orderSessionID) {
+            try {
+                await tempOrderOperations.deleteTempItem(item.orderSessionID);
+            } catch (err) {
+                console.error("Error eliminando item temporal:", err);
+            }
+        }
     };
 
     const handleSubmit = async (e) => {

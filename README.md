@@ -166,3 +166,7 @@ para los ítems siguientes y para la mutación `finalizeOrder`.
 Cuando se crea una orden enviando una lista de ítems, dichos registros también
 se almacenan en `TempOrderDetails` con un `sessionID` único hasta su
 confirmación definitiva.
+
+Para modificar un ítem temporal utilizá la mutación `update_temporderdetail`.
+Debés enviar el `sessionID` devuelto al crear el ítem.
+Con ese valor se localiza exactamente el registro dentro de `TempOrderDetails`.
