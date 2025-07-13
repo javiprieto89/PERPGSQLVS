@@ -160,10 +160,15 @@ def get_temporderdetails_by_session(
     db: Session, session_id: str
 ) -> List[TempOrderDetails]:
     """Obtener todos los TempOrderDetails de una sesión específica"""
+    try:
+        session_uuid = UUID(session_id)
+    except Exception:
+        session_uuid = session_id
+
     items = (
         db.query(TempOrderDetails)
         .join(Items, TempOrderDetails.ItemID == Items.ItemID)
-        .filter(TempOrderDetails.OrderSessionID == session_id)
+        .filter(TempOrderDetails.OrderSessionID == session_uuid)
         .all()
     )
     for obj in items:
@@ -208,7 +213,10 @@ def load_orderdetails_to_temp(
     from app.models.orderdetails import OrderDetails
 
     # Generar nuevo session ID para la edición
-    session_id = uuid4()
+    session_uuid = uuid4()
+
+    # Eliminar cualquier item temporal previo vinculado a la orden
+    delete_temporderdetails_by_order(db, order_id)
 
     # Obtener los OrderDetails de la orden
     order_details = (
@@ -231,7 +239,7 @@ def load_orderdetails_to_temp(
             UserID=user_id,
             OrderID=order_id,
             OrderDetailID=_safe_get_int(detail, "OrderDetailID"),
-            OrderSessionID=session_id,
+            OrderSessionID=session_uuid,
             ItemID=_safe_get_int(detail, "ItemID"),
             Quantity=_safe_get_int(detail, "Quantity"),
             WarehouseID=_safe_get_int(detail, "WarehouseID"),
@@ -242,4 +250,4 @@ def load_orderdetails_to_temp(
         db.add(temp_detail)
 
     db.commit()
-    return str(session_id)
+    return str(session_uuid)
