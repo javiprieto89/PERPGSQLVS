@@ -6,19 +6,27 @@ export default function ItemConfirmationModal({
     item,
     onClose,
     onConfirm,
+    priceLists = [],
+    warehouses = [],
+    defaultPriceListId = "",
+    defaultWarehouseId = "",
     confirmLabel = "Agregar al Pedido",
 }) {
     const [quantity, setQuantity] = useState(1);
     const [price, setPrice] = useState(0);
     const [subtotal, setSubtotal] = useState(0);
+    const [priceListId, setPriceListId] = useState(defaultPriceListId);
+    const [warehouseId, setWarehouseId] = useState(defaultWarehouseId);
 
     useEffect(() => {
         if (item) {
             console.log("ItemConfirmationModal - Item recibido:", item); // Debug log
             setPrice(item.price || 0);
             setQuantity(item.quantity || 1);
+            setPriceListId(defaultPriceListId || "");
+            setWarehouseId(defaultWarehouseId || "");
         }
-    }, [item]);
+    }, [item, defaultPriceListId, defaultWarehouseId]);
 
     useEffect(() => {
         setSubtotal(quantity * price);
@@ -47,6 +55,8 @@ export default function ItemConfirmationModal({
             description: item.description,
             quantity: parseInt(quantity, 10),
             price: parseFloat(price),
+            priceListId: priceListId,
+            warehouseId: warehouseId,
         };
 
         console.log("ItemConfirmationModal - Item a confirmar:", itemWithDetails); // Debug log
@@ -146,24 +156,60 @@ export default function ItemConfirmationModal({
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                             />
                         </div>
-                        <div>
-                            <label
-                                htmlFor="price"
-                                className="block text-sm font-medium text-gray-700 mb-1"
-                            >
-                                Precio Unitario
-                            </label>
-                            <input
-                                type="number"
-                                id="price"
-                                value={price}
-                                onChange={handlePriceChange}
-                                min="0"
-                                step="0.01"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            />
-                        </div>
+                    <div>
+                        <label
+                            htmlFor="price"
+                            className="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            Precio Unitario
+                        </label>
+                        <input
+                            type="number"
+                            id="price"
+                            value={price}
+                            onChange={handlePriceChange}
+                            min="0"
+                            step="0.01"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        />
                     </div>
+                    <div>
+                        <label htmlFor="priceList" className="block text-sm font-medium text-gray-700 mb-1">
+                            Lista de Precios
+                        </label>
+                        <select
+                            id="priceList"
+                            value={priceListId}
+                            onChange={(e) => setPriceListId(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                            <option value="">Seleccionar...</option>
+                            {priceLists.map((pl) => (
+                                <option key={pl.PriceListID} value={pl.PriceListID}>
+                                    {pl.Name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor="warehouse" className="block text-sm font-medium text-gray-700 mb-1">
+                            Depósito
+                        </label>
+                        <select
+                            id="warehouse"
+                            value={warehouseId}
+                            onChange={(e) => setWarehouseId(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                            <option value="">Seleccionar...</option>
+                            {warehouses.map((w) => (
+                                <option key={w.WarehouseID} value={w.WarehouseID}>
+                                    {w.Name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
 
                     {/* Subtotal */}
                     <div className="bg-indigo-50 p-4 rounded-md">
