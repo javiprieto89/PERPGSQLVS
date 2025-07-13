@@ -537,27 +537,31 @@ export const MUTATIONS = {
     CREATE_ORDER: `
         mutation CreateOrder($input: OrdersCreate!) {
             createOrder(data: $input) {
-                OrderID
-                CompanyID
-                BranchID
-                Date_
-                ClientID
-                CarID
-                IsService
-                ServiceTypeID
-                Mileage
-                NextServiceMileage
-                Notes
-                SaleConditionID
-                DiscountID
-                Subtotal
-                Total
-                VAT
-                UserID
-                DocumentID
-                PriceListID
-                OrderStatusID
-                WarehouseID
+                order {
+                    OrderID
+                    CompanyID
+                    BranchID
+                    Date_
+                    ClientID
+                    CarID
+                    IsService
+                    ServiceTypeID
+                    Mileage
+                    NextServiceMileage
+                    Notes
+                    SaleConditionID
+                    DiscountID
+                    Subtotal
+                    Total
+                    VAT
+                    UserID
+                    DocumentID
+                    PriceListID
+                    OrderStatusID
+                    WarehouseID
+                }
+                sessionID
+                message
             }
         }
     `,
@@ -565,27 +569,31 @@ export const MUTATIONS = {
     UPDATE_ORDER: `
         mutation UpdateOrder($orderID: Int!, $input: OrdersUpdate!) {
             updateOrder(orderID: $orderID, data: $input) {
-                OrderID
-                CompanyID
-                BranchID
-                Date_
-                ClientID
-                CarID
-                IsService
-                ServiceTypeID
-                Mileage
-                NextServiceMileage
-                Notes
-                SaleConditionID
-                DiscountID
-                Subtotal
-                Total
-                VAT
-                UserID
-                DocumentID
-                PriceListID
-                OrderStatusID
-                WarehouseID
+                order {
+                    OrderID
+                    CompanyID
+                    BranchID
+                    Date_
+                    ClientID
+                    CarID
+                    IsService
+                    ServiceTypeID
+                    Mileage
+                    NextServiceMileage
+                    Notes
+                    SaleConditionID
+                    DiscountID
+                    Subtotal
+                    Total
+                    VAT
+                    UserID
+                    DocumentID
+                    PriceListID
+                    OrderStatusID
+                    WarehouseID
+                }
+                sessionID
+                message
             }
         }
     `,
