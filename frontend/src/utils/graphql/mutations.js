@@ -537,27 +537,31 @@ export const MUTATIONS = {
     CREATE_ORDER: `
         mutation CreateOrder($input: OrdersCreate!) {
             createOrder(data: $input) {
-                OrderID
-                CompanyID
-                BranchID
-                Date_
-                ClientID
-                CarID
-                IsService
-                ServiceTypeID
-                Mileage
-                NextServiceMileage
-                Notes
-                SaleConditionID
-                DiscountID
-                Subtotal
-                Total
-                VAT
-                UserID
-                DocumentID
-                PriceListID
-                OrderStatusID
-                WarehouseID
+                order {
+                    OrderID
+                    CompanyID
+                    BranchID
+                    Date_
+                    ClientID
+                    CarID
+                    IsService
+                    ServiceTypeID
+                    Mileage
+                    NextServiceMileage
+                    Notes
+                    SaleConditionID
+                    DiscountID
+                    Subtotal
+                    Total
+                    VAT
+                    UserID
+                    DocumentID
+                    PriceListID
+                    OrderStatusID
+                    WarehouseID
+                }
+                sessionID
+                message
             }
         }
     `,
@@ -565,27 +569,31 @@ export const MUTATIONS = {
     UPDATE_ORDER: `
         mutation UpdateOrder($orderID: Int!, $input: OrdersUpdate!) {
             updateOrder(orderID: $orderID, data: $input) {
-                OrderID
-                CompanyID
-                BranchID
-                Date_
-                ClientID
-                CarID
-                IsService
-                ServiceTypeID
-                Mileage
-                NextServiceMileage
-                Notes
-                SaleConditionID
-                DiscountID
-                Subtotal
-                Total
-                VAT
-                UserID
-                DocumentID
-                PriceListID
-                OrderStatusID
-                WarehouseID
+                order {
+                    OrderID
+                    CompanyID
+                    BranchID
+                    Date_
+                    ClientID
+                    CarID
+                    IsService
+                    ServiceTypeID
+                    Mileage
+                    NextServiceMileage
+                    Notes
+                    SaleConditionID
+                    DiscountID
+                    Subtotal
+                    Total
+                    VAT
+                    UserID
+                    DocumentID
+                    PriceListID
+                    OrderStatusID
+                    WarehouseID
+                }
+                sessionID
+                message
             }
         }
     `,
@@ -627,6 +635,31 @@ export const MUTATIONS = {
     DELETE_TEMPORDERDETAIL: `
         mutation DeleteTemporderdetail($sessionID: String!, $itemID: Int!) {
             deleteTemporderdetail(sessionID: $sessionID, itemID: $itemID)
+        }
+    `,
+
+    LOAD_ORDER_FOR_EDITING: `
+        mutation LoadOrderForEditing($orderID: Int!, $userID: Int!, $companyID: Int!, $branchID: Int!) {
+            loadOrderForEditing(orderID: $orderID, userID: $userID, companyID: $companyID, branchID: $branchID)
+        }
+    `,
+
+    GET_TEMP_ITEMS_BY_SESSION: `
+        query GetTempItemsBySession($sessionID: String!) {
+            temporderdetailsBySession(sessionID: $sessionID) {
+                OrderDetailID
+                OrderID
+                OrderSessionID
+                CompanyID
+                BranchID
+                UserID
+                ItemID
+                Quantity
+                WarehouseID
+                PriceListID
+                UnitPrice
+                Description
+            }
         }
     `,
 

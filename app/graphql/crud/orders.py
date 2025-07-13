@@ -94,36 +94,40 @@ def create_orders(db: Session, data: OrdersCreate):
 
 
 def update_orders(db: Session, orderid: int, data: OrdersUpdate):
-    """
-    Actualizar orden. Si tiene items, se cargan primero a TempOrderDetails para edición.
+    """Actualizar orden y preparar los items para edición.
+
+    Siempre carga los ``OrderDetails`` existentes a ``TempOrderDetails`` para
+    que puedan modificarse desde el frontend, independientemente de si el
+    payload incluye items nuevos o no.
     """
     obj = get_orders_by_id(db, orderid)
     if not obj:
         return None
     
     update_data = asdict(data)
-    items_data = update_data.pop("Items", None)  # Extraer items si existen
+    # ``Items`` puede venir para futuras funcionalidades, pero por ahora sólo se
+    # extrae para evitar que intente asignarse directamente al modelo ``Orders``.
+    update_data.pop("Items", None)
     
     # Actualizar campos de la orden (excluyendo items)
     for k, v in update_data.items():
         if v is not None and hasattr(obj, k):
             setattr(obj, k, v)
     
-    # Si hay items para actualizar, cargar OrderDetails existentes a TempOrderDetails
-    if items_data is not None:
-        # Asegurar que el objeto está actualizado en la sesión
-        db.flush()
-        db.refresh(obj)
-        
-        # Cargar detalles existentes a tabla temporal para edición
-        session_id = load_orderdetails_to_temp(
-            db, 
-            orderid, 
-            _safe_get_int(obj, 'UserID'), 
-            _safe_get_int(obj, 'CompanyID'), 
-            _safe_get_int(obj, 'BranchID')
-        )
-        obj._temp_session_id = session_id
+    # Siempre cargar los detalles existentes a ``TempOrderDetails`` para poder
+    # editarlos desde la UI. Si ya existe una sesión previa, se generará una
+    # nueva para evitar colisiones.
+    db.flush()
+    db.refresh(obj)
+
+    session_id = load_orderdetails_to_temp(
+        db,
+        orderid,
+        _safe_get_int(obj, 'UserID'),
+        _safe_get_int(obj, 'CompanyID'),
+        _safe_get_int(obj, 'BranchID'),
+    )
+    obj._temp_session_id = session_id
     
     db.commit()
     db.refresh(obj)
