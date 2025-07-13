@@ -17,7 +17,7 @@ import ClientSearchModal from "../components/ClientSearchModal";
 import SaleConditionSearchModal from "../components/SaleConditionSearchModal";
 import ItemConfirmationModal from "../components/ItemConfirmationModal";
 
-export default function OrderCreate({ onClose, onSave, order: initialOrder = null, userInfo }) {
+export default function OrderCreate({ onClose, onSave, order: initialOrder = null, userInfo, windowRef }) {
     const [formData, setFormData] = useState({
         companyId: userInfo?.companyId || "1",
         branchId: userInfo?.branchId || "1",
@@ -98,6 +98,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                     setSessionId(sid);
                     const tempItems = await tempOrderOperations.getTempItems(sid);
                     const parsed = tempItems.map((d) => ({
+                        tempId: d.OrderDetailID,
                         itemID: d.ItemID,
                         code: "",
                         description: d.Description || "",
@@ -266,6 +267,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 const tempItem = await tempOrderOperations.createTempItem(tempData);
                 setSessionId(tempItem.OrderSessionID);
                 const newItem = {
+                    tempId: Date.now() + Math.random(),
                     itemID: itemWithDetails.itemID,
                     code: itemWithDetails.code,
                     description: itemWithDetails.description,
@@ -315,6 +317,18 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
         });
         setEditIndex(index);
         setShowItemConfirmationModal(true);
+    };
+
+    const handleCancel = async () => {
+        try {
+            if (sessionId) {
+                await tempOrderOperations.clearTempSession(sessionId);
+            }
+        } catch (err) {
+            console.error("Error limpiando items temporales:", err);
+        } finally {
+            onClose && onClose();
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -476,6 +490,22 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             total: sub + vatAmount,
         }));
     }, [items]);
+
+    useEffect(() => {
+        const cleanup = () => {
+            if (sessionId) {
+                tempOrderOperations.clearTempSession(sessionId).catch((err) => {
+                    console.error("Error limpiando items temporales:", err);
+                });
+            }
+        };
+        const win = windowRef || window;
+        win.addEventListener("beforeunload", cleanup);
+        return () => {
+            win.removeEventListener("beforeunload", cleanup);
+            cleanup();
+        };
+    }, [sessionId, windowRef]);
 
     return (
         <div className="container mx-auto p-4 md:p-6 bg-gray-100 min-h-screen">
@@ -884,7 +914,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {items.map((item, index) => (
-                                                <tr key={`${item.itemID}-${index}`} className="hover:bg-gray-50">
+                                                <tr key={item.tempId ?? `${item.itemID}-${index}`} className="hover:bg-gray-50">
                                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{item.code || "N/A"}</td>
                                                     <td className="px-4 py-3 text-sm text-gray-700 max-w-xs truncate">{item.description}</td>
                                                     <td className="px-4 py-3 text-right text-sm text-gray-700">{item.quantity}</td>
@@ -952,12 +982,28 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                             </p>
                         </div>
 
-                        <button
-                            type="submit"
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150 text-lg"
-                        >
-                            {isEdit ? 'Guardar Cambios' : 'Guardar Pedido'}
-                        </button>
+                        <div className="flex justify-end space-x-4 pt-4 border-t">
+                            <button
+                                type="button"
+                                onClick={handleCancel}
+                                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {}}
+                                className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                            >
+                                Emitir
+                            </button>
+                            <button
+                                type="submit"
+                                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                            >
+                                {isEdit ? 'Guardar Cambios' : 'Guardar Pedido'}
+                            </button>
+                        </div>
                     </section>
                 </form>
             </div>

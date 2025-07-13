@@ -637,6 +637,11 @@ export const MUTATIONS = {
             deleteTemporderdetail(sessionID: $sessionID, itemID: $itemID)
         }
     `,
+    CLEAR_TEMP_SESSION: `
+        mutation ClearTempSession($sessionID: String!) {
+            clearTempSession(sessionID: $sessionID)
+        }
+    `,
 
     LOAD_ORDER_FOR_EDITING: `
         mutation LoadOrderForEditing($orderID: Int!, $userID: Int!, $companyID: Int!, $branchID: Int!) {
