@@ -386,7 +386,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             } else {
                 response = await orderOperations.createOrder(orderData);
             }
-            alert("Orden guardada correctamente. ID: " + response.OrderID);
+            const order = response.order || response; // compatibilidad
+            alert("Orden guardada correctamente. ID: " + order.OrderID);
 
             // Limpiar formulario después de crear exitosamente
             setFormData({
