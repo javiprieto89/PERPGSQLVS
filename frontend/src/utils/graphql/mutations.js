@@ -661,25 +661,6 @@ export const MUTATIONS = {
         }
     `,
 
-    GET_TEMP_ITEMS_BY_SESSION: `
-        query GetTempItemsBySession($sessionID: String!) {
-            temporderdetailsBySession(sessionID: $sessionID) {
-                OrderDetailID
-                OrderID
-                OrderSessionID
-                CompanyID
-                BranchID
-                UserID
-                ItemID
-                Quantity
-                WarehouseID
-                PriceListID
-                UnitPrice
-                Description
-            }
-        }
-    `,
-
     // ROLES
     CREATE_ROLE: `
         mutation CreateRole($input: RolesCreate!) {

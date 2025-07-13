@@ -91,11 +91,11 @@ export default function CompanyCreate({ onClose, onSave, company: initialCompany
                             if (!file) return;
                             const reader = new FileReader();
                             reader.onload = (ev) => {
-                                const result = ev.target?.result;
-                                if (typeof result === "string") {
-                                    const base64 = result.split(",")[1] || result;
+                                const data = ev.target?.result;
+                                if (typeof data === "string") {
+                                    const base64 = data.split(",")[1] || data;
                                     setLogo(base64);
-                                    setLogoPreview(result);
+                                    setLogoPreview(data);
                                 }
                             };
                             reader.readAsDataURL(file);
