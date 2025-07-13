@@ -1,5 +1,5 @@
 // src/pages/OrderCreate.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
     clientOperations,
     carOperations,
@@ -53,6 +53,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
     const [warehouses, setWarehouses] = useState([]);
     const [items, setItems] = useState([]);
     const [sessionId, setSessionId] = useState(null);
+    const didSaveRef = useRef(false);
     const [showClientDropdown, setShowClientDropdown] = useState(false);
     const [showItemSearchModal, setShowItemSearchModal] = useState(false);
     const [showClientSearchModal, setShowClientSearchModal] = useState(false);
@@ -60,6 +61,22 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
     const [showItemConfirmationModal, setShowItemConfirmationModal] = useState(false);
     const [selectedItemForConfirmation, setSelectedItemForConfirmation] = useState(null);
     const [editIndex, setEditIndex] = useState(null);
+
+    useEffect(() => {
+        const handleUnload = () => {
+            if (!didSaveRef.current && sessionId) {
+                orderOperations
+                    .cancelOrderEditing(initialOrder?.OrderID || 0, sessionId)
+                    .catch((err) => console.error("Error cancelando edición:", err));
+            }
+        };
+
+        window.addEventListener("beforeunload", handleUnload);
+        return () => {
+            window.removeEventListener("beforeunload", handleUnload);
+            handleUnload();
+        };
+    }, [sessionId, initialOrder]);
 
     useEffect(() => {
         if (initialOrder) {
@@ -105,6 +122,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                         price: d.UnitPrice,
                         subtotal: d.Quantity * d.UnitPrice,
                         orderSessionID: d.OrderSessionID,
+                        orderDetailID: d.OrderDetailID,
                     }));
                     setItems(parsed);
                 } catch (err) {
@@ -226,7 +244,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                     await tempOrderOperations.updateTempItem(
                         existing.orderSessionID,
                         existing.itemID,
-                        baseData
+                        baseData,
+                        existing.orderDetailID ?? null
                     );
                 } catch (error) {
                     console.error("Error actualizando item temporal:", error);
@@ -257,6 +276,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                     price: itemWithDetails.price,
                     subtotal: itemWithDetails.quantity * itemWithDetails.price,
                     orderSessionID: tempItem.OrderSessionID,
+                    orderDetailID: null,
                 };
                 setItems((prev) => [...prev, newItem]);
             } catch (error) {
@@ -276,7 +296,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             try {
                 await tempOrderOperations.deleteTempItem(
                     item.orderSessionID,
-                    item.itemID
+                    item.itemID,
+                    item.orderDetailID ?? null
                 );
             } catch (err) {
                 console.error("Error eliminando item temporal:", err);
@@ -404,6 +425,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             if (sid) {
                 try {
                     await orderOperations.finalizeOrder(order.OrderID, sid);
+                    didSaveRef.current = true;
                 } catch (err) {
                     console.error("Error finalizando la orden:", err);
                 }

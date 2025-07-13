@@ -40,16 +40,22 @@ def get_temporderdetail_by_session(
     db: Session,
     session_id: str,
     item_id: int,
+    order_detail_id: Optional[int] = None,
 ) -> Optional[TempOrderDetails]:
-    """Obtener un ``TempOrderDetail`` por ``OrderSessionID`` e ``ItemID``"""
-    return (
-        db.query(TempOrderDetails)
-        .filter(
-            TempOrderDetails.OrderSessionID == session_id,
-            TempOrderDetails.ItemID == item_id,
-        )
-        .first()
+    """Obtener un ``TempOrderDetail`` por ``OrderSessionID`` e ``ItemID``.
+
+    Si ``order_detail_id`` se proporciona, también se filtra por ese campo para
+    garantizar que se obtenga un único registro cuando existen múltiples ítems
+    con el mismo ``ItemID`` en una sesión.
+    """
+    query = db.query(TempOrderDetails).filter(
+        TempOrderDetails.OrderSessionID == session_id,
+        TempOrderDetails.ItemID == item_id,
     )
+    if order_detail_id is not None:
+        query = query.filter(TempOrderDetails.OrderDetailID == order_detail_id)
+
+    return query.first()
 
 
 def create_temporderdetails(
@@ -80,10 +86,15 @@ def update_temporderdetails(
     session_id: str,
     item_id: int,
     data: TempOrderDetailsUpdate,
+    order_detail_id: Optional[int] = None,
 ) -> Optional[TempOrderDetails]:
-    """Actualizar un item temporal usando ``OrderSessionID`` e ``ItemID``"""
-    # Buscar el registro por OrderSessionID e ItemID
-    obj = get_temporderdetail_by_session(db, session_id, item_id)
+    """Actualizar un item temporal.
+
+    Se identifica por ``session_id`` y ``item_id``. Si ``order_detail_id`` se
+    suministra, también se filtra por ese campo para evitar conflictos en caso de
+    que existan múltiples registros con el mismo ``ItemID`` en la misma sesión.
+    """
+    obj = get_temporderdetail_by_session(db, session_id, item_id, order_detail_id)
     if not obj:
         return None
     
@@ -101,9 +112,10 @@ def delete_temporderdetails(
     db: Session,
     session_id: str,
     item_id: int,
+    order_detail_id: Optional[int] = None,
 ) -> Optional[TempOrderDetails]:
     """Eliminar un item temporal específico"""
-    obj = get_temporderdetail_by_session(db, session_id, item_id)
+    obj = get_temporderdetail_by_session(db, session_id, item_id, order_detail_id)
     if not obj:
         return None
     db.delete(obj)

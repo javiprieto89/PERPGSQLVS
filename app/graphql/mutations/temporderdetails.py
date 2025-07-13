@@ -59,12 +59,19 @@ class TempOrderDetailsMutations:
         sessionID: str,
         itemID: int,
         data: TempOrderDetailsUpdate,
+        orderDetailID: Optional[int] = None,
     ) -> Optional[TempOrderDetailsInDB]:
-        """Actualizar un item temporal usando ``sessionID`` e ``itemID``"""
+        """Actualizar un item temporal usando ``sessionID`` e ``itemID``.
+
+        ``orderDetailID`` es opcional y se utiliza cuando el item proviene de un
+        ``OrderDetail`` existente para evitar actualizar múltiples registros.
+        """
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update_temporderdetails(db, sessionID, itemID, data)
+            updated = update_temporderdetails(
+                db, sessionID, itemID, data, orderDetailID
+            )
             return obj_to_schema(TempOrderDetailsInDB, updated) if updated else None
         finally:
             db_gen.close()
@@ -75,12 +82,13 @@ class TempOrderDetailsMutations:
         info: Info,
         sessionID: str,
         itemID: int,
+        orderDetailID: Optional[int] = None,
     ) -> bool:
         """Eliminar un item temporal específico"""
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete_temporderdetails(db, sessionID, itemID)
+            deleted = delete_temporderdetails(db, sessionID, itemID, orderDetailID)
             return deleted is not None
         finally:
             db_gen.close()
