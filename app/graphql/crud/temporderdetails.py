@@ -159,6 +159,45 @@ def delete_temporderdetails_by_order(db: Session, order_id: int) -> int:
     return count
 
 
+def get_temporderdetail_by_detail_id(
+    db: Session, detail_id: int
+) -> Optional[TempOrderDetails]:
+    """Obtener un ``TempOrderDetail`` por ``OrderDetailID``"""
+    return (
+        db.query(TempOrderDetails)
+        .filter(TempOrderDetails.OrderDetailID == detail_id)
+        .first()
+    )
+
+
+def update_temporderdetails_by_detail_id(
+    db: Session, detail_id: int, data: TempOrderDetailsUpdate
+) -> Optional[TempOrderDetails]:
+    """Actualizar un item temporal usando su ``OrderDetailID``"""
+    obj = get_temporderdetail_by_detail_id(db, detail_id)
+    if not obj:
+        return None
+
+    for field, value in asdict(data).items():
+        if value is not None and hasattr(obj, field):
+            setattr(obj, field, value)
+
+    db.commit()
+    db.refresh(obj)
+    return obj
+
+
+def delete_temporderdetails_by_detail_id(db: Session, detail_id: int) -> int:
+    """Eliminar un ``TempOrderDetail`` usando su ``OrderDetailID``"""
+    count = (
+        db.query(TempOrderDetails)
+        .filter(TempOrderDetails.OrderDetailID == detail_id)
+        .delete(synchronize_session=False)
+    )
+    db.commit()
+    return count
+
+
 def load_orderdetails_to_temp(
     db: Session, order_id: int, user_id: int, company_id: int, branch_id: int
 ) -> str:

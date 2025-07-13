@@ -14,6 +14,8 @@ from app.graphql.crud.temporderdetails import (
     delete_temporderdetails,
     get_temporderdetails_by_session,
     delete_temporderdetails_by_session,
+    update_temporderdetails_by_detail_id,
+    delete_temporderdetails_by_detail_id,
     load_orderdetails_to_temp,
 )
 from app.graphql.crud.orders import (
@@ -156,5 +158,29 @@ class TempOrderDetailsMutations:
         try:
             items = get_temporderdetails_by_session(db, sessionID)
             return list_to_schema(TempOrderDetailsInDB, items)
+        finally:
+            db_gen.close()
+
+    @strawberry.mutation
+    def update_temp_item_by_detail_id(
+        self, info: Info, detailID: int, data: TempOrderDetailsUpdate
+    ) -> Optional[TempOrderDetailsInDB]:
+        """Actualizar un item temporal usando ``OrderDetailID``"""
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            updated = update_temporderdetails_by_detail_id(db, detailID, data)
+            return obj_to_schema(TempOrderDetailsInDB, updated) if updated else None
+        finally:
+            db_gen.close()
+
+    @strawberry.mutation
+    def delete_temp_item_by_detail_id(self, info: Info, detailID: int) -> bool:
+        """Eliminar un item temporal por ``OrderDetailID``"""
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            count = delete_temporderdetails_by_detail_id(db, detailID)
+            return count > 0
         finally:
             db_gen.close()
