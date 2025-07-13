@@ -11,6 +11,7 @@ import {
     warehouseOperations,
     orderOperations,
     tempOrderOperations,
+    itemOperations,
 } from "../utils/graphqlClient";
 import ItemSearchModal from "../components/ItemSearchModal";
 import ClientSearchModal from "../components/ClientSearchModal";
@@ -97,18 +98,29 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                     );
                     setSessionId(sid);
                     const tempItems = await tempOrderOperations.getTempItems(sid);
-                    const parsed = tempItems.map((d) => ({
-                        tempId: d.OrderDetailID,
-                        itemID: d.ItemID,
-                        code: "",
-                        description: d.Description || "",
-                        quantity: d.Quantity,
-                        price: d.UnitPrice,
-                        priceListId: d.PriceListID,
-                        warehouseId: d.WarehouseID,
-                        subtotal: d.Quantity * d.UnitPrice,
-                        orderSessionID: d.OrderSessionID,
-                    }));
+                    const parsed = await Promise.all(
+                        tempItems.map(async (d) => {
+                            let code = "";
+                            try {
+                                const item = await itemOperations.getItemById(d.ItemID);
+                                code = item?.Code || "";
+                            } catch (e) {
+                                console.error("Error obteniendo código de ítem", e);
+                            }
+                            return {
+                                tempId: d.OrderDetailID,
+                                itemID: d.ItemID,
+                                code,
+                                description: d.Description || "",
+                                quantity: d.Quantity,
+                                price: d.UnitPrice,
+                                priceListId: d.PriceListID,
+                                warehouseId: d.WarehouseID,
+                                subtotal: d.Quantity * d.UnitPrice,
+                                orderSessionID: d.OrderSessionID,
+                            };
+                        })
+                    );
                     setItems(parsed);
                 } catch (err) {
                     console.error("Error cargando items temporales:", err);
