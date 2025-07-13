@@ -248,6 +248,7 @@
   <ItemGroup>
     <Content Include=".env.example" />
     <Content Include=".gitignore" />
+    <Content Include="AGENTS.md" />
     <Content Include="app\.env" />
     <Content Include="app\.env.example" />
     <Content Include="Como iniciar.txt" />
