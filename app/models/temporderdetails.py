@@ -29,17 +29,15 @@ class TempOrderDetails(Base):
         ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK_TempOrderDetails_PriceLists'),
         ForeignKeyConstraint(['UserID'], ['Users.UserID'], name='FK__TempOrder__UserI__0E6E26BF'),
         ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_TempOrderDetails_Warehouses'),
-        # Clave primaria basada en un campo identidad
-        PrimaryKeyConstraint('TempOrderItemID', name='PK__TempOrde__AC4DF55EB1F17B71')
+        PrimaryKeyConstraint('OrderSessionID', 'ItemID', name='PK_TempOrderDetails')
     )
 
     # Campos obligatorios según la estructura de SQL Server
-    TempOrderItemID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
     CompanyID = Column(Integer, nullable=False)
     BranchID = Column(Integer, nullable=False)
     UserID = Column(Integer, nullable=False)
-    OrderSessionID = Column(Uuid, server_default=text('(newid())'), nullable=False)
-    ItemID = Column(Integer, nullable=False)
+    OrderSessionID = Column(Uuid, server_default=text('(newid())'), nullable=False, primary_key=True)
+    ItemID = Column(Integer, nullable=False, primary_key=True)
     Quantity = Column(Integer, nullable=False)
     WarehouseID = Column(Integer, nullable=False)
     PriceListID = Column(Integer, nullable=False)
