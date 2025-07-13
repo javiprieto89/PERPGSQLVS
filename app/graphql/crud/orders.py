@@ -206,12 +206,13 @@ def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Order
             target = existing_map[temp_item.OrderDetailID]
 
         if target:
-            target.ItemID = _safe_get_int(temp_item, "ItemID")
-            target.WarehouseID = _safe_get_int(temp_item, "WarehouseID")
-            target.Quantity = _safe_get_int(temp_item, "Quantity")
-            target.UnitPrice = temp_item.UnitPrice
-            target.Description = temp_item.Description
-            target.LastModified = datetime.utcnow()
+            # Usar ``setattr`` para evitar conflictos con el type checker
+            setattr(target, "ItemID", _safe_get_int(temp_item, "ItemID"))
+            setattr(target, "WarehouseID", _safe_get_int(temp_item, "WarehouseID"))
+            setattr(target, "Quantity", _safe_get_int(temp_item, "Quantity"))
+            setattr(target, "UnitPrice", temp_item.UnitPrice)
+            setattr(target, "Description", temp_item.Description)
+            setattr(target, "LastModified", datetime.utcnow())
             processed_ids.add(target.OrderDetailID)
         else:
             new_detail = OrderDetails(
