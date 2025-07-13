@@ -25,15 +25,16 @@ class TempOrderDetails(Base):
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__TempOrder__Compa__0C85DE4D'),
         ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK__TempOrder__ItemI__0F624AF8'),
         ForeignKeyConstraint(['OrderID'], ['Orders.OrderID'], name='FK_TempOrderDetails_Orders'),
-        ForeignKeyConstraint(['OrderDetailID'], ['OrderDetails.OrderDetailID'], name='FK_TempOrderDetails_OrderDetails'), 
+        ForeignKeyConstraint(['OrderDetailID'], ['OrderDetails.OrderDetailID'], name='FK_TempOrderDetails_OrderDetails'),
         ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK_TempOrderDetails_PriceLists'),
         ForeignKeyConstraint(['UserID'], ['Users.UserID'], name='FK__TempOrder__UserI__0E6E26BF'),
         ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_TempOrderDetails_Warehouses'),
-        # Clave primaria compuesta siguiendo el schema de SQL Server
-        PrimaryKeyConstraint('CompanyID', 'BranchID', 'UserID', 'OrderSessionID', 'ItemID', name='PK_TempOrderDetails_Composite')
+        # Clave primaria basada en un campo identidad
+        PrimaryKeyConstraint('TempOrderItemID', name='PK__TempOrde__AC4DF55EB1F17B71')
     )
 
     # Campos obligatorios según la estructura de SQL Server
+    TempOrderItemID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
     CompanyID = Column(Integer, nullable=False)
     BranchID = Column(Integer, nullable=False)
     UserID = Column(Integer, nullable=False)
