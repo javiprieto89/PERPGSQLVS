@@ -1129,7 +1129,7 @@ export const orderOperations = {
                 input: preparedData
             });
 
-            return data.createOrder.order;
+            return data.createOrder;
         } catch (error) {
             console.error("Error creando orden:", error);
             throw error;
@@ -1167,7 +1167,7 @@ export const orderOperations = {
                 input: preparedData
             });
 
-            return data.updateOrder.order;
+            return data.updateOrder;
         } catch (error) {
             console.error("Error actualizando orden:", error);
             throw error;
@@ -1183,6 +1183,19 @@ export const orderOperations = {
             return data.deleteOrder;
         } catch (error) {
             console.error("Error eliminando orden:", error);
+            throw error;
+        }
+    },
+
+    async finalizeOrder(orderID, sessionID) {
+        try {
+            const result = await graphqlClient.mutation(
+                MUTATIONS.FINALIZE_ORDER,
+                { orderID, sessionID }
+            );
+            return result.finalizeOrder;
+        } catch (error) {
+            console.error("Error finalizando orden:", error);
             throw error;
         }
     },
