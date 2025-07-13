@@ -32,6 +32,13 @@ def _safe_get_int(obj: Any, field_name: str) -> int:
         raise ValueError(f"No se puede convertir {field_name}={value} a int: {e}")
 
 
+def _ensure_uuid(value: str | UUID) -> UUID:
+    """Convertir un valor a UUID si es necesario."""
+    if isinstance(value, UUID):
+        return value
+    return UUID(str(value))
+
+
 def get_temporderdetails(db: Session) -> List[TempOrderDetails]:
     return db.query(TempOrderDetails).all()
 
@@ -42,19 +49,18 @@ def get_temporderdetail_by_session(
     item_id: int,
 ) -> Optional[TempOrderDetails]:
     """Obtener un ``TempOrderDetail`` por ``OrderSessionID`` e ``ItemID``"""
+    session_uuid = _ensure_uuid(session_id)
     return (
         db.query(TempOrderDetails)
         .filter(
-            TempOrderDetails.OrderSessionID == session_id,
+            TempOrderDetails.OrderSessionID == session_uuid,
             TempOrderDetails.ItemID == item_id,
         )
         .first()
     )
 
 
-def create_temporderdetails(
-    db: Session, data: TempOrderDetailsCreate
-) -> TempOrderDetails:
+def create_temporderdetails(db: Session, data: TempOrderDetailsCreate) -> TempOrderDetails:
     # Convertir dataclass a diccionario y filtrar valores None
     data_dict = {k: v for k, v in asdict(data).items() if v is not None}
 
@@ -121,15 +127,10 @@ def delete_temporderdetails(
     return obj
 
 
-def get_temporderdetails_by_session(
-    db: Session, session_id: str
-) -> List[TempOrderDetails]:
+def get_temporderdetails_by_session(db: Session, session_id: str) -> List[TempOrderDetails]:
     """Obtener todos los TempOrderDetails de una sesión específica"""
-    return (
-        db.query(TempOrderDetails)
-        .filter(TempOrderDetails.OrderSessionID == session_id)
-        .all()
-    )
+    session_uuid = _ensure_uuid(session_id)
+    return db.query(TempOrderDetails).filter(TempOrderDetails.OrderSessionID == session_uuid).all()
 
 
 def get_temporderdetails_by_order(db: Session, order_id: int) -> List[TempOrderDetails]:
@@ -139,9 +140,10 @@ def get_temporderdetails_by_order(db: Session, order_id: int) -> List[TempOrderD
 
 def delete_temporderdetails_by_session(db: Session, session_id: str) -> int:
     """Eliminar todos los TempOrderDetails de una sesión y retornar cantidad eliminada"""
+    session_uuid = _ensure_uuid(session_id)
     count = (
         db.query(TempOrderDetails)
-        .filter(TempOrderDetails.OrderSessionID == session_id)
+        .filter(TempOrderDetails.OrderSessionID == session_uuid)
         .delete(synchronize_session=False)
     )
     db.commit()
@@ -150,24 +152,14 @@ def delete_temporderdetails_by_session(db: Session, session_id: str) -> int:
 
 def delete_temporderdetails_by_order(db: Session, order_id: int) -> int:
     """Eliminar todos los TempOrderDetails asociados a una orden."""
-    count = (
-        db.query(TempOrderDetails)
-        .filter(TempOrderDetails.OrderID == order_id)
-        .delete(synchronize_session=False)
-    )
+    count = db.query(TempOrderDetails).filter(TempOrderDetails.OrderID == order_id).delete(synchronize_session=False)
     db.commit()
     return count
 
 
-def get_temporderdetail_by_detail_id(
-    db: Session, detail_id: int
-) -> Optional[TempOrderDetails]:
+def get_temporderdetail_by_detail_id(db: Session, detail_id: int) -> Optional[TempOrderDetails]:
     """Obtener un ``TempOrderDetail`` por ``OrderDetailID``"""
-    return (
-        db.query(TempOrderDetails)
-        .filter(TempOrderDetails.OrderDetailID == detail_id)
-        .first()
-    )
+    return db.query(TempOrderDetails).filter(TempOrderDetails.OrderDetailID == detail_id).first()
 
 
 def update_temporderdetails_by_detail_id(
@@ -190,17 +182,13 @@ def update_temporderdetails_by_detail_id(
 def delete_temporderdetails_by_detail_id(db: Session, detail_id: int) -> int:
     """Eliminar un ``TempOrderDetail`` usando su ``OrderDetailID``"""
     count = (
-        db.query(TempOrderDetails)
-        .filter(TempOrderDetails.OrderDetailID == detail_id)
-        .delete(synchronize_session=False)
+        db.query(TempOrderDetails).filter(TempOrderDetails.OrderDetailID == detail_id).delete(synchronize_session=False)
     )
     db.commit()
     return count
 
 
-def load_orderdetails_to_temp(
-    db: Session, order_id: int, user_id: int, company_id: int, branch_id: int
-) -> str:
+def load_orderdetails_to_temp(db: Session, order_id: int, user_id: int, company_id: int, branch_id: int) -> str:
     """
     Cargar OrderDetails existentes a TempOrderDetails para edición
     Retorna el OrderSessionID generado
@@ -222,9 +210,7 @@ def load_orderdetails_to_temp(
     price_list_id = _safe_get_int(order, "PriceListID")
 
     # Obtener los OrderDetails de la orden
-    order_details = (
-        db.query(OrderDetails).filter(OrderDetails.OrderID == order_id).all()
-    )
+    order_details = db.query(OrderDetails).filter(OrderDetails.OrderID == order_id).all()
 
     existing = {}
     for detail in order_details:
