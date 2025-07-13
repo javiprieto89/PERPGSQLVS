@@ -97,6 +97,7 @@ export default function Orders() {
                             <th className="px-2">Usuario</th>
                             <th className="px-2">Fecha</th>
                             <th className="px-2">Vendedor</th>
+                            <th className="px-2">ID Orden</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -119,6 +120,7 @@ export default function Orders() {
                                     <td className="px-2">{user?.FullName || user?.Nickname || ''}</td>
                                     <td className="px-2">{o.Date_?.slice(0, 10)}</td>
                                     <td className="px-2">{vendor?.VendorName || ''}</td>
+                                    <td className="px-2 text-right">{o.OrderID}</td>
                                 </tr>
                             );
                         })}

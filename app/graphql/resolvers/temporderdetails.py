@@ -6,6 +6,10 @@ from app.models.temporderdetails import TempOrderDetails
 from app.models.items import Items
 from app.db import get_db
 from app.utils import list_to_schema, obj_to_schema
+from app.graphql.crud.temporderdetails import (
+    get_temporderdetails_by_session,
+    get_temporderdetail_by_session,
+)
 from strawberry.types import Info
 
 
@@ -28,14 +32,7 @@ class TemporderdetailsQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            items = (
-                db.query(TempOrderDetails)
-                .join(Items, TempOrderDetails.ItemID == Items.ItemID)
-                .filter(TempOrderDetails.OrderSessionID == sessionID)
-                .all()
-            )
-            for it in items:
-                it.ItemCode = it.items_.Code if it.items_ else None
+            items = get_temporderdetails_by_session(db, sessionID)
             return list_to_schema(TempOrderDetailsInDB, items)
         finally:
             db_gen.close()
@@ -47,10 +44,9 @@ class TemporderdetailsQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            item = db.query(TempOrderDetails).filter(
-                TempOrderDetails.OrderSessionID == sessionID
-            ).first()
-            return obj_to_schema(TempOrderDetailsInDB, item) if item else None
+            items = get_temporderdetails_by_session(db, sessionID)
+            first = items[0] if items else None
+            return obj_to_schema(TempOrderDetailsInDB, first) if first else None
         finally:
             db_gen.close()
 
