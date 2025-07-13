@@ -171,13 +171,23 @@ def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Order
     # Eliminar OrderDetails existentes para reemplazarlos
     db.query(OrderDetails).filter(OrderDetails.OrderID == orderid).delete(synchronize_session=False)
 
-    # Crear nuevos OrderDetails desde TempOrderDetails
+    # Consolidar items para evitar duplicados
+    unique_items = {}
     for temp_item in temp_items:
+        key = (
+            temp_item.OrderDetailID
+            if temp_item.OrderDetailID is not None
+            else temp_item.ItemID
+        )
+        unique_items[key] = temp_item
+
+    # Crear nuevos OrderDetails desde TempOrderDetails
+    for temp_item in unique_items.values():
         order_detail = OrderDetails(
             OrderID=orderid,
-            ItemID=_safe_get_int(temp_item, 'ItemID'),
-            WarehouseID=_safe_get_int(temp_item, 'WarehouseID'),
-            Quantity=_safe_get_int(temp_item, 'Quantity'),
+            ItemID=_safe_get_int(temp_item, "ItemID"),
+            WarehouseID=_safe_get_int(temp_item, "WarehouseID"),
+            Quantity=_safe_get_int(temp_item, "Quantity"),
             UnitPrice=temp_item.UnitPrice,
             Description=temp_item.Description,
         )

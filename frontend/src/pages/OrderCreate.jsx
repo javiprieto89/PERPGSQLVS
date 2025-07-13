@@ -120,6 +120,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                         description: d.Description || "",
                         quantity: d.Quantity,
                         price: d.UnitPrice,
+                        priceListId: d.PriceListID || formData.priceListId,
+                        warehouseId: d.WarehouseID || formData.warehouseId,
                         subtotal: d.Quantity * d.UnitPrice,
                         orderSessionID: d.OrderSessionID,
                         orderDetailID: d.OrderDetailID,
@@ -226,6 +228,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             Quantity: parseInt(itemWithDetails.quantity),
             UnitPrice: parseFloat(itemWithDetails.price),
             Description: itemWithDetails.description || "",
+            WarehouseID: parseInt(itemWithDetails.warehouseId || formData.warehouseId),
+            PriceListID: parseInt(itemWithDetails.priceListId || formData.priceListId),
         };
 
         if (editIndex !== null) {
@@ -235,6 +239,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 ...existing,
                 quantity: itemWithDetails.quantity,
                 price: itemWithDetails.price,
+                priceListId: itemWithDetails.priceListId || existing.priceListId,
+                warehouseId: itemWithDetails.warehouseId || existing.warehouseId,
                 subtotal: itemWithDetails.quantity * itemWithDetails.price,
             };
             setItems(updatedItems);
@@ -257,8 +263,12 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 BranchID: parseInt(formData.branchId),
                 UserID: parseInt(formData.userId),
                 ItemID: parseInt(itemWithDetails.itemID),
-                WarehouseID: parseInt(formData.warehouseId),
-                PriceListID: parseInt(formData.priceListId),
+                WarehouseID: parseInt(
+                    itemWithDetails.warehouseId || formData.warehouseId
+                ),
+                PriceListID: parseInt(
+                    itemWithDetails.priceListId || formData.priceListId
+                ),
                 ...baseData,
             };
             if (sessionId) {
@@ -274,6 +284,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                     description: itemWithDetails.description,
                     quantity: itemWithDetails.quantity,
                     price: itemWithDetails.price,
+                    priceListId: itemWithDetails.priceListId || formData.priceListId,
+                    warehouseId: itemWithDetails.warehouseId || formData.warehouseId,
                     subtotal: itemWithDetails.quantity * itemWithDetails.price,
                     orderSessionID: tempItem.OrderSessionID,
                     orderDetailID: null,
@@ -313,6 +325,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             description: item.description,
             quantity: item.quantity,
             price: item.price,
+            priceListId: item.priceListId,
+            warehouseId: item.warehouseId,
         });
         setEditIndex(index);
         setShowItemConfirmationModal(true);
@@ -402,7 +416,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
         if (!sessionId) {
             orderData.Items = items.map((item) => ({
                 ItemID: parseInt(item.itemID),
-                WarehouseID: parseInt(finalFormData.warehouseId),
+                WarehouseID: parseInt(item.warehouseId || finalFormData.warehouseId),
+                PriceListID: parseInt(item.priceListId || finalFormData.priceListId),
                 Quantity: parseInt(item.quantity),
                 UnitPrice: parseFloat(item.price),
                 Description: item.description || null,
@@ -1023,6 +1038,10 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                         setSelectedItemForConfirmation(null);
                         setEditIndex(null);
                     }}
+                    priceLists={priceLists}
+                    warehouses={warehouses}
+                    defaultPriceListId={formData.priceListId}
+                    defaultWarehouseId={formData.warehouseId}
                     onConfirm={handleItemConfirmed}
                     confirmLabel={editIndex !== null ? "Actualizar Ítem" : "Agregar al Pedido"}
                 />
