@@ -20,19 +20,19 @@ export default function Login() {
 
         try {
             // Usar AuthHelper para el login
-            const result = await AuthHelper.login(nickname, password);
+            const data = await AuthHelper.login(nickname, password);
 
-            if (!result.success) {
-                throw new Error(result.message || "Credenciales inválidas");
+            if (!data.success) {
+                throw new Error(data.message || "Credenciales inválidas");
             }
 
             // Adaptar la respuesta al formato esperado por UserContext
-            const data = {
-                UserID: result.user.UserID,
-                Nickname: result.user.Nickname,
-                FullName: result.user.FullName,
-                IsActive: result.user.IsActive,
-                userAccesses: result.user.UserAccess.map(access => ({
+            const userData = {
+                UserID: data.user.UserID,
+                Nickname: data.user.Nickname,
+                FullName: data.user.FullName,
+                IsActive: data.user.IsActive,
+                userAccesses: data.user.UserAccess.map(access => ({
                     userID: access.UserID,
                     companyID: access.CompanyID,
                     companyName: access.Company,
@@ -44,7 +44,7 @@ export default function Login() {
             };
 
             // Actualizar contexto
-            login(data);
+            login(userData);
 
             // Verificar si hay una redirección pendiente
             const redirectPath = sessionStorage.getItem("redirectAfterLogin");

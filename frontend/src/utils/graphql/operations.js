@@ -1189,11 +1189,11 @@ export const orderOperations = {
 
     async finalizeOrder(orderID, sessionID) {
         try {
-            const result = await graphqlClient.mutation(
+            const data = await graphqlClient.mutation(
                 MUTATIONS.FINALIZE_ORDER,
                 { orderID, sessionID }
             );
-            return result.finalizeOrder;
+            return data.finalizeOrder;
         } catch (error) {
             console.error("Error finalizando orden:", error);
             throw error;
@@ -1255,26 +1255,26 @@ export const orderOperations = {
 
 // ===== FUNCIONES PARA ITEMS TEMPORALES =====
 export const tempOrderOperations = {
-    async createTempItem(data) {
+    async createTempItem(itemData) {
         try {
-            const result = await graphqlClient.mutation(
+            const data = await graphqlClient.mutation(
                 MUTATIONS.CREATE_TEMPORDERDETAIL,
-                { input: data }
+                { input: itemData }
             );
-            return result.createTemporderdetail;
+            return data.createTemporderdetail;
         } catch (error) {
             console.error("Error creando item temporal:", error);
             throw error;
         }
     },
 
-    async updateTempItem(sessionID, itemID, data, orderDetailID = null) {
+    async updateTempItem(sessionID, itemID, itemData, orderDetailID = null) {
         try {
-            const result = await graphqlClient.mutation(
+            const data = await graphqlClient.mutation(
                 MUTATIONS.UPDATE_TEMPORDERDETAIL,
-                { sessionID, itemID, orderDetailID, input: data }
+                { sessionID, itemID, orderDetailID, input: itemData }
             );
-            return result.updateTemporderdetail;
+            return data.updateTemporderdetail;
         } catch (error) {
             console.error("Error actualizando item temporal:", error);
             throw error;
@@ -1297,11 +1297,11 @@ export const tempOrderOperations = {
 
     async loadOrderForEditing(orderID, userID, companyID, branchID) {
         try {
-            const result = await graphqlClient.mutation(
+            const data = await graphqlClient.mutation(
                 MUTATIONS.LOAD_ORDER_FOR_EDITING,
                 { orderID, userID, companyID, branchID }
             );
-            return result.loadOrderForEditing;
+            return data.loadOrderForEditing;
         } catch (error) {
             console.error("Error cargando orden para edición:", error);
             throw error;
@@ -1310,11 +1310,11 @@ export const tempOrderOperations = {
 
     async getTempItems(sessionID) {
         try {
-            const result = await graphqlClient.query(
-                MUTATIONS.GET_TEMP_ITEMS_BY_SESSION,
+            const data = await graphqlClient.query(
+                QUERIES.GET_TEMP_ITEMS_BY_SESSION,
                 { sessionID }
             );
-            return result.temporderdetailsBySession || [];
+            return data.temporderdetailsBySession || [];
         } catch (error) {
             console.error("Error obteniendo items temporales:", error);
             throw error;

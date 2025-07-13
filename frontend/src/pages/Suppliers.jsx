@@ -84,8 +84,8 @@ export default function Suppliers() {
 
     const runDiagnostic = async () => {
         setDebugInfo("Ejecutando diagnóstico completo...");
-        const result = await diagnosticGraphQL();
-        setDebugInfo(result ? "Diagnóstico exitoso" : "Diagnóstico falló - revisa la consola");
+        const data = await diagnosticGraphQL();
+        setDebugInfo(data ? "Diagnóstico exitoso" : "Diagnóstico falló - revisa la consola");
     };
 
     const handleCreateSupplier = () => {

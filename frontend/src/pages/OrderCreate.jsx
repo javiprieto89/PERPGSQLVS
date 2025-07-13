@@ -132,7 +132,14 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 }
             })();
         }
-    }, [initialOrder]);
+    }, [
+        initialOrder,
+        formData.priceListId,
+        formData.warehouseId,
+        userInfo?.userId,
+        userInfo?.companyId,
+        userInfo?.branchId,
+    ]);
 
     useEffect(() => {
         const fetchData = async () => {
