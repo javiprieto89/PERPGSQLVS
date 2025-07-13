@@ -1305,6 +1305,19 @@ export const tempOrderOperations = {
             throw error;
         }
     },
+
+    async getTempItemsByOrder(orderID) {
+        try {
+            const result = await graphqlClient.query(
+                MUTATIONS.GET_TEMP_ITEMS_BY_ORDER,
+                { orderID }
+            );
+            return result.temporderdetailsByOrder || [];
+        } catch (error) {
+            console.error("Error obteniendo items temporales:", error);
+            throw error;
+        }
+    },
 };
 
 export const companyOperations = {
