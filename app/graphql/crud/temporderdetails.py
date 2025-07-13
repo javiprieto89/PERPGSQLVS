@@ -146,6 +146,17 @@ def delete_temporderdetails_by_session(
     return count
 
 
+def delete_temporderdetails_by_order(db: Session, order_id: int) -> int:
+    """Eliminar todos los TempOrderDetails asociados a una orden."""
+    count = (
+        db.query(TempOrderDetails)
+        .filter(TempOrderDetails.OrderID == order_id)
+        .delete(synchronize_session=False)
+    )
+    db.commit()
+    return count
+
+
 def load_orderdetails_to_temp(
     db: Session, order_id: int, user_id: int, company_id: int, branch_id: int
 ) -> str:
@@ -154,7 +165,10 @@ def load_orderdetails_to_temp(
     Retorna el OrderSessionID generado
     """
     from app.models.orderdetails import OrderDetails
-    
+
+    # Limpiar cualquier sesión previa asociada a esta orden
+    delete_temporderdetails_by_order(db, order_id)
+
     # Generar nuevo session ID para la edición
     session_id = uuid4()
     
