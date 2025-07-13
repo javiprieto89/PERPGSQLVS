@@ -97,7 +97,9 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                         userInfo?.branchId || initialOrder.BranchID
                     );
                     setSessionId(sid);
-                    const tempItems = await tempOrderOperations.getTempItems(sid);
+                    const tempItems = await tempOrderOperations.getTempItemsByOrder(
+                        initialOrder.OrderID
+                    );
                     const parsed = await Promise.all(
                         tempItems.map(async (d) => {
                             let code = "";

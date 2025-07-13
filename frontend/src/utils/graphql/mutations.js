@@ -668,6 +668,25 @@ export const MUTATIONS = {
         }
     `,
 
+    GET_TEMP_ITEMS_BY_ORDER: `
+        query GetTempItemsByOrder($orderID: Int!) {
+            temporderdetailsByOrder(orderID: $orderID) {
+                OrderDetailID
+                OrderID
+                OrderSessionID
+                CompanyID
+                BranchID
+                UserID
+                ItemID
+                Quantity
+                WarehouseID
+                PriceListID
+                UnitPrice
+                Description
+            }
+        }
+    `,
+
     // ROLES
     CREATE_ROLE: `
         mutation CreateRole($input: RolesCreate!) {

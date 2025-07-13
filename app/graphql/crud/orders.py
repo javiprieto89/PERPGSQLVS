@@ -11,7 +11,7 @@ from app.graphql.schemas.orders import OrdersCreate, OrdersUpdate
 from app.graphql.crud.temporderdetails import (
     load_orderdetails_to_temp,
     get_temporderdetails_by_session,
-    delete_temporderdetails_by_session
+    delete_temporderdetails_by_session,
 )
 
 
@@ -27,7 +27,7 @@ def _safe_get_int(obj: Any, field_name: str) -> int:
     if isinstance(value, str):
         return int(value)
     # Si tiene método __int__, usarlo
-    if hasattr(value, '__int__'):
+    if hasattr(value, "__int__"):
         return int(value)
     # Como último recurso, intentar convertir el valor directamente
     try:
@@ -55,7 +55,7 @@ def create_orders(db: Session, data: OrdersCreate):
     # Crear orden sin los ítems
     order_data = asdict(data)
     order_data.pop("Items", None)  # Eliminar items del dict para el modelo
-    
+
     # Crear el objeto Orders
     order = Orders(**order_data)
     db.add(order)
@@ -63,22 +63,26 @@ def create_orders(db: Session, data: OrdersCreate):
 
     # Generar session ID único para esta orden
     session_id = uuid4()
-    
+
     # Guardar items en TempOrderDetails
     for item in items_data:
         # Obtener WarehouseID de forma segura
-        warehouse_id = getattr(item, 'WarehouseID', None) if hasattr(item, 'WarehouseID') and item.WarehouseID else _safe_get_int(order, 'WarehouseID')
-        
+        warehouse_id = (
+            getattr(item, "WarehouseID", None)
+            if hasattr(item, "WarehouseID") and item.WarehouseID
+            else _safe_get_int(order, "WarehouseID")
+        )
+
         temp_detail = TempOrderDetails(
-            CompanyID=_safe_get_int(order, 'CompanyID'),
-            BranchID=_safe_get_int(order, 'BranchID'),
-            UserID=_safe_get_int(order, 'UserID'),
-            OrderID=_safe_get_int(order, 'OrderID'),
+            CompanyID=_safe_get_int(order, "CompanyID"),
+            BranchID=_safe_get_int(order, "BranchID"),
+            UserID=_safe_get_int(order, "UserID"),
+            OrderID=_safe_get_int(order, "OrderID"),
             OrderSessionID=session_id,
             ItemID=item.ItemID,
             Quantity=item.Quantity,
             WarehouseID=warehouse_id,
-            PriceListID=_safe_get_int(order, 'PriceListID'),
+            PriceListID=_safe_get_int(order, "PriceListID"),
             UnitPrice=item.UnitPrice,
             Description=item.Description,
         )
@@ -86,10 +90,10 @@ def create_orders(db: Session, data: OrdersCreate):
 
     db.commit()
     db.refresh(order)
-    
+
     # Agregar el session_id al objeto para referencia
     order._temp_session_id = str(session_id)
-    
+
     return order
 
 
@@ -103,17 +107,17 @@ def update_orders(db: Session, orderid: int, data: OrdersUpdate):
     obj = get_orders_by_id(db, orderid)
     if not obj:
         return None
-    
+
     update_data = asdict(data)
     # ``Items`` puede venir para futuras funcionalidades, pero por ahora sólo se
     # extrae para evitar que intente asignarse directamente al modelo ``Orders``.
     update_data.pop("Items", None)
-    
+
     # Actualizar campos de la orden (excluyendo items)
     for k, v in update_data.items():
         if v is not None and hasattr(obj, k):
             setattr(obj, k, v)
-    
+
     # Siempre cargar los detalles existentes a ``TempOrderDetails`` para poder
     # editarlos desde la UI. Si ya existe una sesión previa, se generará una
     # nueva para evitar colisiones.
@@ -123,12 +127,12 @@ def update_orders(db: Session, orderid: int, data: OrdersUpdate):
     session_id = load_orderdetails_to_temp(
         db,
         orderid,
-        _safe_get_int(obj, 'UserID'),
-        _safe_get_int(obj, 'CompanyID'),
-        _safe_get_int(obj, 'BranchID'),
+        _safe_get_int(obj, "UserID"),
+        _safe_get_int(obj, "CompanyID"),
+        _safe_get_int(obj, "BranchID"),
     )
     obj._temp_session_id = session_id
-    
+
     db.commit()
     db.refresh(obj)
     return obj
@@ -139,13 +143,17 @@ def delete_orders(db: Session, orderid: int):
     obj = get_orders_by_id(db, orderid)
     if not obj:
         return None
-    
+
     # Eliminar OrderDetails relacionados
-    db.query(OrderDetails).filter(OrderDetails.OrderID == orderid).delete(synchronize_session=False)
-    
+    db.query(OrderDetails).filter(OrderDetails.OrderID == orderid).delete(
+        synchronize_session=False
+    )
+
     # Eliminar TempOrderDetails relacionados (si existen)
-    db.query(TempOrderDetails).filter(TempOrderDetails.OrderID == orderid).delete(synchronize_session=False)
-    
+    db.query(TempOrderDetails).filter(TempOrderDetails.OrderID == orderid).delete(
+        synchronize_session=False
+    )
+
     # Eliminar la orden
     db.delete(obj)
     db.commit()
@@ -155,36 +163,39 @@ def delete_orders(db: Session, orderid: int):
 def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Orders]:
     """
     Finalizar orden: mover items de TempOrderDetails a OrderDetails y limpiar temporales.
-    Esta función se debe llamar cuando el usuario confirma/guarda definitivamente la orden.
+    ``session_id`` se mantiene por compatibilidad pero se ignorará y se usará ``orderid``
+    para obtener todos los registros temporales de la orden.
     """
     order = get_orders_by_id(db, orderid)
     if not order:
         return None
 
-    # Obtener items temporales
-    temp_items = get_temporderdetails_by_session(db, session_id)
-    
+    # Obtener items temporales de la orden (ignorar session_id)
+    temp_items = get_temporderdetails_by_order(db, orderid)
+
     if not temp_items:
         # Si no hay items temporales, la orden ya está finalizada o no tiene items
         return order
 
     # Eliminar OrderDetails existentes para reemplazarlos
-    db.query(OrderDetails).filter(OrderDetails.OrderID == orderid).delete(synchronize_session=False)
+    db.query(OrderDetails).filter(OrderDetails.OrderID == orderid).delete(
+        synchronize_session=False
+    )
 
     # Crear nuevos OrderDetails desde TempOrderDetails
     for temp_item in temp_items:
         order_detail = OrderDetails(
             OrderID=orderid,
-            ItemID=_safe_get_int(temp_item, 'ItemID'),
-            WarehouseID=_safe_get_int(temp_item, 'WarehouseID'),
-            Quantity=_safe_get_int(temp_item, 'Quantity'),
+            ItemID=_safe_get_int(temp_item, "ItemID"),
+            WarehouseID=_safe_get_int(temp_item, "WarehouseID"),
+            Quantity=_safe_get_int(temp_item, "Quantity"),
             UnitPrice=temp_item.UnitPrice,
             Description=temp_item.Description,
         )
         db.add(order_detail)
 
-    # Limpiar TempOrderDetails de esta sesión
-    delete_temporderdetails_by_session(db, session_id)
+    # Limpiar todos los TempOrderDetails de la orden
+    delete_temporderdetails_by_order(db, orderid)
 
     db.commit()
     db.refresh(order)
@@ -204,7 +215,7 @@ def add_item_to_order(
     order = get_orders_by_id(db, order_id)
     if not order:
         raise ValueError(f"Orden {order_id} no encontrada")
-    
+
     # Obtener WarehouseID de forma segura
     warehouse_id = (
         item_data.get("WarehouseID")
@@ -219,19 +230,19 @@ def add_item_to_order(
         session_uuid = UUID(session_id)
     # Crear entrada temporal
     temp_detail = TempOrderDetails(
-        CompanyID=_safe_get_int(order, 'CompanyID'),
-        BranchID=_safe_get_int(order, 'BranchID'),
-        UserID=_safe_get_int(order, 'UserID'),
+        CompanyID=_safe_get_int(order, "CompanyID"),
+        BranchID=_safe_get_int(order, "BranchID"),
+        UserID=_safe_get_int(order, "UserID"),
         OrderID=order_id,
         OrderSessionID=session_uuid,
-        ItemID=item_data['ItemID'],
-        Quantity=item_data['Quantity'],
+        ItemID=item_data["ItemID"],
+        Quantity=item_data["Quantity"],
         WarehouseID=warehouse_id,
-        PriceListID=_safe_get_int(order, 'PriceListID'),
-        UnitPrice=item_data['UnitPrice'],
-        Description=item_data['Description'],
+        PriceListID=_safe_get_int(order, "PriceListID"),
+        UnitPrice=item_data["UnitPrice"],
+        Description=item_data["Description"],
     )
-    
+
     db.add(temp_detail)
     db.commit()
     db.refresh(temp_detail)
@@ -246,14 +257,14 @@ def remove_item_from_order(db: Session, session_id: str, item_id: int) -> bool:
         db.query(TempOrderDetails)
         .filter(
             TempOrderDetails.OrderSessionID == session_id,
-            TempOrderDetails.ItemID == item_id
+            TempOrderDetails.ItemID == item_id,
         )
         .first()
     )
-    
+
     if not temp_item:
         return False
-    
+
     db.delete(temp_item)
     db.commit()
     return True
