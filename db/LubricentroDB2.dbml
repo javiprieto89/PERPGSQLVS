@@ -531,14 +531,13 @@ Table OrderHistoryDetails {
 // ==========================================
 
 Table TempOrderDetails {
-  TempOrderItemID int [pk, increment]
   OrderDetailID int
   OrderID int [ref: > Orders.OrderID]
-  OrderSessionID uniqueidentifier [not null, default: `newid()`]
+  OrderSessionID uniqueidentifier [not null, default: `newid()`, pk]
   CompanyID int [not null, ref: > CompanyData.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   UserID int [not null, ref: > Users.UserID]
-  ItemID int [not null, ref: > Items.ItemID]
+  ItemID int [not null, ref: > Items.ItemID, pk]
   Quantity int [not null]
   WarehouseID int [not null, ref: > Warehouses.WarehouseID]
   PriceListID int [not null, ref: > PriceLists.PriceListID]

@@ -35,7 +35,6 @@ class TempOrderDetailsUpdate:
 
 @strawberry.type
 class TempOrderDetailsInDB:
-    TempOrderItemID: int
     OrderDetailID: Optional[int]
     OrderID: Optional[int]
     OrderSessionID: UUID
