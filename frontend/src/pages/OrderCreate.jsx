@@ -277,7 +277,9 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
 
             try {
                 const tempItem = await tempOrderOperations.createTempItem(tempData);
-                setSessionId(tempItem.OrderSessionID);
+                if (!sessionId) {
+                    setSessionId(tempItem.OrderSessionID);
+                }
                 const newItem = {
                     itemID: itemWithDetails.itemID,
                     code: itemWithDetails.code,

@@ -23,7 +23,7 @@ def _safe_get_int(obj: Any, field_name: str) -> int:
     if isinstance(value, str):
         return int(value)
     # Si tiene método __int__, usarlo
-    if hasattr(value, '__int__'):
+    if hasattr(value, "__int__"):
         return int(value)
     # Como último recurso, intentar convertir el valor directamente
     try:
@@ -63,17 +63,42 @@ def create_temporderdetails(
 ) -> TempOrderDetails:
     # Convertir dataclass a diccionario y filtrar valores None
     data_dict = {k: v for k, v in asdict(data).items() if v is not None}
-    
-    # Generar OrderSessionID si no se proporciona
-    if "OrderSessionID" not in data_dict or data_dict["OrderSessionID"] is None:
-        data_dict["OrderSessionID"] = uuid4()
-    
+
+    # Obtener o generar OrderSessionID base
+    if "OrderSessionID" in data_dict and data_dict["OrderSessionID"] is not None:
+        base_session_uuid = UUID(str(data_dict["OrderSessionID"]))
+    else:
+        base_session_uuid = uuid4()
+
+    # Verificar si ya existe un item con la misma combinación
+    exists = (
+        db.query(TempOrderDetails)
+        .filter(
+            TempOrderDetails.OrderSessionID == base_session_uuid,
+            TempOrderDetails.ItemID == data_dict["ItemID"],
+        )
+        .first()
+    )
+
+    session_uuid = base_session_uuid if not exists else uuid4()
+    data_dict["OrderSessionID"] = session_uuid
+
     # Verificar campos obligatorios
-    required_fields = ['CompanyID', 'BranchID', 'UserID', 'ItemID', 'Quantity', 'WarehouseID', 'PriceListID', 'UnitPrice', 'Description']
+    required_fields = [
+        "CompanyID",
+        "BranchID",
+        "UserID",
+        "ItemID",
+        "Quantity",
+        "WarehouseID",
+        "PriceListID",
+        "UnitPrice",
+        "Description",
+    ]
     for field in required_fields:
         if field not in data_dict or data_dict[field] is None:
             raise ValueError(f"Campo obligatorio faltante: {field}")
-    
+
     obj = TempOrderDetails(**data_dict)
     db.add(obj)
     db.commit()
@@ -97,12 +122,12 @@ def update_temporderdetails(
     obj = get_temporderdetail_by_session(db, session_id, item_id, order_detail_id)
     if not obj:
         return None
-    
+
     # Actualizar solo los campos que no son None
     for field, value in asdict(data).items():
         if value is not None and hasattr(obj, field):
             setattr(obj, field, value)
-    
+
     db.commit()
     db.refresh(obj)
     return obj
@@ -134,24 +159,27 @@ def get_temporderdetails_by_session(
     )
 
 
-def get_temporderdetails_by_order(
-    db: Session, order_id: int
-) -> List[TempOrderDetails]:
+def get_temporderdetails_by_order(db: Session, order_id: int) -> List[TempOrderDetails]:
     """Obtener todos los TempOrderDetails de una orden específica"""
-    return (
-        db.query(TempOrderDetails)
-        .filter(TempOrderDetails.OrderID == order_id)
-        .all()
-    )
+    return db.query(TempOrderDetails).filter(TempOrderDetails.OrderID == order_id).all()
 
 
-def delete_temporderdetails_by_session(
-    db: Session, session_id: str
-) -> int:
+def delete_temporderdetails_by_session(db: Session, session_id: str) -> int:
     """Eliminar todos los TempOrderDetails de una sesión y retornar cantidad eliminada"""
     count = (
         db.query(TempOrderDetails)
         .filter(TempOrderDetails.OrderSessionID == session_id)
+        .delete(synchronize_session=False)
+    )
+    db.commit()
+    return count
+
+
+def delete_temporderdetails_by_order(db: Session, order_id: int) -> int:
+    """Eliminar todos los TempOrderDetails asociados a una orden"""
+    count = (
+        db.query(TempOrderDetails)
+        .filter(TempOrderDetails.OrderID == order_id)
         .delete(synchronize_session=False)
     )
     db.commit()
@@ -166,41 +194,40 @@ def load_orderdetails_to_temp(
     Retorna el OrderSessionID generado
     """
     from app.models.orderdetails import OrderDetails
-    
+
     # Generar nuevo session ID para la edición
     session_id = uuid4()
-    
+
     # Obtener los OrderDetails de la orden
     order_details = (
-        db.query(OrderDetails)
-        .filter(OrderDetails.OrderID == order_id)
-        .all()
+        db.query(OrderDetails).filter(OrderDetails.OrderID == order_id).all()
     )
-    
+
     # Copiar cada OrderDetail a TempOrderDetails
     for detail in order_details:
         # Obtener datos adicionales de la orden original
         from app.models.orders import Orders
+
         order = db.query(Orders).filter(Orders.OrderID == order_id).first()
-        
+
         if not order:
             raise ValueError(f"Orden {order_id} no encontrada")
-        
+
         temp_detail = TempOrderDetails(
             CompanyID=company_id,
             BranchID=branch_id,
             UserID=user_id,
             OrderID=order_id,
-            OrderDetailID=_safe_get_int(detail, 'OrderDetailID'),
+            OrderDetailID=_safe_get_int(detail, "OrderDetailID"),
             OrderSessionID=session_id,
-            ItemID=_safe_get_int(detail, 'ItemID'),
-            Quantity=_safe_get_int(detail, 'Quantity'),
-            WarehouseID=_safe_get_int(detail, 'WarehouseID'),
-            PriceListID=_safe_get_int(order, 'PriceListID'),
+            ItemID=_safe_get_int(detail, "ItemID"),
+            Quantity=_safe_get_int(detail, "Quantity"),
+            WarehouseID=_safe_get_int(detail, "WarehouseID"),
+            PriceListID=_safe_get_int(order, "PriceListID"),
             UnitPrice=detail.UnitPrice,
-            Description=detail.Description
+            Description=detail.Description,
         )
         db.add(temp_detail)
-    
+
     db.commit()
     return str(session_id)
