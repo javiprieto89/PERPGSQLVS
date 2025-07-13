@@ -607,6 +607,18 @@ export const MUTATIONS = {
         }
     `,
 
+    FINALIZE_ORDER: `
+        mutation FinalizeOrder($orderID: Int!, $sessionID: String!) {
+            finalizeOrder(orderID: $orderID, sessionID: $sessionID) {
+                order {
+                    OrderID
+                }
+                sessionID
+                message
+            }
+        }
+    `,
+
     // ====== TEMPORARY ORDER DETAILS ======
     CREATE_TEMPORDERDETAIL: `
         mutation CreateTemporderdetail($input: TempOrderDetailsCreate!) {

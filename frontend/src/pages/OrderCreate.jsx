@@ -376,14 +376,17 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             OrderStatusID: parseInt(finalFormData.orderStatusId),
             PriceListID: parseInt(finalFormData.priceListId),
             WarehouseID: parseInt(finalFormData.warehouseId),
-            Items: items.map((item) => ({
+        };
+
+        if (!sessionId) {
+            orderData.Items = items.map((item) => ({
                 ItemID: parseInt(item.itemID),
                 WarehouseID: parseInt(finalFormData.warehouseId),
                 Quantity: parseInt(item.quantity),
                 UnitPrice: parseFloat(item.price),
                 Description: item.description || null,
-            }))
-        };
+            }));
+        }
 
         console.log("Enviando orden:", orderData);
 
@@ -394,7 +397,18 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             } else {
                 response = await orderOperations.createOrder(orderData);
             }
+
             const order = response.order || response; // compatibilidad
+
+            const sid = sessionId || response.sessionID;
+            if (sid) {
+                try {
+                    await orderOperations.finalizeOrder(order.OrderID, sid);
+                } catch (err) {
+                    console.error("Error finalizando la orden:", err);
+                }
+            }
+
             alert("Orden guardada correctamente. ID: " + order.OrderID);
 
             // Limpiar formulario después de crear exitosamente
@@ -421,6 +435,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 warehouseId: "",
             });
             setItems([]);
+            setSessionId(null);
             setClientSearch("");
             onSave && onSave(response);
             onClose && onClose();
