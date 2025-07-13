@@ -1,4 +1,4 @@
-﻿# app/models/temporderdetails.py
+# app/models/temporderdetails.py
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 from typing import Optional
 
-from sqlalchemy import Column, Integer, Unicode, DECIMAL, Uuid, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy import Column, Integer, Unicode, DECIMAL, Uuid, PrimaryKeyConstraint, ForeignKeyConstraint, text
 from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 

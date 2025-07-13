@@ -1,4 +1,4 @@
-﻿# app/graphql/crud/temporderdetails.py - Versión type-safe
+# app/graphql/crud/temporderdetails.py - Versión type-safe
 from sqlalchemy.orm import Session
 from typing import List, Optional, Any
 from dataclasses import asdict
