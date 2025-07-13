@@ -271,6 +271,9 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 ),
                 ...baseData,
             };
+            if (initialOrder?.OrderID) {
+                tempData.OrderID = initialOrder.OrderID;
+            }
             if (sessionId) {
                 tempData.OrderSessionID = sessionId;
             }
@@ -332,6 +335,26 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
         });
         setEditIndex(index);
         setShowItemConfirmationModal(true);
+    };
+
+    const handleCancel = async () => {
+        if (sessionId) {
+            try {
+                await orderOperations.cancelOrderEditing(
+                    initialOrder?.OrderID || 0,
+                    sessionId
+                );
+                didSaveRef.current = true;
+            } catch (err) {
+                console.error("Error cancelando edición:", err);
+            }
+        }
+        onClose && onClose();
+    };
+
+    const handleEmit = async () => {
+        await handleSubmit({ preventDefault: () => {} });
+        // En un futuro se emitirá la factura aquí
     };
 
     const handleSubmit = async (e) => {
@@ -986,12 +1009,28 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                             </p>
                         </div>
 
-                        <button
-                            type="submit"
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150 text-lg"
-                        >
-                            {isEdit ? 'Guardar Cambios' : 'Guardar Pedido'}
-                        </button>
+                        <div className="flex flex-col space-y-3">
+                            <button
+                                type="submit"
+                                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150 text-lg"
+                            >
+                                {isEdit ? 'Guardar Cambios' : 'Guardar Pedido'}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleEmit}
+                                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition ease-in-out duration-150 text-lg"
+                            >
+                                Emitir
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleCancel}
+                                className="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition ease-in-out duration-150 text-lg"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
                     </section>
                 </form>
             </div>
