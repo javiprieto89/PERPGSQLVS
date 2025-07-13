@@ -27,9 +27,11 @@ class TemporderdetailsQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            items = db.query(TempOrderDetails).filter(
-                TempOrderDetails.OrderSessionID == sessionID
-            ).all()
+            items = (
+                db.query(TempOrderDetails)
+                .filter(TempOrderDetails.OrderSessionID == sessionID)
+                .all()
+            )
             return list_to_schema(TempOrderDetailsInDB, items)
         finally:
             db_gen.close()
@@ -41,10 +43,29 @@ class TemporderdetailsQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            item = db.query(TempOrderDetails).filter(
-                TempOrderDetails.OrderSessionID == sessionID
-            ).first()
+            item = (
+                db.query(TempOrderDetails)
+                .filter(TempOrderDetails.OrderSessionID == sessionID)
+                .first()
+            )
             return obj_to_schema(TempOrderDetailsInDB, item) if item else None
+        finally:
+            db_gen.close()
+
+    @strawberry.field
+    def temporderdetails_by_order(
+        self, info: Info, orderID: int
+    ) -> List[TempOrderDetailsInDB]:
+        """Obtener todos los items temporales asociados a una orden"""
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            items = (
+                db.query(TempOrderDetails)
+                .filter(TempOrderDetails.OrderID == orderID)
+                .all()
+            )
+            return list_to_schema(TempOrderDetailsInDB, items)
         finally:
             db_gen.close()
 
