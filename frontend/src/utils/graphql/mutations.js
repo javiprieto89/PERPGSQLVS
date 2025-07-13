@@ -618,6 +618,11 @@ export const MUTATIONS = {
             }
         }
     `,
+    CANCEL_ORDER_EDITING: `
+        mutation CancelOrderEditing($orderID: Int!, $sessionID: String!) {
+            cancelOrderEditing(orderID: $orderID, sessionID: $sessionID)
+        }
+    `,
 
     // ====== TEMPORARY ORDER DETAILS ======
     CREATE_TEMPORDERDETAIL: `
@@ -633,8 +638,8 @@ export const MUTATIONS = {
         }
     `,
     UPDATE_TEMPORDERDETAIL: `
-        mutation UpdateTemporderdetail($sessionID: String!, $itemID: Int!, $input: TempOrderDetailsUpdate!) {
-            updateTemporderdetail(sessionID: $sessionID, itemID: $itemID, data: $input) {
+        mutation UpdateTemporderdetail($sessionID: String!, $itemID: Int!, $orderDetailID: Int, $input: TempOrderDetailsUpdate!) {
+            updateTemporderdetail(sessionID: $sessionID, itemID: $itemID, orderDetailID: $orderDetailID, data: $input) {
                 OrderSessionID
                 ItemID
                 Quantity
@@ -645,8 +650,8 @@ export const MUTATIONS = {
         }
     `,
     DELETE_TEMPORDERDETAIL: `
-        mutation DeleteTemporderdetail($sessionID: String!, $itemID: Int!) {
-            deleteTemporderdetail(sessionID: $sessionID, itemID: $itemID)
+        mutation DeleteTemporderdetail($sessionID: String!, $itemID: Int!, $orderDetailID: Int) {
+            deleteTemporderdetail(sessionID: $sessionID, itemID: $itemID, orderDetailID: $orderDetailID)
         }
     `,
 

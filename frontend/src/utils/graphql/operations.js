@@ -1200,6 +1200,19 @@ export const orderOperations = {
         }
     },
 
+    async cancelOrderEditing(orderID, sessionID) {
+        try {
+            await graphqlClient.mutation(MUTATIONS.CANCEL_ORDER_EDITING, {
+                orderID,
+                sessionID,
+            });
+            return true;
+        } catch (error) {
+            console.error("Error cancelando edición de orden:", error);
+            throw error;
+        }
+    },
+
     // Función auxiliar para obtener datos del formulario de órdenes
     async getOrderFormData() {
         try {
@@ -1255,11 +1268,11 @@ export const tempOrderOperations = {
         }
     },
 
-    async updateTempItem(sessionID, itemID, data) {
+    async updateTempItem(sessionID, itemID, data, orderDetailID = null) {
         try {
             const result = await graphqlClient.mutation(
                 MUTATIONS.UPDATE_TEMPORDERDETAIL,
-                { sessionID, itemID, input: data }
+                { sessionID, itemID, orderDetailID, input: data }
             );
             return result.updateTemporderdetail;
         } catch (error) {
@@ -1268,11 +1281,12 @@ export const tempOrderOperations = {
         }
     },
 
-    async deleteTempItem(sessionID, itemID) {
+    async deleteTempItem(sessionID, itemID, orderDetailID = null) {
         try {
             await graphqlClient.mutation(MUTATIONS.DELETE_TEMPORDERDETAIL, {
                 sessionID,
                 itemID,
+                orderDetailID,
             });
             return true;
         } catch (error) {
