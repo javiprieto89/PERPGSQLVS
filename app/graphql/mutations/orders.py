@@ -142,8 +142,24 @@ class OrdersMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            from app.graphql.crud.temporderdetails import delete_temporderdetails_by_session
-            count = delete_temporderdetails_by_session(db, sessionID)
+            from app.graphql.crud.temporderdetails import (
+                delete_temporderdetails_by_session,
+                delete_temporderdetails_by_order,
+            )
+            count = 0
+            if orderID:
+                # Si se está editando una orden existente, eliminar todos los
+                # items vinculados a esa orden sin importar la sesión.
+                count += delete_temporderdetails_by_order(db, orderID)
+            else:
+                # En caso de estar creando una nueva orden (orderID == 0),
+                # limpiar únicamente por sessionID.
+                count += delete_temporderdetails_by_session(db, sessionID)
+
+            # También se intenta borrar por sessionID para cubrir cualquier caso
+            # residual (p.ej. múltiples sesiones abiertas para la misma orden).
+            count += delete_temporderdetails_by_session(db, sessionID)
+
             return count > 0
         finally:
             db_gen.close()
