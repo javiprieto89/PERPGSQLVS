@@ -6,7 +6,7 @@ class GraphQLClient {
         this.endpoint = GRAPHQL_ENDPOINT;
     }
 
-    async query(query, variables = {}) {
+    async query(query, variables = {}, fetchOptions = {}) {
         const token = sessionStorage.getItem("token");
 
         console.log("GraphQL Request:", {
@@ -27,6 +27,7 @@ class GraphQLClient {
                     query,
                     variables,
                 }),
+                ...fetchOptions,
             });
 
             console.log("Response Status:", response.status, response.statusText);
@@ -76,8 +77,8 @@ class GraphQLClient {
         }
     }
 
-    async mutation(mutation, variables = {}) {
-        return this.query(mutation, variables);
+    async mutation(mutation, variables = {}, fetchOptions = {}) {
+        return this.query(mutation, variables, fetchOptions);
     }
 
     async checkConnection() {

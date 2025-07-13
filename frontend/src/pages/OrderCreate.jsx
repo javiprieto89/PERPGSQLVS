@@ -508,9 +508,11 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
     useEffect(() => {
         const cleanup = () => {
             if (sessionId) {
-                tempOrderOperations.clearTempSession(sessionId).catch((err) => {
-                    console.error("Error limpiando items temporales:", err);
-                });
+                tempOrderOperations
+                    .clearTempSession(sessionId, true)
+                    .catch((err) => {
+                        console.error("Error limpiando items temporales:", err);
+                    });
             }
         };
         const win = windowRef || window;
