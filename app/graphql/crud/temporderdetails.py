@@ -1,10 +1,11 @@
-﻿# app/graphql/crud/temporderdetails.py - Versión type-safe
+# app/graphql/crud/temporderdetails.py - Versión type-safe
 from sqlalchemy.orm import Session
 from typing import List, Optional, Any
 from dataclasses import asdict
 from uuid import uuid4, UUID
 
 from app.models.temporderdetails import TempOrderDetails
+from app.models.items import Items
 from app.graphql.schemas.temporderdetails import (
     TempOrderDetailsCreate,
     TempOrderDetailsUpdate,
@@ -48,14 +49,21 @@ def get_temporderdetail_by_session(
     garantizar que se obtenga un único registro cuando existen múltiples ítems
     con el mismo ``ItemID`` en una sesión.
     """
-    query = db.query(TempOrderDetails).filter(
-        TempOrderDetails.OrderSessionID == session_id,
-        TempOrderDetails.ItemID == item_id,
+    query = (
+        db.query(TempOrderDetails)
+        .join(Items, TempOrderDetails.ItemID == Items.ItemID)
+        .filter(
+            TempOrderDetails.OrderSessionID == session_id,
+            TempOrderDetails.ItemID == item_id,
+        )
     )
     if order_detail_id is not None:
         query = query.filter(TempOrderDetails.OrderDetailID == order_detail_id)
 
-    return query.first()
+    result = query.first()
+    if result:
+        result.ItemCode = result.items_.Code if result.items_ else None
+    return result
 
 
 def create_temporderdetails(
@@ -152,11 +160,15 @@ def get_temporderdetails_by_session(
     db: Session, session_id: str
 ) -> List[TempOrderDetails]:
     """Obtener todos los TempOrderDetails de una sesión específica"""
-    return (
+    items = (
         db.query(TempOrderDetails)
+        .join(Items, TempOrderDetails.ItemID == Items.ItemID)
         .filter(TempOrderDetails.OrderSessionID == session_id)
         .all()
     )
+    for obj in items:
+        obj.ItemCode = obj.items_.Code if obj.items_ else None
+    return items
 
 
 def get_temporderdetails_by_order(db: Session, order_id: int) -> List[TempOrderDetails]:

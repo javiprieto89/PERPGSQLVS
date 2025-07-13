@@ -3,6 +3,7 @@ import strawberry
 from typing import List, Optional
 from app.graphql.schemas.temporderdetails import TempOrderDetailsInDB
 from app.models.temporderdetails import TempOrderDetails
+from app.models.items import Items
 from app.db import get_db
 from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
@@ -27,9 +28,14 @@ class TemporderdetailsQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            items = db.query(TempOrderDetails).filter(
-                TempOrderDetails.OrderSessionID == sessionID
-            ).all()
+            items = (
+                db.query(TempOrderDetails)
+                .join(Items, TempOrderDetails.ItemID == Items.ItemID)
+                .filter(TempOrderDetails.OrderSessionID == sessionID)
+                .all()
+            )
+            for it in items:
+                it.ItemCode = it.items_.Code if it.items_ else None
             return list_to_schema(TempOrderDetailsInDB, items)
         finally:
             db_gen.close()

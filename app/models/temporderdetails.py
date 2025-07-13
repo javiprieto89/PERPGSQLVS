@@ -1,4 +1,4 @@
-﻿# app/models/temporderdetails.py
+# app/models/temporderdetails.py
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 from typing import Optional
 
-from sqlalchemy import Column, Integer, Unicode, DECIMAL, Uuid, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy import Column, Integer, Unicode, DECIMAL, Uuid, PrimaryKeyConstraint, ForeignKeyConstraint, text
 from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 
@@ -25,7 +25,7 @@ class TempOrderDetails(Base):
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__TempOrder__Compa__0C85DE4D'),
         ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK__TempOrder__ItemI__0F624AF8'),
         ForeignKeyConstraint(['OrderID'], ['Orders.OrderID'], name='FK_TempOrderDetails_Orders'),
-        ForeignKeyConstraint(['OrderDetailID'], ['OrderDetails.OrderDetailID'], name='FK_TempOrderDetails_OrderDetails'), 
+        ForeignKeyConstraint(['OrderDetailID'], ['OrderDetails.OrderDetailID'], name='FK_TempOrderDetails_OrderDetails'),
         ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK_TempOrderDetails_PriceLists'),
         ForeignKeyConstraint(['UserID'], ['Users.UserID'], name='FK__TempOrder__UserI__0E6E26BF'),
         ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_TempOrderDetails_Warehouses'),

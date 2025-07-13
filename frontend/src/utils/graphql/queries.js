@@ -442,6 +442,7 @@ export const QUERIES = {
                 BranchID
                 UserID
                 ItemID
+                ItemCode
                 Quantity
                 WarehouseID
                 PriceListID

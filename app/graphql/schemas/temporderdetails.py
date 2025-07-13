@@ -42,6 +42,7 @@ class TempOrderDetailsInDB:
     BranchID: int
     UserID: int
     ItemID: int
+    ItemCode: Optional[str]
     Quantity: int
     WarehouseID: int
     PriceListID: int
