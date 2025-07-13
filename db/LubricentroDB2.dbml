@@ -530,8 +530,7 @@ Table OrderHistoryDetails {
 // Tablas temporales
 // ==========================================
 
-Table TempOrderDetails {
-  TempOrderItemID int [pk, increment]
+Table TempOrderDetails {  
   OrderDetailID int
   OrderID int [ref: > Orders.OrderID]
   OrderSessionID uniqueidentifier [not null, default: `newid()`]

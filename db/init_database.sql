@@ -758,8 +758,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[TempOrderDetails](
-	[TempOrderItemID] [int] IDENTITY(1,1) NOT NULL,
+CREATE TABLE [dbo].[TempOrderDetails](	
 	[OrderDetailID] [int] NULL,
 	[OrderID] [int] NULL,
 	[OrderSessionID] [uniqueidentifier] NOT NULL,
@@ -771,11 +770,7 @@ CREATE TABLE [dbo].[TempOrderDetails](
 	[WarehouseID] [int] NOT NULL,
 	[PriceListID] [int] NOT NULL,
 	[UnitPrice] [decimal](10, 2) NOT NULL,
-	[Description] [nvarchar](200) NOT NULL,
- CONSTRAINT [PK__TempOrde__AC4DF55EB1F17B71] PRIMARY KEY CLUSTERED 
-(
-	[TempOrderItemID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+	[Description] [nvarchar](200) NOT NULL 
 ) ON [PRIMARY]
 GO
 /****** Object:  Table [dbo].[TempStockEntries]    Script Date: 9/7/2025 01:07:52 ******/
