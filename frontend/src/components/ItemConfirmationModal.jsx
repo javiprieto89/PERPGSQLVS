@@ -7,10 +7,16 @@ export default function ItemConfirmationModal({
     onClose,
     onConfirm,
     confirmLabel = "Agregar al Pedido",
+    priceLists = [],
+    warehouses = [],
+    defaultPriceListId = "",
+    defaultWarehouseId = "",
 }) {
     const [quantity, setQuantity] = useState(1);
     const [price, setPrice] = useState(0);
     const [subtotal, setSubtotal] = useState(0);
+    const [priceListId, setPriceListId] = useState(defaultPriceListId);
+    const [warehouseId, setWarehouseId] = useState(defaultWarehouseId);
 
     useEffect(() => {
         if (item) {
@@ -19,6 +25,11 @@ export default function ItemConfirmationModal({
             setQuantity(item.quantity || 1);
         }
     }, [item]);
+
+    useEffect(() => {
+        setPriceListId(defaultPriceListId || "");
+        setWarehouseId(defaultWarehouseId || "");
+    }, [defaultPriceListId, defaultWarehouseId]);
 
     useEffect(() => {
         setSubtotal(quantity * price);
@@ -47,6 +58,8 @@ export default function ItemConfirmationModal({
             description: item.description,
             quantity: parseInt(quantity, 10),
             price: parseFloat(price),
+            priceListId: priceListId ? parseInt(priceListId) : null,
+            warehouseId: warehouseId ? parseInt(warehouseId) : null,
         };
 
         console.log("ItemConfirmationModal - Item a confirmar:", itemWithDetails); // Debug log
@@ -162,6 +175,42 @@ export default function ItemConfirmationModal({
                                 step="0.01"
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                             />
+                        </div>
+                        <div>
+                            <label htmlFor="priceListId" className="block text-sm font-medium text-gray-700 mb-1">
+                                Lista de Precios
+                            </label>
+                            <select
+                                id="priceListId"
+                                value={priceListId}
+                                onChange={(e) => setPriceListId(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            >
+                                <option value="">Seleccionar...</option>
+                                {priceLists.map((pl) => (
+                                    <option key={pl.PriceListID} value={pl.PriceListID}>
+                                        {pl.Name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="warehouseId" className="block text-sm font-medium text-gray-700 mb-1">
+                                Depósito
+                            </label>
+                            <select
+                                id="warehouseId"
+                                value={warehouseId}
+                                onChange={(e) => setWarehouseId(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            >
+                                <option value="">Seleccionar...</option>
+                                {warehouses.map((w) => (
+                                    <option key={w.WarehouseID} value={w.WarehouseID}>
+                                        {w.Name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
 

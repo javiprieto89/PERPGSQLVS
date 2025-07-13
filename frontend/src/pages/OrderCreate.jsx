@@ -103,6 +103,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                         description: d.Description || "",
                         quantity: d.Quantity,
                         price: d.UnitPrice,
+                        priceListId: d.PriceListID,
+                        warehouseId: d.WarehouseID,
                         subtotal: d.Quantity * d.UnitPrice,
                         orderSessionID: d.OrderSessionID,
                     }));
@@ -195,7 +197,11 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
     };
 
     const handleItemSelectedFromSearch = (selectedItem) => {
-        setSelectedItemForConfirmation(selectedItem);
+        setSelectedItemForConfirmation({
+            ...selectedItem,
+            priceListId: formData.priceListId,
+            warehouseId: formData.warehouseId,
+        });
         setShowItemSearchModal(false);
         setShowItemConfirmationModal(true);
         setEditIndex(null);
@@ -208,6 +214,12 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             Quantity: parseInt(itemWithDetails.quantity),
             UnitPrice: parseFloat(itemWithDetails.price),
             Description: itemWithDetails.description || "",
+            WarehouseID: itemWithDetails.warehouseId
+                ? parseInt(itemWithDetails.warehouseId)
+                : parseInt(formData.warehouseId),
+            PriceListID: itemWithDetails.priceListId
+                ? parseInt(itemWithDetails.priceListId)
+                : parseInt(formData.priceListId),
         };
 
         if (editIndex !== null) {
@@ -217,6 +229,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 ...existing,
                 quantity: itemWithDetails.quantity,
                 price: itemWithDetails.price,
+                priceListId: baseData.PriceListID,
+                warehouseId: baseData.WarehouseID,
                 subtotal: itemWithDetails.quantity * itemWithDetails.price,
             };
             setItems(updatedItems);
@@ -238,9 +252,11 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 BranchID: parseInt(formData.branchId),
                 UserID: parseInt(formData.userId),
                 ItemID: parseInt(itemWithDetails.itemID),
-                WarehouseID: parseInt(formData.warehouseId),
-                PriceListID: parseInt(formData.priceListId),
-                ...baseData,
+                WarehouseID: baseData.WarehouseID,
+                PriceListID: baseData.PriceListID,
+                Quantity: baseData.Quantity,
+                UnitPrice: baseData.UnitPrice,
+                Description: baseData.Description,
             };
             if (sessionId) {
                 tempData.OrderSessionID = sessionId;
@@ -255,6 +271,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                     description: itemWithDetails.description,
                     quantity: itemWithDetails.quantity,
                     price: itemWithDetails.price,
+                    priceListId: baseData.PriceListID,
+                    warehouseId: baseData.WarehouseID,
                     subtotal: itemWithDetails.quantity * itemWithDetails.price,
                     orderSessionID: tempItem.OrderSessionID,
                 };
@@ -292,6 +310,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             description: item.description,
             quantity: item.quantity,
             price: item.price,
+            priceListId: item.priceListId || formData.priceListId,
+            warehouseId: item.warehouseId || formData.warehouseId,
         });
         setEditIndex(index);
         setShowItemConfirmationModal(true);
@@ -378,7 +398,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             WarehouseID: parseInt(finalFormData.warehouseId),
             Items: items.map((item) => ({
                 ItemID: parseInt(item.itemID),
-                WarehouseID: parseInt(finalFormData.warehouseId),
+                WarehouseID: parseInt(item.warehouseId || finalFormData.warehouseId),
                 Quantity: parseInt(item.quantity),
                 UnitPrice: parseFloat(item.price),
                 Description: item.description || null,
@@ -988,8 +1008,13 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                     }}
                     onConfirm={handleItemConfirmed}
                     confirmLabel={editIndex !== null ? "Actualizar Ítem" : "Agregar al Pedido"}
+                    priceLists={priceLists}
+                    warehouses={warehouses}
+                    defaultPriceListId={selectedItemForConfirmation.priceListId || formData.priceListId}
+                    defaultWarehouseId={selectedItemForConfirmation.warehouseId || formData.warehouseId}
                 />
             )}
         </div>
     );
+
 }
