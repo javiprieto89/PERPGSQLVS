@@ -12,6 +12,8 @@ from app.graphql.crud.temporderdetails import (
     load_orderdetails_to_temp,
     get_temporderdetails_by_session,
     delete_temporderdetails_by_session,
+    get_temporderdetails_by_order,
+    delete_temporderdetails_by_order,
 )
 
 
@@ -33,9 +35,7 @@ def _safe_get_int(obj: Any, field_name: str) -> int:
     try:
         return int(value)
     except (ValueError, TypeError) as e:
-        raise ValueError(
-            f"No se puede convertir {field_name}={value} a int: {e}"
-        )
+        raise ValueError(f"No se puede convertir {field_name}={value} a int: {e}")
 
 
 def get_orders(db: Session):
@@ -152,9 +152,9 @@ def delete_orders(db: Session, orderid: int):
     )
 
     # Eliminar TempOrderDetails relacionados (si existen)
-    db.query(TempOrderDetails).filter(
-        TempOrderDetails.OrderID == orderid
-    ).delete(synchronize_session=False)
+    db.query(TempOrderDetails).filter(TempOrderDetails.OrderID == orderid).delete(
+        synchronize_session=False
+    )
 
     # Eliminar la orden
     db.delete(obj)
@@ -162,11 +162,11 @@ def delete_orders(db: Session, orderid: int):
     return obj
 
 
-def finalize_order(
-    db: Session, orderid: int, session_id: str
-) -> Optional[Orders]:
+def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Orders]:
     """
     Finalizar orden: mover items de TempOrderDetails a OrderDetails y limpiar temporales.
+    Se obtienen todos los ``TempOrderDetails`` vinculados a la ``OrderID``
+    independientemente del ``OrderSessionID``.
     Esta función se debe llamar cuando el usuario confirma/guarda definitivamente la orden.
     """
     order = get_orders_by_id(db, orderid)
@@ -174,7 +174,7 @@ def finalize_order(
         return None
 
     # Obtener items temporales
-    temp_items = get_temporderdetails_by_session(db, session_id)
+    temp_items = get_temporderdetails_by_order(db, orderid)
 
     if not temp_items:
         # Si no hay items temporales, la orden ya está finalizada o no tiene items
@@ -207,8 +207,8 @@ def finalize_order(
         )
         db.add(order_detail)
 
-    # Limpiar TempOrderDetails de esta sesión
-    delete_temporderdetails_by_session(db, session_id)
+    # Limpiar TempOrderDetails de la orden
+    delete_temporderdetails_by_order(db, orderid)
 
     db.commit()
     db.refresh(order)
