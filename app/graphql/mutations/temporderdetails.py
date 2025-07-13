@@ -54,26 +54,33 @@ class TempOrderDetailsMutations:
 
     @strawberry.mutation
     def update_temporderdetail(
-        self, info: Info, sessionID: str, tempItemID: int, data: TempOrderDetailsUpdate
+        self,
+        info: Info,
+        sessionID: str,
+        itemID: int,
+        data: TempOrderDetailsUpdate,
     ) -> Optional[TempOrderDetailsInDB]:
-        """Actualizar un item temporal usando sessionID y tempItemID"""
+        """Actualizar un item temporal usando ``sessionID`` e ``itemID``"""
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update_temporderdetails(db, sessionID, tempItemID, data)
+            updated = update_temporderdetails(db, sessionID, itemID, data)
             return obj_to_schema(TempOrderDetailsInDB, updated) if updated else None
         finally:
             db_gen.close()
 
     @strawberry.mutation
     def delete_temporderdetail(
-        self, info: Info, sessionID: str, tempItemID: int
+        self,
+        info: Info,
+        sessionID: str,
+        itemID: int,
     ) -> bool:
         """Eliminar un item temporal específico"""
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete_temporderdetails(db, sessionID, tempItemID)
+            deleted = delete_temporderdetails(db, sessionID, itemID)
             return deleted is not None
         finally:
             db_gen.close()
