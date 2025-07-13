@@ -1267,6 +1267,32 @@ export const tempOrderOperations = {
             throw error;
         }
     },
+
+    async loadOrderForEditing(orderID, userID, companyID, branchID) {
+        try {
+            const result = await graphqlClient.mutation(
+                MUTATIONS.LOAD_ORDER_FOR_EDITING,
+                { orderID, userID, companyID, branchID }
+            );
+            return result.loadOrderForEditing;
+        } catch (error) {
+            console.error("Error cargando orden para edición:", error);
+            throw error;
+        }
+    },
+
+    async getTempItems(sessionID) {
+        try {
+            const result = await graphqlClient.query(
+                MUTATIONS.GET_TEMP_ITEMS_BY_SESSION,
+                { sessionID }
+            );
+            return result.temporderdetailsBySession || [];
+        } catch (error) {
+            console.error("Error obteniendo items temporales:", error);
+            throw error;
+        }
+    },
 };
 
 export const companyOperations = {

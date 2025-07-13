@@ -87,22 +87,30 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 warehouseId: String(initialOrder.WarehouseID || "")
             });
 
-            orderOperations
-                .getOrderById(initialOrder.OrderID)
-                .then((ord) => {
-                    if (ord && ord.Items) {
-                        const parsed = ord.Items.map((d) => ({
-                            itemID: d.ItemID,
-                            code: "",
-                            description: d.Description || "",
-                            quantity: d.Quantity,
-                            price: d.UnitPrice,
-                            subtotal: d.Quantity * d.UnitPrice,
-                        }));
-                        setItems(parsed);
-                    }
-                })
-                .catch(() => {});
+            (async () => {
+                try {
+                    const sid = await tempOrderOperations.loadOrderForEditing(
+                        initialOrder.OrderID,
+                        userInfo?.userId || initialOrder.UserID,
+                        userInfo?.companyId || initialOrder.CompanyID,
+                        userInfo?.branchId || initialOrder.BranchID
+                    );
+                    setSessionId(sid);
+                    const tempItems = await tempOrderOperations.getTempItems(sid);
+                    const parsed = tempItems.map((d) => ({
+                        itemID: d.ItemID,
+                        code: "",
+                        description: d.Description || "",
+                        quantity: d.Quantity,
+                        price: d.UnitPrice,
+                        subtotal: d.Quantity * d.UnitPrice,
+                        orderSessionID: d.OrderSessionID,
+                    }));
+                    setItems(parsed);
+                } catch (err) {
+                    console.error("Error cargando items temporales:", err);
+                }
+            })();
         }
     }, [initialOrder]);
 

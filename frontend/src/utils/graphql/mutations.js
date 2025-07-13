@@ -638,6 +638,31 @@ export const MUTATIONS = {
         }
     `,
 
+    LOAD_ORDER_FOR_EDITING: `
+        mutation LoadOrderForEditing($orderID: Int!, $userID: Int!, $companyID: Int!, $branchID: Int!) {
+            loadOrderForEditing(orderID: $orderID, userID: $userID, companyID: $companyID, branchID: $branchID)
+        }
+    `,
+
+    GET_TEMP_ITEMS_BY_SESSION: `
+        query GetTempItemsBySession($sessionID: String!) {
+            temporderdetailsBySession(sessionID: $sessionID) {
+                OrderDetailID
+                OrderID
+                OrderSessionID
+                CompanyID
+                BranchID
+                UserID
+                ItemID
+                Quantity
+                WarehouseID
+                PriceListID
+                UnitPrice
+                Description
+            }
+        }
+    `,
+
     // ROLES
     CREATE_ROLE: `
         mutation CreateRole($input: RolesCreate!) {
