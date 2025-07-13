@@ -1129,7 +1129,7 @@ export const orderOperations = {
                 input: preparedData
             });
 
-            return data.createOrder;
+            return data.createOrder.order;
         } catch (error) {
             console.error("Error creando orden:", error);
             throw error;
@@ -1167,7 +1167,7 @@ export const orderOperations = {
                 input: preparedData
             });
 
-            return data.updateOrder;
+            return data.updateOrder.order;
         } catch (error) {
             console.error("Error actualizando orden:", error);
             throw error;
