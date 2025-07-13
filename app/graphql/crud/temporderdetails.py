@@ -206,17 +206,26 @@ def delete_temporderdetails_by_order(db: Session, order_id: int) -> int:
 def load_orderdetails_to_temp(
     db: Session, order_id: int, user_id: int, company_id: int, branch_id: int
 ) -> str:
+    """Cargar los ``OrderDetails`` de una orden en ``TempOrderDetails`` para su
+    edición.
+
+    Se genera un nuevo ``OrderSessionID`` y se eliminan posibles registros
+    temporales previos asociados a la orden antes de copiar los ítems.
     """
-    Cargar OrderDetails existentes a TempOrderDetails para edición
-    Retorna el OrderSessionID generado
-    """
+
     from app.models.orderdetails import OrderDetails
+    from app.models.orders import Orders
 
     # Generar nuevo session ID para la edición
     session_uuid = uuid4()
 
     # Eliminar cualquier item temporal previo vinculado a la orden
     delete_temporderdetails_by_order(db, order_id)
+
+    # Obtener la orden una sola vez
+    order = db.query(Orders).filter(Orders.OrderID == order_id).first()
+    if not order:
+        raise ValueError(f"Orden {order_id} no encontrada")
 
     # Obtener los OrderDetails de la orden
     order_details = (
@@ -225,24 +234,16 @@ def load_orderdetails_to_temp(
 
     # Copiar cada OrderDetail a TempOrderDetails
     for detail in order_details:
-        # Obtener datos adicionales de la orden original
-        from app.models.orders import Orders
-
-        order = db.query(Orders).filter(Orders.OrderID == order_id).first()
-
-        if not order:
-            raise ValueError(f"Orden {order_id} no encontrada")
-
         temp_detail = TempOrderDetails(
             CompanyID=company_id,
             BranchID=branch_id,
             UserID=user_id,
             OrderID=order_id,
-            OrderDetailID=_safe_get_int(detail, "OrderDetailID"),
+            OrderDetailID=detail.OrderDetailID,
             OrderSessionID=session_uuid,
-            ItemID=_safe_get_int(detail, "ItemID"),
-            Quantity=_safe_get_int(detail, "Quantity"),
-            WarehouseID=_safe_get_int(detail, "WarehouseID"),
+            ItemID=detail.ItemID,
+            Quantity=detail.Quantity,
+            WarehouseID=detail.WarehouseID,
             PriceListID=_safe_get_int(order, "PriceListID"),
             UnitPrice=detail.UnitPrice,
             Description=detail.Description,
