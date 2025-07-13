@@ -116,7 +116,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                     const tempItems = await tempOrderOperations.getTempItems(sid);
                     const parsed = tempItems.map((d) => ({
                         itemID: d.ItemID,
-                        code: "",
+                        code: d.ItemCode || "",
                         description: d.Description || "",
                         quantity: d.Quantity,
                         price: d.UnitPrice,

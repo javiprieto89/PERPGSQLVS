@@ -435,6 +435,7 @@ export const QUERIES = {
     GET_TEMP_ITEMS_BY_SESSION: `
         query GetTempItemsBySession($sessionID: String!) {
             temporderdetailsBySession(sessionID: $sessionID) {
+                TempOrderItemID
                 OrderDetailID
                 OrderID
                 OrderSessionID
@@ -442,6 +443,7 @@ export const QUERIES = {
                 BranchID
                 UserID
                 ItemID
+                ItemCode
                 Quantity
                 WarehouseID
                 PriceListID

@@ -35,6 +35,7 @@ class TempOrderDetailsUpdate:
 
 @strawberry.type
 class TempOrderDetailsInDB:
+    TempOrderItemID: int
     OrderDetailID: Optional[int]
     OrderID: Optional[int]
     OrderSessionID: UUID
@@ -42,6 +43,7 @@ class TempOrderDetailsInDB:
     BranchID: int
     UserID: int
     ItemID: int
+    ItemCode: Optional[str]
     Quantity: int
     WarehouseID: int
     PriceListID: int
