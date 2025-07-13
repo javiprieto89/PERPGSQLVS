@@ -1268,6 +1268,18 @@ export const tempOrderOperations = {
         }
     },
 
+    async clearTempSession(sessionID) {
+        try {
+            await graphqlClient.mutation(MUTATIONS.CLEAR_TEMP_SESSION, {
+                sessionID,
+            });
+            return true;
+        } catch (error) {
+            console.error("Error limpiando sesión temporal:", error);
+            throw error;
+        }
+    },
+
     async loadOrderForEditing(orderID, userID, companyID, branchID) {
         try {
             const result = await graphqlClient.mutation(

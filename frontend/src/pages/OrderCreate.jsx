@@ -317,6 +317,18 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
         setShowItemConfirmationModal(true);
     };
 
+    const handleCancel = async () => {
+        try {
+            if (sessionId) {
+                await tempOrderOperations.clearTempSession(sessionId);
+            }
+        } catch (err) {
+            console.error("Error limpiando items temporales:", err);
+        } finally {
+            onClose && onClose();
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -476,6 +488,21 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             total: sub + vatAmount,
         }));
     }, [items]);
+
+    useEffect(() => {
+        const cleanup = () => {
+            if (sessionId) {
+                tempOrderOperations.clearTempSession(sessionId).catch((err) => {
+                    console.error("Error limpiando items temporales:", err);
+                });
+            }
+        };
+        window.addEventListener("beforeunload", cleanup);
+        return () => {
+            window.removeEventListener("beforeunload", cleanup);
+            cleanup();
+        };
+    }, [sessionId]);
 
     return (
         <div className="container mx-auto p-4 md:p-6 bg-gray-100 min-h-screen">
@@ -952,12 +979,28 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                             </p>
                         </div>
 
-                        <button
-                            type="submit"
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150 text-lg"
-                        >
-                            {isEdit ? 'Guardar Cambios' : 'Guardar Pedido'}
-                        </button>
+                        <div className="flex justify-end space-x-4 pt-4 border-t">
+                            <button
+                                type="button"
+                                onClick={handleCancel}
+                                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {}}
+                                className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                            >
+                                Emitir
+                            </button>
+                            <button
+                                type="submit"
+                                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                            >
+                                {isEdit ? 'Guardar Cambios' : 'Guardar Pedido'}
+                            </button>
+                        </div>
                     </section>
                 </form>
             </div>
