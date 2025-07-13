@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from dataclasses import asdict
 from uuid import uuid4, UUID
 from typing import Optional, Any
+from datetime import datetime
 
 from app.models.orders import Orders
 from app.models.orderdetails import OrderDetails
@@ -180,10 +181,11 @@ def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Order
         # Si no hay items temporales, la orden ya está finalizada o no tiene items
         return order
 
-    # Eliminar OrderDetails existentes para reemplazarlos
-    db.query(OrderDetails).filter(OrderDetails.OrderID == orderid).delete(
-        synchronize_session=False
+    # Obtener OrderDetails existentes
+    existing_details = (
+        db.query(OrderDetails).filter(OrderDetails.OrderID == orderid).all()
     )
+    existing_map = {d.OrderDetailID: d for d in existing_details}
 
     # Consolidar items para evitar duplicados
     unique_items = {}
@@ -195,17 +197,38 @@ def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Order
         )
         unique_items[key] = temp_item
 
-    # Crear nuevos OrderDetails desde TempOrderDetails
+    processed_ids = set()
+
+    # Crear o actualizar OrderDetails desde TempOrderDetails
     for temp_item in unique_items.values():
-        order_detail = OrderDetails(
-            OrderID=orderid,
-            ItemID=_safe_get_int(temp_item, "ItemID"),
-            WarehouseID=_safe_get_int(temp_item, "WarehouseID"),
-            Quantity=_safe_get_int(temp_item, "Quantity"),
-            UnitPrice=temp_item.UnitPrice,
-            Description=temp_item.Description,
-        )
-        db.add(order_detail)
+        target = None
+        if temp_item.OrderDetailID and temp_item.OrderDetailID in existing_map:
+            target = existing_map[temp_item.OrderDetailID]
+
+        if target:
+            # Usar ``setattr`` para evitar conflictos con el type checker
+            setattr(target, "ItemID", _safe_get_int(temp_item, "ItemID"))
+            setattr(target, "WarehouseID", _safe_get_int(temp_item, "WarehouseID"))
+            setattr(target, "Quantity", _safe_get_int(temp_item, "Quantity"))
+            setattr(target, "UnitPrice", temp_item.UnitPrice)
+            setattr(target, "Description", temp_item.Description)
+            setattr(target, "LastModified", datetime.utcnow())
+            processed_ids.add(target.OrderDetailID)
+        else:
+            new_detail = OrderDetails(
+                OrderID=orderid,
+                ItemID=_safe_get_int(temp_item, "ItemID"),
+                WarehouseID=_safe_get_int(temp_item, "WarehouseID"),
+                Quantity=_safe_get_int(temp_item, "Quantity"),
+                UnitPrice=temp_item.UnitPrice,
+                Description=temp_item.Description,
+            )
+            db.add(new_detail)
+
+    # Eliminar OrderDetails que ya no existen en TempOrderDetails
+    for detail in existing_details:
+        if detail.OrderDetailID not in processed_ids and detail.OrderDetailID is not None:
+            db.delete(detail)
 
     # Limpiar TempOrderDetails de la orden
     delete_temporderdetails_by_order(db, orderid)
