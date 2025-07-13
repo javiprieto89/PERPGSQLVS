@@ -48,7 +48,12 @@ export default function Orders() {
     }, []);
 
     const handleCreate = () => {
-        openReactWindow(() => <OrderCreate />, "Cargar Pedido");
+        openReactWindow(
+            (popup) => (
+                <OrderCreate onClose={() => popup.close()} windowRef={popup} />
+            ),
+            "Cargar Pedido"
+        );
     };
 
     const handleEdit = (order) => {

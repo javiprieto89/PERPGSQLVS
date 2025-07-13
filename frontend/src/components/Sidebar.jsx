@@ -47,7 +47,13 @@ export default function Sidebar() {
         setOpenSubmenus((prev) => ({ ...prev, [key]: !prev[key] }));
 
     const openPopup = (Component, title, width = 1000, height = 700) => {
-        openReactWindow(() => <Component />, title, { width, height });
+        openReactWindow(
+            (popup) => (
+                <Component onClose={() => popup.close()} windowRef={popup} />
+            ),
+            title,
+            { width, height }
+        );
     };
 
     const sections = [

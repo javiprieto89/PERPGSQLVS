@@ -17,7 +17,7 @@ import ClientSearchModal from "../components/ClientSearchModal";
 import SaleConditionSearchModal from "../components/SaleConditionSearchModal";
 import ItemConfirmationModal from "../components/ItemConfirmationModal";
 
-export default function OrderCreate({ onClose, onSave, order: initialOrder = null, userInfo }) {
+export default function OrderCreate({ onClose, onSave, order: initialOrder = null, userInfo, windowRef }) {
     const [formData, setFormData] = useState({
         companyId: userInfo?.companyId || "1",
         branchId: userInfo?.branchId || "1",
@@ -98,6 +98,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                     setSessionId(sid);
                     const tempItems = await tempOrderOperations.getTempItems(sid);
                     const parsed = tempItems.map((d) => ({
+                        tempId: d.OrderDetailID,
                         itemID: d.ItemID,
                         code: "",
                         description: d.Description || "",
@@ -266,6 +267,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 const tempItem = await tempOrderOperations.createTempItem(tempData);
                 setSessionId(tempItem.OrderSessionID);
                 const newItem = {
+                    tempId: Date.now() + Math.random(),
                     itemID: itemWithDetails.itemID,
                     code: itemWithDetails.code,
                     description: itemWithDetails.description,
@@ -497,12 +499,13 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                 });
             }
         };
-        window.addEventListener("beforeunload", cleanup);
+        const win = windowRef || window;
+        win.addEventListener("beforeunload", cleanup);
         return () => {
-            window.removeEventListener("beforeunload", cleanup);
+            win.removeEventListener("beforeunload", cleanup);
             cleanup();
         };
-    }, [sessionId]);
+    }, [sessionId, windowRef]);
 
     return (
         <div className="container mx-auto p-4 md:p-6 bg-gray-100 min-h-screen">
@@ -911,7 +914,7 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {items.map((item, index) => (
-                                                <tr key={`${item.itemID}-${index}`} className="hover:bg-gray-50">
+                                                <tr key={item.tempId ?? `${item.itemID}-${index}`} className="hover:bg-gray-50">
                                                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{item.code || "N/A"}</td>
                                                     <td className="px-4 py-3 text-sm text-gray-700 max-w-xs truncate">{item.description}</td>
                                                     <td className="px-4 py-3 text-right text-sm text-gray-700">{item.quantity}</td>
