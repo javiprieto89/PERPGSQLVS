@@ -11,6 +11,7 @@ import {
 
 import OrderCreate from "../pages/OrderCreate";
 import PriceListItemsPage from "../pages/PriceListItems";
+import StockEntry from "../pages/StockEntry";
 import { openReactWindow } from "../utils/openReactWindow";
 
 export default function Sidebar() {
@@ -112,7 +113,10 @@ export default function Sidebar() {
         {
             title: "Inventario",
             items: [
-                { label: "Stock", to: "/itemstock" },
+                {
+                    label: "Cargar Stock",
+                    action: () => openPopup(StockEntry, "Ingreso de Stock", 1000, 700),
+                },
                 { label: "Historial de stock", to: "/stockhistory" },
             ],
         },

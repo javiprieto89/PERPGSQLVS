@@ -21,6 +21,22 @@ class TempstockentriesQuery:
             db_gen.close()
 
     @strawberry.field
+    def tempstockentries_by_session(
+        self, info: Info, sessionID: str
+    ) -> List[TempStockEntriesInDB]:
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            items = (
+                db.query(TempStockEntries)
+                .filter(TempStockEntries.SessionID == sessionID)
+                .all()
+            )
+            return list_to_schema(TempStockEntriesInDB, items)
+        finally:
+            db_gen.close()
+
+    @strawberry.field
     def tempstockentries_by_id(self, info: Info, id: int) -> Optional[TempStockEntriesInDB]:
         db_gen = get_db()
         db = next(db_gen)

@@ -1518,6 +1518,32 @@ export const tempOrderOperations = {
     },
 };
 
+export const tempStockOperations = {
+    async createEntry(input) {
+        const res = await graphqlClient.mutation(
+            MUTATIONS.CREATE_TEMPSTOCKENTRY,
+            { input }
+        );
+        return res.createTempstockentry;
+    },
+
+    async getSessionEntries(sessionID) {
+        const res = await graphqlClient.query(
+            MUTATIONS.GET_TEMP_STOCK_BY_SESSION,
+            { sessionID }
+        );
+        return res.tempstockentriesBySession || [];
+    },
+
+    async processSession(sessionID) {
+        const res = await graphqlClient.mutation(
+            MUTATIONS.PROCESS_STOCK_SESSION,
+            { sessionID }
+        );
+        return res.processStockSession;
+    },
+};
+
 export const companyOperations = {
     async getAllCompanies() {
         try {
