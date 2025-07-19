@@ -1,4 +1,4 @@
-// frontend/src/pages/DiscountCreate.jsx
+﻿// frontend/src/pages/DiscountCreate.jsx
 import { useState, useEffect } from "react";
 import { discountOperations } from "../utils/graphqlClient";
 

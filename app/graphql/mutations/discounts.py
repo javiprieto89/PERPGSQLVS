@@ -1,4 +1,4 @@
-# app/graphql/mutations/discounts.py
+﻿# app/graphql/mutations/discounts.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.discounts import (
