@@ -17,5 +17,11 @@ class AfipQuery:
     @strawberry.field
     def informacion_comprobante(self, info: Info, data: VoucherRequest) -> VoucherInfo:
         """Consulta la información de un comprobante en AFIP."""
-        res = constatar_comprobante(data.__dict__)
+        cmp_req = data.__dict__.copy()
+        if isinstance(cmp_req.get("CuitEmisor"), str):
+            try:
+                cmp_req["CuitEmisor"] = int(cmp_req["CuitEmisor"])
+            except ValueError:
+                pass
+        res = constatar_comprobante(cmp_req)
         return VoucherInfo(raw=json.dumps(res))

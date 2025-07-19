@@ -6,7 +6,7 @@ from typing import Optional
 @strawberry.input
 class VoucherRequest:
     CbteModo: str
-    CuitEmisor: int
+    CuitEmisor: str
     PtoVta: int
     CbteTipo: int
     CbteNro: int
