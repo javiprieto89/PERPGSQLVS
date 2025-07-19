@@ -126,7 +126,9 @@ export default function DocumentCreate({ onClose, onSave, document: initialDoc =
                     <label className="block text-sm font-medium mb-1">Tipo de Documento</label>
                     <select value={documentTypeID} onChange={e => setDocumentTypeID(e.target.value)} className="w-full border p-2 rounded" required>
                         <option value="">Seleccione</option>
-                        {docTypes.map(dt => <option key={dt.DocTypeID} value={dt.DocTypeID}>{dt.Name}</option>)}
+                        {docTypes.map(dt => (
+                            <option key={dt.DocumentTypeID} value={dt.DocumentTypeID}>{dt.Name}</option>
+                        ))}
                     </select>
                 </div>
                 <div>

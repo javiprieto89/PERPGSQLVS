@@ -50,7 +50,7 @@ export const QUERIES = {
     GET_DOCUMENT_TYPES: `
         query GetDocumentTypes {
             allDocumenttypes {
-                DocTypeID
+                DocumentTypeID
                 Name
             }
         }

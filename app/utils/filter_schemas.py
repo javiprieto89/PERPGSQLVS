@@ -250,7 +250,7 @@ FILTER_SCHEMAS = {
         {"field": "DocumentID", "label": "ID de documento", "type": "number"},
         {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch"},
-        {"field": "DocumentTypeID", "label": "Tipo de documento", "type": "select", "relationModel": "DocType"},
+        {"field": "DocumentTypeID", "label": "Tipo de documento", "type": "select", "relationModel": "DocumentType"},
         {"field": "Description", "label": "Descripción", "type": "text"},
         {"field": "DocumentNumber", "label": "Número", "type": "number"},
         {"field": "PointOfSale", "label": "Punto de venta", "type": "number"},

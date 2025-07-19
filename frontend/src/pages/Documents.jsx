@@ -128,7 +128,7 @@ export default function Documents() {
                     {documents.map(doc => {
                         const comp = companies.find(c => c.CompanyID === doc.CompanyID);
                         const br = branches.find(b => b.BranchID === doc.BranchID);
-                        const type = docTypes.find(t => t.DocTypeID === doc.DocumentTypeID);
+                        const type = docTypes.find(t => t.DocumentTypeID === doc.DocumentTypeID);
                         return (
                             <div key={doc.DocumentID} className="bg-white rounded shadow p-4">
                                 <h3 className="text-lg font-semibold mb-2">{doc.Description}</h3>
