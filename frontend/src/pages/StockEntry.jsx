@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from "react";
 import ItemSearchModal from "../components/ItemSearchModal";
 import { warehouseOperations, tempStockOperations } from "../utils/graphqlClient";
-import { useUserContext } from "../context/UserContext";
+import { AuthHelper } from "../utils/authHelper";
 
 export default function StockEntry({ onClose, windowRef }) {
-    const { userInfo } = useUserContext();
+    const access = AuthHelper.getSelectedAccess() || {};
     const [sessionId] = useState(() => crypto.randomUUID());
     const [warehouses, setWarehouses] = useState([]);
     const [entries, setEntries] = useState([]);
@@ -37,9 +37,9 @@ export default function StockEntry({ onClose, windowRef }) {
         if (!selectedItem || !warehouseId || !quantity) return;
         const data = {
             SessionID: sessionId,
-            CompanyID: userInfo?.companyId || 1,
-            BranchID: userInfo?.branchId || 1,
-            UserID: userInfo?.userId || 1,
+            CompanyID: access.CompanyID || access.companyID || 1,
+            BranchID: access.BranchID || access.branchID || 1,
+            UserID: access.UserID || access.userID || 1,
             ItemID: selectedItem.itemID || selectedItem.ItemID,
             WarehouseID: parseInt(warehouseId),
             Quantity: parseInt(quantity),
