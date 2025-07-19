@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import OrderCreate from "../pages/OrderCreate";
+import PriceListItemsPage from "../pages/PriceListItems";
 import { openReactWindow } from "../utils/openReactWindow";
 
 export default function Sidebar() {
@@ -71,6 +72,7 @@ export default function Sidebar() {
                         { label: "Ítems", to: "/items" },
                         { label: "Depósitos", to: "/warehouses" },
                         { label: "Listas de precios", to: "/pricelists" },
+                        { label: "Asignar precios a ítems", action: () => openPopup(PriceListItemsPage, "Asignar precios", 1000, 700) },
                     ],
                 },
                 {
