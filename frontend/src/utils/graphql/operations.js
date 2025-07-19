@@ -1195,6 +1195,29 @@ export const pricelistOperations = {
     }
 };
 
+export const pricelistItemOperations = {
+    async getAllPricelistItems() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_PRICELIST_ITEMS);
+        return data.allPricelistitems || [];
+    },
+    async getFiltered(priceListID, itemID) {
+        const data = await graphqlClient.query(QUERIES.GET_PRICELIST_ITEMS_FILTERED, { priceListID, itemID });
+        return data.pricelistitemsFiltered || [];
+    },
+    async createPricelistItem(input) {
+        const data = await graphqlClient.mutation(MUTATIONS.CREATE_PRICELIST_ITEM, { input });
+        return data.createPricelistitem;
+    },
+    async updatePricelistItem(priceListID, itemID, input) {
+        const data = await graphqlClient.mutation(MUTATIONS.UPDATE_PRICELIST_ITEM, { pricelistID: priceListID, itemID, input });
+        return data.updatePricelistitem;
+    },
+    async deletePricelistItem(priceListID, itemID) {
+        const data = await graphqlClient.mutation(MUTATIONS.DELETE_PRICELIST_ITEM, { pricelistID: priceListID, itemID });
+        return data.deletePricelistitem;
+    }
+};
+
 export const warehouseOperations = {
     async getAllWarehouses() {
         const data = await graphqlClient.query(QUERIES.GET_ALL_WAREHOUSES);
