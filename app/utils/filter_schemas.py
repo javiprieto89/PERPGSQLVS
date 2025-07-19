@@ -169,6 +169,10 @@ FILTER_SCHEMAS = {
         {"field": "Surcharge", "label": "Recargo", "type": "number"},
         {"field": "IsActive", "label": "Activo", "type": "boolean"}
     ],
+    "servicetypes": [
+        {"field": "ServiceTypeID", "label": "ID de tipo", "type": "number"},
+        {"field": "Type", "label": "Nombre", "type": "text"}
+    ],
     "users": [
         {"field": "UserID", "label": "ID de usuario", "type": "number"},
         {"field": "Nickname", "label": "Usuario", "type": "text"},

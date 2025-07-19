@@ -1179,6 +1179,18 @@ export const serviceTypeOperations = {
     async getServicetypeById(id) {
         const data = await graphqlClient.query(QUERIES.GET_SERVICETYPE_BY_ID, { id });
         return data.servicetypesById;
+    },
+    async createServicetype(input) {
+        const data = await graphqlClient.mutation(MUTATIONS.CREATE_SERVICETYPE, { input });
+        return data.createServicetype;
+    },
+    async updateServicetype(id, input) {
+        const data = await graphqlClient.mutation(MUTATIONS.UPDATE_SERVICETYPE, { serviceTypeID: id, input });
+        return data.updateServicetype;
+    },
+    async deleteServicetype(id) {
+        const data = await graphqlClient.mutation(MUTATIONS.DELETE_SERVICETYPE, { serviceTypeID: id });
+        return data.deleteServicetype;
     }
 };
 
