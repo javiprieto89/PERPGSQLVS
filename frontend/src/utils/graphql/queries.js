@@ -810,6 +810,52 @@ export const QUERIES = {
         }
     `,
 
+    // DOCUMENTOS
+    GET_ALL_DOCUMENTS: `
+        query GetAllDocuments {
+            allDocuments {
+                DocumentID
+                CompanyID
+                BranchID
+                DocumentTypeID
+                Description
+                DocumentNumber
+                PointOfSale
+                IsActive
+                Testing
+                ShouldAccount
+                MovesStock
+                IsFiscal
+                IsElectronic
+                IsManual
+                IsQuotation
+                MaxItems
+            }
+        }
+    `,
+    GET_DOCUMENT_BY_ID: `
+        query GetDocumentById($id: Int!) {
+            documentsById(id: $id) {
+                DocumentID
+                CompanyID
+                BranchID
+                DocumentTypeID
+                Description
+                DocumentNumber
+                PointOfSale
+                IsActive
+                Testing
+                ShouldAccount
+                MovesStock
+                IsFiscal
+                IsElectronic
+                IsManual
+                IsQuotation
+                MaxItems
+            }
+        }
+    `,
+
     // BÚSQUEDA DE CLIENTES
     SEARCH_CLIENTS: `
         query SearchClients($searchTerm: String!, $isActive: Boolean) {
