@@ -75,11 +75,11 @@ uvicorn app.main:app --reload
 cd frontend
 npm install
 
-# compilar Tailwind en modo observación
-npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch
-
-# iniciar servidor de desarrollo
+# iniciar servidor de desarrollo (Tailwind CSS se levanta automáticamente)
 npm run dev
+
+Si aparece un mensaje de que "concurrently" no se reconoce, ejecutá nuevamente
+`npm install` para asegurarte de que todas las dependencias estén presentes.
 ```
 
 ### ESLint

@@ -221,23 +221,13 @@ def start_backend_server():
 
 
 def start_frontend_server(frontend_dir):
-    """Inicia el servidor frontend con TailwindCSS y Vite"""
+    """Inicia el servidor frontend (TailwindCSS + Vite)"""
     print(f"[FRONTEND] Iniciando servidor frontend desde {frontend_dir}...")
-    
+
     try:
-        # Paso 1: Iniciar TailwindCSS en watch mode
-        print("[FRONTEND] Iniciando TailwindCSS watch mode...")
-        tailwind_command = "npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch"
-        tailwind_process = subprocess.Popen(tailwind_command, shell=True, cwd=frontend_dir)
-        
-        # Dar tiempo a que TailwindCSS se inicie
-        time.sleep(2)
-        
-        # Paso 2: Iniciar Vite dev server
-        print("[FRONTEND] Iniciando Vite dev server en puerto 5173...")
         vite_command = "npm run dev"
-        vite_process = subprocess.Popen(vite_command, shell=True, cwd=frontend_dir)
-        
+        subprocess.Popen(vite_command, shell=True, cwd=frontend_dir)
+
         print("[COMPLETADO] Frontend iniciado con TailwindCSS + Vite")
         return True
         
@@ -404,7 +394,6 @@ def setup_complete_deployment():
         print("   📚 GraphQL Playground:    http://localhost:8000/docs")
         print("\n🔧 PROCESOS CORRIENDO:")
         print("   - uvicorn app.main:app --reload")
-        print("   - npx tailwindcss --watch")
         print("   - npm run dev")
         print("\n📝 COMANDOS ÚTILES:")
         print("   python deploy_full_stack.py              - Inicio rápido")
@@ -507,8 +496,6 @@ def main():
             return
         
         print("[FRONTEND] Iniciando TailwindCSS + Vite...")
-        print("1. TailwindCSS watch mode: npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch")
-        print("2. Vite dev server: npm run dev (puerto 5173)")
         start_frontend_server("frontend")
         
         # Mantener el proceso corriendo

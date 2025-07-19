@@ -6,7 +6,8 @@ perpgsqlvs\scripts\actívate
 pip install -r requirements.txt
 ---Arrancar el backend
 uvicorn app.main:app --reload
----Arrancar tailwindcss
-npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch
----Arrancar el frontend
+---Arrancar el frontend (Tailwind CSS incluido)
 npm run dev
+Si aparece un mensaje de "concurrently" no reconocido, ejecuta primero:
+cd frontend && npm install
+
