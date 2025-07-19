@@ -101,10 +101,8 @@
     <Compile Include="app\graphql\crud\roles.py" />
     <Compile Include="app\graphql\crud\saleconditions.py" />
     <Compile Include="app\graphql\crud\servicetype.py" />
-    <Compile Include="app\graphql\crud\stockhistory.py" />
     <Compile Include="app\graphql\crud\suppliers.py" />
     <Compile Include="app\graphql\crud\temporderdetails.py" />
-    <Compile Include="app\graphql\crud\tempstockentries.py" />
     <Compile Include="app\graphql\crud\transactions.py" />
     <Compile Include="app\graphql\crud\transactiontypes.py" />
     <Compile Include="app\graphql\crud\useraccess.py" />
@@ -146,10 +144,8 @@
     <Compile Include="app\graphql\resolvers\roles.py" />
     <Compile Include="app\graphql\resolvers\saleconditions.py" />
     <Compile Include="app\graphql\resolvers\servicetype.py" />
-    <Compile Include="app\graphql\resolvers\stockhistory.py" />
     <Compile Include="app\graphql\resolvers\suppliers.py" />
     <Compile Include="app\graphql\resolvers\temporderdetails.py" />
-    <Compile Include="app\graphql\resolvers\tempstockentries.py" />
     <Compile Include="app\graphql\resolvers\transactions.py" />
     <Compile Include="app\graphql\resolvers\transactiontypes.py" />
     <Compile Include="app\graphql\resolvers\useraccess.py" />
@@ -190,10 +186,8 @@
     <Compile Include="app\graphql\schemas\roles.py" />
     <Compile Include="app\graphql\schemas\saleconditions.py" />
     <Compile Include="app\graphql\schemas\servicetype.py" />
-    <Compile Include="app\graphql\schemas\stockhistory.py" />
     <Compile Include="app\graphql\schemas\suppliers.py" />
     <Compile Include="app\graphql\schemas\temporderdetails.py" />
-    <Compile Include="app\graphql\schemas\tempstockentries.py" />
     <Compile Include="app\graphql\schemas\transactions.py" />
     <Compile Include="app\graphql\schemas\transactiontypes.py" />
     <Compile Include="app\graphql\schemas\useraccess.py" />
@@ -234,10 +228,8 @@
     <Compile Include="app\models\roles.py" />
     <Compile Include="app\models\saleconditions.py" />
     <Compile Include="app\models\servicetype.py" />
-    <Compile Include="app\models\stockhistory.py" />
     <Compile Include="app\models\suppliers.py" />
     <Compile Include="app\models\temporderdetails.py" />
-    <Compile Include="app\models\tempstockentries.py" />
     <Compile Include="app\models\transactions.py" />
     <Compile Include="app\models\transactiontypes.py" />
     <Compile Include="app\models\useraccess.py" />
