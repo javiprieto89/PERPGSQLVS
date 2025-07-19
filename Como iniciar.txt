@@ -8,6 +8,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ---Arrancar el frontend (Tailwind CSS incluido)
 npm run dev
+
 Si aparece un mensaje de "concurrently" no reconocido, ejecuta primero:
 cd frontend && npm install
 
