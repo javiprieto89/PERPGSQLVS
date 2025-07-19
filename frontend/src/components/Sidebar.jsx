@@ -72,6 +72,7 @@ export default function Sidebar() {
                         { label: "Ítems", to: "/items" },
                         { label: "Depósitos", to: "/warehouses" },
                         { label: "Listas de precios", to: "/pricelists" },
+                        { label: "Listas de precios-Items", to: "/pricelistitems" },
                         { label: "Asignar precios a ítems", action: () => openPopup(PriceListItemsPage, "Asignar precios", 1000, 700) },
                     ],
                 },

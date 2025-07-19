@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { pricelistOperations, pricelistItemOperations } from "../utils/graphqlClient";
 import ItemSearchModal from "../components/ItemSearchModal";
 
-export default function PriceListItems({ onClose }) {
+export default function PriceListItems({ onClose, onSaved }) {
     const [priceLists, setPriceLists] = useState([]);
     const [selectedList, setSelectedList] = useState("");
     const [items, setItems] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [showFilterModal, setShowFilterModal] = useState(false);
+    const [filterItem, setFilterItem] = useState(null);
     const [existing, setExisting] = useState([]);
 
     useEffect(() => {
@@ -15,6 +17,9 @@ export default function PriceListItems({ onClose }) {
         loadExisting();
     }, []);
 
+    useEffect(() => {
+        loadExisting(selectedList || null, filterItem?.ItemID || null);
+    }, [selectedList, filterItem]);
     const loadExisting = async (listId, itemId) => {
         const data = await pricelistItemOperations.getFiltered(listId || null, itemId || null);
         setExisting(data);
@@ -41,19 +46,32 @@ export default function PriceListItems({ onClose }) {
             });
         }
         setItems([]);
-        loadExisting(selectedList);
+        loadExisting(selectedList, filterItem?.ItemID || null);
+        window.opener?.postMessage('reload-pricelistitems', '*');
+        onSaved && onSaved();
     };
 
     return (
         <div className="p-6 space-y-4">
             <h2 className="text-xl font-bold">Asignar precios a ítems</h2>
             <div className="flex gap-2 items-center">
-                <select value={selectedList} onChange={e => {setSelectedList(e.target.value); loadExisting(e.target.value);}} className="border p-2 rounded">
+                <select value={selectedList} onChange={e => setSelectedList(e.target.value)} className="border p-2 rounded">
                     <option value="">Seleccione lista</option>
                     {priceLists.map(pl => (
                         <option key={pl.PriceListID} value={pl.PriceListID}>{pl.Name}</option>
                     ))}
                 </select>
+                <input
+                    type="text"
+                    readOnly
+                    onClick={() => setShowFilterModal(true)}
+                    value={filterItem ? `${filterItem.Code} - ${filterItem.Description}` : ""}
+                    placeholder="Filtrar ítem"
+                    className="border p-2 rounded w-72 cursor-pointer"
+                />
+                {filterItem && (
+                    <button onClick={() => setFilterItem(null)} className="px-2 border rounded">×</button>
+                )}
                 <button onClick={() => setShowModal(true)} className="px-4 py-2 bg-blue-600 text-white rounded">Agregar Ítems</button>
                 <button onClick={handleSave} className="px-4 py-2 bg-green-600 text-white rounded">Guardar</button>
                 <button onClick={onClose} className="px-4 py-2 border rounded">Cerrar</button>
@@ -92,7 +110,7 @@ export default function PriceListItems({ onClose }) {
                 </thead>
                 <tbody>
                     {existing.map(pl => (
-                        <tr key={`${pl.PriceListID}-${pl.ItemID}`}>\
+                        <tr key={`${pl.PriceListID}-${pl.ItemID}`}>
                             <td className="border px-2">{pl.PriceListID}</td>
                             <td className="border px-2">{pl.ItemID}</td>
                             <td className="border px-2">{pl.Price}</td>
@@ -103,6 +121,16 @@ export default function PriceListItems({ onClose }) {
             </table>
             {showModal && (
                 <ItemSearchModal isOpen={true} onClose={() => setShowModal(false)} onItemSelect={addItem} />
+            )}
+            {showFilterModal && (
+                <ItemSearchModal
+                    isOpen={true}
+                    onClose={() => setShowFilterModal(false)}
+                    onItemSelect={(it) => {
+                        setFilterItem({ ItemID: it.itemID, Code: it.code, Description: it.description });
+                        setShowFilterModal(false);
+                    }}
+                />
             )}
         </div>
     );

@@ -16,7 +16,7 @@ import ItemCategories from "./pages/ItemCategories";
 import ItemSubcategories from "./pages/ItemSubcategories";
 import Items from "./pages/Items";
 import PriceLists from "./pages/PriceLists";
-import PriceListItemsPage from "./pages/PriceListItems";
+import PriceListItemsBrowser from "./pages/PriceListItemsBrowser";
 import Warehouses from "./pages/Warehouses";
 import SaleConditions from "./pages/SaleConditions";
 import CreditCardGroups from "./pages/CreditCardGroups";
@@ -214,7 +214,7 @@ export default function App() {
                     <Route path="itemsubcategories" element={<ItemSubcategories />} />
                     <Route path="items" element={<Items />} />
                     <Route path="pricelists" element={<PriceLists />} />
-                    <Route path="pricelistitems" element={<PriceListItemsPage />} />
+                    <Route path="pricelistitems" element={<PriceListItemsBrowser />} />
                     <Route path="warehouses" element={<Warehouses />} />
                     <Route path="branches" element={<Branches />} />
                     <Route path="companydata" element={<CompanyData />} />
