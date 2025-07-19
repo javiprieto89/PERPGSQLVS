@@ -678,6 +678,51 @@ export const discountOperations = {
             console.error("Error obteniendo descuentos:", error);
             throw error;
         }
+    },
+
+    async getDiscountById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_DISCOUNT_BY_ID, { id });
+            return data.discountsById;
+        } catch (error) {
+            console.error("Error obteniendo descuento:", error);
+            throw error;
+        }
+    },
+
+    async createDiscount(discountData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_DISCOUNT, {
+                input: discountData
+            });
+            return data.createDiscount;
+        } catch (error) {
+            console.error("Error creando descuento:", error);
+            throw error;
+        }
+    },
+
+    async updateDiscount(id, discountData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_DISCOUNT, {
+                id,
+                input: discountData
+            });
+            return data.updateDiscount;
+        } catch (error) {
+            console.error("Error actualizando descuento:", error);
+            throw error;
+        }
+    },
+
+    async deleteDiscount(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_DISCOUNT, { id });
+            return data.deleteDiscount;
+        } catch (error) {
+            console.error("Error eliminando descuento:", error);
+            throw error;
+        }
     }
 };
 

@@ -78,6 +78,7 @@ export default function Sidebar() {
                     submenu: [
                         { label: "Grupos Tarjetas", to: "/creditcardgroups" },
                         { label: "Tarjetas", to: "/creditcards" },
+                        { label: "Descuentos", to: "/discounts" },
                         { label: "Condiciones", to: "/saleconditions" },
                     ],
                 },

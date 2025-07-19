@@ -9,7 +9,7 @@ class DiscountsCreate:
 @strawberry.input
 class DiscountsUpdate:
     DiscountName: str
-    Oercentage: float
+    Percentage: float
 
 @strawberry.type
 class DiscountsInDB:

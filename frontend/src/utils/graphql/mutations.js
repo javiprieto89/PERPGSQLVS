@@ -361,6 +361,31 @@ export const MUTATIONS = {
         }
     `,
 
+    // DESCUENTOS
+    CREATE_DISCOUNT: `
+        mutation CreateDiscount($input: DiscountsCreate!) {
+            createDiscount(data: $input) {
+                DiscountID
+                DiscountName
+                Percentage
+            }
+        }
+    `,
+    UPDATE_DISCOUNT: `
+        mutation UpdateDiscount($id: Int!, $input: DiscountsUpdate!) {
+            updateDiscount(id: $id, data: $input) {
+                DiscountID
+                DiscountName
+                Percentage
+            }
+        }
+    `,
+    DELETE_DISCOUNT: `
+        mutation DeleteDiscount($id: Int!) {
+            deleteDiscount(id: $id)
+        }
+    `,
+
     // CONDICIONES DE VENTA
     CREATE_SALECONDITION: `
         mutation CreateSaleCondition($input: SaleConditionsCreate!) {
