@@ -386,6 +386,60 @@ export const MUTATIONS = {
         }
     `,
 
+    // DOCUMENTOS
+    CREATE_DOCUMENT: `
+        mutation CreateDocument($input: DocumentsCreate!) {
+            createDocument(data: $input) {
+                DocumentID
+                CompanyID
+                BranchID
+                DocumentTypeID
+                Description
+                DocumentNumber
+                PointOfSale
+                IsActive
+                Testing
+                ShouldAccount
+                MovesStock
+                IsFiscal
+                IsElectronic
+                IsManual
+                IsQuotation
+                MaxItems
+            }
+        }
+    `,
+    UPDATE_DOCUMENT: `
+        mutation UpdateDocument($documentID: Int!, $input: DocumentsUpdate!) {
+            updateDocument(documentID: $documentID, data: $input) {
+                DocumentID
+                CompanyID
+                BranchID
+                DocumentTypeID
+                Description
+                DocumentNumber
+                PointOfSale
+                IsActive
+                Testing
+                ShouldAccount
+                MovesStock
+                IsFiscal
+                IsElectronic
+                IsManual
+                IsQuotation
+                MaxItems
+            }
+        }
+    `,
+    DELETE_DOCUMENT: `
+        mutation DeleteDocument($documentID: Int!) {
+            deleteDocument(documentID: $documentID) {
+                success
+                message
+            }
+        }
+    `,
+
     // CONDICIONES DE VENTA
     CREATE_SALECONDITION: `
         mutation CreateSaleCondition($input: SaleConditionsCreate!) {

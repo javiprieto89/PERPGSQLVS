@@ -70,6 +70,7 @@ from app.graphql.mutations.temporderdetails import TempOrderDetailsMutations
 from app.graphql.mutations.orders import OrdersMutations
 from app.graphql.mutations.servicetype import ServiceTypeMutations
 from app.graphql.mutations.documenttypes import DocumentTypesMutations
+from app.graphql.mutations.documents import DocumentsMutations
 from app.graphql.mutations.useractions import UserActionsMutations
 from app.graphql.mutations.roles import RolesMutations
 from app.graphql.mutations.users import UsersMutations
@@ -416,6 +417,7 @@ class Mutation(
     TempOrderDetailsMutations,
     OrdersMutations,
     ServiceTypeMutations,
+    DocumentsMutations,
     DocumentTypesMutations,
     UserActionsMutations,
     RolesMutations,

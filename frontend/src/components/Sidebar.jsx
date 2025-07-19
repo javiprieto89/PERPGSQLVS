@@ -80,6 +80,7 @@ export default function Sidebar() {
                         { label: "Tarjetas", to: "/creditcards" },
                         { label: "Descuentos", to: "/discounts" },
                         { label: "Condiciones", to: "/saleconditions" },
+                        { label: "Documentos", to: "/documents" },
                     ],
                 },
                 {
