@@ -1,5 +1,4 @@
-﻿/ frontend/src / pages / FeLastVoucher.jsx
-import { useState } from "react";
+﻿import { useState } from "react";
 import { afipOperations } from "../utils/graphqlClient";
 
 export default function FeLastVoucher() {
