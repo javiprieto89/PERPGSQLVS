@@ -1,3 +1,4 @@
+# app/graphql/crud/tempstockentries.py
 from sqlalchemy.orm import Session
 from app.models.tempstockentries import TempStockEntries
 from app.graphql.schemas.tempstockentries import (
@@ -83,7 +84,7 @@ def process_tempstockentries(db: Session, session_id: str):
         qty_after = qty_before + entry.Quantity
 
         if stock:
-            stock.Quantity = qty_after
+            stock.Quantity = qty_after  # type: ignore[assignment]
         else:
             stock = Itemstock(
                 ItemID=entry.ItemID,
@@ -107,8 +108,8 @@ def process_tempstockentries(db: Session, session_id: str):
             UserID=entry.UserID,
         )
         db.add(history)
-        entry.IsProcessed = True
-        processed.append(history)
+        entry.IsProcessed = True  # type: ignore[assignment]
+
 
     db.commit()
 
