@@ -1,4 +1,4 @@
-// frontend/src/pages/ServiceTypeCreate.jsx
+﻿// frontend/src/pages/ServiceTypeCreate.jsx
 import { useState, useEffect } from "react";
 import { serviceTypeOperations } from "../utils/graphqlClient";
 

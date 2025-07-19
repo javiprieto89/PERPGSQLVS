@@ -114,6 +114,18 @@ export default function Sidebar() {
             ],
         },
         {
+            title: "Consultas",
+            items: [
+                {
+                    label: "Factura electrónica",
+                    submenu: [
+                        { label: "Último comprobante", to: "/fe-last" },
+                        { label: "Información comprobante", to: "/fe-info" },
+                    ],
+                },
+            ],
+        },
+        {
             title: "Configuración",
             items: [
                 { label: "Sucursales", to: "/branches" },

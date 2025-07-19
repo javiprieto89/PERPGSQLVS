@@ -1,4 +1,4 @@
-# app/graphql/mutations/vendors.py
+﻿# app/graphql/mutations/vendors.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.vendors import VendorsCreate, VendorsUpdate, VendorsInDB

@@ -1597,3 +1597,19 @@ export const branchOperations = {
         }
     }
 };
+
+// AFIP operations
+
+export const afipOperations = {
+    async getUltimoComprobante(ptoVta, cbteTipo) {
+        const query = `query ($pto: Int!, $tipo: Int!) {\n  ultimoComprobante(ptoVta: $pto, cbteTipo: $tipo)\n}`;
+        const data = await graphqlClient.query(query, { pto: ptoVta, tipo: cbteTipo });
+        return data.ultimoComprobante;
+    },
+
+    async informacionComprobante(input) {
+        const query = `query ($data: VoucherRequest!) {\n  informacionComprobante(data: $data) { raw }\n}`;
+        const data = await graphqlClient.query(query, { data: input });
+        return data.informacionComprobante.raw;
+    }
+};

@@ -49,6 +49,7 @@ from app.graphql.resolvers.useractions import UseractionsQuery
 from app.graphql.resolvers.users import UsersQuery
 from app.graphql.resolvers.warehouses import WarehousesQuery
 from app.graphql.resolvers.vendors import VendorsQuery
+from app.graphql.resolvers.afip import AfipQuery
 from app.graphql.mutations.clients import ClientsMutations
 from app.graphql.mutations.suppliers import SuppliersMutations
 from app.graphql.mutations.brands import BrandsMutations
@@ -345,6 +346,7 @@ class Query(
     UsersQuery,
     WarehousesQuery,
     VendorsQuery,
+    AfipQuery,
     AuthQuery,  # AGREGADO: Queries de autenticación
 ):
     """Query principal con todas las consultas disponibles"""

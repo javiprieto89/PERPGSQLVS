@@ -28,6 +28,8 @@ import Orders from "./pages/Orders";
 import Roles from "./pages/Roles";
 import Users from "./pages/Users";
 import RolesUsers from "./pages/RolesUsers";
+import FeLastVoucher from "./pages/FeLastVoucher";
+import FeInfo from "./pages/FeInfo";
 import Layout from "./components/Layout";
 import RequireAuth from "./components/RequireAuth";
 import LogoutSuccess from "./pages/LogoutSuccess";
@@ -222,6 +224,8 @@ export default function App() {
                     <Route path="roles" element={<Roles />} />
                     <Route path="users" element={<Users />} />
                     <Route path="rolesusers" element={<RolesUsers />} />
+                    <Route path="fe-last" element={<FeLastVoucher />} />
+                    <Route path="fe-info" element={<FeInfo />} />
                     {/* Ruta fallback: todo lo desconocido a dashboard */}
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Route>
