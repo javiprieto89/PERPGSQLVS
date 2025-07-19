@@ -128,6 +128,44 @@ export const MUTATIONS = {
         }
     `,
 
+    // VENDEDORES
+    CREATE_VENDOR: `
+        mutation CreateVendor($input: VendorsCreate!) {
+            createVendor(data: $input) {
+                VendorID
+                VendorName
+                Commission
+                IsActive
+            }
+        }
+    `,
+    UPDATE_VENDOR: `
+        mutation UpdateVendor($vendorID: Int!, $input: VendorsUpdate!) {
+            updateVendor(vendorID: $vendorID, data: $input) {
+                VendorID
+                VendorName
+                Commission
+                IsActive
+            }
+        }
+    `,
+    DELETE_VENDOR: `
+        mutation DeleteVendor($vendorID: Int!) {
+            deleteVendor(vendorID: $vendorID) {
+                success
+                message
+            }
+        }
+    `,
+    TOGGLE_VENDOR_STATUS: `
+        mutation ToggleVendorStatus($vendorID: Int!, $isActive: Boolean!) {
+            toggleVendorStatus(vendorID: $vendorID, isActive: $isActive) {
+                VendorID
+                IsActive
+            }
+        }
+    `,
+
     // MARCAS
     CREATE_BRAND: `
         mutation CreateBrand($input: BrandsCreate!) {

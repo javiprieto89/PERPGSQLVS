@@ -21,6 +21,7 @@ import SaleConditions from "./pages/SaleConditions";
 import CreditCardGroups from "./pages/CreditCardGroups";
 import CreditCards from "./pages/CreditCards";
 import Discounts from "./pages/Discounts";
+import Vendors from "./pages/Vendors";
 import ServiceTypes from "./pages/ServiceTypes";
 import Documents from "./pages/Documents";
 import Orders from "./pages/Orders";
@@ -204,6 +205,7 @@ export default function App() {
                     <Route path="creditcardgroups" element={<CreditCardGroups />} />
                     <Route path="creditcards" element={<CreditCards />} />
                     <Route path="discounts" element={<Discounts />} />
+                    <Route path="vendors" element={<Vendors />} />
                     <Route path="servicetypes" element={<ServiceTypes />} />
                     <Route path="itemcategories" element={<ItemCategories />} />
                     <Route path="itemsubcategories" element={<ItemSubcategories />} />
