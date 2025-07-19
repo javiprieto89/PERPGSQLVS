@@ -1,0 +1,628 @@
+// LubricentroDB2 Database Schema
+// Generated from SQL Server database
+// Author: Javier Prieto
+// Date: 2025-07-09
+
+Project LubricentroDB2 {
+  database_type: 'SQL Server'
+  Note: 'Sistema de gestión para lubricentro - Base de datos principal'
+}
+
+// ==========================================
+// Tablas principales del sistema
+// ==========================================
+
+Table CompanyData {
+  CompanyID int [pk, increment]
+  Name nvarchar(100) [not null]
+  Address nvarchar(200)
+  CUIT nvarchar(20)
+  GrossIncome nvarchar(20)
+  StartDate date
+  Logo varbinary(max)
+  
+  Note: 'Datos de la empresa'
+}
+
+Table Branches {
+  BranchID int [pk, increment]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  Name nvarchar(100) [not null]
+  Address nvarchar(200)
+  Phone nvarchar(20)
+  Logo varbinary(max)
+  
+  Note: 'Sucursales de la empresa'
+}
+
+Table Users {
+  UserID int [pk, increment]
+  Nickname nvarchar(50) [not null]
+  FullName nvarchar(100) [not null]
+  Password nvarchar(100) [not null]
+  IsActive bit [not null, default: 1]
+  
+  Note: 'Usuarios del sistema'
+}
+
+Table Roles {
+  RoleID int [pk, increment]
+  RoleName nvarchar(50) [not null]
+  
+  Note: 'Roles de usuario'
+}
+
+Table UserAccess {
+  UserID int [not null, ref: > Users.UserID]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  BranchID int [not null, ref: > Branches.BranchID]
+  RoleID int [not null, ref: > Roles.RoleID]
+  
+  indexes {
+    (UserID, CompanyID, BranchID, RoleID) [pk]
+  }
+  
+  Note: 'Control de acceso de usuarios por empresa, sucursal y rol'
+}
+
+Table LastUserLogin {
+  UserID int [not null, ref: > Users.UserID]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  BranchID int [not null, ref: > Branches.BranchID]
+  RoleID int [not null, ref: > Roles.RoleID]
+  LastLogin datetime [not null, default: `getdate()`]
+  
+  indexes {
+    (UserID, CompanyID, BranchID, RoleID) [pk]
+  }
+  
+  Note: 'Registro del último login de usuarios'
+}
+
+// ==========================================
+// Gestión de ubicaciones
+// ==========================================
+
+Table Countries {
+  CountryID int [pk]
+  Name nvarchar(100) [not null]
+  
+  Note: 'Países'
+}
+
+Table Provinces {
+  ProvinceID int [pk, increment]
+  CountryID int [not null, ref: > Countries.CountryID]
+  Name nvarchar(100) [not null]
+  
+  Note: 'Provincias/Estados por país'
+}
+
+// ==========================================
+// Tipos de documentos
+// ==========================================
+
+Table DocTypes {
+  DocTypeID int [pk, increment]
+  Name nvarchar(100) [not null]
+  IsActive bit [not null, default: 1]
+  
+  Note: 'Tipos de documentos (DNI, CUIT, etc.)'
+}
+
+// ==========================================
+// Gestión de clientes
+// ==========================================
+
+Table PriceLists {
+  PriceListID int [pk, increment]
+  Name nvarchar(100) [not null]
+  Description nvarchar(250)
+  IsActive bit [not null, default: 1]
+  CreatedDate date [default: `getdate()`]
+  
+  Note: 'Listas de precios'
+}
+
+Table Vendors {
+  VendorID int [pk, increment]
+  VendorName nvarchar(100) [not null]
+  Commission decimal(18,4) [not null]
+  IsActive bit [not null, default: 1]
+  
+  Note: 'Vendedores'
+}
+
+Table Clients {
+  ClientID int [pk, increment]
+  DocTypeID int [not null, ref: > DocTypes.DocTypeID]
+  DocNumber nvarchar(50)
+  FirstName nvarchar(100) [not null]
+  LastName nvarchar(100)
+  Phone nvarchar(20)
+  Email nvarchar(100)
+  Address nvarchar(200)
+  IsActive bit [not null, default: 1]
+  CountryID int [not null, ref: > Countries.CountryID]
+  ProvinceID int [not null, ref: > Provinces.ProvinceID]
+  City nvarchar(100)
+  PostalCode nvarchar(20)
+  PriceListID int [not null, ref: > PriceLists.PriceListID]
+  VendorID int [not null, ref: > Vendors.VendorID, default: 1]
+  
+  indexes {
+    IsActive
+  }
+  
+  Note: 'Clientes del sistema'
+}
+
+// ==========================================
+// Gestión de proveedores
+// ==========================================
+
+Table Suppliers {
+  SupplierID int [pk, increment]
+  DocTypeID int [not null, ref: > DocTypes.DocTypeID]
+  DocNumber nvarchar(50)
+  FirstName nvarchar(100) [not null]
+  LastName nvarchar(100)
+  Phone nvarchar(20)
+  Email nvarchar(100)
+  Address nvarchar(200)
+  IsActive bit [not null, default: 1]
+  CountryID int [not null, ref: > Countries.CountryID]
+  ProvinceID int [not null, ref: > Provinces.ProvinceID]
+  City nvarchar(100)
+  PostalCode nvarchar(20)
+  
+  Note: 'Proveedores'
+}
+
+// ==========================================
+// Gestión de vehículos
+// ==========================================
+
+Table CarBrands {
+  CarBrandID int [pk, increment]
+  Name nvarchar(100) [not null]
+  
+  Note: 'Marcas de vehículos'
+}
+
+Table CarModels {
+  CarModelID int [pk, increment]
+  CarBrandID int [not null, ref: > CarBrands.CarBrandID]
+  Model nvarchar(100) [not null]
+  
+  Note: 'Modelos de vehículos'
+}
+
+Table Discounts {
+  DiscountID int [pk, increment]
+  DiscountName nvarchar(100) [not null]
+  Percentage decimal(5,2) [not null]
+  
+  indexes {
+    DiscountID
+  }
+  
+  Note: 'Descuentos aplicables'
+}
+
+Table Cars {
+  CarID int [pk, increment]
+  CarModelID int [not null, ref: > CarModels.CarModelID]
+  ClientID int [not null, ref: > Clients.ClientID]
+  LicensePlate nvarchar(20) [not null]
+  Year int
+  LastServiceMileage int
+  IsDebtor bit
+  DiscountID int [not null, ref: > Discounts.DiscountID]
+  
+  Note: 'Vehículos de los clientes'
+}
+
+// ==========================================
+// Gestión de productos/items
+// ==========================================
+
+Table Brands {
+  BrandID int [pk, increment]
+  Name nvarchar(100) [not null]
+  IsActive bit [not null, default: 1]
+  
+  Note: 'Marcas de productos'
+}
+
+Table ItemCategories {
+  ItemCategoryID int [pk, increment]
+  CategoryName varchar(100) [not null]
+  
+  indexes {
+    ItemCategoryID
+  }
+  
+  Note: 'Categorías de items'
+}
+
+Table ItemSubcategories {
+  ItemSubcategoryID int [pk, increment]
+  ItemCategoryID int [not null, ref: > ItemCategories.ItemCategoryID]
+  SubcategoryName varchar(100) [not null]
+  
+  indexes {
+    ItemSubcategoryID
+  }
+  
+  Note: 'Subcategorías de items'
+}
+
+Table Warehouses {
+  WarehouseID int [pk, increment]
+  Name nvarchar(100) [not null]
+  Addres nvarchar(100)
+  
+  Note: 'Almacenes/Depósitos'
+}
+
+Table Items {
+  ItemID int [pk, increment]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  BranchID int [not null, ref: > Branches.BranchID]
+  BrandID int [not null, ref: > Brands.BrandID]
+  Code nvarchar(50) [not null, unique]
+  Description nvarchar(200) [not null]
+  ItemCategoryID int [not null, ref: > ItemCategories.ItemCategoryID]
+  ItemSubcategoryID int [not null, ref: > ItemSubcategories.ItemSubcategoryID]
+  SupplierID int [not null, ref: > Suppliers.SupplierID]
+  ControlStock bit [not null, default: 1]
+  ReplenishmentStock int [not null, default: 0]
+  IsOffer bit [not null, default: 0]
+  OEM nvarchar(50)
+  LastModified date [not null, default: `getdate()`]
+  WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+  IsActive bit [not null, default: 1]
+  
+  indexes {
+    Code
+  }
+  
+  Note: 'Productos/Items del inventario'
+}
+
+Table PriceListItems {
+  PriceListID int [not null, ref: > PriceLists.PriceListID]
+  ItemID int [not null, ref: > Items.ItemID]
+  Price decimal(10,2) [not null]
+  EffectiveDate datetime [not null, default: `getdate()`]
+  
+  indexes {
+    (PriceListID, ItemID) [pk]
+  }
+  
+  Note: 'Precios por lista de precios e item'
+}
+
+Table ItemPriceHistory {
+  PriceHistoryID int [pk, increment]
+  ItemID int [not null, ref: > Items.ItemID]
+  PriceListID int [not null, ref: > PriceLists.PriceListID]
+  EffectiveDate datetime [not null, default: `getdate()`]
+  Price decimal(10,2) [not null]
+  
+  Note: 'Historial de precios de items'
+}
+
+// ==========================================
+// Gestión de stock
+// ==========================================
+
+Table Itemstock {
+  ItemID int [not null, ref: > Items.ItemID]
+  WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  BranchID int [not null, ref: > Branches.BranchID]
+  Quantity int [not null]
+  ReservedQuantity int [not null]
+  LastModified date [not null, default: `getdate()`]
+  StockStatus nvarchar(50) [not null]
+  MinStockLevel int [not null, default: 0]
+  MaxStockLevel int [not null, default: 0]
+  StockLocation nvarchar(100)
+  SupplierID int [not null, ref: > Suppliers.SupplierID]
+  BatchNumber nvarchar(50)
+  ExpiryDate date
+  
+  indexes {
+    (ItemID, WarehouseID) [pk]
+    CompanyID
+    (ItemID, WarehouseID)
+    (SupplierID, StockStatus)
+    (WarehouseID, ItemID)
+  }
+  
+  Note: 'Stock de items por almacén'
+}
+
+Table StockHistory {
+  StockHistoryID int [pk, increment]
+  ItemID int [not null, ref: > Items.ItemID]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  BranchID int [not null, ref: > Branches.BranchID]
+  WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+  QuantityUpdate int [not null]
+  QuantityBefore int [not null]
+  QuantityAfter int [not null]
+  TransactionDate datetime [not null, default: `getdate()`]
+  Reason nvarchar(200)
+  UserID int [not null, ref: > Users.UserID]
+  
+  Note: 'Historial de movimientos de stock'
+}
+
+// ==========================================
+// Gestión de documentos y tipos de transacciones
+// ==========================================
+
+Table DocumentTypes {
+  DocumentTypeID int [pk, increment]
+  Name nvarchar(50) [not null]
+  
+  Note: 'Tipos de documentos (Factura, Remito, etc.)'
+}
+
+Table Documents {
+  DocumentID int [pk, increment]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  BranchID int [not null, ref: > Branches.BranchID]
+  DocumentTypeID int [not null, ref: > DocumentTypes.DocumentTypeID]
+  Description nvarchar(100) [not null]
+  DocumentNumber int [not null]
+  PointOfSale int [not null]
+  IsFiscal bit
+  IsElectronic bit
+  IsManual bit
+  IsQuotation bit
+  IsActive bit [not null, default: 1]
+  Testing bit [not null, default: 0]
+  MaxItems int
+  ShouldAccount bit [not null]
+  MovesStock bit [not null]
+  
+  Note: 'Configuración de documentos'
+}
+
+Table ServiceType {
+  ServiceTypeID int [pk, increment]
+  Type nvarchar(100) [not null]
+  
+  Note: 'Tipos de servicio'
+}
+
+// ==========================================
+// Gestión de condiciones de venta y tarjetas
+// ==========================================
+
+Table CreditCardGroups {
+  CreditCardGroupID int [pk, increment]
+  GroupName nvarchar(100) [not null]
+  
+  Note: 'Grupos de tarjetas de crédito'
+}
+
+Table CreditCards {
+  CreditCardID int [pk, increment]
+  CardName nvarchar(100) [not null]
+  Surcharge decimal(18,4) [default: 0]
+  Installments int
+  CreditCardGroupID int [not null, ref: > CreditCardGroups.CreditCardGroupID]
+  IsActive bit [not null, default: 1]
+  
+  Note: 'Tarjetas de crédito'
+}
+
+Table SaleConditions {
+  SaleConditionID int [pk, increment]
+  Name nvarchar(100)
+  DueDate date [default: `getdate()`]
+  Surcharge decimal(10,2) [default: 0]
+  IsActive bit [default: 1]
+  CreditCardID int [not null, ref: > CreditCards.CreditCardID]
+  
+  Note: 'Condiciones de venta'
+}
+
+// ==========================================
+// Gestión de órdenes
+// ==========================================
+
+Table OrderStatus {
+  OrderStatusID int [pk, increment]
+  Status nvarchar(50) [not null]
+  
+  Note: 'Estados de órdenes'
+}
+
+Table Orders {
+  OrderID int [pk, increment]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  BranchID int [not null, ref: > Branches.BranchID]
+  Date datetime [not null, default: `getdate()`]
+  ClientID int [not null, ref: > Clients.ClientID]
+  CarID int [ref: > Cars.CarID]
+  IsService bit
+  ServiceTypeID int [ref: > ServiceType.ServiceTypeID]
+  Mileage int
+  NextServiceMileage int
+  Notes nvarchar(500)
+  SaleConditionID int [not null, ref: > SaleConditions.SaleConditionID]
+  DiscountID int [not null, ref: > Discounts.DiscountID]
+  Subtotal decimal(10,2) [not null]
+  Total decimal(10,2) [not null]
+  VAT decimal(10,2) [not null]
+  UserID int [not null, ref: > Users.UserID]
+  DocumentID int [not null, ref: > DocumentTypes.DocumentTypeID]
+  PriceListID int [not null, ref: > PriceLists.PriceListID]
+  OrderStatusID int [not null, ref: > OrderStatus.OrderStatusID]
+  WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+  
+  indexes {
+    ClientID
+    CompanyID
+    Date
+  }
+  
+  Note: 'Órdenes de venta/servicio'
+}
+
+Table OrderDetails {
+  OrderDetailID int [pk, increment]
+  OrderID int [not null, ref: > Orders.OrderID]
+  ItemID int [not null, ref: > Items.ItemID]
+  WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+  Quantity int [not null]
+  UnitPrice decimal(10,2) [not null]
+  Description nvarchar(200) [not null]
+  LastModified datetime [default: `getdate()`]
+  
+  Note: 'Detalles de órdenes'
+}
+
+// ==========================================
+// Historial de órdenes
+// ==========================================
+
+Table OrderHistory {
+  OrderHistoryID int [pk, increment]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  BranchID int [not null, ref: > Branches.BranchID]
+  OrderID int [not null, ref: > Orders.OrderID]
+  ClientID int [not null, ref: > Clients.ClientID]
+  CarID int [ref: > Cars.CarID]
+  ServiceTypeID int [ref: > ServiceType.ServiceTypeID]
+  UserID int [not null, ref: > Users.UserID]
+  Date datetime [not null, default: `getdate()`]
+  Mileage int
+  NextServiceMileage int
+  Subtotal decimal(10,2)
+  Total decimal(10,2)
+  Status nvarchar(50)
+  Comments nvarchar(500)
+  
+  Note: 'Historial de órdenes'
+}
+
+Table OrderHistoryDetails {
+  OrderHistoryDetailID int [pk, increment]
+  OrderHistoryID int [not null, ref: > OrderHistory.OrderHistoryID]
+  ItemID int [not null, ref: > Items.ItemID]
+  WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+  Quantity int [not null]
+  UnitPrice decimal(10,2) [not null]
+  Description nvarchar(200) [not null]
+  LastModified datetime [default: `getdate()`]
+  
+  Note: 'Detalles del historial de órdenes'
+}
+
+// ==========================================
+// Tablas temporales
+// ==========================================
+
+Table TempOrderDetails {  
+  OrderDetailID int
+  OrderID int [ref: > Orders.OrderID]
+  OrderSessionID uniqueidentifier [not null, default: `newid()`]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  BranchID int [not null, ref: > Branches.BranchID]
+  UserID int [not null, ref: > Users.UserID]
+  ItemID int [not null, ref: > Items.ItemID]
+  Quantity int [not null]
+  WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+  PriceListID int [not null, ref: > PriceLists.PriceListID]
+  UnitPrice decimal(10,2) [not null]
+  Description nvarchar(200) [not null]
+  
+  Note: 'Detalles temporales de órdenes'
+}
+
+Table TempStockEntries {
+  TempStockEntryID int [pk, increment]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  BranchID int [not null, ref: > Branches.BranchID]
+  UniqueID uniqueidentifier [not null, default: `newid()`]
+  SessionID nvarchar(100) [not null]
+  UserID int [not null, ref: > Users.UserID]
+  ItemID int [not null, ref: > Items.ItemID]
+  WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+  Quantity int [not null]
+  EntryDate datetime [not null, default: `getdate()`]
+  Reason nvarchar(200)
+  IsProcessed bit [not null, default: 0]
+  
+  Note: 'Entradas temporales de stock'
+}
+
+// ==========================================
+// Gestión financiera
+// ==========================================
+
+Table TransactionTypes {
+  TransactTypeID int [pk, increment]
+  TypeName nvarchar(100) [not null]
+  
+  Note: 'Tipos de transacciones financieras'
+}
+
+Table Transactions {
+  TransactionID int [pk, increment]
+  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  TransactionDate datetime [not null, default: `getdate()`]
+  ClientID int [ref: > Clients.ClientID]
+  SupplierID int [ref: > Suppliers.SupplierID]
+  TransacTypeID int [not null, ref: > TransactionTypes.TransactTypeID]
+  OrderID int [ref: > Orders.OrderID]
+  Subtotal decimal(10,2)
+  Taxes decimal(10,2)
+  Total decimal(10,2)
+  Notes nvarchar(200)
+  BranchID int [ref: > Branches.BranchID]
+  
+  indexes {
+    ClientID
+    SupplierID
+    TransactionDate
+  }
+  
+  Note: 'Transacciones financieras'
+}
+
+Table AccountBalances {
+  AccountID int [pk, increment]
+  SupplierID int [ref: > Suppliers.SupplierID]
+  ClientID int [ref: > Clients.ClientID]
+  Balance decimal(10,2) [not null, default: 0]
+  
+  Note: 'Saldos de cuentas'
+}
+
+// ==========================================
+// Auditoría y logs
+// ==========================================
+
+Table UserActions {
+  UserActionID int [pk, increment]
+  ActionName nvarchar(100) [not null]
+  
+  Note: 'Acciones de usuario para auditoría'
+}
+
+Table UserActivityLog {
+  ActivityID int [pk, increment]
+  UserID int [not null, ref: > Users.UserID]
+  UserActionID int [not null, ref: > UserActions.UserActionID]
+  Timestamp datetime [not null, default: `getdate()`]
+  
+  Note: 'Log de actividad de usuarios'
+}

@@ -1,0 +1,573 @@
+ (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
+diff --git a/app/graphql/resolvers/afip.py b/app/graphql/resolvers/afip.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..a08d7ad7460b59cce1d0e59e33a49a2b5c865cb1
+--- /dev/null
++++ b/app/graphql/resolvers/afip.py
+@@ -0,0 +1,21 @@
++# app/graphql/resolvers/afip.py
++import json
++import strawberry
++from strawberry.types import Info
++from app.utils.afip_client import get_ultimo_comprobante, constatar_comprobante
++from app.graphql.schemas.afip import VoucherRequest, VoucherInfo
++
++
++@strawberry.type
++class AfipQuery:
++    @strawberry.field
++    def ultimo_comprobante(self, info: Info, pto_vta: int, cbte_tipo: int) -> int:
++        """Devuelve el último número de comprobante autorizado."""
++        nro = get_ultimo_comprobante(pto_vta, cbte_tipo)
++        return nro or 0
++
++    @strawberry.field
++    def informacion_comprobante(self, info: Info, data: VoucherRequest) -> VoucherInfo:
++        """Consulta la información de un comprobante en AFIP."""
++        res = constatar_comprobante(data.__dict__)
++        return VoucherInfo(raw=json.dumps(res))
+diff --git a/app/graphql/schema.py b/app/graphql/schema.py
+index cfb1d7fcec8c192f7dd69ed586837329205d4e58..325f9982f9dd974654ce31dfebbb0e56cdc8be20 100644
+--- a/app/graphql/schema.py
++++ b/app/graphql/schema.py
+@@ -27,50 +27,51 @@ from app.graphql.resolvers.itempricehistory import ItempricehistoryQuery
+ from app.graphql.resolvers.items import ItemsQuery
+ from app.graphql.resolvers.itemstock import ItemstockQuery
+ from app.graphql.resolvers.itemsubcategories import ItemsubcategoriesQuery
+ from app.graphql.resolvers.orderdetails import OrderdetailsQuery
+ from app.graphql.resolvers.orderhistory import OrderhistoryQuery
+ from app.graphql.resolvers.orderhistorydetails import OrderhistorydetailsQuery
+ from app.graphql.resolvers.orders import OrdersQuery
+ from app.graphql.resolvers.orderstatus import OrderstatusQuery
+ from app.graphql.resolvers.pricelistitems import PricelistitemsQuery
+ from app.graphql.resolvers.pricelists import PricelistsQuery
+ from app.graphql.resolvers.provinces import ProvincesQuery
+ from app.graphql.resolvers.roles import RolesQuery
+ from app.graphql.resolvers.saleconditions import SaleconditionsQuery
+ from app.graphql.resolvers.servicetype import ServicetypeQuery
+ from app.graphql.resolvers.stockhistory import StockhistoryQuery
+ from app.graphql.resolvers.suppliers import SuppliersQuery
+ from app.graphql.resolvers.temporderdetails import TemporderdetailsQuery
+ from app.graphql.resolvers.tempstockentries import TempstockentriesQuery
+ from app.graphql.resolvers.transactions import TransactionsQuery
+ from app.graphql.resolvers.transactiontypes import TransactiontypesQuery
+ from app.graphql.resolvers.useraccess import UseraccessQuery
+ from app.graphql.resolvers.useractions import UseractionsQuery
+ from app.graphql.resolvers.users import UsersQuery
+ from app.graphql.resolvers.warehouses import WarehousesQuery
+ from app.graphql.resolvers.vendors import VendorsQuery
++from app.graphql.resolvers.afip import AfipQuery
+ from app.graphql.mutations.clients import ClientsMutations
+ from app.graphql.mutations.suppliers import SuppliersMutations
+ from app.graphql.mutations.brands import BrandsMutations
+ from app.graphql.mutations.carbrands import CarBrandsMutations
+ from app.graphql.mutations.itemcategories import ItemCategoriesMutations
+ from app.graphql.mutations.itemsubcategories import ItemSubcategoriesMutations
+ from app.graphql.mutations.items import ItemsMutations
+ from app.graphql.mutations.saleconditions import SaleConditionsMutations
+ from app.graphql.mutations.creditcardgroups import CreditCardGroupsMutations
+ from app.graphql.mutations.creditcards import CreditCardsMutations
+ from app.graphql.mutations.discounts import DiscountsMutations
+ from app.graphql.mutations.carmodels import CarModelsMutations
+ from app.graphql.mutations.cars import CarsMutations
+ from app.graphql.mutations.branches import BranchesMutations
+ from app.graphql.mutations.companydata import CompanydataMutations
+ from app.graphql.mutations.warehouses import WarehousesMutations
+ from app.graphql.mutations.pricelists import PricelistsMutations
+ from app.graphql.mutations.temporderdetails import TempOrderDetailsMutations
+ from app.graphql.mutations.orders import OrdersMutations
+ from app.graphql.mutations.servicetype import ServiceTypeMutations
+ from app.graphql.mutations.documenttypes import DocumentTypesMutations
+ from app.graphql.mutations.documents import DocumentsMutations
+ from app.graphql.mutations.useractions import UserActionsMutations
+ from app.graphql.mutations.roles import RolesMutations
+ from app.graphql.mutations.users import UsersMutations
+@@ -323,50 +324,51 @@ class Query(
+     ItemsQuery,
+     ItemstockQuery,
+     ItemsubcategoriesQuery,
+     OrderdetailsQuery,
+     OrderhistoryQuery,
+     OrderhistorydetailsQuery,
+     OrdersQuery,
+     OrderstatusQuery,
+     PricelistitemsQuery,
+     PricelistsQuery,
+     ProvincesQuery,
+     RolesQuery,
+     SaleconditionsQuery,
+     ServicetypeQuery,
+     StockhistoryQuery,
+     SuppliersQuery,
+     TemporderdetailsQuery,
+     TempstockentriesQuery,
+     TransactionsQuery,
+     TransactiontypesQuery,
+     UseraccessQuery,
+     UseractionsQuery,
+     UsersQuery,
+     WarehousesQuery,
+     VendorsQuery,
++    AfipQuery,
+     AuthQuery,  # AGREGADO: Queries de autenticación
+ ):
+     """Query principal con todas las consultas disponibles"""
+ 
+     # ========== FUNCIONALIDADES AVANZADAS ==========
+ 
+     @strawberry.field
+     def filter_fields(self, model: str) -> List[FilterField]:
+         """Obtener campos de filtro para un modelo"""
+         filtros = FILTER_SCHEMAS.get(model, [])
+         return [
+             FilterField(
+                 field=f["field"],
+                 label=f["label"],
+                 type=f["type"],
+                 relationModel=f.get("relationModel"),
+                 dependsOn=f.get("dependsOn"),
+             )
+             for f in filtros
+         ]
+ 
+     @strawberry.field
+     def dashboard_stats(self, info, filters: DashboardFilters) -> DashboardStats:
+         """Estadísticas completas del dashboard"""
+         resolver = AdvancedResolver()
+diff --git a/app/graphql/schemas/afip.py b/app/graphql/schemas/afip.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..74a42d356b335a2dd184703d286b095a9721d52e
+--- /dev/null
++++ b/app/graphql/schemas/afip.py
+@@ -0,0 +1,22 @@
++# app/graphql/schemas/afip.py
++import strawberry
++from typing import Optional
++
++
++@strawberry.input
++class VoucherRequest:
++    CbteModo: str
++    CuitEmisor: int
++    PtoVta: int
++    CbteTipo: int
++    CbteNro: int
++    CbteFch: int
++    ImpTotal: float
++    CodAutorizacion: str
++    DocTipoReceptor: str
++    DocNroReceptor: str
++
++
++@strawberry.type
++class VoucherInfo:
++    raw: str
+diff --git a/app/utils/afip_client.py b/app/utils/afip_client.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..9d8811817604b0a870d8fdbaa348644effb4189f
+--- /dev/null
++++ b/app/utils/afip_client.py
+@@ -0,0 +1,41 @@
++# app/utils/afip_client.py
++"""Funciones de integración con AFIP usando la librería afip.py."""
++import json
++import afip
++
++
++def get_ultimo_comprobante(pto_vta: int, cbte_tipo: int):
++    """Obtiene el número del último comprobante autorizado."""
++    ws = afip.webService("wsfe")
++    ta = ws.getTokenAuthorization()
++    data = {
++        "Auth": {
++            "Token": ta["token"],
++            "Sign": ta["sign"],
++            "Cuit": afip.CUIT,
++        },
++        "PtoVta": pto_vta,
++        "CbteTipo": cbte_tipo,
++    }
++    res = ws.executeRequest("FECompUltimoAutorizado", data)
++    return res.get("CbteNro")
++
++
++def constatar_comprobante(cmp_req: dict):
++    """Confronta un comprobante contra AFIP.
++
++    El parámetro ``cmp_req`` debe contener los campos requeridos por el servicio
++    ``wscdc``.
++    """
++    ws = afip.webService("wscdc")
++    ta = ws.getTokenAuthorization()
++    data = {
++        "Auth": {
++            "Token": ta["token"],
++            "Sign": ta["sign"],
++            "Cuit": afip.CUIT,
++        },
++        "CmpReq": cmp_req,
++    }
++    res = ws.executeRequest("ComprobanteConstatar", data)
++    return json.loads(json.dumps(res))
+diff --git a/frontend/src/App.jsx b/frontend/src/App.jsx
+index d15d03c9b6d8f1db5fbc9e4f2b5986475f97f92c..eceaa6797da2a96e2e5a5421995f41f20505ca05 100644
+--- a/frontend/src/App.jsx
++++ b/frontend/src/App.jsx
+@@ -6,50 +6,52 @@ import Login from "./components/Login";
+ import Dashboard from "./pages/Dashboard";
+ import Clients from "./pages/Clients";
+ import Suppliers from "./pages/Suppliers";
+ import Brands from "./pages/Brands";
+ import CarBrands from "./pages/CarBrands";
+ import CarModels from "./pages/CarModels";
+ import Cars from "./pages/Cars";
+ import Branches from "./pages/Branches";
+ import CompanyData from "./pages/CompanyData";
+ import ItemCategories from "./pages/ItemCategories";
+ import ItemSubcategories from "./pages/ItemSubcategories";
+ import Items from "./pages/Items";
+ import PriceLists from "./pages/PriceLists";
+ import Warehouses from "./pages/Warehouses";
+ import SaleConditions from "./pages/SaleConditions";
+ import CreditCardGroups from "./pages/CreditCardGroups";
+ import CreditCards from "./pages/CreditCards";
+ import Discounts from "./pages/Discounts";
+ import Vendors from "./pages/Vendors";
+ import ServiceTypes from "./pages/ServiceTypes";
+ import Documents from "./pages/Documents";
+ import Orders from "./pages/Orders";
+ import Roles from "./pages/Roles";
+ import Users from "./pages/Users";
+ import RolesUsers from "./pages/RolesUsers";
++import FeLastVoucher from "./pages/FeLastVoucher";
++import FeInfo from "./pages/FeInfo";
+ import Layout from "./components/Layout";
+ import RequireAuth from "./components/RequireAuth";
+ import LogoutSuccess from "./pages/LogoutSuccess";
+ import { UserProvider } from "./context/UserContext";
+ import { AuthHelper } from "./utils/authHelper";
+ 
+ // Redirecciona la raíz "/" según si hay token
+ function RedirectRoot() {
+     const token = sessionStorage.getItem("token");
+     return <Navigate to={token ? "/dashboard" : "/login"} replace />;
+ }
+ 
+ export default function App() {
+     const [userInfo, setUserInfo] = useState(null);
+     const [selectedAccess, setSelectedAccess] = useState(null);
+ 
+     useEffect(() => {
+         // Cargar información del usuario usando AuthHelper
+         const authUserInfo = AuthHelper.getUserInfoForHeader();
+         const authSelectedAccess = AuthHelper.getSelectedAccess();
+ 
+         if (authUserInfo) {
+             setUserInfo(authUserInfo);
+         }
+ 
+@@ -200,32 +202,34 @@ export default function App() {
+                     <Route path="dashboard" element={<Dashboard />} />
+                     <Route path="clients" element={<Clients />} />
+                     <Route path="suppliers" element={<Suppliers />} />
+                     <Route path="brands" element={<Brands />} />
+                     <Route path="saleconditions" element={<SaleConditions />} />
+                     <Route path="creditcardgroups" element={<CreditCardGroups />} />
+                     <Route path="creditcards" element={<CreditCards />} />
+                     <Route path="discounts" element={<Discounts />} />
+                     <Route path="vendors" element={<Vendors />} />
+                     <Route path="servicetypes" element={<ServiceTypes />} />
+                     <Route path="itemcategories" element={<ItemCategories />} />
+                     <Route path="itemsubcategories" element={<ItemSubcategories />} />
+                     <Route path="items" element={<Items />} />
+                     <Route path="pricelists" element={<PriceLists />} />
+                     <Route path="warehouses" element={<Warehouses />} />
+                     <Route path="branches" element={<Branches />} />
+                     <Route path="companydata" element={<CompanyData />} />
+                     <Route path="carbrands" element={<CarBrands />} />
+                     <Route path="carmodels" element={<CarModels />} />
+                     <Route path="cars" element={<Cars />} />
+                     <Route path="documents" element={<Documents />} />
+                     <Route path="orders" element={<Orders />} />
+                     <Route path="roles" element={<Roles />} />
+                     <Route path="users" element={<Users />} />
+                     <Route path="rolesusers" element={<RolesUsers />} />
++                    <Route path="fe-last" element={<FeLastVoucher />} />
++                    <Route path="fe-info" element={<FeInfo />} />
+                     {/* Ruta fallback: todo lo desconocido a dashboard */}
+                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                 </Route>
+             </Routes>
+         </UserProvider>
+     );
+ }
+\ No newline at end of file
+diff --git a/frontend/src/components/Sidebar.jsx b/frontend/src/components/Sidebar.jsx
+index 7c75e4a1f1a8e48a8145849556cc15f4000fb42b..abe7ea5e8335a1a2714350cfd7447e6839cb822c 100644
+--- a/frontend/src/components/Sidebar.jsx
++++ b/frontend/src/components/Sidebar.jsx
+@@ -91,50 +91,62 @@ export default function Sidebar() {
+                         { label: "Marcas de autos", to: "/carbrands" },
+                         { label: "Modelos de autos", to: "/carmodels" },
+                         { label: "Autos", to: "/cars" },
+                     ],
+                 },
+             ],
+         },
+         {
+             title: "Pedidos",
+             items: [
+                 { label: "Listar pedidos", to: "/orders" },
+                 {
+                     label: "Cargar pedido",
+                     action: () => openPopup(OrderCreate, "Cargar Pedido", 1000, 700),
+                 },
+                 { label: "Historial", to: "/orderhistory" },
+             ],
+         },
+         {
+             title: "Inventario",
+             items: [
+                 { label: "Stock", to: "/itemstock" },
+                 { label: "Historial de stock", to: "/stockhistory" },
+             ],
+         },
++        {
++            title: "Consultas",
++            items: [
++                {
++                    label: "Factura electrónica",
++                    submenu: [
++                        { label: "Último comprobante", to: "/fe-last" },
++                        { label: "Información comprobante", to: "/fe-info" },
++                    ],
++                },
++            ],
++        },
+         {
+             title: "Configuración",
+             items: [
+                 { label: "Sucursales", to: "/branches" },
+                 { label: "Empresa", to: "/companydata" },
+                 { label: "Roles", to: "/roles" },
+                 {
+                     label: "Usuarios",
+                     submenu: [
+                         { label: "Usuarios", to: "/users" },
+                         { label: "Roles y Usuarios", to: "/rolesusers" },
+                     ],
+                 },
+             ],
+         },
+     ];
+ 
+     return (
+         <>
+             <aside className="w-64 bg-white border-r overflow-y-auto">
+                 <nav className="p-4 space-y-4">
+                     {sections.map((section) => {
+                         const isOpen = openSections[section.title];
+                         return (
+                             <div key={section.title}>
+diff --git a/frontend/src/pages/FeInfo.jsx b/frontend/src/pages/FeInfo.jsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..50804763f28d6ca3af4049abcbab54c3b236feba
+--- /dev/null
++++ b/frontend/src/pages/FeInfo.jsx
+@@ -0,0 +1,73 @@
++// frontend/src/pages/FeInfo.jsx
++import { useState } from "react";
++import { afipOperations } from "../utils/graphqlClient";
++
++export default function FeInfo() {
++    const [form, setForm] = useState({
++        CuitEmisor: "",
++        PtoVta: "",
++        CbteTipo: "",
++        CbteNro: "",
++        CbteFch: "",
++        ImpTotal: "",
++        CodAutorizacion: "",
++        DocTipoReceptor: "",
++        DocNroReceptor: "",
++    });
++    const [result, setResult] = useState("");
++
++    const handleChange = (e) => {
++        const { name, value } = e.target;
++        setForm((prev) => ({ ...prev, [name]: value }));
++    };
++
++    const handleSubmit = async (e) => {
++        e.preventDefault();
++        try {
++            const data = await afipOperations.informacionComprobante({
++                CbteModo: "CAE",
++                CuitEmisor: parseInt(form.CuitEmisor),
++                PtoVta: parseInt(form.PtoVta),
++                CbteTipo: parseInt(form.CbteTipo),
++                CbteNro: parseInt(form.CbteNro),
++                CbteFch: parseInt(form.CbteFch),
++                ImpTotal: parseFloat(form.ImpTotal),
++                CodAutorizacion: form.CodAutorizacion,
++                DocTipoReceptor: form.DocTipoReceptor,
++                DocNroReceptor: form.DocNroReceptor,
++            });
++            setResult(data);
++        } catch (err) {
++            console.error(err);
++        }
++    };
++
++    return (
++        <div className="p-6">
++            <h1 className="text-xl font-bold mb-4">Información Comprobante</h1>
++            <form onSubmit={handleSubmit} className="space-y-4">
++                {Object.entries(form).map(([key, value]) => (
++                    <div key={key}>
++                        <label className="block text-sm mb-1">{key}</label>
++                        <input
++                            name={key}
++                            value={value}
++                            onChange={handleChange}
++                            className="border p-2 rounded w-full"
++                            required
++                        />
++                    </div>
++                ))}
++                <button
++                    type="submit"
++                    className="px-4 py-2 bg-blue-500 text-white rounded"
++                >
++                    Consultar
++                </button>
++            </form>
++            {result && (
++                <pre className="mt-4 whitespace-pre-wrap">{result}</pre>
++            )}
++        </div>
++    );
++}
+diff --git a/frontend/src/pages/FeLastVoucher.jsx b/frontend/src/pages/FeLastVoucher.jsx
+new file mode 100644
+index 0000000000000000000000000000000000000000..5a0308e897cff6887fce039e6681b10453a17990
+--- /dev/null
++++ b/frontend/src/pages/FeLastVoucher.jsx
+@@ -0,0 +1,60 @@
++// frontend/src/pages/FeLastVoucher.jsx
++import { useState } from "react";
++import { afipOperations } from "../utils/graphqlClient";
++
++export default function FeLastVoucher() {
++    const [ptoVta, setPtoVta] = useState("");
++    const [cbteTipo, setCbteTipo] = useState("");
++    const [result, setResult] = useState(null);
++
++    const handleSubmit = async (e) => {
++        e.preventDefault();
++        try {
++            const nro = await afipOperations.getUltimoComprobante(
++                parseInt(ptoVta),
++                parseInt(cbteTipo)
++            );
++            setResult(nro);
++        } catch (err) {
++            console.error(err);
++            setResult(null);
++        }
++    };
++
++    return (
++        <div className="p-6">
++            <h1 className="text-xl font-bold mb-4">Último Comprobante</h1>
++            <form onSubmit={handleSubmit} className="space-y-4">
++                <div>
++                    <label className="block text-sm">Punto de Venta</label>
++                    <input
++                        type="number"
++                        value={ptoVta}
++                        onChange={(e) => setPtoVta(e.target.value)}
++                        className="border p-2 rounded w-full"
++                        required
++                    />
++                </div>
++                <div>
++                    <label className="block text-sm">Tipo Comprobante</label>
++                    <input
++                        type="number"
++                        value={cbteTipo}
++                        onChange={(e) => setCbteTipo(e.target.value)}
++                        className="border p-2 rounded w-full"
++                        required
++                    />
++                </div>
++                <button
++                    type="submit"
++                    className="px-4 py-2 bg-blue-500 text-white rounded"
++                >
++                    Consultar
++                </button>
++            </form>
++            {result !== null && (
++                <div className="mt-4">Último número: {result}</div>
++            )}
++        </div>
++    );
++}
+diff --git a/frontend/src/utils/graphql/operations.js b/frontend/src/utils/graphql/operations.js
+index 18b5d7162531bfab6ce54b7811099b8d5ae6e012..13e408a357402515af1f351ca7ab8f879321914d 100644
+--- a/frontend/src/utils/graphql/operations.js
++++ b/frontend/src/utils/graphql/operations.js
+@@ -1575,25 +1575,40 @@ export const branchOperations = {
+             console.error("Error creando sucursal:", error);
+             throw error;
+         }
+     },
+ 
+     async updateBranch(id, dataInput) {
+         try {
+             const data = await graphqlClient.mutation(MUTATIONS.UPDATE_BRANCH, { branchID: id, input: dataInput });
+             return data.updateBranch;
+         } catch (error) {
+             console.error("Error actualizando sucursal:", error);
+             throw error;
+         }
+     },
+ 
+     async deleteBranch(id) {
+         try {
+             const data = await graphqlClient.mutation(MUTATIONS.DELETE_BRANCH, { branchID: id });
+             return data.deleteBranch;
+         } catch (error) {
+             console.error("Error eliminando sucursal:", error);
+             throw error;
+         }
+     }
+ };
++// AFIP operations
++
++export const afipOperations = {
++    async getUltimoComprobante(ptoVta, cbteTipo) {
++        const query = `query ($pto: Int!, $tipo: Int!) {\n  ultimoComprobante(ptoVta: $pto, cbteTipo: $tipo)\n}`;
++        const data = await graphqlClient.query(query, { pto: ptoVta, tipo: cbteTipo });
++        return data.ultimoComprobante;
++    },
++
++    async informacionComprobante(input) {
++        const query = `query ($data: VoucherRequest!) {\n  informacionComprobante(data: $data) { raw }\n}`;
++        const data = await graphqlClient.query(query, { data: input });
++        return data.informacionComprobante.raw;
++    }
++};
+diff --git a/requirements.txt b/requirements.txt
+index 6f133a7b7711090b1862e7cd128c824db8619a5e..1e63f7ff00d79298b823d00d7083f9175d925090 100644
+GIT binary patch
+delta 40
+vcmZqTTg114iCv*6wXig`xTM(D)=1CTNY8{TF)gz|ub|S_)=<w-&xi{E`~M4U
+
+delta 7
+OcmZ3)*TlDhi5&n5rUCi@
+
+ 
+EOF
+)

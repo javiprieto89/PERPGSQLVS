@@ -1,0 +1,9 @@
+.vs/
+*.env
+__pycache__/
+*.pyc
+*.db
+node_modules/
+.env.*
+!.env.template
+perpgsqlvs/
