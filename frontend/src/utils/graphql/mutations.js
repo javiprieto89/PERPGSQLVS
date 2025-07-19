@@ -942,6 +942,51 @@ export const MUTATIONS = {
         mutation DeleteUseraccess($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
             deleteUseraccess(userID: $userID, companyID: $companyID, branchID: $branchID, roleID: $roleID)
         }
+    `,
+
+    // ====== TEMPORARY STOCK ENTRIES ======
+    CREATE_TEMPSTOCKENTRY: `
+        mutation CreateTempstockentry($input: TempStockEntriesCreate!) {
+            createTempstockentry(data: $input) {
+                TempStockEntryID
+                SessionID
+                ItemID
+                WarehouseID
+                Quantity
+                EntryDate
+                Reason
+                IsProcessed
+            }
+        }
+    `,
+    PROCESS_STOCK_SESSION: `
+        mutation ProcessStockSession($sessionID: String!) {
+            processStockSession(sessionID: $sessionID) {
+                StockHistoryID
+                ItemID
+                WarehouseID
+                QuantityUpdate
+                QuantityBefore
+                QuantityAfter
+                TransactionDate
+                Reason
+                UserID
+            }
+        }
+    `,
+    GET_TEMP_STOCK_BY_SESSION: `
+        query GetTempStockBySession($sessionID: String!) {
+            tempstockentriesBySession(sessionID: $sessionID) {
+                TempStockEntryID
+                SessionID
+                ItemID
+                WarehouseID
+                Quantity
+                EntryDate
+                Reason
+                IsProcessed
+            }
+        }
     `
 };
 
