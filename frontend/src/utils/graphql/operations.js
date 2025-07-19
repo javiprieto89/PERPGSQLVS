@@ -1201,7 +1201,17 @@ export const pricelistItemOperations = {
         return data.allPricelistitems || [];
     },
     async getFiltered(priceListID, itemID) {
-        const data = await graphqlClient.query(QUERIES.GET_PRICELIST_ITEMS_FILTERED, { priceListID, itemID });
+        const vars = {};
+        if (priceListID !== undefined && priceListID !== null && priceListID !== "") {
+            vars.priceListID = Number(priceListID);
+        }
+        if (itemID !== undefined && itemID !== null && itemID !== "") {
+            vars.itemID = Number(itemID);
+        }
+        const data = await graphqlClient.query(
+            QUERIES.GET_PRICELIST_ITEMS_FILTERED,
+            vars
+        );
         return data.pricelistitemsFiltered || [];
     },
     async createPricelistItem(input) {
