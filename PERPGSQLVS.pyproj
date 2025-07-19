@@ -13964,6 +13964,7 @@
     <Content Include="frontend\src\utils\apiFetch.js" />
     <Content Include="frontend\src\utils\authHelper.js" />
     <Content Include="frontend\src\utils\graphqlClient.js" />
+    <Content Include="frontend\src\utils\graphql\afipOperations.js" />
     <Content Include="frontend\src\utils\graphql\baseClient.js" />
     <Content Include="frontend\src\utils\graphql\dashboard.js" />
     <Content Include="frontend\src\utils\graphql\diagnostic.js" />
