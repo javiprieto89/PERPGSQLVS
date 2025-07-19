@@ -108,6 +108,7 @@ def process_tempstockentries(db: Session, session_id: str):
             UserID=entry.UserID,
         )
         db.add(history)
+
         entry.IsProcessed = True  # type: ignore[assignment]
         processed.append(history)
 
