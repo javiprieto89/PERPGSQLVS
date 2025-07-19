@@ -1195,6 +1195,39 @@ export const pricelistOperations = {
     }
 };
 
+export const pricelistItemOperations = {
+    async getAllPricelistItems() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_PRICELIST_ITEMS);
+        return data.allPricelistitems || [];
+    },
+    async getFiltered(priceListID, itemID) {
+        const vars = {};
+        if (priceListID !== undefined && priceListID !== null && priceListID !== "") {
+            vars.priceListID = Number(priceListID);
+        }
+        if (itemID !== undefined && itemID !== null && itemID !== "") {
+            vars.itemID = Number(itemID);
+        }
+        const data = await graphqlClient.query(
+            QUERIES.GET_PRICELIST_ITEMS_FILTERED,
+            vars
+        );
+        return data.pricelistitemsFiltered || [];
+    },
+    async createPricelistItem(input) {
+        const data = await graphqlClient.mutation(MUTATIONS.CREATE_PRICELIST_ITEM, { input });
+        return data.createPricelistitem;
+    },
+    async updatePricelistItem(priceListID, itemID, input) {
+        const data = await graphqlClient.mutation(MUTATIONS.UPDATE_PRICELIST_ITEM, { pricelistID: priceListID, itemID, input });
+        return data.updatePricelistitem;
+    },
+    async deletePricelistItem(priceListID, itemID) {
+        const data = await graphqlClient.mutation(MUTATIONS.DELETE_PRICELIST_ITEM, { pricelistID: priceListID, itemID });
+        return data.deletePricelistitem;
+    }
+};
+
 export const warehouseOperations = {
     async getAllWarehouses() {
         const data = await graphqlClient.query(QUERIES.GET_ALL_WAREHOUSES);

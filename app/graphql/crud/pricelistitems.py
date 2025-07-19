@@ -1,6 +1,8 @@
-# graphql/crud/pricelistitems.py
+# app/graphql/crud/pricelistitems.py
 from sqlalchemy.orm import Session
 from app.models.pricelistitems import PriceListItems
+from app.models.pricelists import PriceLists
+from app.models.items import Items
 from app.graphql.schemas.pricelistitems import (
     PriceListItemsCreate,
     PriceListItemsUpdate,
@@ -8,18 +10,79 @@ from app.graphql.schemas.pricelistitems import (
 
 
 def get_pricelistitems(db: Session):
-    return db.query(PriceListItems).all()
-
-
-def get_pricelistitems_by_id(db: Session, pricelistitemid: int):
-    return (
-        db.query(PriceListItems)
-        .filter(PriceListItems.priceListItemID == pricelistitemid)
-        .first()
+    query = (
+        db.query(
+            PriceListItems,
+            PriceLists.Name.label("PriceListName"),
+            Items.Code.label("Code"),
+            Items.Description.label("Description"),
+        )
+        .join(PriceLists, PriceListItems.PriceListID == PriceLists.PriceListID)
+        .join(Items, PriceListItems.ItemID == Items.ItemID)
     )
+    rows = query.all()
+    results = []
+    for pli, list_name, code, desc in rows:
+        setattr(pli, "PriceListName", list_name)
+        setattr(pli, "Code", code)
+        setattr(pli, "Description", desc)
+        results.append(pli)
+    return results
 
 
-def create_pricelistitems(db: Session, data: PriceListItemsCreate):
+def get_pricelistitem(db: Session, pricelist_id: int, item_id: int):
+    query = (
+        db.query(
+            PriceListItems,
+            PriceLists.Name.label("PriceListName"),
+            Items.Code.label("Code"),
+            Items.Description.label("Description"),
+        )
+        .join(PriceLists, PriceListItems.PriceListID == PriceLists.PriceListID)
+        .join(Items, PriceListItems.ItemID == Items.ItemID)
+        .filter(
+            PriceListItems.PriceListID == pricelist_id,
+            PriceListItems.ItemID == item_id,
+        )
+    )
+    result = query.first()
+    if result:
+        pli, list_name, code, desc = result
+        setattr(pli, "PriceListName", list_name)
+        setattr(pli, "Code", code)
+        setattr(pli, "Description", desc)
+        return pli
+    return None
+
+
+def get_pricelistitems_filtered(
+    db: Session, pricelist_id: int | None = None, item_id: int | None = None
+):
+    query = (
+        db.query(
+            PriceListItems,
+            PriceLists.Name.label("PriceListName"),
+            Items.Code.label("Code"),
+            Items.Description.label("Description"),
+        )
+        .join(PriceLists, PriceListItems.PriceListID == PriceLists.PriceListID)
+        .join(Items, PriceListItems.ItemID == Items.ItemID)
+    )
+    if pricelist_id is not None:
+        query = query.filter(PriceListItems.PriceListID == pricelist_id)
+    if item_id is not None:
+        query = query.filter(PriceListItems.ItemID == item_id)
+    rows = query.all()
+    results = []
+    for pli, list_name, code, desc in rows:
+        setattr(pli, "PriceListName", list_name)
+        setattr(pli, "Code", code)
+        setattr(pli, "Description", desc)
+        results.append(pli)
+    return results
+
+
+def create_pricelistitem(db: Session, data: PriceListItemsCreate):
     obj = PriceListItems(**vars(data))
     db.add(obj)
     db.commit()
@@ -27,10 +90,10 @@ def create_pricelistitems(db: Session, data: PriceListItemsCreate):
     return obj
 
 
-def update_pricelistitems(
-    db: Session, pricelistitemid: int, data: PriceListItemsUpdate
+def update_pricelistitem(
+    db: Session, pricelist_id: int, item_id: int, data: PriceListItemsUpdate
 ):
-    obj = get_pricelistitems_by_id(db, pricelistitemid)
+    obj = get_pricelistitem(db, pricelist_id, item_id)
     if obj:
         for k, v in vars(data).items():
             if v is not None:
@@ -40,9 +103,10 @@ def update_pricelistitems(
     return obj
 
 
-def delete_pricelistitems(db: Session, pricelistitemid: int):
-    obj = get_pricelistitems_by_id(db, pricelistitemid)
+def delete_pricelistitem(db: Session, pricelist_id: int, item_id: int):
+    obj = get_pricelistitem(db, pricelist_id, item_id)
     if obj:
         db.delete(obj)
         db.commit()
     return obj
+

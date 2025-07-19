@@ -565,6 +565,31 @@ export const MUTATIONS = {
             }
         }
     `,
+    CREATE_PRICELIST_ITEM: `
+        mutation CreatePricelistItem($input: PriceListItemsCreate!) {
+            createPricelistitem(data: $input) {
+                PriceListID
+                ItemID
+                Price
+                EffectiveDate
+            }
+        }
+    `,
+    UPDATE_PRICELIST_ITEM: `
+        mutation UpdatePricelistItem($pricelistID: Int!, $itemID: Int!, $input: PriceListItemsUpdate!) {
+            updatePricelistitem(pricelistID: $pricelistID, itemID: $itemID, data: $input) {
+                PriceListID
+                ItemID
+                Price
+                EffectiveDate
+            }
+        }
+    `,
+    DELETE_PRICELIST_ITEM: `
+        mutation DeletePricelistItem($pricelistID: Int!, $itemID: Int!) {
+            deletePricelistitem(pricelistID: $pricelistID, itemID: $itemID)
+        }
+    `,
     CREATE_WAREHOUSE: `
         mutation CreateWarehouse($input: WarehousesCreate!) {
             createWarehouse(data: $input) {

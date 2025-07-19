@@ -106,6 +106,32 @@ export const QUERIES = {
             }
         }
     `,
+    GET_ALL_PRICELIST_ITEMS: `
+        query GetAllPricelistItems {
+            allPricelistitems {
+                PriceListID
+                ItemID
+                Price
+                EffectiveDate
+                PriceListName
+                Code
+                Description
+            }
+        }
+    `,
+    GET_PRICELIST_ITEMS_FILTERED: `
+        query GetPricelistItemsFiltered($priceListID: Int, $itemID: Int) {
+            pricelistitemsFiltered(pricelistID: $priceListID, itemID: $itemID) {
+                PriceListID
+                ItemID
+                Price
+                EffectiveDate
+                PriceListName
+                Code
+                Description
+            }
+        }
+    `,
     GET_ALL_WAREHOUSES: `
         query GetWarehouses {
             allWarehouses {

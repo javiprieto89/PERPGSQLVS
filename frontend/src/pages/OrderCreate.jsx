@@ -8,6 +8,7 @@ import {
     discountOperations,
     orderStatusOperations,
     pricelistOperations,
+    pricelistItemOperations,
     warehouseOperations,
     orderOperations,
     tempOrderOperations,
@@ -211,9 +212,24 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
         }));
     };
 
-    const handleItemSelectedFromSearch = (selectedItem) => {
+    const handleItemSelectedFromSearch = async (selectedItem) => {
+        let price = selectedItem.price || 0;
+        if (formData.priceListId) {
+            try {
+                const data = await pricelistItemOperations.getFiltered(
+                    formData.priceListId,
+                    selectedItem.itemID
+                );
+                if (data.length > 0) {
+                    price = data[0].Price;
+                }
+            } catch (err) {
+                console.error("Error fetching price from list", err);
+            }
+        }
         setSelectedItemForConfirmation({
             ...selectedItem,
+            price,
             priceListId: formData.priceListId,
             warehouseId: formData.warehouseId,
         });
