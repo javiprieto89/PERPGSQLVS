@@ -244,5 +244,24 @@ FILTER_SCHEMAS = {
         {"field": "ItemDescription", "label": "Descripción ítem", "type": "text"},
         {"field": "Price", "label": "Precio", "type": "number"},
         {"field": "LastModified", "label": "Última modificación", "type": "text"}
+    ],
+
+    "documents": [
+        {"field": "DocumentID", "label": "ID de documento", "type": "number"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
+        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch"},
+        {"field": "DocumentTypeID", "label": "Tipo de documento", "type": "select", "relationModel": "DocumentType"},
+        {"field": "Description", "label": "Descripción", "type": "text"},
+        {"field": "DocumentNumber", "label": "Número", "type": "number"},
+        {"field": "PointOfSale", "label": "Punto de venta", "type": "number"},
+        {"field": "IsActive", "label": "Activo", "type": "boolean"},
+        {"field": "Testing", "label": "Prueba", "type": "boolean"},
+        {"field": "ShouldAccount", "label": "Contabiliza", "type": "boolean"},
+        {"field": "MovesStock", "label": "Mueve stock", "type": "boolean"},
+        {"field": "IsFiscal", "label": "Fiscal", "type": "boolean"},
+        {"field": "IsElectronic", "label": "Electrónico", "type": "boolean"},
+        {"field": "IsManual", "label": "Manual", "type": "boolean"},
+        {"field": "IsQuotation", "label": "Cotización", "type": "boolean"},
+        {"field": "MaxItems", "label": "Máx ítems", "type": "number"}
     ]
 }
