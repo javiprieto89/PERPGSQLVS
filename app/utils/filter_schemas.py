@@ -36,7 +36,7 @@ FILTER_SCHEMAS = {
     "items": [
         {"field": "ItemID", "label": "ID de ítem", "type": "number"},
         {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
-        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch"},
+        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch", "dependsOn": "CompanyID"},
         {"field": "Code", "label": "Código", "type": "text"},
         {"field": "Description", "label": "Descripción", "type": "text"},
         {"field": "BrandID", "label": "Marca", "type": "select", "relationModel": "Brand"},
@@ -179,7 +179,7 @@ FILTER_SCHEMAS = {
         {"field": "WarehouseID", "label": "ID de depósito", "type": "number"},
         {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "CompanyName", "label": "Compañía (nombre)", "type": "text"},
-        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch"},
+        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch", "dependsOn": "CompanyID"},
         {"field": "BranchName", "label": "Sucursal (nombre)", "type": "text"},
         {"field": "Name", "label": "Nombre", "type": "text"},
         {"field": "IsActive", "label": "Activo", "type": "boolean"}
@@ -188,7 +188,7 @@ FILTER_SCHEMAS = {
         {"field": "OrderID", "label": "ID de orden", "type": "number"},
         {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "CompanyName", "label": "Compañía (nombre)", "type": "text"},
-        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch"},
+        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch", "dependsOn": "CompanyID"},
         {"field": "BranchName", "label": "Sucursal (nombre)", "type": "text"},
         {"field": "Date", "label": "Fecha", "type": "text"},
         {"field": "ClientID", "label": "Cliente", "type": "select", "relationModel": "Client"},
@@ -229,7 +229,7 @@ FILTER_SCHEMAS = {
         {"field": "ItemCode", "label": "Código ítem", "type": "text"},
         {"field": "ItemDescription", "label": "Descripción ítem", "type": "text"},
         {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
-        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch"},
+        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch", "dependsOn": "CompanyID"},
         {"field": "WarehouseID", "label": "Depósito", "type": "select", "relationModel": "Warehouse"},
         {"field": "SupplierID", "label": "Proveedor", "type": "select", "relationModel": "Supplier"},
         {"field": "Quantity", "label": "Cantidad", "type": "number"},
@@ -244,5 +244,24 @@ FILTER_SCHEMAS = {
         {"field": "ItemDescription", "label": "Descripción ítem", "type": "text"},
         {"field": "Price", "label": "Precio", "type": "number"},
         {"field": "LastModified", "label": "Última modificación", "type": "text"}
+    ],
+
+    "documents": [
+        {"field": "DocumentID", "label": "ID de documento", "type": "number"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
+        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch", "dependsOn": "CompanyID"},
+        {"field": "DocumentTypeID", "label": "Tipo de documento", "type": "select", "relationModel": "DocumentType"},
+        {"field": "Description", "label": "Descripción", "type": "text"},
+        {"field": "DocumentNumber", "label": "Número", "type": "number"},
+        {"field": "PointOfSale", "label": "Punto de venta", "type": "number"},
+        {"field": "IsActive", "label": "Activo", "type": "boolean"},
+        {"field": "Testing", "label": "Prueba", "type": "boolean"},
+        {"field": "ShouldAccount", "label": "Contabiliza", "type": "boolean"},
+        {"field": "MovesStock", "label": "Mueve stock", "type": "boolean"},
+        {"field": "IsFiscal", "label": "Fiscal", "type": "boolean"},
+        {"field": "IsElectronic", "label": "Electrónico", "type": "boolean"},
+        {"field": "IsManual", "label": "Manual", "type": "boolean"},
+        {"field": "IsQuotation", "label": "Cotización", "type": "boolean"},
+        {"field": "MaxItems", "label": "Máx ítems", "type": "number"}
     ]
 }

@@ -50,7 +50,7 @@ export const QUERIES = {
     GET_DOCUMENT_TYPES: `
         query GetDocumentTypes {
             allDocumenttypes {
-                DocTypeID
+                DocumentTypeID
                 Name
             }
         }
@@ -806,6 +806,52 @@ export const QUERIES = {
                 Name
                 Address
                 Phone
+            }
+        }
+    `,
+
+    // DOCUMENTOS
+    GET_ALL_DOCUMENTS: `
+        query GetAllDocuments {
+            allDocuments {
+                DocumentID
+                CompanyID
+                BranchID
+                DocumentTypeID
+                Description
+                DocumentNumber
+                PointOfSale
+                IsActive
+                Testing
+                ShouldAccount
+                MovesStock
+                IsFiscal
+                IsElectronic
+                IsManual
+                IsQuotation
+                MaxItems
+            }
+        }
+    `,
+    GET_DOCUMENT_BY_ID: `
+        query GetDocumentById($id: Int!) {
+            documentsById(id: $id) {
+                DocumentID
+                CompanyID
+                BranchID
+                DocumentTypeID
+                Description
+                DocumentNumber
+                PointOfSale
+                IsActive
+                Testing
+                ShouldAccount
+                MovesStock
+                IsFiscal
+                IsElectronic
+                IsManual
+                IsQuotation
+                MaxItems
             }
         }
     `,

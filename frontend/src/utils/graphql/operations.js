@@ -726,6 +726,58 @@ export const discountOperations = {
     }
 };
 
+export const documentOperations = {
+    async getAllDocuments() {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_ALL_DOCUMENTS);
+            return data.allDocuments || [];
+        } catch (error) {
+            console.error("Error obteniendo documentos:", error);
+            throw error;
+        }
+    },
+
+    async getDocumentById(id) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_DOCUMENT_BY_ID, { id });
+            return data.documentsById;
+        } catch (error) {
+            console.error("Error obteniendo documento:", error);
+            throw error;
+        }
+    },
+
+    async createDocument(dataInput) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_DOCUMENT, { input: dataInput });
+            return data.createDocument;
+        } catch (error) {
+            console.error("Error creando documento:", error);
+            throw error;
+        }
+    },
+
+    async updateDocument(id, dataInput) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_DOCUMENT, { documentID: id, input: dataInput });
+            return data.updateDocument;
+        } catch (error) {
+            console.error("Error actualizando documento:", error);
+            throw error;
+        }
+    },
+
+    async deleteDocument(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_DOCUMENT, { documentID: id });
+            return data.deleteDocument;
+        } catch (error) {
+            console.error("Error eliminando documento:", error);
+            throw error;
+        }
+    }
+};
+
 export const saleConditionOperations = {
     async getAllSaleConditions() {
         try {
@@ -1134,6 +1186,13 @@ export const orderStatusOperations = {
     async getAllOrderstatus() {
         const data = await graphqlClient.query(QUERIES.GET_ALL_ORDERSTATUS);
         return data.allOrderstatus || [];
+    }
+};
+
+export const documentTypeOperations = {
+    async getAllDocumenttypes() {
+        const data = await graphqlClient.query(QUERIES.GET_DOCUMENT_TYPES);
+        return data.allDocumenttypes || [];
     }
 };
 
