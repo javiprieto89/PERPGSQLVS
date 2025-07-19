@@ -15,8 +15,9 @@ const pluralMap = {
     Country: "Countries",
     Province: "Provinces",
     Branch: "Branches",
-    Company: "Companies",
+    Company: "Companydata",
     DocType: "Doctypes",
+    DocumentType: "Documenttypes",
     ItemCategory: "Itemcategories",
     ItemSubcategory: "Itemsubcategories",
     PriceList: "Pricelists",
@@ -262,11 +263,11 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
     const loadSubcategoriesByCategory = async (categoryID, fieldName) => {
         try {
             const response = await graphqlClient.query(`
-                query { 
-                    itemsubcategoriesByCategory(categoryID: ${categoryID}) { 
-                        ItemSubcategoryID 
-                        SubcategoryName 
-                    } 
+                query {
+                    itemsubcategoriesByCategory(categoryID: ${categoryID}) {
+                        ItemSubcategoryID
+                        SubcategoryName
+                    }
                 }
             `);
             setOptions(prev => ({
@@ -275,6 +276,26 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
             }));
         } catch (err) {
             console.error("Error cargando subcategorías:", err);
+        }
+    };
+
+    // Cargar sucursales por compañía
+    const loadBranchesByCompany = async (companyID, fieldName) => {
+        try {
+            const response = await graphqlClient.query(`
+                query {
+                    branchesByCompany(companyID: ${companyID}) {
+                        BranchID
+                        Name
+                    }
+                }
+            `);
+            setOptions(prev => ({
+                ...prev,
+                [fieldName]: response.branchesByCompany || []
+            }));
+        } catch (err) {
+            console.error("Error cargando sucursales:", err);
         }
     };
 
@@ -301,6 +322,8 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
                     loadModelsByBrand(value, depField.field);
                 } else if (depField.relationModel === "ItemSubcategory" && field === "ItemCategoryID") {
                     loadSubcategoriesByCategory(value, depField.field);
+                } else if (depField.relationModel === "Branch" && field === "CompanyID") {
+                    loadBranchesByCompany(value, depField.field);
                 }
             } else {
                 // Si se deselecciona el padre, limpiar las opciones del hijo
