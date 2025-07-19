@@ -70,6 +70,8 @@ from app.graphql.mutations.pricelists import PricelistsMutations
 from app.graphql.mutations.pricelistitems import PricelistitemsMutations
 from app.graphql.mutations.temporderdetails import TempOrderDetailsMutations
 from app.graphql.mutations.orders import OrdersMutations
+from app.graphql.mutations.tempstockentries import TempStockEntriesMutations
+from app.graphql.mutations.stockhistory import StockHistoryMutations
 from app.graphql.mutations.servicetype import ServiceTypeMutations
 from app.graphql.mutations.documenttypes import DocumentTypesMutations
 from app.graphql.mutations.documents import DocumentsMutations
@@ -421,6 +423,8 @@ class Mutation(
     PricelistsMutations,
     PricelistitemsMutations,
     TempOrderDetailsMutations,
+    TempStockEntriesMutations,
+    StockHistoryMutations,
     OrdersMutations,
     ServiceTypeMutations,
     DocumentsMutations,

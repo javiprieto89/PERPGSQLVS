@@ -45,3 +45,73 @@ def delete_tempstockentries(db: Session, tempstockentryid: int):
         db.delete(obj)
         db.commit()
     return obj
+
+def get_tempstockentries_by_session(db: Session, session_id: str):
+    """Obtener todas las entradas de stock para una sesión."""
+    return (
+        db.query(TempStockEntries)
+        .filter(TempStockEntries.SessionID == session_id)
+        .all()
+    )
+
+
+def process_tempstockentries(db: Session, session_id: str):
+    """Procesar las entradas temporales de una sesión y moverlas a StockHistory."""
+    from app.models.stockhistory import StockHistory
+    from app.models.itemstock import Itemstock
+
+    entries = (
+        db.query(TempStockEntries)
+        .filter(
+            TempStockEntries.SessionID == session_id,
+            TempStockEntries.IsProcessed == False,
+        )
+        .all()
+    )
+
+    processed = []
+    for entry in entries:
+        stock = (
+            db.query(Itemstock)
+            .filter(
+                Itemstock.ItemID == entry.ItemID,
+                Itemstock.WarehouseID == entry.WarehouseID,
+            )
+            .first()
+        )
+        qty_before = stock.Quantity if stock and stock.Quantity is not None else 0
+        qty_after = qty_before + entry.Quantity
+
+        if stock:
+            stock.Quantity = qty_after
+        else:
+            stock = Itemstock(
+                ItemID=entry.ItemID,
+                WarehouseID=entry.WarehouseID,
+                CompanyID=entry.CompanyID,
+                BranchID=entry.BranchID,
+                Quantity=qty_after,
+            )
+            db.add(stock)
+
+        history = StockHistory(
+            ItemID=entry.ItemID,
+            CompanyID=entry.CompanyID,
+            BranchID=entry.BranchID,
+            WarehouseID=entry.WarehouseID,
+            QuantityUpdate=entry.Quantity,
+            QuantityBefore=qty_before,
+            QuantityAfter=qty_after,
+            TransactionDate=entry.EntryDate,
+            Reason=entry.Reason,
+            UserID=entry.UserID,
+        )
+        db.add(history)
+        entry.IsProcessed = True
+        processed.append(history)
+
+    db.commit()
+
+    for hist in processed:
+        db.refresh(hist)
+    return processed
