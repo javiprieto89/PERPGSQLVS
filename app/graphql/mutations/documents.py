@@ -1,4 +1,4 @@
-# app/graphql/mutations/documents.py
+﻿# app/graphql/mutations/documents.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.documents import DocumentsCreate, DocumentsUpdate, DocumentsInDB

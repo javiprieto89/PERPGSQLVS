@@ -42,6 +42,7 @@
     <Compile Include="app\graphql\mutations\creditcards.py" />
     <Compile Include="app\graphql\mutations\discounts.py" />
     <Compile Include="app\graphql\mutations\doctypes.py" />
+    <Compile Include="app\graphql\mutations\documents.py" />
     <Compile Include="app\graphql\mutations\documenttypes.py" />
     <Compile Include="app\graphql\mutations\itemcategories.py" />
     <Compile Include="app\graphql\mutations\items.py" />
@@ -13925,6 +13926,7 @@
     <Content Include="frontend\src\pages\DiscountCreate.jsx" />
     <Content Include="frontend\src\pages\Discounts.jsx" />
     <Content Include="frontend\src\pages\DocTypes.jsx" />
+    <Content Include="frontend\src\pages\DocumentCreate.jsx" />
     <Content Include="frontend\src\pages\Documents.jsx" />
     <Content Include="frontend\src\pages\ItemCategories.jsx" />
     <Content Include="frontend\src\pages\ItemCategoryCreate.jsx" />

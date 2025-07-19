@@ -11,16 +11,15 @@ class DocumentsCreate:
     Description: str
     DocumentNumber: int
     PointOfSale: int
-    IsActive: bool
-    Testing: bool
-    ShouldAccount: bool
-    MovesStock: bool
     IsFiscal: Optional[bool] = None
     IsElectronic: Optional[bool] = None
     IsManual: Optional[bool] = None
     IsQuotation: Optional[bool] = None
+    IsActive: bool
+    Testing: bool
     MaxItems: Optional[int] = None
-    RelatedDocumentID: Optional[int] = None
+    ShouldAccount: bool
+    MovesStock: bool        
 
 
 @strawberry.input
@@ -31,16 +30,15 @@ class DocumentsUpdate:
     Description: Optional[str] = None
     DocumentNumber: Optional[int] = None
     PointOfSale: Optional[int] = None
-    IsActive: Optional[bool] = None
-    Testing: Optional[bool] = None
-    ShouldAccount: Optional[bool] = None
-    MovesStock: Optional[bool] = None
     IsFiscal: Optional[bool] = None
     IsElectronic: Optional[bool] = None
     IsManual: Optional[bool] = None
     IsQuotation: Optional[bool] = None
+    IsActive: Optional[bool] = None
+    Testing: Optional[bool] = None
     MaxItems: Optional[int] = None
-    RelatedDocumentID: Optional[int] = None
+    ShouldAccount: Optional[bool] = None
+    MovesStock: Optional[bool] = None     
 
 
 @strawberry.type
@@ -52,13 +50,12 @@ class DocumentsInDB:
     Description: str
     DocumentNumber: int
     PointOfSale: int
-    IsActive: bool
-    Testing: bool
-    ShouldAccount: bool
-    MovesStock: bool
     IsFiscal: Optional[bool] = None
     IsElectronic: Optional[bool] = None
     IsManual: Optional[bool] = None
     IsQuotation: Optional[bool] = None
+    IsActive: bool
+    Testing: bool
     MaxItems: Optional[int] = None
-    RelatedDocumentID: Optional[int] = None
+    ShouldAccount: bool
+    MovesStock: bool
