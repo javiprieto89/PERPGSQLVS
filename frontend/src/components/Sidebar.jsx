@@ -79,6 +79,7 @@ export default function Sidebar() {
                         { label: "Grupos Tarjetas", to: "/creditcardgroups" },
                         { label: "Tarjetas", to: "/creditcards" },
                         { label: "Descuentos", to: "/discounts" },
+                        { label: "Vendedores", to: "/vendors" },
                         { label: "Tipos de servicio", to: "/servicetypes" },
                         { label: "Condiciones", to: "/saleconditions" },
                         { label: "Documentos", to: "/documents" },

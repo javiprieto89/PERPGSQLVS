@@ -74,6 +74,7 @@ from app.graphql.mutations.documents import DocumentsMutations
 from app.graphql.mutations.useractions import UserActionsMutations
 from app.graphql.mutations.roles import RolesMutations
 from app.graphql.mutations.users import UsersMutations
+from app.graphql.mutations.vendors import VendorsMutations
 from app.graphql.mutations.useraccess import UserAccessMutation
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
@@ -410,6 +411,7 @@ class Mutation(
     CreditCardGroupsMutations,
     CreditCardsMutations,
     DiscountsMutations,
+    VendorsMutations,
     BranchesMutations,
     CompanydataMutations,
     WarehousesMutations,

@@ -220,6 +220,52 @@ export const vendorOperations = {
             console.error("Error obteniendo vendedores:", error);
             throw error;
         }
+    },
+    async createVendor(vendorData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.CREATE_VENDOR, {
+                input: vendorData
+            });
+            return data.createVendor;
+        } catch (error) {
+            console.error("Error creando vendedor:", error);
+            throw error;
+        }
+    },
+    async updateVendor(id, vendorData) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_VENDOR, {
+                vendorID: id,
+                input: vendorData
+            });
+            return data.updateVendor;
+        } catch (error) {
+            console.error("Error actualizando vendedor:", error);
+            throw error;
+        }
+    },
+    async deleteVendor(id) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_VENDOR, {
+                vendorID: id
+            });
+            return data.deleteVendor;
+        } catch (error) {
+            console.error("Error eliminando vendedor:", error);
+            throw error;
+        }
+    },
+    async toggleVendorStatus(id, isActive) {
+        try {
+            const data = await graphqlClient.mutation(MUTATIONS.TOGGLE_VENDOR_STATUS, {
+                vendorID: id,
+                isActive
+            });
+            return data.toggleVendorStatus;
+        } catch (error) {
+            console.error("Error cambiando estado del vendedor:", error);
+            throw error;
+        }
     }
 };
 

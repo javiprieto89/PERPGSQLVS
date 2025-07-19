@@ -163,6 +163,17 @@ export const QUERIES = {
             }
         }
     `,
+    // Alias para compatibilidad
+    GET_ALL_VENDORS: `
+        query GetAllVendors {
+            allVendors {
+                VendorID
+                VendorName
+                Commission
+                IsActive
+            }
+        }
+    `,
 
     GET_ALL_USERS: `
         query GetAllUsers {
