@@ -612,6 +612,32 @@ export const MUTATIONS = {
         }
     `,
 
+    // TIPOS DE SERVICIO
+    CREATE_SERVICETYPE: `
+        mutation CreateServicetype($input: ServiceTypeCreate!) {
+            createServicetype(data: $input) {
+                ServiceTypeID
+                Type
+            }
+        }
+    `,
+    UPDATE_SERVICETYPE: `
+        mutation UpdateServicetype($serviceTypeID: Int!, $input: ServiceTypeUpdate!) {
+            updateServicetype(serviceTypeID: $serviceTypeID, data: $input) {
+                ServiceTypeID
+                Type
+            }
+        }
+    `,
+    DELETE_SERVICETYPE: `
+        mutation DeleteServicetype($serviceTypeID: Int!) {
+            deleteServicetype(serviceTypeID: $serviceTypeID) {
+                success
+                message
+            }
+        }
+    `,
+
     // ======= ORDENES - NUEVAS MUTACIONES CORREGIDAS =======
     CREATE_ORDER: `
         mutation CreateOrder($input: OrdersCreate!) {
