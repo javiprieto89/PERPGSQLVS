@@ -59,6 +59,7 @@ from app.graphql.mutations.items import ItemsMutations
 from app.graphql.mutations.saleconditions import SaleConditionsMutations
 from app.graphql.mutations.creditcardgroups import CreditCardGroupsMutations
 from app.graphql.mutations.creditcards import CreditCardsMutations
+from app.graphql.mutations.discounts import DiscountsMutations
 from app.graphql.mutations.carmodels import CarModelsMutations
 from app.graphql.mutations.cars import CarsMutations
 from app.graphql.mutations.branches import BranchesMutations
@@ -407,6 +408,7 @@ class Mutation(
     SaleConditionsMutations,
     CreditCardGroupsMutations,
     CreditCardsMutations,
+    DiscountsMutations,
     BranchesMutations,
     CompanydataMutations,
     WarehousesMutations,

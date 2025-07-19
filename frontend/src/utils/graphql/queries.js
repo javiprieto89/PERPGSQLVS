@@ -646,6 +646,15 @@ export const QUERIES = {
             }
         }
     `,
+    GET_DISCOUNT_BY_ID: `
+        query GetDiscountById($id: Int!) {
+            discountsById(id: $id) {
+                DiscountID
+                DiscountName
+                Percentage
+            }
+        }
+    `,
 
     // GRUPOS DE TARJETAS DE CRÉDITO
     GET_ALL_CREDITCARDGROUPS: `
