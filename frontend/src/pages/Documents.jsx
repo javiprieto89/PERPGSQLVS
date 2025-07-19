@@ -10,7 +10,7 @@ export default function Documents() {
     const [documents, setDocuments] = useState([]);
     const [companies, setCompanies] = useState([]);
     const [branches, setBranches] = useState([]);
-    const [docTypes, setDocTypes] = useState([]);
+    const [documentTypes, setDocumentTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showFilters, setShowFilters] = useState(false);
@@ -40,7 +40,7 @@ export default function Documents() {
             setDocuments(docs);
             setCompanies(comps);
             setBranches(brs);
-            setDocTypes(types);
+            setDocumentTypes(types);
         } catch (err) {
             console.error("Error cargando documentos:", err);
             setError(err.message);
@@ -56,7 +56,7 @@ export default function Documents() {
                 <DocumentCreate
                     companies={companies}
                     branches={branches}
-                    docTypes={docTypes}
+                    documentTypes={documentTypes}
                     onSave={() => {
                         popup.opener.postMessage('reload-documents', '*');
                         popup.close();
@@ -77,7 +77,7 @@ export default function Documents() {
                     document={doc}
                     companies={companies}
                     branches={branches}
-                    docTypes={docTypes}
+                    documentTypes={documentTypes}
                     onSave={() => {
                         popup.opener.postMessage('reload-documents', '*');
                         popup.close();
@@ -128,7 +128,7 @@ export default function Documents() {
                     {documents.map(doc => {
                         const comp = companies.find(c => c.CompanyID === doc.CompanyID);
                         const br = branches.find(b => b.BranchID === doc.BranchID);
-                        const type = docTypes.find(t => t.DocumentTypeID === doc.DocumentTypeID);
+                        const type = documentTypes.find(t => t.DocumentTypeID === doc.DocumentTypeID);
                         return (
                             <div key={doc.DocumentID} className="bg-white rounded shadow p-4">
                                 <h3 className="text-lg font-semibold mb-2">{doc.Description}</h3>

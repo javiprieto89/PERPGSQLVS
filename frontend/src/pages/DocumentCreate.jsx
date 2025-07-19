@@ -2,10 +2,17 @@
 import { useState, useEffect } from "react";
 import { documentOperations, companyOperations, branchOperations, documentTypeOperations } from "../utils/graphqlClient";
 
-export default function DocumentCreate({ onClose, onSave, document: initialDoc = null }) {
-    const [companies, setCompanies] = useState([]);
-    const [branches, setBranches] = useState([]);
-    const [docTypes, setDocTypes] = useState([]);
+export default function DocumentCreate({
+    onClose,
+    onSave,
+    document: initialDoc = null,
+    companies: initialCompanies = [],
+    branches: initialBranches = [],
+    documentTypes: initialDocumentTypes = []
+}) {
+    const [companies, setCompanies] = useState(initialCompanies);
+    const [branches, setBranches] = useState(initialBranches);
+    const [documentTypes, setDocumentTypes] = useState(initialDocumentTypes);
 
     const [companyID, setCompanyID] = useState("");
     const [branchID, setBranchID] = useState("");
@@ -30,13 +37,13 @@ export default function DocumentCreate({ onClose, onSave, document: initialDoc =
         async function loadData() {
             try {
                 const [comp, br, types] = await Promise.all([
-                    companyOperations.getAllCompanies(),
-                    branchOperations.getAllBranches(),
-                    documentTypeOperations.getAllDocumenttypes(),
+                    companies.length ? Promise.resolve(companies) : companyOperations.getAllCompanies(),
+                    branches.length ? Promise.resolve(branches) : branchOperations.getAllBranches(),
+                    documentTypes.length ? Promise.resolve(documentTypes) : documentTypeOperations.getAllDocumenttypes(),
                 ]);
                 setCompanies(comp);
                 setBranches(br);
-                setDocTypes(types);
+                setDocumentTypes(types);
             } catch (err) {
                 console.error("Error cargando datos:", err);
             }
@@ -126,7 +133,7 @@ export default function DocumentCreate({ onClose, onSave, document: initialDoc =
                     <label className="block text-sm font-medium mb-1">Tipo de Documento</label>
                     <select value={documentTypeID} onChange={e => setDocumentTypeID(e.target.value)} className="w-full border p-2 rounded" required>
                         <option value="">Seleccione</option>
-                        {docTypes.map(dt => (
+                        {documentTypes.map(dt => (
                             <option key={dt.DocumentTypeID} value={dt.DocumentTypeID}>{dt.Name}</option>
                         ))}
                     </select>
