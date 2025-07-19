@@ -20,7 +20,6 @@ export default function PriceListItems({ onClose, onSaved }) {
     useEffect(() => {
         loadExisting(selectedList || null, filterItem?.ItemID || null);
     }, [selectedList, filterItem]);
-
     const loadExisting = async (listId, itemId) => {
         const data = await pricelistItemOperations.getFiltered(listId || null, itemId || null);
         setExisting(data);
