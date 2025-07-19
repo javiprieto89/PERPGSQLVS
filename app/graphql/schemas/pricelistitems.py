@@ -8,19 +8,17 @@ class PriceListItemsCreate:
     PriceListID: int
     ItemID: int
     Price: float
-    EffectiveDate: datetime
+    EffectiveDate: Optional[datetime] = None
 
 @strawberry.input
 class PriceListItemsUpdate:
-    PriceListID: Optional[int] = None
-    ItemID: Optional[int] = None
     Price: Optional[float] = None
     EffectiveDate: Optional[datetime] = None
 
 @strawberry.type
 class PriceListItemsInDB:
-    PriceListItemID: int
     PriceListID: int
     ItemID: int
     Price: float
     EffectiveDate: datetime
+
