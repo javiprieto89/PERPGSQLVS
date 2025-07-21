@@ -1,4 +1,4 @@
-# app/graphql/crud/stockhistory.py
+﻿# app/graphql/crud/stockhistory.py
 from sqlalchemy.orm import Session
 from app.models.stockhistory import StockHistory
 from app.graphql.schemas.stockhistory import StockHistoryCreate, StockHistoryUpdate

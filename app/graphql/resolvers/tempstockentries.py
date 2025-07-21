@@ -1,4 +1,4 @@
-# app/graphql/resolvers/tempstockentries.py
+﻿# app/graphql/resolvers/tempstockentries.py
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.tempstockentries import TempStockEntriesInDB
