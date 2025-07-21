@@ -1,7 +1,8 @@
 // src/context/UserContext.jsx
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 
 const UserContext = createContext();
+export default UserContext;
 
 export function UserProvider({ children }) {
     const [userInfo, setUserInfo] = useState(null);
@@ -127,12 +128,4 @@ export function UserProvider({ children }) {
             {children}
         </UserContext.Provider>
     );
-}
-
-export function useUser() {
-    const context = useContext(UserContext);
-    if (context === undefined) {
-        throw new Error("useUser must be used within a UserProvider");
-    }
-    return context;
 }
