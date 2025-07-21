@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import ItemSearchModal from "../components/ItemSearchModal";
 import { warehouseOperations, tempStockOperations } from "../utils/graphqlClient";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../hooks/useUser";
 
 export default function StockEntry({ onClose, windowRef }) {
     const { userInfo } = useUser();

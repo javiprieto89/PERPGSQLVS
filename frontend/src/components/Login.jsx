@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../hooks/useUser";
 import { Eye, EyeOff } from "lucide-react";
 import { AuthHelper } from "../utils/authHelper";
 
