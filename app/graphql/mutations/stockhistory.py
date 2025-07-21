@@ -1,4 +1,4 @@
-# app/graphql/mutations/stockhistory.py
+﻿# app/graphql/mutations/stockhistory.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.stockhistory import (

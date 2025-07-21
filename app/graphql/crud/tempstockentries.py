@@ -1,4 +1,4 @@
-# app/graphql/crud/tempstockentries.py
+﻿# app/graphql/crud/tempstockentries.py
 from sqlalchemy.orm import Session
 from app.models.tempstockentries import TempStockEntries
 from app.graphql.schemas.tempstockentries import (

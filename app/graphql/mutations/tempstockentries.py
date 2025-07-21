@@ -1,4 +1,4 @@
-# app/graphql/mutations/tempstockentries.py
+﻿# app/graphql/mutations/tempstockentries.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.tempstockentries import (
