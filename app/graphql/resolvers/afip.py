@@ -10,7 +10,7 @@ from app.utils.afip_client import (
     get_test_voucher_data,
     get_alternative_test_data
 )
-from app.graphql.schemas.afip import VoucherRequest, VoucherInfo, TestConnectionResult
+from app.graphql.schemas.afip import VoucherRequest, VoucherRequestBasic,  VoucherInfo, VoucherBasicInfo,  TestConnectionResult
 
 @strawberry.type
 class AfipQuery:
@@ -63,6 +63,34 @@ class AfipQuery:
                 "timestamp": "2024-01-01T00:00:00Z"
             }
             return VoucherInfo(raw=json.dumps(error_response, indent=2, ensure_ascii=False))
+
+
+    @strawberry.field
+    def informacion_rapida_comprobante(self, info: Info, data: VoucherRequestBasic) -> VoucherBasicInfo:
+        """
+        Consulta la información de un comprobante en AFIP usando WSCDC.
+        
+        Args:
+            data: Datos del comprobante a consultar
+        """
+        try:
+            # Convertir datos de entrada al formato esperado
+            cmp_req = {                                
+                "PtoVta": data.PtoVta,                
+                "CbteNro": data.CbteNro,                
+                "CbteTipo": data.CbteTipo,
+            }
+            
+            res = constatar_comprobante(cmp_req)
+            return VoucherBasicInfo(raw=json.dumps(res, indent=2, ensure_ascii=False))
+            
+        except Exception as e:
+            error_response = {
+                "error": True,
+                "message": str(e),
+                "timestamp": "2024-01-01T00:00:00Z"
+            }
+            return VoucherBasicInfo(raw=json.dumps(error_response, indent=2, ensure_ascii=False))
 
     @strawberry.field
     def test_afip_connection(self, info: Info) -> TestConnectionResult:

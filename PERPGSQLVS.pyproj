@@ -13905,6 +13905,7 @@
     <Content Include="frontend\src\components\Sidebar.jsx" />
     <Content Include="frontend\src\components\TableFilters.jsx" />
     <Content Include="frontend\src\context\UserContext.jsx" />
+    <Content Include="frontend\src\hooks\useUser.jsx" />
     <Content Include="frontend\src\index.css" />
     <Content Include="frontend\src\input.css" />
     <Content Include="frontend\src\main.jsx" />
@@ -13933,6 +13934,7 @@
     <Content Include="frontend\src\pages\DocTypes.jsx" />
     <Content Include="frontend\src\pages\DocumentCreate.jsx" />
     <Content Include="frontend\src\pages\Documents.jsx" />
+    <Content Include="frontend\src\pages\FeLessInfo.jsx" />
     <Content Include="frontend\src\pages\FeInfo.jsx" />
     <Content Include="frontend\src\pages\FeLastVoucher.jsx" />
     <Content Include="frontend\src\pages\ItemCategories.jsx" />
@@ -14960,6 +14962,7 @@
     <Folder Include="frontend\src\assets\" />
     <Folder Include="frontend\src\components\" />
     <Folder Include="frontend\src\context\" />
+    <Folder Include="frontend\src\hooks\" />
     <Folder Include="frontend\src\pages\" />
     <Folder Include="frontend\src\utils\" />
     <Folder Include="frontend\src\utils\graphql\" />

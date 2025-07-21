@@ -1,4 +1,4 @@
-// frontend/src/hooks/useUser.jsx
+﻿// frontend/src/hooks/useUser.jsx
 import { useContext } from "react";
 import UserContext from "../context/UserContext";
 

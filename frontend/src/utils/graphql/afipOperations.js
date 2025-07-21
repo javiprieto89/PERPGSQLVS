@@ -18,6 +18,14 @@ const AFIP_QUERIES = {
         }
     `,
 
+    INFORMACION_RAPIDA_COMPROBANTE: `
+        query InformacionRapidaComprobante($data: VoucherRequestBasic!) {
+            informacionRapidaComprobante(data: $data) {
+                raw
+            }
+        }
+    `,
+
     TEST_CONNECTION: `
         query TestAfipConnection {
             testAfipConnection {
@@ -82,6 +90,29 @@ export const afipOperations = {
             });
 
             return result.informacionComprobante.raw;
+        } catch (error) {
+            console.error("Error consultando comprobante:", error);
+            throw error;
+        }
+    },
+
+    /**
+     * Consulta información de un comprobante específico
+     */
+    async informacionRapidaComprobante(voucherData) {
+        try {
+            // Preparar datos asegurando tipos correctos - CUIT como string
+            const data = {                                                
+                CbteNro: parseInt(voucherData.CbteNro),  
+                PtoVta: parseFloat(voucherData.PtoVta),                
+                CbteTipo: parseInt(voucherData.CbteTipo),               
+            };
+
+            const result = await graphqlClient.query(AFIP_QUERIES.INFORMACION_RAPIDA_COMPROBANTE, {
+                data
+            });
+
+            return result.informacionRapidaComprobante.raw;
         } catch (error) {
             console.error("Error consultando comprobante:", error);
             throw error;

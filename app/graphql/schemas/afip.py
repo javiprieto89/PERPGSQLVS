@@ -1,4 +1,5 @@
 ﻿# app/graphql/schemas/afip.py
+from typing import Optional
 import strawberry
 
 @strawberry.input
@@ -15,8 +16,21 @@ class VoucherRequest:
     DocTipoReceptor: str  # Tipo de documento del receptor
     DocNroReceptor: str  # Número de documento del receptor
 
+@strawberry.input
+class VoucherRequestBasic:
+    """Datos de entrada para consultar un comprobante en AFIP."""    
+    CbteNro: int  # Número del comprobante    
+    PtoVta: int  # Punto de ventaº
+    CbteTipo: int  # Tipo de comprobante (6=Factura B, 11=Factura C, etc.)    
+    
+
 @strawberry.type
-class VoucherInfo:
+class   VoucherInfo:
+    """Información de respuesta de un comprobante consultado."""
+    raw: str  # Respuesta completa de AFIP en formato JSON
+
+@strawberry.type
+class   VoucherBasicInfo:
     """Información de respuesta de un comprobante consultado."""
     raw: str  # Respuesta completa de AFIP en formato JSON
 

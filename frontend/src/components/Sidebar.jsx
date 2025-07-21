@@ -127,7 +127,8 @@ export default function Sidebar() {
                     label: "Factura electrónica",
                     submenu: [
                         { label: "Último comprobante", to: "/fe-last" },
-                        { label: "Información comprobante", to: "/fe-info" },
+                        { label: "Constatación comprobante", to: "/fe-info" },
+                        { label: "Información comprobante", to: "/fe-less-info" },
                     ],
                 },
             ],

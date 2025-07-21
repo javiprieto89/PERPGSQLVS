@@ -93,6 +93,39 @@ def constatar_comprobante(cmp_req: Dict[str, Any]) -> Dict[str, Any]:
         logger.error(f"Error constatando comprobante: {str(e)}")
         raise Exception(f"Error consultando comprobante: {str(e)}")
 
+def informacion_rapida_comprobante(cmp_req: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Confronta un comprobante contra AFIP usando la librería.
+    
+    Args:
+        cmp_req: Datos del comprobante a consultar
+        
+    Returns:
+        Respuesta de AFIP con información del comprobante
+        
+    Raises:
+        Exception: Si hay error en la consulta
+    """
+    try:
+        # Numero de punto de venta
+        CbteNro = 1
+
+        # Punto de venta
+        PtoVta = 6 
+
+        # Tipo de comprobante
+        CbteTipo = 1 # 1 = Factura A                
+        
+        info_voucher = _afip_client.ElectronicBilling.getVoucherInfo(CbteNro, PtoVta, CbteTipo)        
+        
+        logger.info(f"Comprobante constatado exitosamente: {cmp_req}")
+        
+        return info_voucher
+        
+    except Exception as e:
+        logger.error(f"Error constatando comprobante: {str(e)}")
+        raise Exception(f"Error consultando comprobante: {str(e)}")
+
 def test_afip_connection() -> Dict[str, Any]:
     """
     Función de prueba para verificar la conexión con AFIP.
