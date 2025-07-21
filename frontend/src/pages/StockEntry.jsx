@@ -2,10 +2,10 @@
 import React, { useState, useEffect } from "react";
 import ItemSearchModal from "../components/ItemSearchModal";
 import { warehouseOperations, tempStockOperations } from "../utils/graphqlClient";
-import { useUserContext } from "../context/UserContext";
+import { useUser } from "../context/UserContext";
 
 export default function StockEntry({ onClose, windowRef }) {
-    const { userInfo } = useUserContext();
+    const { userInfo } = useUser();
     const [sessionId] = useState(() => crypto.randomUUID());
     const [warehouses, setWarehouses] = useState([]);
     const [entries, setEntries] = useState([]);
