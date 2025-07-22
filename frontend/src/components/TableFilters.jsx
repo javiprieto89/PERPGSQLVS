@@ -16,7 +16,7 @@ const pluralMap = {
     Province: "Provinces",
     Branch: "Branches",
     Company: "Companydata",
-    DocType: "Doctypes",
+    DocType: "Documenttypes",
     DocumentType: "Documenttypes",
     ItemCategory: "Itemcategories",
     ItemSubcategory: "Itemsubcategories",

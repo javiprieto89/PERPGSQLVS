@@ -275,8 +275,8 @@ export const QUERIES = {
     // COMBOS PARA FORMULARIOS
     GET_CLIENT_FORM_DATA: `
         query GetClientFormData {
-            docTypes: allDoctypes {
-                DocTypeID
+            documentTypes: allDocumenttypes {
+                DocumentTypeID
                 Name
             }
             countries: allCountries {
@@ -305,8 +305,8 @@ export const QUERIES = {
     // FORMULARIO DE PROVEEDORES
     GET_SUPPLIER_FORM_DATA: `
         query GetSupplierFormData {
-            docTypes: allDoctypes {
-                DocTypeID
+            documentTypes: allDocumenttypes {
+                DocumentTypeID
                 Name
             }
             countries: allCountries {
