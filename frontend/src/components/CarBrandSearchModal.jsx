@@ -91,6 +91,7 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
             <thead className="bg-gray-50 sticky top-0">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compañía</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acción</th>
               </tr>
@@ -107,6 +108,7 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
                     }}
                   >
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{b.CarBrandID}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{b.CompanyID}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{b.Name}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
                       <button

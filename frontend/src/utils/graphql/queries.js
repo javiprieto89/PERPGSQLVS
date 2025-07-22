@@ -56,6 +56,17 @@ export const QUERIES = {
         }
     `,
 
+    // TIPOS DE DOCUMENTO PARA CLIENTES/PROVEEDORES
+    GET_DOC_TYPES: `
+        query GetDocTypes {
+            allDoctypes {
+                DocTypeID
+                Name
+                IsActive
+            }
+        }
+    `,
+
     GET_COUNTRIES: `
         query GetCountries {
             allCountries {
@@ -275,8 +286,8 @@ export const QUERIES = {
     // COMBOS PARA FORMULARIOS
     GET_CLIENT_FORM_DATA: `
         query GetClientFormData {
-            documentTypes: allDocumenttypes {
-                DocumentTypeID
+            docTypes: allDoctypes {
+                DocTypeID
                 Name
             }
             countries: allCountries {
@@ -305,8 +316,8 @@ export const QUERIES = {
     // FORMULARIO DE PROVEEDORES
     GET_SUPPLIER_FORM_DATA: `
         query GetSupplierFormData {
-            documentTypes: allDocumenttypes {
-                DocumentTypeID
+            docTypes: allDoctypes {
+                DocTypeID
                 Name
             }
             countries: allCountries {
@@ -324,6 +335,10 @@ export const QUERIES = {
     // FORMULARIO DE AUTOS
     GET_CAR_FORM_DATA: `
         query GetCarFormData {
+            companies: allCompanydata {
+                CompanyID
+                Name
+            }
             carBrands: allCarbrands {
                 CarBrandID
                 Name
@@ -515,6 +530,7 @@ export const QUERIES = {
         query GetAllBrands {
             allBrands {
                 BrandID
+                CompanyID
                 Name
                 IsActive
             }
@@ -524,6 +540,7 @@ export const QUERIES = {
         query GetBrandById($id: Int!) {
             brandsById(id: $id) {
                 BrandID
+                CompanyID
                 Name
                 IsActive
             }
@@ -586,6 +603,7 @@ export const QUERIES = {
         query GetAllCarBrands {
             allCarbrands {
                 CarBrandID
+                CompanyID
                 Name
             }
         }
@@ -594,6 +612,7 @@ export const QUERIES = {
         query GetCarBrandById($id: Int!) {
             carbrandsById(id: $id) {
                 CarBrandID
+                CompanyID
                 Name
             }
         }
@@ -656,6 +675,7 @@ export const QUERIES = {
         query GetCarById($id: Int!) {
             carsById(id: $id) {
                 CarID
+                CompanyID
                 LicensePlate
                 Year
                 CarModelID

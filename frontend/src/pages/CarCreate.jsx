@@ -7,6 +7,7 @@ import ClientSearchModal from '../components/ClientSearchModal';
 
 export default function CarCreate({ initialData = null, onClose, onSave }) {
     const [car, setCar] = useState({
+        companyID: '',
         carBrandID: '',
         carModelID: '',
         clientID: '',
@@ -18,6 +19,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
     });
 
     const [formData, setFormData] = useState({
+        companies: [],
         carBrands: [],
         carModels: [],
         clients: [],
@@ -54,6 +56,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
         if (initialData) {
             setIsEdit(true);
             setCar({
+                companyID: initialData.CompanyID || '',
                 carBrandID: initialData.CarBrandID || '',
                 carModelID: initialData.CarModelID || '',
                 clientID: initialData.ClientID || '',
@@ -66,8 +69,14 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
         }
     }, [initialData]);
 
+    // Filtrar marcas por compañía seleccionada
+    const availableBrands = formData.carBrands.filter(b =>
+        !car.companyID || b.CompanyID === parseInt(car.companyID)
+    );
     // Actualizar modelos disponibles cuando cambia la marca
-    const availableModels = formData.carModels.filter(m => m.CarBrandID === parseInt(car.carBrandID));
+    const availableModels = formData.carModels.filter(
+        m => m.CarBrandID === parseInt(car.carBrandID)
+    );
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -75,10 +84,16 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
         if (name.includes('ID') || name === 'year' || name === 'lastServiceMileage') {
             processed = value === '' ? '' : parseInt(value);
         }
-        setCar(prev => ({
-            ...prev,
-            [name]: processed
-        }));
+        setCar(prev => {
+            const updated = { ...prev, [name]: processed };
+            if (name === 'companyID') {
+                updated.carBrandID = '';
+                updated.carModelID = '';
+            } else if (name === 'carBrandID') {
+                updated.carModelID = '';
+            }
+            return updated;
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -88,6 +103,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
 
         try {
             const carData = {
+                CompanyID: car.companyID ? parseInt(car.companyID) : null,
                 CarModelID: parseInt(car.carModelID),
                 ClientID: parseInt(car.clientID),
                 LicensePlate: car.licensePlate,
@@ -168,6 +184,28 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                 {error && <div className="text-red-600 mb-2">{error}</div>}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Compañía */}
+                    <div>
+                        <label htmlFor="companyID" className="block text-sm font-medium mb-1">
+                            Compañía
+                        </label>
+                        <select
+                            id="companyID"
+                            name="companyID"
+                            value={car.companyID}
+                            onChange={handleChange}
+                            className="w-full border p-2 rounded"
+                            required
+                        >
+                            <option value="">Seleccione</option>
+                            {formData.companies.map(c => (
+                                <option key={c.CompanyID} value={c.CompanyID}>
+                                    {c.Name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     {/* Marca */}
                     <div>
                         <label htmlFor="carBrandID" className="block text-sm font-medium mb-1">
@@ -183,7 +221,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                                 required
                             >
                                 <option value="">Seleccione</option>
-                                {formData.carBrands.map(b => (
+                                {availableBrands.map(b => (
                                     <option key={b.CarBrandID} value={b.CarBrandID}>
                                         {b.Name}
                                     </option>
