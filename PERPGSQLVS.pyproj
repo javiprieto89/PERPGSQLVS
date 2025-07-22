@@ -262,6 +262,7 @@
     <Content Include="Como iniciar.txt" />
     <Content Include="db\init_database.sql" />
     <Content Include="db\LubricentroDB2.dbml" />
+    <Content Include="db\LubricentroDB2.sql" />
     <Content Include="eslint.config.cjs" />
     <Content Include="frontend\.gitignore" />
     <Content Include="frontend\detect-unused-vars.cjs" />
