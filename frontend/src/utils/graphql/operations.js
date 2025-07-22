@@ -111,7 +111,7 @@ export const clientOperations = {
         try {
             const data = await graphqlClient.query(QUERIES.GET_CLIENT_FORM_DATA);
             return {
-                documentTypes: data.docTypes || [],
+                documentTypes: data.documentTypes || [],
                 countries: data.countries || [],
                 provinces: data.provinces || [],
                 priceLists: data.priceLists?.filter(pl => pl.IsActive) || [],
@@ -201,7 +201,7 @@ export const supplierOperations = {
         try {
             const data = await graphqlClient.query(QUERIES.GET_SUPPLIER_FORM_DATA);
             return {
-                documentTypes: data.docTypes || [],
+                documentTypes: data.documentTypes || [],
                 countries: data.countries || [],
                 provinces: data.provinces || []
             };
