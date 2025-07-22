@@ -1,54 +1,54 @@
-﻿# app/graphql/crud/tempstockentries.py
+# app/graphql/crud/tempstockhistorydetails.py
 from sqlalchemy.orm import Session
 import uuid
-from app.models.tempstockentries import TempStockEntries
-from app.graphql.schemas.tempstockentries import (
-    TempStockEntriesCreate,
-    TempStockEntriesUpdate,
+from app.models.tempstockhistorydetails import TempStockHistoryDetails
+from app.graphql.schemas.tempstockhistorydetails import (
+    TempStockHistoryDetailsCreate,
+    TempStockHistoryDetailsUpdate,
 )
 
 
-def get_tempstockentries(db: Session):
-    return db.query(TempStockEntries).all()
+def get_tempstockhistorydetails(db: Session):
+    return db.query(TempStockHistoryDetails).all()
 
 
-def get_tempstockentries_by_id(db: Session, entry_id: int):
+def get_tempstockhistorydetails_by_id(db: Session, entry_id: int):
     return (
-        db.query(TempStockEntries)
-        .filter(TempStockEntries.TempStockEntryID == entry_id)
+        db.query(TempStockHistoryDetails)
+        .filter(TempStockHistoryDetails.TempStockEntryID == entry_id)
         .first()
     )
 
 
-def get_tempstockentries_by_session(db: Session, session_id: str):
+def get_tempstockhistorydetails_by_session(db: Session, session_id: str):
     """Obtener todas las entradas de stock temporales para un SessionID."""
     return (
-        db.query(TempStockEntries)
-        .filter(TempStockEntries.SessionID == session_id)
+        db.query(TempStockHistoryDetails)
+        .filter(TempStockHistoryDetails.SessionID == session_id)
         .all()
     )
 
 
-def create_tempstockentries(db: Session, data: TempStockEntriesCreate):
+def create_tempstockhistorydetails(db: Session, data: TempStockHistoryDetailsCreate):
     """Crear entrada temporal de stock manteniendo un UniqueID por sesion."""
     # Buscar si ya existe un registro para esta sesion para reutilizar el UniqueID
     existing = (
-        db.query(TempStockEntries)
-        .filter(TempStockEntries.SessionID == data.SessionID)
+        db.query(TempStockHistoryDetails)
+        .filter(TempStockHistoryDetails.SessionID == data.SessionID)
         .first()
     )
 
     unique_id = existing.UniqueID if existing else uuid.uuid4()
 
-    obj = TempStockEntries(**vars(data), UniqueID=unique_id)
+    obj = TempStockHistoryDetails(**vars(data), UniqueID=unique_id)
     db.add(obj)
     db.commit()
     db.refresh(obj)
     return obj
 
 
-def update_tempstockentries(db: Session, entry_id: int, data: TempStockEntriesUpdate):
-    obj = get_tempstockentries_by_id(db, entry_id)
+def update_tempstockhistorydetails(db: Session, entry_id: int, data: TempStockHistoryDetailsUpdate):
+    obj = get_tempstockhistorydetails_by_id(db, entry_id)
     if obj:
         for k, v in vars(data).items():
             if v is not None:
@@ -58,8 +58,8 @@ def update_tempstockentries(db: Session, entry_id: int, data: TempStockEntriesUp
     return obj
 
 
-def delete_tempstockentries(db: Session, entry_id: int):
-    obj = get_tempstockentries_by_id(db, entry_id)
+def delete_tempstockhistorydetails(db: Session, entry_id: int):
+    obj = get_tempstockhistorydetails_by_id(db, entry_id)
     if obj:
         db.delete(obj)
         db.commit()
@@ -72,8 +72,8 @@ def process_stock_session(db: Session, session_id: str):
     from app.models.stockhistory import StockHistory
 
     entries = (
-        db.query(TempStockEntries)
-        .filter(TempStockEntries.SessionID == session_id, TempStockEntries.IsProcessed == False)
+        db.query(TempStockHistoryDetails)
+        .filter(TempStockHistoryDetails.SessionID == session_id, TempStockHistoryDetails.IsProcessed == False)
         .all()
     )
 

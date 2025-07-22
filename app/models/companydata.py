@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from .itemstock import Itemstock
     from .orders import Orders  
     from .stockhistory import StockHistory
-    from .tempstockentries import TempStockEntries
+    from .tempstockhistorydetails import TempStockHistoryDetails
     from .orderhistory import OrderHistory
     from .temporderdetails import TempOrderDetails
 
@@ -47,6 +47,6 @@ class CompanyData(Base):
     itemstock: Mapped[List['Itemstock']] = relationship('Itemstock', back_populates='companyData_')
     orders: Mapped[List['Orders']] = relationship('Orders', back_populates='companyData_')
     stockHistory: Mapped[List['StockHistory']] = relationship('StockHistory', back_populates='companyData_')
-    tempStockEntries: Mapped[List['TempStockEntries']] = relationship('TempStockEntries', back_populates='companyData_')
+    tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship('TempStockHistoryDetails', back_populates='companyData_')
     orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='companyData_')
     tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship('TempOrderDetails', back_populates='companyData_')

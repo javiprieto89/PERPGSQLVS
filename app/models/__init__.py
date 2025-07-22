@@ -1,6 +1,6 @@
 # app/models/__init__.py
 
-# Importar explícitamente TODOS los modelos para que SQLAlchemy registre todas las clases
+# Importar explÃ­citamente TODOS los modelos para que SQLAlchemy registre todas las clases
 from .accountbalances import *
 from .branches import *
 from .brands import *
@@ -35,7 +35,9 @@ from .servicetype import *
 from .stockhistory import *
 from .suppliers import *
 from .temporderdetails import *
-from .tempstockentries import *
+from .tempstockhistorydetails import *
+from .cashboxes import *
+from .cashboxmovements import *
 from .transactions import *
 from .transactiontypes import *
 from .useraccess import *
@@ -81,7 +83,9 @@ __all__ = [
     "stockhistory",
     "suppliers",
     "temporderdetails",
-    "tempstockentries",
+    "tempstockhistorydetails",
+    "cashboxes",
+    "cashboxmovements",
     "transactions",
     "transactiontypes",
     "useraccess",

@@ -946,8 +946,8 @@ export const MUTATIONS = {
 
     // ====== TEMPORARY STOCK ENTRIES ======
     CREATE_TEMPSTOCKENTRY: `
-        mutation CreateTempstockentry($input: TempStockEntriesCreate!) {
-            createTempstockentry(data: $input) {
+        mutation CreateTempstockhistorydetail($input: TempStockHistoryDetailsCreate!) {
+            createTempstockhistorydetail(data: $input) {
                 TempStockEntryID
                 SessionID
                 ItemID
@@ -975,8 +975,8 @@ export const MUTATIONS = {
         }
     `,
     GET_TEMP_STOCK_BY_SESSION: `
-        query GetTempStockBySession($sessionID: String!) {
-            tempstockentriesBySession(sessionID: $sessionID) {
+        query GetTempStockHistoryBySession($sessionID: String!) {
+            tempstockhistorydetailsBySession(sessionID: $sessionID) {
                 TempStockEntryID
                 SessionID
                 ItemID
