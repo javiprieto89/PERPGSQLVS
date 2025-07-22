@@ -1,16 +1,29 @@
 import { useState, useEffect } from "react";
-import { carBrandOperations } from "../utils/graphqlClient";
+import { carBrandOperations, companyOperations } from "../utils/graphqlClient";
 
 export default function CarBrandCreate({ onClose, onSave, carBrand: initialCarBrand = null }) {
     const [name, setName] = useState("");
+    const [companyID, setCompanyID] = useState("");
+    const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
 
     useEffect(() => {
+        const loadCompanies = async () => {
+            try {
+                const res = await companyOperations.getAllCompanies();
+                setCompanies(res);
+            } catch (err) {
+                console.error("Error cargando compañías:", err);
+            }
+        };
+        loadCompanies();
+
         if (initialCarBrand) {
             setIsEdit(true);
             setName(initialCarBrand.Name || "");
+            setCompanyID(initialCarBrand.CompanyID || "");
         }
     }, [initialCarBrand]);
 
@@ -20,10 +33,11 @@ export default function CarBrandCreate({ onClose, onSave, carBrand: initialCarBr
         setError(null);
         try {
             let result;
+            const payload = { Name: name, CompanyID: parseInt(companyID) };
             if (isEdit) {
-                result = await carBrandOperations.updateCarBrand(initialCarBrand.CarBrandID, { Name: name });
+                result = await carBrandOperations.updateCarBrand(initialCarBrand.CarBrandID, payload);
             } else {
-                result = await carBrandOperations.createCarBrand({ Name: name });
+                result = await carBrandOperations.createCarBrand(payload);
             }
             onSave && onSave(result);
             onClose && onClose();
@@ -40,6 +54,20 @@ export default function CarBrandCreate({ onClose, onSave, carBrand: initialCarBr
             <h2 className="text-xl font-bold mb-4">{isEdit ? 'Editar Marca de Auto' : 'Nueva Marca de Auto'}</h2>
             {error && <div className="text-red-600 mb-2">{error}</div>}
             <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                    <label className="block text-sm font-medium mb-1">Compañía</label>
+                    <select
+                        value={companyID}
+                        onChange={e => setCompanyID(e.target.value)}
+                        className="w-full border p-2 rounded"
+                        required
+                    >
+                        <option value="">Seleccione</option>
+                        {companies.map(c => (
+                            <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
+                        ))}
+                    </select>
+                </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">Nombre</label>
                     <input
@@ -61,7 +89,7 @@ export default function CarBrandCreate({ onClose, onSave, carBrand: initialCarBr
                     </button>
                     <button
                         type="submit"
-                        disabled={loading || !name.trim()}
+                        disabled={loading || !name.trim() || !companyID}
                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                     >
                         {loading ? 'Guardando...' : 'Guardar'}

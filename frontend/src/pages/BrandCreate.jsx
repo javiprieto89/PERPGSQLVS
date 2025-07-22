@@ -1,18 +1,31 @@
 import { useState, useEffect } from "react";
-import { brandOperations } from "../utils/graphqlClient";
+import { brandOperations, companyOperations } from "../utils/graphqlClient";
 
 export default function BrandCreate({ onClose, onSave, brand: initialBrand = null }) {
     const [name, setName] = useState("");
+    const [companyID, setCompanyID] = useState("");
+    const [companies, setCompanies] = useState([]);
     const [isActive, setIsActive] = useState(true);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
 
     useEffect(() => {
+        const loadCompanies = async () => {
+            try {
+                const res = await companyOperations.getAllCompanies();
+                setCompanies(res);
+            } catch (err) {
+                console.error("Error cargando compañías:", err);
+            }
+        };
+        loadCompanies();
+
         if (initialBrand) {
             setIsEdit(true);
             setName(initialBrand.Name || "");
             setIsActive(initialBrand.IsActive !== false);
+            setCompanyID(initialBrand.CompanyID || "");
         }
     }, [initialBrand]);
 
@@ -22,10 +35,11 @@ export default function BrandCreate({ onClose, onSave, brand: initialBrand = nul
         setError(null);
         try {
             let result;
+            const payload = { Name: name, IsActive: isActive, CompanyID: parseInt(companyID) };
             if (isEdit) {
-                result = await brandOperations.updateBrand(initialBrand.BrandID, { Name: name, IsActive: isActive });
+                result = await brandOperations.updateBrand(initialBrand.BrandID, payload);
             } else {
-                result = await brandOperations.createBrand({ Name: name, IsActive: isActive });
+                result = await brandOperations.createBrand(payload);
             }
             onSave && onSave(result);
             onClose && onClose();
@@ -42,6 +56,20 @@ export default function BrandCreate({ onClose, onSave, brand: initialBrand = nul
             <h2 className="text-xl font-bold mb-4">{isEdit ? 'Editar Marca' : 'Nueva Marca'}</h2>
             {error && <div className="text-red-600 mb-2">{error}</div>}
             <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                    <label className="block text-sm font-medium mb-1">Compañía</label>
+                    <select
+                        value={companyID}
+                        onChange={e => setCompanyID(e.target.value)}
+                        className="w-full border p-2 rounded"
+                        required
+                    >
+                        <option value="">Seleccione</option>
+                        {companies.map(c => (
+                            <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
+                        ))}
+                    </select>
+                </div>
                 <div>
                     <label className="block text-sm font-medium mb-1">Nombre</label>
                     <input
@@ -74,7 +102,7 @@ export default function BrandCreate({ onClose, onSave, brand: initialBrand = nul
                     </button>
                     <button
                         type="submit"
-                        disabled={loading || !name.trim()}
+                        disabled={loading || !name.trim() || !companyID}
                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                     >
                         {loading ? 'Guardando...' : 'Guardar'}
