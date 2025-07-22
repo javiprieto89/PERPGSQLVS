@@ -5,6 +5,7 @@ from app.graphql.schemas.tempstockentries import TempStockEntriesInDB
 from app.graphql.crud.tempstockentries import (
     get_tempstockentries,
     get_tempstockentries_by_id,
+    get_tempstockentries_by_session,
 )
 from app.db import get_db
 from app.utils import list_to_schema, obj_to_schema
@@ -32,6 +33,18 @@ class TempstockentriesQuery:
         try:
             entry = get_tempstockentries_by_id(db, id)
             return obj_to_schema(TempStockEntriesInDB, entry) if entry else None
+        finally:
+            db_gen.close()
+
+    @strawberry.field
+    def tempstockentries_by_session(
+        self, info: Info, sessionID: str
+    ) -> List[TempStockEntriesInDB]:
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            entries = get_tempstockentries_by_session(db, sessionID)
+            return list_to_schema(TempStockEntriesInDB, entries)
         finally:
             db_gen.close()
 
