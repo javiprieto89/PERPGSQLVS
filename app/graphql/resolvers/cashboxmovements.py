@@ -1,4 +1,4 @@
-# app/graphql/resolvers/cashboxmovements.py
+﻿# app/graphql/resolvers/cashboxmovements.py
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.cashboxmovements import CashBoxMovementsInDB

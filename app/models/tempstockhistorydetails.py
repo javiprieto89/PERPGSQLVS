@@ -1,4 +1,4 @@
-# ========== TempStockHistoryDetails ===========
+﻿# ========== TempStockHistoryDetails ===========
 # app/models/tempstockhistorydetails.py
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional

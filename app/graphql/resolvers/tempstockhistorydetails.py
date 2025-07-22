@@ -1,4 +1,4 @@
-# app/graphql/resolvers/tempstockhistorydetails.py
+﻿# app/graphql/resolvers/tempstockhistorydetails.py
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.tempstockhistorydetails import TempStockHistoryDetailsInDB

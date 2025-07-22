@@ -1,4 +1,4 @@
-# app/graphql/schemas/cashboxes.py
+﻿# app/graphql/schemas/cashboxes.py
 import strawberry
 from typing import Optional
 from datetime import datetime

@@ -1,4 +1,4 @@
-# app/graphql/schemas/tempstockhistorydetails.py
+﻿# app/graphql/schemas/tempstockhistorydetails.py
 import strawberry
 from typing import Optional
 from datetime import datetime

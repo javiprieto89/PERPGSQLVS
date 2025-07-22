@@ -1,4 +1,4 @@
-# app/graphql/crud/cashboxmovements.py
+﻿# app/graphql/crud/cashboxmovements.py
 from sqlalchemy.orm import Session
 from app.models.cashboxmovements import CashBoxMovements
 from app.graphql.schemas.cashboxmovements import CashBoxMovementsCreate, CashBoxMovementsUpdate

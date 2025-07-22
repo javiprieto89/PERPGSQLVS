@@ -1,4 +1,4 @@
-# ========== CashBoxes ===========
+﻿# ========== CashBoxes ===========
 # app/models/cashboxes.py
 from __future__ import annotations
 from typing import List, Optional, TYPE_CHECKING

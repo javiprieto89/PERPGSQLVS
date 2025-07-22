@@ -1,4 +1,4 @@
-# app/graphql/mutations/cashboxmovements.py
+﻿# app/graphql/mutations/cashboxmovements.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.cashboxmovements import CashBoxMovementsCreate, CashBoxMovementsUpdate, CashBoxMovementsInDB

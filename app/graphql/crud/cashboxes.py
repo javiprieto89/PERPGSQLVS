@@ -1,4 +1,4 @@
-# app/graphql/crud/cashboxes.py
+﻿# app/graphql/crud/cashboxes.py
 from sqlalchemy.orm import Session
 from app.models.cashboxes import CashBoxes
 from app.graphql.schemas.cashboxes import CashBoxesCreate, CashBoxesUpdate
