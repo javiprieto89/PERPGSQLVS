@@ -1,4 +1,4 @@
-# app/graphql/schemas/tempstockentries.py
+# app/graphql/schemas/tempstockhistorydetails.py
 import strawberry
 from typing import Optional
 from datetime import datetime
@@ -6,7 +6,7 @@ from uuid import UUID
 
 
 @strawberry.input
-class TempStockEntriesCreate:
+class TempStockHistoryDetailsCreate:
     CompanyID: int
     BranchID: int
     SessionID: str
@@ -18,7 +18,7 @@ class TempStockEntriesCreate:
 
 
 @strawberry.input
-class TempStockEntriesUpdate:
+class TempStockHistoryDetailsUpdate:
     CompanyID: Optional[int] = None
     BranchID: Optional[int] = None
     SessionID: Optional[str] = None
@@ -31,7 +31,7 @@ class TempStockEntriesUpdate:
 
 
 @strawberry.type
-class TempStockEntriesInDB:
+class TempStockHistoryDetailsInDB:
     TempStockEntryID: int
     CompanyID: int
     BranchID: int

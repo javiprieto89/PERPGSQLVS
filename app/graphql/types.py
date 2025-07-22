@@ -173,7 +173,7 @@ class tempOrderDetails:
 
 
 @strawberry.type
-class TempStockEntries:
+class TempStockHistoryDetails:
     pass  # TODO: completar campos manualmente
 
 

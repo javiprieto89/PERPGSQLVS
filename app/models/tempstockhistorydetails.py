@@ -1,5 +1,5 @@
-# ========== TempStockEntries ===========
-# app/models/tempstockentries.py
+# ========== TempStockHistoryDetails ===========
+# app/models/tempstockhistorydetails.py
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
@@ -27,8 +27,8 @@ from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 
 
-class TempStockEntries(Base):
-    __tablename__ = "TempStockEntries"
+class TempStockHistoryDetails(Base):
+    __tablename__ = "TempStockHistoryDetails"
     __table_args__ = (
         ForeignKeyConstraint(
             ["BranchID"], ["Branches.BranchID"], name="FK__TempStock__Branc__160F4887"
@@ -67,13 +67,17 @@ class TempStockEntries(Base):
 
     # Relaciones
     branches_: Mapped["Branches"] = relationship(
-        "Branches", back_populates="tempStockEntries"
+        "Branches", back_populates="tempStockHistoryDetails"
     )
     companyData_: Mapped["CompanyData"] = relationship(
-        "CompanyData", back_populates="tempStockEntries"
+        "CompanyData", back_populates="tempStockHistoryDetails"
     )
-    items_: Mapped["Items"] = relationship("Items", back_populates="tempStockEntries")
-    users_: Mapped["Users"] = relationship("Users", back_populates="tempStockEntries")
+    items_: Mapped["Items"] = relationship(
+        "Items", back_populates="tempStockHistoryDetails"
+    )
+    users_: Mapped["Users"] = relationship(
+        "Users", back_populates="tempStockHistoryDetails"
+    )
     warehouses_: Mapped["Warehouses"] = relationship(
-        "Warehouses", back_populates="tempStockEntries"
+        "Warehouses", back_populates="tempStockHistoryDetails"
     )

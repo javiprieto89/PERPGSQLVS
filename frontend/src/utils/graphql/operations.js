@@ -1524,7 +1524,7 @@ export const tempStockOperations = {
             MUTATIONS.CREATE_TEMPSTOCKENTRY,
             { input }
         );
-        return res.createTempstockentry;
+        return res.createTempstockhistorydetail;
     },
 
     async getSessionEntries(sessionID) {
@@ -1532,7 +1532,7 @@ export const tempStockOperations = {
             MUTATIONS.GET_TEMP_STOCK_BY_SESSION,
             { sessionID }
         );
-        return res.tempstockentriesBySession || [];
+        return res.tempstockhistorydetailsBySession || [];
     },
 
     async processSession(sessionID) {

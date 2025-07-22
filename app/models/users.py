@@ -8,9 +8,11 @@ if TYPE_CHECKING:
     from .useraccess import UserAccess
     from .orders import Orders
     from .stockhistory import StockHistory
-    from .tempstockentries import TempStockEntries
+    from .tempstockhistorydetails import TempStockHistoryDetails
     from .orderhistory import OrderHistory
     from .temporderdetails import TempOrderDetails
+    from .cashboxes import CashBoxes
+    from .cashboxmovements import CashBoxMovements
 
 from typing import List
 
@@ -43,6 +45,8 @@ class Users(Base):
     userAccess: Mapped[List['UserAccess']] = relationship('UserAccess', back_populates='users_')
     orders: Mapped[List['Orders']] = relationship('Orders', back_populates='users_')
     stockHistory: Mapped[List['StockHistory']] = relationship('StockHistory', back_populates='users_')
-    tempStockEntries: Mapped[List['TempStockEntries']] = relationship('TempStockEntries', back_populates='users_')
+    tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship('TempStockHistoryDetails', back_populates='users_')
     orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='users_')
     tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship('TempOrderDetails', back_populates='users_')
+    cashBoxes: Mapped[List['CashBoxes']] = relationship('CashBoxes', back_populates='users_')
+    cashBoxMovements: Mapped[List['CashBoxMovements']] = relationship('CashBoxMovements', back_populates='users_')

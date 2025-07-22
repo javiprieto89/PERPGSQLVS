@@ -14,10 +14,11 @@ if TYPE_CHECKING:
     from .itemstock import Itemstock
     from .orders import Orders
     from .stockhistory import StockHistory
-    from .tempstockentries import TempStockEntries
+    from .tempstockhistorydetails import TempStockHistoryDetails
     from .orderhistory import OrderHistory
     from .temporderdetails import TempOrderDetails
     from .transactions import Transactions
+    from .cashboxes import CashBoxes
 
 
 class Branches(Base):
@@ -42,7 +43,8 @@ class Branches(Base):
     itemstock: Mapped[List[Itemstock]] = relationship('Itemstock', back_populates='branches_')
     orders: Mapped[List[Orders]] = relationship('Orders', back_populates='branches_')
     stockHistory: Mapped[List[StockHistory]] = relationship('StockHistory', back_populates='branches_')
-    tempStockEntries: Mapped[List[TempStockEntries]] = relationship('TempStockEntries', back_populates='branches_')
+    tempStockHistoryDetails: Mapped[List[TempStockHistoryDetails]] = relationship('TempStockHistoryDetails', back_populates='branches_')
     orderHistory: Mapped[List[OrderHistory]] = relationship('OrderHistory', back_populates='branches_')
     tempOrderDetails: Mapped[List[TempOrderDetails]] = relationship('TempOrderDetails', back_populates='branches_')
     transactions: Mapped[List[Transactions]] = relationship('Transactions', back_populates='branches_')
+    cashBoxes: Mapped[List[CashBoxes]] = relationship('CashBoxes', back_populates='branches_')

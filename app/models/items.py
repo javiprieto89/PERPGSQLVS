@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from app.models.itemstock import Itemstock
     from app.models.pricelistitems import PriceListItems
     from app.models.stockhistory import StockHistory
-    from app.models.tempstockentries import TempStockEntries
+    from app.models.tempstockhistorydetails import TempStockHistoryDetails
     from app.models.orderdetails import OrderDetails
     from app.models.temporderdetails import TempOrderDetails
     from app.models.orderhistorydetails import OrderHistoryDetails
@@ -68,7 +68,7 @@ class Items(Base):
     itemstock: Mapped[List[Itemstock]] = relationship('Itemstock', back_populates='items_')
     priceListItems: Mapped[List[PriceListItems]] = relationship('PriceListItems', back_populates='items_')
     stockHistory: Mapped[List[StockHistory]] = relationship('StockHistory', back_populates='items_')
-    tempStockEntries: Mapped[List[TempStockEntries]] = relationship('TempStockEntries', back_populates='items_')
+    tempStockHistoryDetails: Mapped[List[TempStockHistoryDetails]] = relationship('TempStockHistoryDetails', back_populates='items_')
     orderDetails: Mapped[List[OrderDetails]] = relationship('OrderDetails', back_populates='items_')
     tempOrderDetails: Mapped[List[TempOrderDetails]] = relationship('TempOrderDetails', back_populates='items_')
     orderHistoryDetails: Mapped[List[OrderHistoryDetails]] = relationship('OrderHistoryDetails', back_populates='items_')

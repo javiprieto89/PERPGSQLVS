@@ -22,6 +22,8 @@ from app.graphql.resolvers.discounts import DiscountsQuery
 from app.graphql.resolvers.doctypes import DoctypesQuery
 from app.graphql.resolvers.documents import DocumentsQuery
 from app.graphql.resolvers.documenttypes import DocumenttypesQuery
+from app.graphql.resolvers.cashboxes import CashboxesQuery
+from app.graphql.resolvers.cashboxmovements import CashboxmovementsQuery
 from app.graphql.resolvers.itemcategories import ItemcategoriesQuery
 from app.graphql.resolvers.itempricehistory import ItempricehistoryQuery
 from app.graphql.resolvers.items import ItemsQuery
@@ -41,7 +43,7 @@ from app.graphql.resolvers.servicetype import ServicetypeQuery
 from app.graphql.resolvers.stockhistory import StockhistoryQuery
 from app.graphql.resolvers.suppliers import SuppliersQuery
 from app.graphql.resolvers.temporderdetails import TemporderdetailsQuery
-from app.graphql.resolvers.tempstockentries import TempstockentriesQuery
+from app.graphql.resolvers.tempstockhistorydetails import TempstockhistorydetailsQuery
 from app.graphql.resolvers.transactions import TransactionsQuery
 from app.graphql.resolvers.transactiontypes import TransactiontypesQuery
 from app.graphql.resolvers.useraccess import UseraccessQuery
@@ -70,7 +72,9 @@ from app.graphql.mutations.pricelists import PricelistsMutations
 from app.graphql.mutations.pricelistitems import PricelistitemsMutations
 from app.graphql.mutations.temporderdetails import TempOrderDetailsMutations
 from app.graphql.mutations.orders import OrdersMutations
-from app.graphql.mutations.tempstockentries import TempStockEntriesMutations
+from app.graphql.mutations.tempstockhistorydetails import TempStockHistoryDetailsMutations
+from app.graphql.mutations.cashboxes import CashBoxesMutations
+from app.graphql.mutations.cashboxmovements import CashBoxMovementsMutations
 from app.graphql.mutations.stockhistory import StockHistoryMutations
 from app.graphql.mutations.servicetype import ServiceTypeMutations
 from app.graphql.mutations.documenttypes import DocumentTypesMutations
@@ -341,7 +345,9 @@ class Query(
     StockhistoryQuery,
     SuppliersQuery,
     TemporderdetailsQuery,
-    TempstockentriesQuery,
+    TempstockhistorydetailsQuery,
+    CashboxesQuery,
+    CashboxmovementsQuery,
     TransactionsQuery,
     TransactiontypesQuery,
     UseraccessQuery,
@@ -423,7 +429,9 @@ class Mutation(
     PricelistsMutations,
     PricelistitemsMutations,
     TempOrderDetailsMutations,
-    TempStockEntriesMutations,
+    TempStockHistoryDetailsMutations,
+    CashBoxesMutations,
+    CashBoxMovementsMutations,
     StockHistoryMutations,
     OrdersMutations,
     ServiceTypeMutations,
