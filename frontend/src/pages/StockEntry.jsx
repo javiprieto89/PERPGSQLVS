@@ -1,22 +1,32 @@
 // frontend/src/pages/StockEntry.jsx
 import React, { useState, useEffect } from "react";
 import ItemSearchModal from "../components/ItemSearchModal";
-import { warehouseOperations, tempStockOperations } from "../utils/graphqlClient";
+import ItemConfirmationModal from "../components/ItemConfirmationModal";
+import CompanySearchModal from "../components/CompanySearchModal";
+import BranchSearchModal from "../components/BranchSearchModal";
+import { warehouseOperations, tempStockOperations, companyOperations, branchOperations } from "../utils/graphqlClient";
 import { useUser } from "../hooks/useUser";
 
 export default function StockEntry({ onClose, windowRef }) {
     const { userInfo } = useUser();
     const [sessionId] = useState(() => crypto.randomUUID());
     const [warehouses, setWarehouses] = useState([]);
+    const [companies, setCompanies] = useState([]);
+    const [branches, setBranches] = useState([]);
     const [entries, setEntries] = useState([]);
     const [showItemSearch, setShowItemSearch] = useState(false);
+    const [showItemConfirm, setShowItemConfirm] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [companyID, setCompanyID] = useState(userInfo?.companyId || "");
+    const [branchID, setBranchID] = useState(userInfo?.branchId || "");
+    const [showCompanyModal, setShowCompanyModal] = useState(false);
+    const [showBranchModal, setShowBranchModal] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [warehouseId, setWarehouseId] = useState("");
-    const [reason, setReason] = useState("");
 
     useEffect(() => {
         warehouseOperations.getAllWarehouses().then(setWarehouses);
+        companyOperations.getAllCompanies().then(setCompanies);
+        branchOperations.getAllBranches().then(setBranches);
     }, []);
 
     const loadEntries = async () => {
@@ -31,27 +41,27 @@ export default function StockEntry({ onClose, windowRef }) {
     const handleSelectItem = (item) => {
         setSelectedItem(item);
         setShowItemSearch(false);
+        setShowItemConfirm(true);
     };
 
-    const handleAdd = async () => {
-        if (!selectedItem || !warehouseId || !quantity) return;
+    const handleConfirmItem = async (details) => {
+        if (!selectedItem) return;
         const data = {
             SessionID: sessionId,
-            CompanyID: userInfo?.companyId || 1,
-            BranchID: userInfo?.branchId || 1,
+            CompanyID: parseInt(companyID),
+            BranchID: parseInt(branchID),
             UserID: userInfo?.userId || 1,
             ItemID: selectedItem.itemID || selectedItem.ItemID,
-            WarehouseID: parseInt(warehouseId),
-            Quantity: parseInt(quantity),
-            Reason: reason,
+            WarehouseID: parseInt(details.warehouseId),
+            Quantity: parseInt(details.quantity || quantity),
         };
         await tempStockOperations.createEntry(data);
         setSelectedItem(null);
+        setShowItemConfirm(false);
         setQuantity(1);
-        setWarehouseId("");
-        setReason("");
         loadEntries();
     };
+
 
     const handleProcess = async () => {
         await tempStockOperations.processSession(sessionId);
@@ -61,53 +71,52 @@ export default function StockEntry({ onClose, windowRef }) {
     return (
         <div className="p-6 space-y-4">
             <h1 className="text-2xl font-bold">Ingreso de Stock</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label className="block text-sm font-medium mb-1">Compañía</label>
+                    <div className="flex space-x-2 items-center">
+                        <select value={companyID} onChange={e => setCompanyID(e.target.value)} className="w-full border p-2 rounded">
+                            <option value="">Seleccione</option>
+                            {companies.map(c => (
+                                <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
+                            ))}
+                        </select>
+                        <div className="relative w-32">
+                            <input value={''} readOnly className="border p-2 rounded pl-7 w-full" />
+                            <button type="button" onClick={() => setShowCompanyModal(true)} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium mb-1">Sucursal</label>
+                    <div className="flex space-x-2 items-center">
+                        <select value={branchID} onChange={e => setBranchID(e.target.value)} className="w-full border p-2 rounded">
+                            <option value="">Seleccione</option>
+                            {branches.filter(b => !companyID || b.CompanyID === parseInt(companyID)).map(b => (
+                                <option key={b.BranchID} value={b.BranchID}>{b.Name}</option>
+                            ))}
+                        </select>
+                        <div className="relative w-32">
+                            <input value={''} readOnly className="border p-2 rounded pl-7 w-full" />
+                            <button type="button" onClick={() => setShowBranchModal(true)} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <button
                 onClick={() => setShowItemSearch(true)}
                 className="px-4 py-2 bg-blue-600 text-white rounded"
             >
                 Buscar Ítem
             </button>
-            {selectedItem && (
-                <div className="space-y-2 border p-4 rounded">
-                    <h3 className="font-medium">
-                        {selectedItem.description || selectedItem.Description}
-                    </h3>
-                    <div className="flex gap-2">
-                        <input
-                            type="number"
-                            min="1"
-                            value={quantity}
-                            onChange={(e) => setQuantity(e.target.value)}
-                            className="border px-2 py-1 rounded w-24"
-                        />
-                        <select
-                            value={warehouseId}
-                            onChange={(e) => setWarehouseId(e.target.value)}
-                            className="border px-2 py-1 rounded"
-                        >
-                            <option value="">Depósito...</option>
-                            {warehouses.map((w) => (
-                                <option key={w.WarehouseID} value={w.WarehouseID}>
-                                    {w.Name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <input
-                        type="text"
-                        value={reason}
-                        onChange={(e) => setReason(e.target.value)}
-                        placeholder="Motivo"
-                        className="border px-2 py-1 rounded w-full"
-                    />
-                    <button
-                        onClick={handleAdd}
-                        className="mt-2 px-4 py-1 bg-green-600 text-white rounded"
-                    >
-                        Agregar
-                    </button>
-                </div>
-            )}
             {entries.length > 0 && (
                 <table className="w-full text-sm">
                     <thead className="bg-gray-100">
@@ -149,6 +158,36 @@ export default function StockEntry({ onClose, windowRef }) {
                     isOpen={true}
                     onClose={() => setShowItemSearch(false)}
                     onItemSelect={handleSelectItem}
+                />
+            )}
+            {showItemConfirm && selectedItem && (
+                <ItemConfirmationModal
+                    isOpen={true}
+                    item={selectedItem}
+                    onClose={() => setShowItemConfirm(false)}
+                    onConfirm={handleConfirmItem}
+                    warehouses={warehouses}
+                />
+            )}
+            {showCompanyModal && (
+                <CompanySearchModal
+                    isOpen={true}
+                    onClose={() => setShowCompanyModal(false)}
+                    onSelect={(c) => {
+                        setCompanyID(c.CompanyID);
+                        setShowCompanyModal(false);
+                    }}
+                />
+            )}
+            {showBranchModal && (
+                <BranchSearchModal
+                    isOpen={true}
+                    companyID={companyID}
+                    onClose={() => setShowBranchModal(false)}
+                    onSelect={(b) => {
+                        setBranchID(b.BranchID);
+                        setShowBranchModal(false);
+                    }}
                 />
             )}
         </div>
