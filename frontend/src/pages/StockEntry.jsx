@@ -60,7 +60,6 @@ export default function StockEntry({ onClose, windowRef }) {
         setSelectedItem(null);
         setShowItemConfirm(false);
         setQuantity(1);
-        setWarehouseID("");
         loadEntries();
     };
 

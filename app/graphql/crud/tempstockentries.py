@@ -92,7 +92,11 @@ def process_stock_session(db: Session, session_id: str):
 
         if item_stock:
             quantity_before = item_stock.Quantity or 0
-            item_stock.Quantity = (item_stock.Quantity or 0) + entry.Quantity
+            setattr(
+                item_stock,
+                "Quantity",
+                (item_stock.Quantity or 0) + entry.Quantity,
+            )
         else:
             quantity_before = 0
             item_stock = Itemstock(
@@ -117,7 +121,7 @@ def process_stock_session(db: Session, session_id: str):
         )
 
         db.add(history)
-        entry.IsProcessed = True
+        setattr(entry, "IsProcessed", True)
         processed_records.append(history)
 
     db.commit()
