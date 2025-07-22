@@ -893,6 +893,78 @@ export const QUERIES = {
         }
     `,
 
+    // CAJAS
+    GET_ALL_CASHBOXES: `
+        query GetAllCashboxes {
+            allCashboxes {
+                CashBoxID
+                CompanyID
+                BranchID
+                Name
+                Description
+                IsActive
+                OpenDate
+                CloseDate
+                InitialBalance
+                CurrentBalance
+                UserID
+                Notes
+            }
+        }
+    `,
+    GET_CASHBOX_BY_ID: `
+        query GetCashboxById($id: Int!) {
+            cashboxesById(id: $id) {
+                CashBoxID
+                CompanyID
+                BranchID
+                Name
+                Description
+                IsActive
+                OpenDate
+                CloseDate
+                InitialBalance
+                CurrentBalance
+                UserID
+                Notes
+            }
+        }
+    `,
+
+    // MOVIMIENTOS DE CAJA
+    GET_ALL_CASHBOXMOVEMENTS: `
+        query GetAllCashboxmovements {
+            allCashboxmovements {
+                CashBoxMovementID
+                CashBoxID
+                CompanyID
+                BranchID
+                MovementDate
+                Amount
+                MovementType
+                Description
+                UserID
+                Notes
+            }
+        }
+    `,
+    GET_CASHBOXMOVEMENT_BY_ID: `
+        query GetCashboxmovementById($id: Int!) {
+            cashboxmovementsById(id: $id) {
+                CashBoxMovementID
+                CashBoxID
+                CompanyID
+                BranchID
+                MovementDate
+                Amount
+                MovementType
+                Description
+                UserID
+                Notes
+            }
+        }
+    `,
+
     // BÚSQUEDA DE CLIENTES
     SEARCH_CLIENTS: `
         query SearchClients($searchTerm: String!, $isActive: Boolean) {

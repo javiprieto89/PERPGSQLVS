@@ -944,6 +944,88 @@ export const MUTATIONS = {
         }
     `,
 
+    // CAJAS
+    CREATE_CASHBOX: `
+        mutation CreateCashbox($input: CashBoxesCreate!) {
+            createCashbox(data: $input) {
+                CashBoxID
+                CompanyID
+                BranchID
+                Name
+                Description
+                IsActive
+                OpenDate
+                CloseDate
+                InitialBalance
+                CurrentBalance
+                UserID
+                Notes
+            }
+        }
+    `,
+    UPDATE_CASHBOX: `
+        mutation UpdateCashbox($cashBoxID: Int!, $input: CashBoxesUpdate!) {
+            updateCashbox(cashBoxID: $cashBoxID, data: $input) {
+                CashBoxID
+                CompanyID
+                BranchID
+                Name
+                Description
+                IsActive
+                OpenDate
+                CloseDate
+                InitialBalance
+                CurrentBalance
+                UserID
+                Notes
+            }
+        }
+    `,
+    DELETE_CASHBOX: `
+        mutation DeleteCashbox($cashBoxID: Int!) {
+            deleteCashbox(cashBoxID: $cashBoxID)
+        }
+    `,
+
+    // MOVIMIENTOS DE CAJA
+    CREATE_CASHBOXMOVEMENT: `
+        mutation CreateCashboxmovement($input: CashBoxMovementsCreate!) {
+            createCashboxmovement(data: $input) {
+                CashBoxMovementID
+                CashBoxID
+                CompanyID
+                BranchID
+                MovementDate
+                Amount
+                MovementType
+                Description
+                UserID
+                Notes
+            }
+        }
+    `,
+    UPDATE_CASHBOXMOVEMENT: `
+        mutation UpdateCashboxmovement($movementID: Int!, $input: CashBoxMovementsUpdate!) {
+            updateCashboxmovement(movementID: $movementID, data: $input) {
+                CashBoxMovementID
+                CashBoxID
+                CompanyID
+                BranchID
+                MovementDate
+                Amount
+                MovementType
+                Description
+                UserID
+                Notes
+            }
+        }
+    `,
+    DELETE_CASHBOXMOVEMENT: `
+        mutation DeleteCashboxmovement($movementID: Int!) {
+            deleteCashboxmovement(movementID: $movementID)
+        }
+    `,
+
     // ====== TEMPORARY STOCK ENTRIES ======
     CREATE_TEMPSTOCKENTRY: `
         mutation CreateTempstockhistorydetail($input: TempStockHistoryDetailsCreate!) {

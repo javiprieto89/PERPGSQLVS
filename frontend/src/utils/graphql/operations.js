@@ -1658,4 +1658,50 @@ export const branchOperations = {
     }
 };
 
+export const cashboxOperations = {
+    async getAllCashboxes() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_CASHBOXES);
+        return data.allCashboxes || [];
+    },
+    async getCashboxById(id) {
+        const data = await graphqlClient.query(QUERIES.GET_CASHBOX_BY_ID, { id });
+        return data.cashboxesById;
+    },
+    async createCashbox(input) {
+        const data = await graphqlClient.mutation(MUTATIONS.CREATE_CASHBOX, { input });
+        return data.createCashbox;
+    },
+    async updateCashbox(id, input) {
+        const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CASHBOX, { cashBoxID: id, input });
+        return data.updateCashbox;
+    },
+    async deleteCashbox(id) {
+        const data = await graphqlClient.mutation(MUTATIONS.DELETE_CASHBOX, { cashBoxID: id });
+        return data.deleteCashbox;
+    }
+};
+
+export const cashboxMovementOperations = {
+    async getAllCashboxmovements() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_CASHBOXMOVEMENTS);
+        return data.allCashboxmovements || [];
+    },
+    async getCashboxmovementById(id) {
+        const data = await graphqlClient.query(QUERIES.GET_CASHBOXMOVEMENT_BY_ID, { id });
+        return data.cashboxmovementsById;
+    },
+    async createCashboxmovement(input) {
+        const data = await graphqlClient.mutation(MUTATIONS.CREATE_CASHBOXMOVEMENT, { input });
+        return data.createCashboxmovement;
+    },
+    async updateCashboxmovement(id, input) {
+        const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CASHBOXMOVEMENT, { movementID: id, input });
+        return data.updateCashboxmovement;
+    },
+    async deleteCashboxmovement(id) {
+        const data = await graphqlClient.mutation(MUTATIONS.DELETE_CASHBOXMOVEMENT, { movementID: id });
+        return data.deleteCashboxmovement;
+    }
+};
+
 export { afipOperations };
