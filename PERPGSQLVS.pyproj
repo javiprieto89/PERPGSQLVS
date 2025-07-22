@@ -69,6 +69,7 @@
     <Compile Include="app\graphql\resolvers\vendors.py" />
     <Compile Include="app\graphql\schemas\afip.py" />
     <Compile Include="app\graphql\schemas\delete_response.py" />
+    <Compile Include="app\graphql\schemas\stockhistory.py" />
     <Compile Include="app\graphql\schemas\vendors.py" />
     <Compile Include="app\models\stockhistory.py" />
     <Compile Include="app\models\tempstockentries.py" />
@@ -13904,6 +13905,7 @@
     <Content Include="frontend\src\components\SaleConditionSearchModal.jsx" />
     <Content Include="frontend\src\components\Sidebar.jsx" />
     <Content Include="frontend\src\components\TableFilters.jsx" />
+    <Content Include="frontend\src\components\WarehouseSearchModal.jsx" />
     <Content Include="frontend\src\context\UserContext.jsx" />
     <Content Include="frontend\src\hooks\useUser.jsx" />
     <Content Include="frontend\src\index.css" />
@@ -13956,6 +13958,7 @@
     <Content Include="frontend\src\pages\SaleConditions.jsx" />
     <Content Include="frontend\src\pages\ServiceTypeCreate.jsx" />
     <Content Include="frontend\src\pages\ServiceTypes.jsx" />
+    <Content Include="frontend\src\pages\StockEntry.jsx" />
     <Content Include="frontend\src\pages\SupplierCreate.jsx" />
     <Content Include="frontend\src\pages\Suppliers.jsx" />
     <Content Include="frontend\src\pages\UserAccessForm.jsx" />

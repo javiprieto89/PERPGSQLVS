@@ -5,10 +5,9 @@ import ItemConfirmationModal from "../components/ItemConfirmationModal";
 import CompanySearchModal from "../components/CompanySearchModal";
 import BranchSearchModal from "../components/BranchSearchModal";
 import { warehouseOperations, tempStockOperations, companyOperations, branchOperations } from "../utils/graphqlClient";
-import { useUser } from "../hooks/useUser";
 
-export default function StockEntry({ onClose, windowRef }) {
-    const { userInfo } = useUser();
+export default function StockEntry({ onClose, windowRef, userInfo }) {
+
     const [sessionId] = useState(() => crypto.randomUUID());
     const [warehouses, setWarehouses] = useState([]);
     const [companies, setCompanies] = useState([]);
@@ -22,22 +21,75 @@ export default function StockEntry({ onClose, windowRef }) {
     const [showCompanyModal, setShowCompanyModal] = useState(false);
     const [showBranchModal, setShowBranchModal] = useState(false);
     const [quantity, setQuantity] = useState(1);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Verificar que userInfo esté disponible
+    console.log('StockEntry userInfo:', userInfo);
+
+    // Actualizar companyID y branchID cuando userInfo esté disponible
+    useEffect(() => {
+        if (userInfo?.companyId && !companyID) {
+            setCompanyID(userInfo.companyId);
+        }
+        if (userInfo?.branchId && !branchID) {
+            setBranchID(userInfo.branchId);
+        }
+    }, [userInfo, companyID, branchID]);
+
+    // Filtrar sucursales cuando cambia la compañía
+    const filteredBranches = branches.filter(b => !companyID || b.CompanyID === parseInt(companyID));
 
     useEffect(() => {
-        warehouseOperations.getAllWarehouses().then(setWarehouses);
-        companyOperations.getAllCompanies().then(setCompanies);
-        branchOperations.getAllBranches().then(setBranches);
-    }, []);
+        const initializeComponent = async () => {
+            try {
+                setLoading(true);
+                console.log('Initializing StockEntry component');
+
+                // Cargar datos iniciales
+                const [warehousesData, companiesData, branchesData] = await Promise.all([
+                    warehouseOperations.getAllWarehouses(),
+                    companyOperations.getAllCompanies(),
+                    branchOperations.getAllBranches()
+                ]);
+
+                setWarehouses(warehousesData);
+                setCompanies(companiesData);
+                setBranches(branchesData);
+
+                // Cargar entradas directamente aquí en lugar de usar loadEntries
+                try {
+                    console.log('Loading entries for session:', sessionId);
+                    const data = await tempStockOperations.getSessionEntries(sessionId);
+                    console.log('Entries loaded:', data);
+                    setEntries(data || []);
+                } catch (error) {
+                    console.error('Error loading entries:', error);
+                    setEntries([]);
+                }
+
+                setLoading(false);
+            } catch (err) {
+                console.error('Error initializing component:', err);
+                setError(err.message);
+                setLoading(false);
+            }
+        };
+
+        initializeComponent();
+    }, [sessionId]);
 
     const loadEntries = async () => {
-        const data = await tempStockOperations.getSessionEntries(sessionId);
-        setEntries(data);
+        try {
+            console.log('Loading entries for session:', sessionId);
+            const data = await tempStockOperations.getSessionEntries(sessionId);
+            console.log('Entries loaded:', data);
+            setEntries(data || []);
+        } catch (error) {
+            console.error('Error loading entries:', error);
+            setEntries([]);
+        }
     };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => {
-        loadEntries();
-    }, []);
 
     const handleSelectItem = (item) => {
         setSelectedItem(item);
@@ -47,27 +99,58 @@ export default function StockEntry({ onClose, windowRef }) {
 
     const handleConfirmItem = async (details) => {
         if (!selectedItem) return;
-        const data = {
-            SessionID: sessionId,
-            CompanyID: parseInt(companyID),
-            BranchID: parseInt(branchID),
-            UserID: userInfo?.userId || 1,
-            ItemID: selectedItem.itemID || selectedItem.ItemID,
-            WarehouseID: parseInt(details.warehouseId),
-            Quantity: parseInt(details.quantity || quantity),
-        };
-        await tempStockOperations.createEntry(data);
-        setSelectedItem(null);
-        setShowItemConfirm(false);
-        setQuantity(1);
-        loadEntries();
+        try {
+            const data = {
+                SessionID: sessionId,
+                CompanyID: parseInt(companyID),
+                BranchID: parseInt(branchID),
+                UserID: userInfo?.userId || 1,
+                ItemID: selectedItem.itemID || selectedItem.ItemID,
+                WarehouseID: parseInt(details.warehouseId),
+                Quantity: parseInt(details.quantity || quantity),
+            };
+            await tempStockOperations.createEntry(data);
+            setSelectedItem(null);
+            setShowItemConfirm(false);
+            setQuantity(1);
+            await loadEntries();
+        } catch (error) {
+            console.error('Error confirming item:', error);
+            alert('Error al guardar el item');
+        }
     };
-
 
     const handleProcess = async () => {
-        await tempStockOperations.processSession(sessionId);
-        windowRef.close();
+        try {
+            await tempStockOperations.processSession(sessionId);
+            windowRef.close();
+        } catch (error) {
+            console.error('Error processing session:', error);
+            alert('Error al procesar la sesión');
+        }
     };
+
+    if (loading) {
+        return (
+            <div className="p-6 flex items-center justify-center">
+                <div className="text-lg">Cargando...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="p-6">
+                <div className="text-red-600 mb-4">Error: {error}</div>
+                <button
+                    onClick={onClose}
+                    className="px-4 py-2 bg-gray-300 rounded"
+                >
+                    Cerrar
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="p-6 space-y-4">
@@ -76,8 +159,16 @@ export default function StockEntry({ onClose, windowRef }) {
                 <div>
                     <label className="block text-sm font-medium mb-1">Compañía</label>
                     <div className="flex space-x-2 items-center">
-                        <select value={companyID} onChange={e => setCompanyID(e.target.value)} className="w-full border p-2 rounded">
-                            <option value="">Seleccione</option>
+                        <select
+                            value={companyID}
+                            onChange={e => {
+                                setCompanyID(e.target.value);
+                                // Reset branch when company changes
+                                setBranchID("");
+                            }}
+                            className="w-full border p-2 rounded"
+                        >
+                            <option value="">Seleccione una compañía</option>
                             {companies.map(c => (
                                 <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
                             ))}
@@ -95,9 +186,16 @@ export default function StockEntry({ onClose, windowRef }) {
                 <div>
                     <label className="block text-sm font-medium mb-1">Sucursal</label>
                     <div className="flex space-x-2 items-center">
-                        <select value={branchID} onChange={e => setBranchID(e.target.value)} className="w-full border p-2 rounded">
-                            <option value="">Seleccione</option>
-                            {branches.filter(b => !companyID || b.CompanyID === parseInt(companyID)).map(b => (
+                        <select
+                            value={branchID}
+                            onChange={e => setBranchID(e.target.value)}
+                            className="w-full border p-2 rounded"
+                            disabled={!companyID}
+                        >
+                            <option value="">
+                                {companyID ? "Seleccione una sucursal" : "Seleccione una compañía primero"}
+                            </option>
+                            {filteredBranches.map(b => (
                                 <option key={b.BranchID} value={b.BranchID}>{b.Name}</option>
                             ))}
                         </select>
