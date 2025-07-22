@@ -629,6 +629,7 @@ export const carModelOperations = {
 
 function sanitizeCarPayload(data) {
     const allowed = [
+        'CompanyID',
         'CarModelID',
         'ClientID',
         'LicensePlate',
@@ -661,6 +662,7 @@ export const carOperations = {
         try {
             const data = await graphqlClient.query(QUERIES.GET_CAR_FORM_DATA);
             return {
+                companies: data.companies || [],
                 carBrands: data.carBrands || [],
                 carModels: data.carModels || [],
                 clients: data.clients || [],

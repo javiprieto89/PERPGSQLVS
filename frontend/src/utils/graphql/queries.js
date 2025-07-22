@@ -324,6 +324,10 @@ export const QUERIES = {
     // FORMULARIO DE AUTOS
     GET_CAR_FORM_DATA: `
         query GetCarFormData {
+            companies: allCompanydata {
+                CompanyID
+                Name
+            }
             carBrands: allCarbrands {
                 CarBrandID
                 Name
@@ -515,6 +519,7 @@ export const QUERIES = {
         query GetAllBrands {
             allBrands {
                 BrandID
+                CompanyID
                 Name
                 IsActive
             }
@@ -524,6 +529,7 @@ export const QUERIES = {
         query GetBrandById($id: Int!) {
             brandsById(id: $id) {
                 BrandID
+                CompanyID
                 Name
                 IsActive
             }
@@ -586,6 +592,7 @@ export const QUERIES = {
         query GetAllCarBrands {
             allCarbrands {
                 CarBrandID
+                CompanyID
                 Name
             }
         }
@@ -594,6 +601,7 @@ export const QUERIES = {
         query GetCarBrandById($id: Int!) {
             carbrandsById(id: $id) {
                 CarBrandID
+                CompanyID
                 Name
             }
         }
@@ -656,6 +664,7 @@ export const QUERIES = {
         query GetCarById($id: Int!) {
             carsById(id: $id) {
                 CarID
+                CompanyID
                 LicensePlate
                 Year
                 CarModelID
