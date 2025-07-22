@@ -34,6 +34,7 @@ export default function StockEntry({ onClose, windowRef }) {
         setEntries(data);
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         loadEntries();
     }, []);
