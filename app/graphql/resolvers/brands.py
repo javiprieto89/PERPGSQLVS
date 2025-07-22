@@ -18,9 +18,10 @@ class BrandsQuery:
             result = []
             for item in items:
                 data = {
-                    'BrandID': int(item.__dict__['BrandID']),
-                    'Name': str(item.__dict__['Name']),
-                    'IsActive': bool(item.__dict__.get('IsActive', True))
+                    "BrandID": int(item.__dict__["BrandID"]),
+                    "Name": str(item.__dict__["Name"]),
+                    "IsActive": bool(item.__dict__.get("IsActive", True)),
+                    "CompanyID": item.__dict__.get("CompanyID"),
                 }
                 result.append(BrandsInDB(**data))
             return result
@@ -35,9 +36,10 @@ class BrandsQuery:
             item = get_brands_by_id(db, id)
             if item:
                 data = {
-                    'BrandID': int(item.__dict__['BrandID']),
-                    'Name': str(item.__dict__['Name']),
-                    'IsActive': bool(item.__dict__.get('IsActive', True))
+                    "BrandID": int(item.__dict__["BrandID"]),
+                    "Name": str(item.__dict__["Name"]),
+                    "IsActive": bool(item.__dict__.get("IsActive", True)),
+                    "CompanyID": item.__dict__.get("CompanyID"),
                 }
                 return BrandsInDB(**data)
             return None

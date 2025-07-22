@@ -56,6 +56,17 @@ export const QUERIES = {
         }
     `,
 
+    // TIPOS DE DOCUMENTO PARA CLIENTES/PROVEEDORES
+    GET_DOC_TYPES: `
+        query GetDocTypes {
+            allDoctypes {
+                DocTypeID
+                Name
+                IsActive
+            }
+        }
+    `,
+
     GET_COUNTRIES: `
         query GetCountries {
             allCountries {
@@ -275,8 +286,8 @@ export const QUERIES = {
     // COMBOS PARA FORMULARIOS
     GET_CLIENT_FORM_DATA: `
         query GetClientFormData {
-            documentTypes: allDocumenttypes {
-                DocumentTypeID
+            docTypes: allDoctypes {
+                DocTypeID
                 Name
             }
             countries: allCountries {
@@ -305,8 +316,8 @@ export const QUERIES = {
     // FORMULARIO DE PROVEEDORES
     GET_SUPPLIER_FORM_DATA: `
         query GetSupplierFormData {
-            documentTypes: allDocumenttypes {
-                DocumentTypeID
+            docTypes: allDoctypes {
+                DocTypeID
                 Name
             }
             countries: allCountries {

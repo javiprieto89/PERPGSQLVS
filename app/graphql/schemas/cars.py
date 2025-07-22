@@ -9,6 +9,7 @@ class CarsCreate:
     Year: Optional[int] = None
     CarModelID: int
     ClientID: int
+    CompanyID: Optional[int] = None
     LastServiceMileage: Optional[int] = None
     IsDebtor: Optional[bool] = None
     DiscountID: int
@@ -20,6 +21,7 @@ class CarsUpdate:
     Year: Optional[int] = None
     CarModelID: Optional[int] = None
     ClientID: Optional[int] = None
+    CompanyID: Optional[int] = None
     LastServiceMileage: Optional[int] = None
     IsDebtor: Optional[bool] = None
     DiscountID: Optional[int] = None
@@ -35,6 +37,7 @@ class CarsInDB:
     CarBrandID: Optional[int] = None
     CarBrandName: Optional[str] = None
     ClientID: int
+    CompanyID: Optional[int] = None
     # AGREGADO: Campos del cliente
     ClientFirstName: Optional[str] = None
     ClientLastName: Optional[str] = None

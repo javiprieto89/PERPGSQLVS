@@ -9,6 +9,8 @@ import {
     orderStatusOperations,
     pricelistOperations,
     pricelistItemOperations,
+    companyOperations,
+    branchOperations,
     warehouseOperations,
     orderOperations,
     tempOrderOperations,
@@ -62,6 +64,8 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
     const [showItemConfirmationModal, setShowItemConfirmationModal] = useState(false);
     const [selectedItemForConfirmation, setSelectedItemForConfirmation] = useState(null);
     const [editIndex, setEditIndex] = useState(null);
+    const [companies, setCompanies] = useState([]);
+    const [branches, setBranches] = useState([]);
 
     useEffect(() => {
         if (initialOrder) {
@@ -134,13 +138,15 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
 
     useEffect(() => {
         const fetchData = async () => {
-            const [st, sc, d, os, pl, wh] = await Promise.all([
+            const [st, sc, d, os, pl, wh, comp, br] = await Promise.all([
                 serviceTypeOperations.getAllServicetypes(),
                 saleConditionOperations.getAllSaleConditions(),
                 discountOperations.getAllDiscounts(),
                 orderStatusOperations.getAllOrderstatus(),
                 pricelistOperations.getAllPricelists(),
                 warehouseOperations.getAllWarehouses(),
+                companyOperations.getAllCompanies(),
+                branchOperations.getAllBranches(),
             ]);
             setServiceTypes(st);
             setSaleConditions(sc);
@@ -148,9 +154,15 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
             setStatuses(os);
             setPriceLists(pl);
             setWarehouses(wh);
+            setCompanies(comp);
+            setBranches(br);
         };
         fetchData();
     }, []);
+
+    const filteredBranches = branches.filter(
+        (b) => !formData.companyId || b.CompanyID === parseInt(formData.companyId)
+    );
 
     useEffect(() => {
         if (formData.clientId) {
@@ -206,10 +218,19 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
+        let processed = type === "checkbox" ? checked : value;
+        if (name.toLowerCase().includes("id") || name === "mileage" || name === "nextServiceMileage") {
+            processed = value === "" ? "" : parseInt(value);
+        } else if (["subtotal", "total", "vat"].includes(name)) {
+            processed = value === "" ? "" : parseFloat(value);
+        }
         setFormData((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value,
+            [name]: processed,
         }));
+        if (name === "companyId") {
+            setFormData((prev) => ({ ...prev, branchId: "" }));
+        }
     };
 
     const handleItemSelectedFromSearch = async (selectedItem) => {
@@ -569,31 +590,39 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
                             </div>
                             <div>
                                 <label htmlFor="companyId" className="block text-sm font-medium text-gray-600 mb-1">
-                                    Company ID
+                                    Compañía
                                 </label>
-                                <input
-                                    type="number"
+                                <select
                                     name="companyId"
                                     id="companyId"
                                     value={formData.companyId}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
                                     required
-                                />
+                                >
+                                    <option value="">Seleccione</option>
+                                    {companies.map(c => (
+                                        <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
+                                    ))}
+                                </select>
                             </div>
                             <div>
                                 <label htmlFor="branchId" className="block text-sm font-medium text-gray-600 mb-1">
-                                    Branch ID
+                                    Sucursal
                                 </label>
-                                <input
-                                    type="number"
+                                <select
                                     name="branchId"
                                     id="branchId"
                                     value={formData.branchId}
                                     onChange={handleChange}
-                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
                                     required
-                                />
+                                >
+                                    <option value="">Seleccione</option>
+                                    {filteredBranches.map(b => (
+                                        <option key={b.BranchID} value={b.BranchID}>{b.Name}</option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
                     </section>
