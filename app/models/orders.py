@@ -37,7 +37,7 @@ class Orders(Base):
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__Orders__CompanyI__02084FDA'),
         ForeignKeyConstraint(['DiscountID'], ['Discounts.DiscountID'], name='FK__Orders__Discount__04E4BC85'),
         ForeignKeyConstraint(['DocumentID'], ['SysDocumentTypes.DocumentTypeID'], name='FK__Orders__SysDocume__06CD04F7'),
-        ForeignKeyConstraint(['OrderStatusID'], ['OrderStatus.OrderstatusID'], name='FK_Orders_OrderStatus'),
+        ForeignKeyConstraint(['OrderStatusID'], ['sysOrderStatus.OrderstatusID'], name='FK_Orders_OrderStatus'),
         ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK__Orders__PriceLis__08B54D69'),
         ForeignKeyConstraint(['SaleConditionID'], ['SaleConditions.SaleConditionID'], name='FK__Orders__SaleCond__03F0984C'),
         ForeignKeyConstraint(['ServiceTypeID'], ['ServiceType.ServiceTypeID'], name='FK_Orders_ServiceType'),        

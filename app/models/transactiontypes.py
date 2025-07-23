@@ -5,7 +5,7 @@ from app.db import Base
 
 
 class TransactionTypes(Base):
-    __tablename__ = 'TransactionTypes'
+    __tablename__ = 'sysTransactionTypes'
     __table_args__ = (
         PrimaryKeyConstraint('TransactTypeID', name='PK_TransactionTypes'),
     )
