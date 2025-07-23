@@ -31,7 +31,11 @@ from app.db import Base
 class Orders(Base):
     __tablename__ = 'Orders'
     __table_args__ = (
-        ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK__Orders__branchID__01142BA1'),
+        ForeignKeyConstraint(
+            ["CompanyID", "BranchID"],
+            ["Branches.CompanyID", "Branches.BranchID"],
+            name='FK__Orders__branchID__01142BA1'
+        ),
         ForeignKeyConstraint(['CarID'], ['Cars.CarID'], name='FK__Orders__carID__02FC7413'),
         ForeignKeyConstraint(['ClientID'], ['Clients.ClientID'], name='FK__Orders__clientID__00200768'),
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__Orders__CompanyI__02084FDA'),

@@ -1616,9 +1616,9 @@ export const branchOperations = {
         }
     },
 
-    async getBranchById(id) {
+    async getBranchById(companyID, id) {
         try {
-            const data = await graphqlClient.query(QUERIES.GET_BRANCH_BY_ID, { id });
+            const data = await graphqlClient.query(QUERIES.GET_BRANCH_BY_ID, { companyID, id });
             return data.branchesById;
         } catch (error) {
             console.error("Error obteniendo sucursal:", error);

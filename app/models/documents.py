@@ -21,8 +21,11 @@ from app.db import Base
 class Documents(Base):
     __tablename__ = 'Documents'
     __table_args__ = (
-        ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK_Documents_Branches'),
-        ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK_Documents_CompanyData'),
+        ForeignKeyConstraint(
+            ["CompanyID", "BranchID"],
+            ["Branches.CompanyID", "Branches.BranchID"],
+            name="FK_Documents_Branches",
+        ),
         ForeignKeyConstraint(['DocumentTypeID'], ['SysDocumentTypes.DocumentTypeID'], name='FK_Documents_SysDocumentTypes'),
         PrimaryKeyConstraint('DocumentID', name='PK__Document__1ABEEF6F4A2B1589')
     )

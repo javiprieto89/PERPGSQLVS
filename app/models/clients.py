@@ -22,10 +22,13 @@ from app.db import Base
 class Clients(Base):
     __tablename__ = 'Clients'
     __table_args__ = (
-        ForeignKeyConstraint(['CountryID'], ['Countries.CountryID'], name='FK_Clients_Countries'),
         ForeignKeyConstraint(['DocTypeID'], ['SysDocTypes.DocTypeID'], name='FK_Clients_SysDocTypes'),
         ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK_Clients_PriceLists'),
-        ForeignKeyConstraint(['ProvinceID'], ['Provinces.ProvinceID'], name='FK_Clients_Provinces'),
+        ForeignKeyConstraint(
+            ['CountryID', 'ProvinceID'],
+            ['Provinces.CountryID', 'Provinces.ProvinceID'],
+            name='FK_Clients_Provinces',
+        ),
         ForeignKeyConstraint(['VendorID'], ['Vendors.VendorID'], name='FK_Clients_Vendors'),
         PrimaryKeyConstraint('ClientID', name='PK__Clients__E67E1A048D5F930D')
     )

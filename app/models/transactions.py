@@ -15,7 +15,11 @@ class Transactions(Base):
     __tablename__ = 'Transactions'
     __table_args__ = (
         # AGREGAR: Foreign Key a Branches
-        ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK_Transactions_Branches'),
+        ForeignKeyConstraint(
+            ["CompanyID", "BranchID"],
+            ["Branches.CompanyID", "Branches.BranchID"],
+            name='FK_Transactions_Branches'
+        ),
         PrimaryKeyConstraint('TransactionID', name='PK__Transact__55433A4BB5EE9535'),
         Index('idx_clientID_Transactions', 'ClientID'),
         Index('idx_supplierID', 'SupplierID'),
@@ -35,5 +39,5 @@ class Transactions(Base):
     Total = Column(DECIMAL(10, 2))
     Notes = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
 
-    # Relación con Branches - debe llamarse branches_ para coincidir con back_populates
+    # RelaciÃ³n con Branches - debe llamarse branches_ para coincidir con back_populates
     branches_: Mapped[Optional['Branches']] = relationship('Branches', back_populates='transactions')

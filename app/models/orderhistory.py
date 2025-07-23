@@ -24,7 +24,11 @@ from app.db import Base
 class OrderHistory(Base):
     __tablename__ = 'OrderHistory'
     __table_args__ = (
-        ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK__OrderHist__Branc__1DB06A4F'),
+        ForeignKeyConstraint(
+            ["CompanyID", "BranchID"],
+            ["Branches.CompanyID", "Branches.BranchID"],
+            name='FK__OrderHist__Branc__1DB06A4F'
+        ),
         ForeignKeyConstraint(['CarID'], ['Cars.CarID'], name='FK__OrderHist__carID__2180FB33'),
         ForeignKeyConstraint(['ClientID'], ['Suppliers.SupplierID'], name='FK__OrderHist__Clien__208CD6FA'),
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__OrderHist__Compa__1EA48E88'),

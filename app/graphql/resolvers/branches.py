@@ -37,11 +37,11 @@ class BranchesQuery:
             db_gen.close()
 
     @strawberry.field
-    def branches_by_id(self, info: Info, id: int) -> Optional[BranchesInDB]:
+    def branches_by_id(self, info: Info, companyID: int, id: int) -> Optional[BranchesInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            item = get_branches_by_id(db, id)
+            item = get_branches_by_id(db, companyID, id)
             if not item:
                 return None
             obj = obj_to_schema(BranchesInDB, item)

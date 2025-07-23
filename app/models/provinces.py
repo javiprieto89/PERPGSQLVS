@@ -19,8 +19,11 @@ from app.db import Base
 class Provinces(Base):
     __tablename__ = 'Provinces'
     __table_args__ = (
-        ForeignKeyConstraint(['CountryID'], ['Countries.CountryID'], name='FK__Provinces__Count__403A8C7D'),
-        PrimaryKeyConstraint('ProvinceID', name='PK__Province__FD0A6FA3062273F9')
+        ForeignKeyConstraint(
+            ['CountryID'], ['Countries.CountryID'],
+            name='FK__Provinces__Count__403A8C7D'
+        ),
+        PrimaryKeyConstraint('CountryID', 'ProvinceID', name='PK_Provinces')
     )
 
     ProvinceID = Column(Integer, Identity(start=1, increment=1), primary_key=True)

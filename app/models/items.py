@@ -28,9 +28,12 @@ from app.db import Base
 class Items(Base):
     __tablename__ = 'Items'
     __table_args__ = (
-        ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK_Items_Branches'),
+        ForeignKeyConstraint(
+            ["CompanyID", "BranchID"],
+            ["Branches.CompanyID", "Branches.BranchID"],
+            name="FK_Items_Branches",
+        ),
         ForeignKeyConstraint(['BrandID'], ['Brands.BrandID'], name='FK_Items_Brands'),
-        ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK_Items_CompanyData'),
         ForeignKeyConstraint(['ItemCategoryID'], ['ItemCategories.ItemCategoryID'], name='FK_Items_ItemCategories'),
         ForeignKeyConstraint(['ItemSubcategoryID'], ['ItemSubcategories.ItemSubcategoryID'], name='FK_Items_ItemSubcategories'),
         ForeignKeyConstraint(['SupplierID'], ['Suppliers.SupplierID'], name='FK_Items_Suppliers'),

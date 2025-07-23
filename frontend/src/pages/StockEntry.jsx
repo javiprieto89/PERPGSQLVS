@@ -285,6 +285,7 @@ export default function StockEntry({ onClose, windowRef, userInfo }) {
                     onClose={() => setShowBranchModal(false)}
                     onSelect={(b) => {
                         setBranchID(b.BranchID);
+                        if (!companyID) setCompanyID(b.CompanyID);
                         setShowBranchModal(false);
                     }}
                 />

@@ -126,7 +126,15 @@ class ItemsQuery:
                 if filters.companyID is not None:
                     query = query.filter(Items.CompanyID == filters.companyID)
                 if filters.branchID is not None:
-                    query = query.filter(Items.BranchID == filters.branchID)
+                    if filters.companyID is not None:
+                        query = query.filter(
+                            and_(
+                                Items.CompanyID == filters.companyID,
+                                Items.BranchID == filters.branchID,
+                            )
+                        )
+                    else:
+                        query = query.filter(Items.BranchID == filters.branchID)
                 if filters.brandID is not None:
                     query = query.filter(Items.BrandID == filters.brandID)
                 if filters.categoryID is not None:

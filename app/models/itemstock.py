@@ -18,8 +18,11 @@ from app.db import Base
 class Itemstock(Base):
     __tablename__ = 'Itemstock'
     __table_args__ = (
-        ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK_Itemstock_Branches'),
-        ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK_Itemstock_CompanyData'),
+        ForeignKeyConstraint(
+            ["CompanyID", "BranchID"],
+            ["Branches.CompanyID", "Branches.BranchID"],
+            name="FK_Itemstock_Branches",
+        ),
         ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK_Itemstock_Items'),
         ForeignKeyConstraint(['SupplierID'], ['Suppliers.SupplierID'], name='FK_Itemstock_Suppliers'),
         ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_Itemstock_Warehouses'),

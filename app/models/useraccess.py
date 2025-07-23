@@ -23,7 +23,11 @@ from app.db import Base
 class UserAccess(Base):
     __tablename__ = 'UserAccess'
     __table_args__ = (
-        ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK_UserAccess_Branches'),
+        ForeignKeyConstraint(
+            ['CompanyID', 'BranchID'],
+            ['Branches.CompanyID', 'Branches.BranchID'],
+            name='FK_UserAccess_Branches'
+        ),
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK_UserAccess_CompanyData'),
         ForeignKeyConstraint(['RoleID'], ['Roles.RoleID'], name='FK_UserAccess_Roles'),
         ForeignKeyConstraint(['UserID'], ['Users.UserID'], name='FK_UserAccess_Users'),

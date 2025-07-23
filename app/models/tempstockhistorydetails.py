@@ -31,7 +31,9 @@ class TempStockHistoryDetails(Base):
     __tablename__ = "TempStockHistoryDetails"
     __table_args__ = (
         ForeignKeyConstraint(
-            ["BranchID"], ["Branches.BranchID"], name="FK__TempStock__Branc__160F4887"
+            ["CompanyID", "BranchID"],
+            ["Branches.CompanyID", "Branches.BranchID"],
+            name="FK__TempStock__Branc__160F4887",
         ),
         ForeignKeyConstraint(
             ["CompanyID"],
