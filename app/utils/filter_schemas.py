@@ -138,7 +138,7 @@ FILTER_SCHEMAS = {
         {"field": "GrossIncome", "label": "Ingresos brutos", "type": "text"},
         {"field": "StartDate", "label": "Fecha de inicio", "type": "text"}
     ],
-    "doctypes": [
+    "sysdoctypes": [
         {"field": "DocTypeID", "label": "ID de tipo de documento", "type": "number"},
         {"field": "Name", "label": "Nombre", "type": "text"}
     ],
@@ -254,7 +254,7 @@ FILTER_SCHEMAS = {
         {"field": "DocumentID", "label": "ID de documento", "type": "number"},
         {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch", "dependsOn": "CompanyID"},
-        {"field": "DocumentTypeID", "label": "Tipo de documento", "type": "select", "relationModel": "DocumentType"},
+        {"field": "DocumentTypeID", "label": "Tipo de documento", "type": "select", "relationModel": "SysDocumentType"},
         {"field": "Description", "label": "Descripción", "type": "text"},
         {"field": "DocumentNumber", "label": "Número", "type": "number"},
         {"field": "PointOfSale", "label": "Punto de venta", "type": "number"},

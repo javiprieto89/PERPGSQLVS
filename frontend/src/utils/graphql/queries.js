@@ -47,9 +47,9 @@ export const QUERIES = {
     `,
 
     // DATOS MAESTROS PARA FORMULARIOS
-    GET_DOCUMENT_TYPES: `
-        query GetDocumentTypes {
-            allDocumenttypes {
+    GET_SYSDOCUMENT_TYPES: `
+        query GetSysDocumentTypes {
+            allSysdocumenttypes {
                 DocumentTypeID
                 Name
             }
@@ -57,9 +57,9 @@ export const QUERIES = {
     `,
 
     // TIPOS DE DOCUMENTO PARA CLIENTES/PROVEEDORES
-    GET_DOC_TYPES: `
-        query GetDocTypes {
-            allDoctypes {
+    GET_SYSDOC_TYPES: `
+        query GetSysDocTypes {
+            allSysdoctypes {
                 DocTypeID
                 Name
                 IsActive
@@ -286,7 +286,7 @@ export const QUERIES = {
     // COMBOS PARA FORMULARIOS
     GET_CLIENT_FORM_DATA: `
         query GetClientFormData {
-            docTypes: allDoctypes {
+            sysDocTypes: allSysdoctypes {
                 DocTypeID
                 Name
             }
@@ -316,7 +316,7 @@ export const QUERIES = {
     // FORMULARIO DE PROVEEDORES
     GET_SUPPLIER_FORM_DATA: `
         query GetSupplierFormData {
-            docTypes: allDoctypes {
+            sysDocTypes: allSysdoctypes {
                 DocTypeID
                 Name
             }

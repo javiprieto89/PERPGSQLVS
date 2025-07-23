@@ -19,9 +19,9 @@ from app.graphql.resolvers.countries import CountriesQuery
 from app.graphql.resolvers.creditcardgroups import CreditcardgroupsQuery
 from app.graphql.resolvers.creditcards import CreditcardsQuery
 from app.graphql.resolvers.discounts import DiscountsQuery
-from app.graphql.resolvers.doctypes import DoctypesQuery
+from app.graphql.resolvers.sysdoctypes import SysdoctypesQuery
 from app.graphql.resolvers.documents import DocumentsQuery
-from app.graphql.resolvers.documenttypes import DocumenttypesQuery
+from app.graphql.resolvers.sysdocumenttypes import SysdocumenttypesQuery
 from app.graphql.resolvers.cashboxes import CashboxesQuery
 from app.graphql.resolvers.cashboxmovements import CashboxmovementsQuery
 from app.graphql.resolvers.itemcategories import ItemcategoriesQuery
@@ -77,7 +77,7 @@ from app.graphql.mutations.cashboxes import CashBoxesMutations
 from app.graphql.mutations.cashboxmovements import CashBoxMovementsMutations
 from app.graphql.mutations.stockhistory import StockHistoryMutations
 from app.graphql.mutations.servicetype import ServiceTypeMutations
-from app.graphql.mutations.documenttypes import DocumentTypesMutations
+from app.graphql.mutations.sysdocumenttypes import SysDocumentTypesMutations
 from app.graphql.mutations.documents import DocumentsMutations
 from app.graphql.mutations.useractions import UserActionsMutations
 from app.graphql.mutations.roles import RolesMutations
@@ -323,9 +323,9 @@ class Query(
     CreditcardgroupsQuery,
     CreditcardsQuery,
     DiscountsQuery,
-    DoctypesQuery,
+    SysdoctypesQuery,
     DocumentsQuery,
-    DocumenttypesQuery,
+    SysdocumenttypesQuery,
     ItemcategoriesQuery,
     ItempricehistoryQuery,
     ItemsQuery,
@@ -436,7 +436,7 @@ class Mutation(
     OrdersMutations,
     ServiceTypeMutations,
     DocumentsMutations,
-    DocumentTypesMutations,
+    SysDocumentTypesMutations,
     UserActionsMutations,
     RolesMutations,
     UsersMutations,
