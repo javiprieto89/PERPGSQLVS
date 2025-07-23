@@ -661,8 +661,8 @@ export const MUTATIONS = {
         }
     `,
     UPDATE_BRANCH: `
-        mutation UpdateBranch($branchID: Int!, $input: BranchesUpdate!) {
-            updateBranch(branchID: $branchID, data: $input) {
+        mutation UpdateBranch($companyID: Int!, $branchID: Int!, $input: BranchesUpdate!) {
+            updateBranch(companyID: $companyID, branchID: $branchID, data: $input) {
                 BranchID
                 CompanyID
                 Name
@@ -670,8 +670,8 @@ export const MUTATIONS = {
         }
     `,
     DELETE_BRANCH: `
-        mutation DeleteBranch($branchID: Int!) {
-            deleteBranch(branchID: $branchID)
+        mutation DeleteBranch($companyID: Int!, $branchID: Int!) {
+            deleteBranch(companyID: $companyID, branchID: $branchID)
         }
     `,
 
