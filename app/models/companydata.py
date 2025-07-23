@@ -59,7 +59,13 @@ class CompanyData(Base):
         overlaps='branches',
     )
 
-    itemstock: Mapped[List['Itemstock']] = relationship('Itemstock', back_populates='companyData_')
+    itemstock: Mapped[List['Itemstock']] = relationship(
+        'Itemstock',
+        back_populates='companyData_',
+        primaryjoin='CompanyData.CompanyID == foreign(Itemstock.CompanyID)',
+        foreign_keys='Itemstock.CompanyID',
+        overlaps='branches',
+    )
     orders: Mapped[List['Orders']] = relationship('Orders', back_populates='companyData_')
     stockHistory: Mapped[List['StockHistory']] = relationship('StockHistory', back_populates='companyData_')
     tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship('TempStockHistoryDetails', back_populates='companyData_')
