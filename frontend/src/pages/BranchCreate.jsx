@@ -47,7 +47,11 @@ export default function BranchCreate({ onClose, onSave, branch: initialBranch = 
             };
             let result;
             if (isEdit) {
-                result = await branchOperations.updateBranch(initialBranch.BranchID, payload);
+                result = await branchOperations.updateBranch(
+                    initialBranch.CompanyID,
+                    initialBranch.BranchID,
+                    payload
+                );
             } else {
                 result = await branchOperations.createBranch(payload);
             }

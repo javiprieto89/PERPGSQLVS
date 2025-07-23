@@ -20,21 +20,23 @@ class BranchesMutations:
             db_gen.close()
 
     @strawberry.mutation
-    def update_branch(self, info: Info, branchID: int, data: BranchesUpdate) -> Optional[BranchesInDB]:
+    def update_branch(
+        self, info: Info, companyID: int, branchID: int, data: BranchesUpdate
+    ) -> Optional[BranchesInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update_branches(db, branchID, data)
+            updated = update_branches(db, companyID, branchID, data)
             return obj_to_schema(BranchesInDB, updated) if updated else None
         finally:
             db_gen.close()
 
     @strawberry.mutation
-    def delete_branch(self, info: Info, branchID: int) -> bool:
+    def delete_branch(self, info: Info, companyID: int, branchID: int) -> bool:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete_branches(db, branchID)
+            deleted = delete_branches(db, companyID, branchID)
             return deleted is not None
         finally:
             db_gen.close()

@@ -25,11 +25,13 @@ class ProvincesQuery:
             db_gen.close()
 
     @strawberry.field
-    def provinces_by_id(self, info: Info, id: int) -> Optional[ProvincesInDB]:
+    def provinces_by_id(
+        self, info: Info, countryID: int, provinceID: int
+    ) -> Optional[ProvincesInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            province = get_provinces_by_id(db, id)
+            province = get_provinces_by_id(db, countryID, provinceID)
             return obj_to_schema(ProvincesInDB, province) if province else None
         finally:
             db_gen.close()

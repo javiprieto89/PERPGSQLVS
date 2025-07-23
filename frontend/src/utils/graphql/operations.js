@@ -1646,9 +1646,13 @@ export const branchOperations = {
         }
     },
 
-    async updateBranch(id, dataInput) {
+    async updateBranch(companyID, id, dataInput) {
         try {
-            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_BRANCH, { branchID: id, input: dataInput });
+            const data = await graphqlClient.mutation(MUTATIONS.UPDATE_BRANCH, {
+                companyID,
+                branchID: id,
+                input: dataInput,
+            });
             return data.updateBranch;
         } catch (error) {
             console.error("Error actualizando sucursal:", error);
@@ -1656,9 +1660,12 @@ export const branchOperations = {
         }
     },
 
-    async deleteBranch(id) {
+    async deleteBranch(companyID, id) {
         try {
-            const data = await graphqlClient.mutation(MUTATIONS.DELETE_BRANCH, { branchID: id });
+            const data = await graphqlClient.mutation(MUTATIONS.DELETE_BRANCH, {
+                companyID,
+                branchID: id,
+            });
             return data.deleteBranch;
         } catch (error) {
             console.error("Error eliminando sucursal:", error);
