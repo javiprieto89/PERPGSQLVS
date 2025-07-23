@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from app.models.cars import Cars
     from app.models.orders import Orders
     from app.models.countries import Countries
-    from app.models.doctypes import DocTypes
+    from app.models.sysdoctypes import SysDocTypes
     from app.models.pricelists import PriceLists
     from app.models.provinces import Provinces
     from app.models.vendors import Vendors
@@ -23,7 +23,7 @@ class Clients(Base):
     __tablename__ = 'Clients'
     __table_args__ = (
         ForeignKeyConstraint(['CountryID'], ['Countries.CountryID'], name='FK_Clients_Countries'),
-        ForeignKeyConstraint(['DocTypeID'], ['DocTypes.DocTypeID'], name='FK_Clients_DocTypes'),
+        ForeignKeyConstraint(['DocTypeID'], ['SysDocTypes.DocTypeID'], name='FK_Clients_SysDocTypes'),
         ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK_Clients_PriceLists'),
         ForeignKeyConstraint(['ProvinceID'], ['Provinces.ProvinceID'], name='FK_Clients_Provinces'),
         ForeignKeyConstraint(['VendorID'], ['Vendors.VendorID'], name='FK_Clients_Vendors'),
@@ -48,7 +48,7 @@ class Clients(Base):
 
     # Relaciones
     countries_: Mapped['Countries'] = relationship('Countries', back_populates='clients')
-    docTypes_: Mapped['DocTypes'] = relationship('DocTypes', back_populates='clients')
+    docTypes_: Mapped['SysDocTypes'] = relationship('SysDocTypes', back_populates='clients')
     pricelists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='clients')
     provinces_: Mapped['Provinces'] = relationship('Provinces', back_populates='clients')
     vendors_: Mapped['Vendors'] = relationship('Vendors', back_populates='clients')

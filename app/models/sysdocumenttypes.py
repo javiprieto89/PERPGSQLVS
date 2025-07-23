@@ -1,5 +1,5 @@
-# ========== DocumentTypes ===========
-# app/models/documenttypes.py
+# ========== SysDocumentTypes ===========
+# app/models/sysdocumenttypes.py
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
@@ -16,8 +16,8 @@ from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 
 
-class DocumentTypes(Base):
-    __tablename__ = 'DocumentTypes'
+class SysDocumentTypes(Base):
+    __tablename__ = 'SysDocumentTypes'
     __table_args__ = (
         PrimaryKeyConstraint('DocumentTypeID', name='PK__Document__DBA390C10019FEFA'),
     )
@@ -26,5 +26,5 @@ class DocumentTypes(Base):
     Name = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    documents: Mapped[List['Documents']] = relationship('Documents', back_populates='documentTypes_')
-    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='documentTypes_')
+    documents: Mapped[List['Documents']] = relationship('Documents', back_populates='sysDocumentTypes_')
+    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='sysDocumentTypes_')

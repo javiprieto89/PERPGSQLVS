@@ -3,10 +3,10 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-if TYPE_CHECKING:    
+if TYPE_CHECKING:
     from .branches import Branches
-    from .companydata import CompanyData    
-    from .documenttypes import DocumentTypes
+    from .companydata import CompanyData
+    from .sysdocumenttypes import SysDocumentTypes
 
 from typing import List
 
@@ -23,7 +23,7 @@ class Documents(Base):
     __table_args__ = (
         ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK_Documents_Branches'),
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK_Documents_CompanyData'),
-        ForeignKeyConstraint(['DocumentTypeID'], ['DocumentTypes.DocumentTypeID'], name='FK_Documents_DocumentTypes'),
+        ForeignKeyConstraint(['DocumentTypeID'], ['SysDocumentTypes.DocumentTypeID'], name='FK_Documents_SysDocumentTypes'),
         PrimaryKeyConstraint('DocumentID', name='PK__Document__1ABEEF6F4A2B1589')
     )
 
@@ -47,4 +47,4 @@ class Documents(Base):
     # Relaciones
     branches_: Mapped['Branches'] = relationship('Branches', back_populates='documents')
     companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='documents')
-    documentTypes_: Mapped['DocumentTypes'] = relationship('DocumentTypes', back_populates='documents')
+    sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship('SysDocumentTypes', back_populates='documents')

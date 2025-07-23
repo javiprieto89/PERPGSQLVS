@@ -111,7 +111,7 @@ export const clientOperations = {
         try {
             const data = await graphqlClient.query(QUERIES.GET_CLIENT_FORM_DATA);
             return {
-                docTypes: data.docTypes || [],
+                sysDocTypes: data.sysDocTypes || [],
                 countries: data.countries || [],
                 provinces: data.provinces || [],
                 priceLists: data.priceLists?.filter(pl => pl.IsActive) || [],
@@ -201,7 +201,7 @@ export const supplierOperations = {
         try {
             const data = await graphqlClient.query(QUERIES.GET_SUPPLIER_FORM_DATA);
             return {
-                docTypes: data.docTypes || [],
+                sysDocTypes: data.sysDocTypes || [],
                 countries: data.countries || [],
                 provinces: data.provinces || []
             };
@@ -1283,17 +1283,17 @@ export const orderStatusOperations = {
     }
 };
 
-export const docTypeOperations = {
-    async getAllDoctypes() {
-        const data = await graphqlClient.query(QUERIES.GET_DOC_TYPES);
-        return data.allDoctypes || [];
+export const sysDocTypeOperations = {
+    async getAllSysdoctypes() {
+        const data = await graphqlClient.query(QUERIES.GET_SYSDOC_TYPES);
+        return data.allSysdoctypes || [];
     }
 };
 
-export const documentTypeOperations = {
-    async getAllDocumenttypes() {
-        const data = await graphqlClient.query(QUERIES.GET_DOCUMENT_TYPES);
-        return data.allDocumenttypes || [];
+export const sysDocumentTypeOperations = {
+    async getAllSysdocumenttypes() {
+        const data = await graphqlClient.query(QUERIES.GET_SYSDOCUMENT_TYPES);
+        return data.allSysdocumenttypes || [];
     }
 };
 

@@ -1,6 +1,6 @@
 // frontend/src/pages/DocumentCreate.jsx
 import { useState, useEffect } from "react";
-import { documentOperations, companyOperations, branchOperations, documentTypeOperations } from "../utils/graphqlClient";
+import { documentOperations, companyOperations, branchOperations, sysDocumentTypeOperations } from "../utils/graphqlClient";
 
 export default function DocumentCreate({
     onClose,
@@ -39,7 +39,7 @@ export default function DocumentCreate({
                 const [comp, br, types] = await Promise.all([
                     companies.length ? Promise.resolve(companies) : companyOperations.getAllCompanies(),
                     branches.length ? Promise.resolve(branches) : branchOperations.getAllBranches(),
-                    documentTypes.length ? Promise.resolve(documentTypes) : documentTypeOperations.getAllDocumenttypes(),
+                    documentTypes.length ? Promise.resolve(documentTypes) : sysDocumentTypeOperations.getAllSysdocumenttypes(),
                 ]);
                 setCompanies(comp);
                 setBranches(br);

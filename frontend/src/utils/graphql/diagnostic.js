@@ -40,7 +40,7 @@ export const diagnosticGraphQL = async () => {
     console.log("4. Probando datos del formulario...");
     try {
         const formData = await clientOperations.getClientFormData();
-        console.log("   ✅ Tipos de documento:", formData.docTypes.length);
+        console.log("   ✅ Tipos de documento:", formData.sysDocTypes.length);
         console.log("   ✅ Países:", formData.countries.length);
         console.log("   ✅ Provincias:", formData.provinces.length);
         console.log("   ✅ Listas de precios:", formData.priceLists.length);
