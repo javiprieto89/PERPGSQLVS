@@ -97,7 +97,7 @@ CLEANUP_WINDOW = 60  # segundos
 - **Users**: Usuarios del sistema
 - **Roles**: Roles y permisos
 - **UserAccess**: Control de acceso
-- **UserActions**: Acciones disponibles
+- **sysUserActions**: Acciones disponibles
 - **UserActivityLog**: Log de actividad de usuarios
 - **Branches**: Sucursales
 - **Warehouses**: Almacenes

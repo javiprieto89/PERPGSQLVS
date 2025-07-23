@@ -1,16 +1,16 @@
-# app/graphql/schemas/useractions.py
+# app/graphql/schemas/sysuseractions.py
 import strawberry
 from typing import Optional
 
 @strawberry.input
-class UserActionsCreate:
+class SysUserActionsCreate:
     ActionName: Optional[str] = None
 
 @strawberry.input
-class UserActionsUpdate:
+class SysUserActionsUpdate:
     ActionName: Optional[str] = None
 
 @strawberry.type
-class UserActionsInDB:
+class SysUserActionsInDB:
     ActionID: int
     ActionName: Optional[str] = None

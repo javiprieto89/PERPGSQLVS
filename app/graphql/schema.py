@@ -47,7 +47,7 @@ from app.graphql.resolvers.tempstockhistorydetails import Tempstockhistorydetail
 from app.graphql.resolvers.transactions import TransactionsQuery
 from app.graphql.resolvers.systransactiontypes import SystransactiontypesQuery
 from app.graphql.resolvers.useraccess import UseraccessQuery
-from app.graphql.resolvers.useractions import UseractionsQuery
+from app.graphql.resolvers.sysuseractions import SysuseractionsQuery
 from app.graphql.resolvers.users import UsersQuery
 from app.graphql.resolvers.warehouses import WarehousesQuery
 from app.graphql.resolvers.vendors import VendorsQuery
@@ -80,7 +80,7 @@ from app.graphql.mutations.servicetype import ServiceTypeMutations
 from app.graphql.mutations.sysdoctypes import SysDocTypesMutations
 from app.graphql.mutations.sysdocumenttypes import SysDocumentTypesMutations
 from app.graphql.mutations.documents import DocumentsMutations
-from app.graphql.mutations.useractions import UserActionsMutations
+from app.graphql.mutations.sysuseractions import SysUserActionsMutations
 from app.graphql.mutations.roles import RolesMutations
 from app.graphql.mutations.users import UsersMutations
 from app.graphql.mutations.vendors import VendorsMutations
@@ -352,7 +352,7 @@ class Query(
     TransactionsQuery,
     SystransactiontypesQuery,
     UseraccessQuery,
-    UseractionsQuery,
+    SysuseractionsQuery,
     UsersQuery,
     WarehousesQuery,
     VendorsQuery,
@@ -439,7 +439,7 @@ class Mutation(
     ServiceTypeMutations,
     DocumentsMutations,
     SysDocumentTypesMutations,
-    UserActionsMutations,
+    SysUserActionsMutations,
     RolesMutations,
     UsersMutations,
     UserAccessMutation,
