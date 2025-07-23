@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 from typing import List
 
 from sqlalchemy import Column, Integer, Unicode, Boolean, LargeBinary, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship, foreign
 #from .branches import Branches
 #from .companydata import CompanyData    
 #from .documenttypes import DocumentTypes    
@@ -49,5 +49,11 @@ class Documents(Base):
 
     # Relaciones
     branches_: Mapped['Branches'] = relationship('Branches', back_populates='documents')
-    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='documents')
+    companyData_: Mapped['CompanyData'] = relationship(
+        'CompanyData',
+        back_populates='documents',
+        primaryjoin='foreign(Documents.CompanyID) == CompanyData.CompanyID',
+        foreign_keys='Documents.CompanyID',
+        overlaps='branches_',
+    )
     sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship('SysDocumentTypes', back_populates='documents')

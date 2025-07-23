@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 from typing import List
 
 from sqlalchemy import Column, Integer, Unicode, Date, LargeBinary, Identity, PrimaryKeyConstraint
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship, foreign
 
 
 from app.db import Base
@@ -41,7 +41,12 @@ class CompanyData(Base):
 
     # Relaciones
     branches: Mapped[List['Branches']] = relationship('Branches', back_populates='companyData_')
-    documents: Mapped[List['Documents']] = relationship('Documents', back_populates='companyData_')
+    documents: Mapped[List['Documents']] = relationship(
+        'Documents',
+        back_populates='companyData_',
+        primaryjoin='CompanyData.CompanyID == foreign(Documents.CompanyID)',
+        foreign_keys='Documents.CompanyID',
+    )
     userAccess: Mapped[List['UserAccess']] = relationship('UserAccess', back_populates='companyData_')
     items: Mapped[List['Items']] = relationship('Items', back_populates='companyData_')
     itemstock: Mapped[List['Itemstock']] = relationship('Itemstock', back_populates='companyData_')
