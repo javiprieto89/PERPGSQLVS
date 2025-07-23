@@ -50,7 +50,12 @@ class Clients(Base):
     PostalCode = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    countries_: Mapped['Countries'] = relationship('Countries', back_populates='clients')
+    countries_: Mapped['Countries'] = relationship(
+        'Countries',
+        back_populates='clients',
+        primaryjoin='Clients.CountryID == Countries.CountryID',
+        foreign_keys='Clients.CountryID',
+    )
     docTypes_: Mapped['SysDocTypes'] = relationship('SysDocTypes', back_populates='clients')
     pricelists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='clients')
     provinces_: Mapped['Provinces'] = relationship('Provinces', back_populates='clients')
