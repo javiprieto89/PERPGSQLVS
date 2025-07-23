@@ -1,10 +1,10 @@
-﻿# ========== sysTransactionTypes ===========
+﻿# ========== SysTransactionTypes ===========
 # app/models/systransactiontypes.py
 from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
 from app.db import Base
 
 
-class sysTransactionTypes(Base):  # <--- nombre de clase corregido
+class SysTransactionTypes(Base):  # <--- nombre de clase corregido
     __tablename__ = 'sysTransactionTypes'
     __table_args__ = (
         PrimaryKeyConstraint('TransactTypeID', name='PK_TransactionTypes'),
