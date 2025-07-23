@@ -193,7 +193,7 @@ class UserAccess:
 
 
 @strawberry.type
-class UserActions:
+class SysUserActions:
     pass  # TODO: completar campos manualmente
 
 

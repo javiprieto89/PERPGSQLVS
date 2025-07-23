@@ -41,7 +41,7 @@ from .cashboxmovements import *
 from .transactions import *
 from .systransactiontypes import *
 from .useraccess import *
-from .useractions import *
+from .sysuseractions import *
 from .useractivitylog import *
 from .users import *
 from .vendors import *
@@ -89,7 +89,7 @@ __all__ = [
     "transactions",
     "systransactiontypes",
     "useraccess",
-    "useractions",
+    "sysuseractions",
     "useractivitylog",
     "users",
     "vendors",

@@ -1,12 +1,12 @@
-﻿# app/graphql/mutations/useractions.py
+# app/graphql/mutations/sysuseractions.py
 import strawberry
 from typing import Optional
-from app.graphql.schemas.useractions import (
-    UserActionsCreate,
-    UserActionsUpdate,
-    UserActionsInDB,
+from app.graphql.schemas.sysuseractions import (
+    SysUserActionsCreate,
+    SysUserActionsUpdate,
+    SysUserActionsInDB,
 )
-from app.graphql.crud.useractions import (
+from app.graphql.crud.sysuseractions import (
     create,
     update,
     delete,
@@ -18,31 +18,31 @@ from app.graphql.schemas.delete_response import DeleteResponse
 
 
 @strawberry.type
-class UserActionsMutations:
+class SysUserActionsMutations:
     @strawberry.mutation
-    def create_useraction(self, info: Info, data: UserActionsCreate) -> UserActionsInDB:
+    def create_sysuseraction(self, info: Info, data: SysUserActionsCreate) -> SysUserActionsInDB:
         db_gen = get_db()
         db = next(db_gen)
         try:
             obj = create(db, data)
-            return obj_to_schema(UserActionsInDB, obj)
+            return obj_to_schema(SysUserActionsInDB, obj)
         finally:
             db_gen.close()
 
     @strawberry.mutation
-    def update_useraction(
-        self, info: Info, userActionID: int, data: UserActionsUpdate
-    ) -> Optional[UserActionsInDB]:
+    def update_sysuseraction(
+        self, info: Info, userActionID: int, data: SysUserActionsUpdate
+    ) -> Optional[SysUserActionsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
             updated = update(db, userActionID, data)
-            return obj_to_schema(UserActionsInDB, updated) if updated else None
+            return obj_to_schema(SysUserActionsInDB, updated) if updated else None
         finally:
             db_gen.close()
 
     @strawberry.mutation
-    def delete_useraction(self, info: Info, userActionID: int) -> DeleteResponse:
+    def delete_sysuseraction(self, info: Info, userActionID: int) -> DeleteResponse:
         db_gen = get_db()
         db = next(db_gen)
         try:

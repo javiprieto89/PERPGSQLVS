@@ -611,7 +611,7 @@ Table AccountBalances {
 // Auditoría y logs
 // ==========================================
 
-Table UserActions {
+Table sysUserActions {
   UserActionID int [pk, increment]
   ActionName nvarchar(100) [not null]
   
@@ -621,7 +621,7 @@ Table UserActions {
 Table UserActivityLog {
   ActivityID int [pk, increment]
   UserID int [not null, ref: > Users.UserID]
-  UserActionID int [not null, ref: > UserActions.UserActionID]
+  UserActionID int [not null, ref: > sysUserActions.UserActionID]
   Timestamp datetime [not null, default: `getdate()`]
   
   Note: 'Log de actividad de usuarios'
