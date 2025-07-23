@@ -25,7 +25,7 @@ from .orderdetails import *
 from .orderhistory import *
 from .orderhistorydetails import *
 from .orders import *
-from .orderstatus import *
+from .sysorderstatus import *
 from .pricelistitems import *
 from .pricelists import *
 from .provinces import *
@@ -39,7 +39,7 @@ from .tempstockhistorydetails import *
 from .cashboxes import *
 from .cashboxmovements import *
 from .transactions import *
-from .transactiontypes import *
+from .systransactiontypes import *
 from .useraccess import *
 from .useractions import *
 from .useractivitylog import *
@@ -73,7 +73,7 @@ __all__ = [
     "orderhistory",
     "orderhistorydetails",
     "orders",
-    "orderstatus",
+    "sysorderstatus",
     "pricelistitems",
     "pricelists",
     "provinces",
@@ -87,7 +87,7 @@ __all__ = [
     "cashboxes",
     "cashboxmovements",
     "transactions",
-    "transactiontypes",
+    "systransactiontypes",
     "useraccess",
     "useractions",
     "useractivitylog",

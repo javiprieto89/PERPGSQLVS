@@ -437,7 +437,7 @@ Table SaleConditions {
 // Gestión de órdenes
 // ==========================================
 
-Table OrderStatus {
+Table sysOrderStatus {
   OrderStatusID int [pk, increment]
   Status nvarchar(50) [not null]
   
@@ -464,7 +464,7 @@ Table Orders {
   UserID int [not null, ref: > Users.UserID]
   DocumentID int [not null, ref: > DocumentTypes.DocumentTypeID]
   PriceListID int [not null, ref: > PriceLists.PriceListID]
-  OrderStatusID int [not null, ref: > OrderStatus.OrderStatusID]
+  OrderStatusID int [not null, ref: > sysOrderStatus.OrderStatusID]
   WarehouseID int [not null, ref: > Warehouses.WarehouseID]
   
   indexes {
@@ -568,7 +568,7 @@ Table TempStockEntries {
 // Gestión financiera
 // ==========================================
 
-Table TransactionTypes {
+Table sysTransactionTypes {
   TransactTypeID int [pk, increment]
   TypeName nvarchar(100) [not null]
   
@@ -581,7 +581,7 @@ Table Transactions {
   TransactionDate datetime [not null, default: `getdate()`]
   ClientID int [ref: > Clients.ClientID]
   SupplierID int [ref: > Suppliers.SupplierID]
-  TransacTypeID int [not null, ref: > TransactionTypes.TransactTypeID]
+  TransacTypeID int [not null, ref: > sysTransactionTypes.TransactTypeID]
   OrderID int [ref: > Orders.OrderID]
   Subtotal decimal(10,2)
   Taxes decimal(10,2)

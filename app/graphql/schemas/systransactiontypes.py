@@ -1,16 +1,16 @@
-# app/graphql/schemas/transactiontypes.py
+# app/graphql/schemas/systransactiontypes.py
 import strawberry
 from typing import Optional
 
 @strawberry.input
-class TransactionTypesCreate:
+class SysTransactionTypesCreate:
     TypeName: str
 
 @strawberry.input
-class TransactionTypesUpdate:
+class SysTransactionTypesUpdate:
     TypeName: Optional[str] = None
 
 @strawberry.type
-class TransactionTypesInDB:
+class SysTransactionTypesInDB:
     TransactTypeID: int
     TypeName: str

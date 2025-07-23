@@ -1276,10 +1276,10 @@ export const serviceTypeOperations = {
     }
 };
 
-export const orderStatusOperations = {
-    async getAllOrderstatus() {
-        const data = await graphqlClient.query(QUERIES.GET_ALL_ORDERSTATUS);
-        return data.allOrderstatus || [];
+export const sysOrderStatusOperations = {
+    async getAllSysorderstatus() {
+        const data = await graphqlClient.query(QUERIES.GET_ALL_SYSORDERSTATUS);
+        return data.allSysorderstatus || [];
     }
 };
 
@@ -1412,7 +1412,7 @@ export const orderOperations = {
                 pricelistOperations.getAllPricelists(),
                 warehouseOperations.getAllWarehouses(),
                 serviceTypeOperations.getAllServicetypes(),
-                orderStatusOperations.getAllOrderstatus()
+                sysOrderStatusOperations.getAllSysorderstatus()
             ]);
 
             return {

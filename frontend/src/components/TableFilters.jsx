@@ -33,7 +33,7 @@ const pluralMap = {
     Discount: "Discounts",
     Item: "Items",
     Order: "Orders",
-    OrderStatus: "Orderstatus",
+    OrderStatus: "Sysorderstatus",
     SaleCondition: "Saleconditions",
     ServiceType: "Servicetypes",
     User: "Users"
