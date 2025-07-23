@@ -181,9 +181,9 @@ export const QUERIES = {
     `,
 
     // ORDER STATUS
-    GET_ALL_ORDERSTATUS: `
-        query GetAllOrderstatus {
-            allOrderstatus {
+    GET_ALL_SYSORDERSTATUS: `
+        query GetAllSysorderstatus {
+            allSysorderstatus {
                 OrderStatusID
                 Status
             }

@@ -1,16 +1,16 @@
-# app/graphql/schemas/orderstatus.py
+# app/graphql/schemas/sysorderstatus.py
 import strawberry
 from typing import Optional
 
 @strawberry.input
-class OrderStatusCreate:
+class SysOrderStatusCreate:
     Status: str
 
 @strawberry.input
-class OrderStatusUpdate:
+class SysOrderStatusUpdate:
     Status: Optional[str] = None
 
 @strawberry.type
-class OrderStatusInDB:
+class SysOrderStatusInDB:
     OrderStatusID: int
     Status: str
