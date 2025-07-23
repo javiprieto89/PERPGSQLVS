@@ -211,7 +211,7 @@ FILTER_SCHEMAS = {
         {"field": "VAT", "label": "IVA", "type": "number"},
         {"field": "UserID", "label": "Usuario", "type": "select", "relationModel": "User"},
         {"field": "UserName", "label": "Usuario (nombre)", "type": "text"},
-        {"field": "StatusID", "label": "Estado", "type": "select", "relationModel": "OrderStatus"},
+        {"field": "StatusID", "label": "Estado", "type": "select", "relationModel": "Sysorderstatus"},
         {"field": "StatusName", "label": "Estado (nombre)", "type": "text"},
         {"field": "PriceListID", "label": "Lista de precios", "type": "select", "relationModel": "PriceList"},
         {"field": "WarehouseID", "label": "Depósito", "type": "select", "relationModel": "Warehouse"}

@@ -113,7 +113,7 @@
     <Compile Include="app\graphql\crud\orderhistory.py" />
     <Compile Include="app\graphql\crud\orderhistorydetails.py" />
     <Compile Include="app\graphql\crud\orders.py" />
-    <Compile Include="app\graphql\crud\orderstatus.py" />
+    <Compile Include="app\graphql\crud\sysorderstatus.py" />
     <Compile Include="app\graphql\crud\pricelistitems.py" />
     <Compile Include="app\graphql\crud\pricelists.py" />
     <Compile Include="app\graphql\crud\provinces.py" />
@@ -123,7 +123,7 @@
     <Compile Include="app\graphql\crud\suppliers.py" />
     <Compile Include="app\graphql\crud\temporderdetails.py" />
     <Compile Include="app\graphql\crud\transactions.py" />
-    <Compile Include="app\graphql\crud\transactiontypes.py" />
+    <Compile Include="app\graphql\crud\systransactiontypes.py" />
     <Compile Include="app\graphql\crud\useraccess.py" />
     <Compile Include="app\graphql\crud\useractions.py" />
     <Compile Include="app\graphql\crud\useractivitylog.py" />
@@ -156,7 +156,7 @@
     <Compile Include="app\graphql\resolvers\orderhistory.py" />
     <Compile Include="app\graphql\resolvers\orderhistorydetails.py" />
     <Compile Include="app\graphql\resolvers\orders.py" />
-    <Compile Include="app\graphql\resolvers\orderstatus.py" />
+    <Compile Include="app\graphql\resolvers\sysorderstatus.py" />
     <Compile Include="app\graphql\resolvers\pricelistitems.py" />
     <Compile Include="app\graphql\resolvers\pricelists.py" />
     <Compile Include="app\graphql\resolvers\provinces.py" />
@@ -166,7 +166,7 @@
     <Compile Include="app\graphql\resolvers\suppliers.py" />
     <Compile Include="app\graphql\resolvers\temporderdetails.py" />
     <Compile Include="app\graphql\resolvers\transactions.py" />
-    <Compile Include="app\graphql\resolvers\transactiontypes.py" />
+    <Compile Include="app\graphql\resolvers\systransactiontypes.py" />
     <Compile Include="app\graphql\resolvers\useraccess.py" />
     <Compile Include="app\graphql\resolvers\useractions.py" />
     <Compile Include="app\graphql\resolvers\useractivitylog.py" />
@@ -198,7 +198,7 @@
     <Compile Include="app\graphql\schemas\orderhistory.py" />
     <Compile Include="app\graphql\schemas\orderhistorydetails.py" />
     <Compile Include="app\graphql\schemas\orders.py" />
-    <Compile Include="app\graphql\schemas\orderstatus.py" />
+    <Compile Include="app\graphql\schemas\sysorderstatus.py" />
     <Compile Include="app\graphql\schemas\pricelistitems.py" />
     <Compile Include="app\graphql\schemas\pricelists.py" />
     <Compile Include="app\graphql\schemas\provinces.py" />
@@ -208,7 +208,7 @@
     <Compile Include="app\graphql\schemas\suppliers.py" />
     <Compile Include="app\graphql\schemas\temporderdetails.py" />
     <Compile Include="app\graphql\schemas\transactions.py" />
-    <Compile Include="app\graphql\schemas\transactiontypes.py" />
+    <Compile Include="app\graphql\schemas\systransactiontypes.py" />
     <Compile Include="app\graphql\schemas\useraccess.py" />
     <Compile Include="app\graphql\schemas\useractions.py" />
     <Compile Include="app\graphql\schemas\useractivitylog.py" />
@@ -240,7 +240,7 @@
     <Compile Include="app\models\orderhistory.py" />
     <Compile Include="app\models\orderhistorydetails.py" />
     <Compile Include="app\models\orders.py" />
-    <Compile Include="app\models\orderstatus.py" />
+    <Compile Include="app\models\sysorderstatus.py" />
     <Compile Include="app\models\pricelistitems.py" />
     <Compile Include="app\models\pricelists.py" />
     <Compile Include="app\models\provinces.py" />
@@ -250,7 +250,7 @@
     <Compile Include="app\models\suppliers.py" />
     <Compile Include="app\models\temporderdetails.py" />
     <Compile Include="app\models\transactions.py" />
-    <Compile Include="app\models\transactiontypes.py" />
+    <Compile Include="app\models\systransactiontypes.py" />
     <Compile Include="app\models\useraccess.py" />
     <Compile Include="app\models\useractions.py" />
     <Compile Include="app\models\useractivitylog.py" />

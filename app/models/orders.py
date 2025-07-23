@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .companydata import CompanyData
     from .discounts import Discounts
     from .sysdocumenttypes import SysDocumentTypes
-    from .orderstatus import OrderStatus
+    from .sysorderstatus import sysOrderStatus  # <--- corregido acá
     from .pricelists import PriceLists
     from .saleconditions import SaleConditions
     from .servicetype import ServiceType
@@ -37,7 +37,7 @@ class Orders(Base):
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__Orders__CompanyI__02084FDA'),
         ForeignKeyConstraint(['DiscountID'], ['Discounts.DiscountID'], name='FK__Orders__Discount__04E4BC85'),
         ForeignKeyConstraint(['DocumentID'], ['SysDocumentTypes.DocumentTypeID'], name='FK__Orders__SysDocume__06CD04F7'),
-        ForeignKeyConstraint(['OrderStatusID'], ['sysOrderStatus.OrderstatusID'], name='FK_Orders_OrderStatus'),
+        ForeignKeyConstraint(['OrderStatusID'], ['sysOrderStatus.OrderstatusID'], name='FK_Orders_OrderStatus'),  # <--- corregido acá
         ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK__Orders__PriceLis__08B54D69'),
         ForeignKeyConstraint(['SaleConditionID'], ['SaleConditions.SaleConditionID'], name='FK__Orders__SaleCond__03F0984C'),
         ForeignKeyConstraint(['ServiceTypeID'], ['ServiceType.ServiceTypeID'], name='FK_Orders_ServiceType'),        
@@ -78,7 +78,7 @@ class Orders(Base):
     companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='orders')
     discounts_: Mapped['Discounts'] = relationship('Discounts', back_populates='orders')
     sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship('SysDocumentTypes', back_populates='orders')
-    orderStatus_: Mapped['OrderStatus'] = relationship('OrderStatus', foreign_keys=[OrderStatusID], back_populates='orders')    
+    orderStatus_: Mapped['sysOrderStatus'] = relationship('sysOrderStatus', foreign_keys=[OrderStatusID], back_populates='orders')   # <--- corregido acá
     priceLists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='orders')
     saleConditions_: Mapped['SaleConditions'] = relationship('SaleConditions', back_populates='orders')
     serviceType_: Mapped[Optional['ServiceType']] = relationship('ServiceType', back_populates='orders')    
@@ -92,4 +92,3 @@ class Orders(Base):
     def Items(self) -> List['OrderDetails']:
         """Alias de acceso para los detalles de la orden."""
         return self.orderDetails
-

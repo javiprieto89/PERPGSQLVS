@@ -33,7 +33,7 @@ from app.graphql.resolvers.orderdetails import OrderdetailsQuery
 from app.graphql.resolvers.orderhistory import OrderhistoryQuery
 from app.graphql.resolvers.orderhistorydetails import OrderhistorydetailsQuery
 from app.graphql.resolvers.orders import OrdersQuery
-from app.graphql.resolvers.orderstatus import OrderstatusQuery
+from app.graphql.resolvers.sysorderstatus import SysorderstatusQuery
 from app.graphql.resolvers.pricelistitems import PricelistitemsQuery
 from app.graphql.resolvers.pricelists import PricelistsQuery
 from app.graphql.resolvers.provinces import ProvincesQuery
@@ -45,7 +45,7 @@ from app.graphql.resolvers.suppliers import SuppliersQuery
 from app.graphql.resolvers.temporderdetails import TemporderdetailsQuery
 from app.graphql.resolvers.tempstockhistorydetails import TempstockhistorydetailsQuery
 from app.graphql.resolvers.transactions import TransactionsQuery
-from app.graphql.resolvers.transactiontypes import TransactiontypesQuery
+from app.graphql.resolvers.systransactiontypes import SystransactiontypesQuery
 from app.graphql.resolvers.useraccess import UseraccessQuery
 from app.graphql.resolvers.useractions import UseractionsQuery
 from app.graphql.resolvers.users import UsersQuery
@@ -336,7 +336,7 @@ class Query(
     OrderhistoryQuery,
     OrderhistorydetailsQuery,
     OrdersQuery,
-    OrderstatusQuery,
+    SysorderstatusQuery,
     PricelistitemsQuery,
     PricelistsQuery,
     ProvincesQuery,
@@ -350,7 +350,7 @@ class Query(
     CashboxesQuery,
     CashboxmovementsQuery,
     TransactionsQuery,
-    TransactiontypesQuery,
+    SystransactiontypesQuery,
     UseraccessQuery,
     UseractionsQuery,
     UsersQuery,

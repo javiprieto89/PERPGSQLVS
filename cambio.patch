@@ -1,36 +1,597 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/app/graphql/resolvers/afip.py b/app/graphql/resolvers/afip.py
+diff --git a/PERPGSQLVS.pyproj b/PERPGSQLVS.pyproj
+index 1b448edc7c64da3c037300e9fbb57578eb9b1476..8a06af7cf72ad024df4344d900e872b5bfed1025 100644
+--- a/PERPGSQLVS.pyproj
++++ b/PERPGSQLVS.pyproj
+@@ -91,188 +91,188 @@
+     <Compile Include="app\generar_init.py" />
+     <Compile Include="app\graphql\crud\accountbalances.py" />
+     <Compile Include="app\graphql\crud\branches.py" />
+     <Compile Include="app\graphql\crud\brands.py" />
+     <Compile Include="app\graphql\crud\carbrands.py" />
+     <Compile Include="app\graphql\crud\carmodels.py" />
+     <Compile Include="app\graphql\crud\cars.py" />
+     <Compile Include="app\graphql\crud\clients.py" />
+     <Compile Include="app\graphql\crud\companydata.py" />
+     <Compile Include="app\graphql\crud\countries.py" />
+     <Compile Include="app\graphql\crud\creditcardgroups.py" />
+     <Compile Include="app\graphql\crud\creditcards.py" />
+     <Compile Include="app\graphql\crud\discounts.py" />
+     <Compile Include="app\graphql\crud\sysdoctypes.py" />
+     <Compile Include="app\graphql\crud\documents.py" />
+     <Compile Include="app\graphql\crud\sysdocumenttypes.py" />
+     <Compile Include="app\graphql\crud\itemcategories.py" />
+     <Compile Include="app\graphql\crud\itempricehistory.py" />
+     <Compile Include="app\graphql\crud\items.py" />
+     <Compile Include="app\graphql\crud\itemstock.py" />
+     <Compile Include="app\graphql\crud\itemsubcategories.py" />
+     <Compile Include="app\graphql\crud\orderdetails.py" />
+     <Compile Include="app\graphql\crud\orderhistory.py" />
+     <Compile Include="app\graphql\crud\orderhistorydetails.py" />
+     <Compile Include="app\graphql\crud\orders.py" />
+-    <Compile Include="app\graphql\crud\orderstatus.py" />
++    <Compile Include="app\graphql\crud\sysorderstatus.py" />
+     <Compile Include="app\graphql\crud\pricelistitems.py" />
+     <Compile Include="app\graphql\crud\pricelists.py" />
+     <Compile Include="app\graphql\crud\provinces.py" />
+     <Compile Include="app\graphql\crud\roles.py" />
+     <Compile Include="app\graphql\crud\saleconditions.py" />
+     <Compile Include="app\graphql\crud\servicetype.py" />
+     <Compile Include="app\graphql\crud\suppliers.py" />
+     <Compile Include="app\graphql\crud\temporderdetails.py" />
+     <Compile Include="app\graphql\crud\transactions.py" />
+-    <Compile Include="app\graphql\crud\transactiontypes.py" />
++    <Compile Include="app\graphql\crud\systransactiontypes.py" />
+     <Compile Include="app\graphql\crud\useraccess.py" />
+     <Compile Include="app\graphql\crud\useractions.py" />
+     <Compile Include="app\graphql\crud\useractivitylog.py" />
+     <Compile Include="app\graphql\crud\users.py" />
+     <Compile Include="app\graphql\crud\warehouses.py" />
+     <Compile Include="app\graphql\mutations\useraccess.py" />
+     <Compile Include="app\graphql\resolvers\accountbalances.py" />
+     <Compile Include="app\graphql\resolvers\auth.py" />
+     <Compile Include="app\graphql\resolvers\branches.py" />
+     <Compile Include="app\graphql\resolvers\brands.py" />
+     <Compile Include="app\graphql\resolvers\cached_resolvers.py" />
+     <Compile Include="app\graphql\resolvers\carbrands.py" />
+     <Compile Include="app\graphql\resolvers\carmodels.py" />
+     <Compile Include="app\graphql\resolvers\cars.py" />
+     <Compile Include="app\graphql\resolvers\clients.py" />
+     <Compile Include="app\graphql\resolvers\companydata.py" />
+     <Compile Include="app\graphql\resolvers\countries.py" />
+     <Compile Include="app\graphql\resolvers\creditcardgroups.py" />
+     <Compile Include="app\graphql\resolvers\creditcards.py" />
+     <Compile Include="app\graphql\resolvers\discounts.py" />
+     <Compile Include="app\graphql\resolvers\sysdoctypes.py" />
+     <Compile Include="app\graphql\resolvers\documents.py" />
+     <Compile Include="app\graphql\resolvers\sysdocumenttypes.py" />
+     <Compile Include="app\graphql\resolvers\itemcategories.py" />
+     <Compile Include="app\graphql\resolvers\itempricehistory.py" />
+     <Compile Include="app\graphql\resolvers\items.py" />
+     <Compile Include="app\graphql\resolvers\itemstock.py" />
+     <Compile Include="app\graphql\resolvers\itemsubcategories.py" />
+     <Compile Include="app\graphql\resolvers\orderdetails.py" />
+     <Compile Include="app\graphql\resolvers\orderhistory.py" />
+     <Compile Include="app\graphql\resolvers\orderhistorydetails.py" />
+     <Compile Include="app\graphql\resolvers\orders.py" />
+-    <Compile Include="app\graphql\resolvers\orderstatus.py" />
++    <Compile Include="app\graphql\resolvers\sysorderstatus.py" />
+     <Compile Include="app\graphql\resolvers\pricelistitems.py" />
+     <Compile Include="app\graphql\resolvers\pricelists.py" />
+     <Compile Include="app\graphql\resolvers\provinces.py" />
+     <Compile Include="app\graphql\resolvers\roles.py" />
+     <Compile Include="app\graphql\resolvers\saleconditions.py" />
+     <Compile Include="app\graphql\resolvers\servicetype.py" />
+     <Compile Include="app\graphql\resolvers\suppliers.py" />
+     <Compile Include="app\graphql\resolvers\temporderdetails.py" />
+     <Compile Include="app\graphql\resolvers\transactions.py" />
+-    <Compile Include="app\graphql\resolvers\transactiontypes.py" />
++    <Compile Include="app\graphql\resolvers\systransactiontypes.py" />
+     <Compile Include="app\graphql\resolvers\useraccess.py" />
+     <Compile Include="app\graphql\resolvers\useractions.py" />
+     <Compile Include="app\graphql\resolvers\useractivitylog.py" />
+     <Compile Include="app\graphql\resolvers\users.py" />
+     <Compile Include="app\graphql\resolvers\warehouses.py" />
+     <Compile Include="app\graphql\schema.py" />
+     <Compile Include="app\graphql\schemas\accountbalances.py" />
+     <Compile Include="app\graphql\schemas\auth.py" />
+     <Compile Include="app\graphql\schemas\branches.py" />
+     <Compile Include="app\graphql\schemas\brands.py" />
+     <Compile Include="app\graphql\schemas\carbrands.py" />
+     <Compile Include="app\graphql\schemas\carmodels.py" />
+     <Compile Include="app\graphql\schemas\cars.py" />
+     <Compile Include="app\graphql\schemas\clients.py" />
+     <Compile Include="app\graphql\schemas\companydata.py" />
+     <Compile Include="app\graphql\schemas\countries.py" />
+     <Compile Include="app\graphql\schemas\creditcardgroups.py" />
+     <Compile Include="app\graphql\schemas\creditcards.py" />
+     <Compile Include="app\graphql\schemas\discounts.py" />
+     <Compile Include="app\graphql\schemas\sysdoctypes.py" />
+     <Compile Include="app\graphql\schemas\documents.py" />
+     <Compile Include="app\graphql\schemas\sysdocumenttypes.py" />
+     <Compile Include="app\graphql\schemas\itemcategories.py" />
+     <Compile Include="app\graphql\schemas\itempricehistory.py" />
+     <Compile Include="app\graphql\schemas\items.py" />
+     <Compile Include="app\graphql\schemas\itemstock.py" />
+     <Compile Include="app\graphql\schemas\itemsubcategories.py" />
+     <Compile Include="app\graphql\schemas\orderdetails.py" />
+     <Compile Include="app\graphql\schemas\orderhistory.py" />
+     <Compile Include="app\graphql\schemas\orderhistorydetails.py" />
+     <Compile Include="app\graphql\schemas\orders.py" />
+-    <Compile Include="app\graphql\schemas\orderstatus.py" />
++    <Compile Include="app\graphql\schemas\sysorderstatus.py" />
+     <Compile Include="app\graphql\schemas\pricelistitems.py" />
+     <Compile Include="app\graphql\schemas\pricelists.py" />
+     <Compile Include="app\graphql\schemas\provinces.py" />
+     <Compile Include="app\graphql\schemas\roles.py" />
+     <Compile Include="app\graphql\schemas\saleconditions.py" />
+     <Compile Include="app\graphql\schemas\servicetype.py" />
+     <Compile Include="app\graphql\schemas\suppliers.py" />
+     <Compile Include="app\graphql\schemas\temporderdetails.py" />
+     <Compile Include="app\graphql\schemas\transactions.py" />
+-    <Compile Include="app\graphql\schemas\transactiontypes.py" />
++    <Compile Include="app\graphql\schemas\systransactiontypes.py" />
+     <Compile Include="app\graphql\schemas\useraccess.py" />
+     <Compile Include="app\graphql\schemas\useractions.py" />
+     <Compile Include="app\graphql\schemas\useractivitylog.py" />
+     <Compile Include="app\graphql\schemas\users.py" />
+     <Compile Include="app\graphql\schemas\warehouses.py" />
+     <Compile Include="app\graphql\types.py" />
+     <Compile Include="app\main.py" />
+     <Compile Include="app\models\accountbalances.py" />
+     <Compile Include="app\models\branches.py" />
+     <Compile Include="app\models\brands.py" />
+     <Compile Include="app\models\carbrands.py" />
+     <Compile Include="app\models\carmodels.py" />
+     <Compile Include="app\models\cars.py" />
+     <Compile Include="app\models\clients.py" />
+     <Compile Include="app\models\companydata.py" />
+     <Compile Include="app\models\countries.py" />
+     <Compile Include="app\models\creditcardgroups.py" />
+     <Compile Include="app\models\creditcards.py" />
+     <Compile Include="app\models\discounts.py" />
+     <Compile Include="app\models\sysdoctypes.py" />
+     <Compile Include="app\models\documents.py" />
+     <Compile Include="app\models\sysdocumenttypes.py" />
+     <Compile Include="app\models\itemcategories.py" />
+     <Compile Include="app\models\itempricehistory.py" />
+     <Compile Include="app\models\items.py" />
+     <Compile Include="app\models\itemstock.py" />
+     <Compile Include="app\models\itemsubcategories.py" />
+     <Compile Include="app\models\orderdetails.py" />
+     <Compile Include="app\models\orderhistory.py" />
+     <Compile Include="app\models\orderhistorydetails.py" />
+     <Compile Include="app\models\orders.py" />
+-    <Compile Include="app\models\orderstatus.py" />
++    <Compile Include="app\models\sysorderstatus.py" />
+     <Compile Include="app\models\pricelistitems.py" />
+     <Compile Include="app\models\pricelists.py" />
+     <Compile Include="app\models\provinces.py" />
+     <Compile Include="app\models\roles.py" />
+     <Compile Include="app\models\saleconditions.py" />
+     <Compile Include="app\models\servicetype.py" />
+     <Compile Include="app\models\suppliers.py" />
+     <Compile Include="app\models\temporderdetails.py" />
+     <Compile Include="app\models\transactions.py" />
+-    <Compile Include="app\models\transactiontypes.py" />
++    <Compile Include="app\models\systransactiontypes.py" />
+     <Compile Include="app\models\useraccess.py" />
+     <Compile Include="app\models\useractions.py" />
+     <Compile Include="app\models\useractivitylog.py" />
+     <Compile Include="app\models\users.py" />
+     <Compile Include="app\models\vendors.py" />
+     <Compile Include="app\models\warehouses.py" />
+     <Compile Include="app\models\__init__.py" />
+     <Compile Include="app\utils\cache.py" />
+     <Compile Include="app\utils\generic_filters.py" />
+     <Compile Include="app\utils\pagination.py" />
+     <Compile Include="frontend\node_modules\flatted\python\flatted.py" />
+   </ItemGroup>
+   <ItemGroup>
+     <Content Include=".env.example" />
+     <Content Include=".gitignore" />
+     <Content Include="AGENTS.md" />
+     <Content Include="app\.env" />
+     <Content Include="app\.env.example" />
+     <Content Include="Como iniciar.txt" />
+     <Content Include="db\init_database.sql" />
+     <Content Include="db\LubricentroDB2.dbml" />
+     <Content Include="db\LubricentroDB2.sql" />
+     <Content Include="eslint.config.cjs" />
+     <Content Include="frontend\.gitignore" />
+     <Content Include="frontend\detect-unused-vars.cjs" />
+diff --git a/app/graphql/crud/orderstatus.py b/app/graphql/crud/orderstatus.py
+deleted file mode 100644
+index 6cdc8422daf1a3c7ce14fba3e0fe2b6f902f2719..0000000000000000000000000000000000000000
+--- a/app/graphql/crud/orderstatus.py
++++ /dev/null
+@@ -1,43 +0,0 @@
+-# graphql/crud/orderstatus.py
+-
+-from sqlalchemy.orm import Session
+-from app.models.orderstatus import OrderStatus
+-from app.graphql.schemas.orderstatus import OrderStatusCreate, OrderStatusUpdate
+-
+-
+-def get_orderstatus(db: Session):
+-    return db.query(OrderStatus).all()
+-
+-
+-def get_orderstatus_by_id(db: Session, orderstatusid: int):
+-    return (
+-        db.query(OrderStatus).filter(
+-            OrderStatus.OrderStatusID == orderstatusid).first()
+-    )
+-
+-
+-def create_orderstatus(db: Session, data: OrderStatusCreate):
+-    obj = OrderStatus(**vars(data))
+-    db.add(obj)
+-    db.commit()
+-    db.refresh(obj)
+-    return obj
+-
+-
+-def update_orderstatus(db: Session, orderstatusid: int, data: OrderStatusUpdate):
+-    obj = get_orderstatus_by_id(db, orderstatusid)
+-    if obj:
+-        for k, v in vars(data).items():
+-            if v is not None:
+-                setattr(obj, k, v)
+-        db.commit()
+-        db.refresh(obj)
+-    return obj
+-
+-
+-def delete_orderstatus(db: Session, orderstatusid: int):
+-    obj = get_orderstatus_by_id(db, orderstatusid)
+-    if obj:
+-        db.delete(obj)
+-        db.commit()
+-    return obj
+diff --git a/app/graphql/crud/sysorderstatus.py b/app/graphql/crud/sysorderstatus.py
 new file mode 100644
-index 0000000000000000000000000000000000000000..a08d7ad7460b59cce1d0e59e33a49a2b5c865cb1
+index 0000000000000000000000000000000000000000..cde6ee38b0ebdb5a9dd5ffb0ec154e352397f0b8
 --- /dev/null
-+++ b/app/graphql/resolvers/afip.py
-@@ -0,0 +1,21 @@
-+# app/graphql/resolvers/afip.py
-+import json
++++ b/app/graphql/crud/sysorderstatus.py
+@@ -0,0 +1,46 @@
++# app/graphql/crud/sysorderstatus.py
++
++from sqlalchemy.orm import Session
++from app.models.sysorderstatus import SysOrderStatus
++from app.graphql.schemas.sysorderstatus import (
++    SysOrderStatusCreate,
++    SysOrderStatusUpdate,
++)
++
++
++def get_sysorderstatus(db: Session):
++    return db.query(SysOrderStatus).all()
++
++
++def get_sysorderstatus_by_id(db: Session, orderstatusid: int):
++    return (
++        db.query(SysOrderStatus).filter(
++            SysOrderStatus.OrderStatusID == orderstatusid).first()
++    )
++
++
++def create_sysorderstatus(db: Session, data: SysOrderStatusCreate):
++    obj = SysOrderStatus(**vars(data))
++    db.add(obj)
++    db.commit()
++    db.refresh(obj)
++    return obj
++
++
++def update_sysorderstatus(db: Session, orderstatusid: int, data: SysOrderStatusUpdate):
++    obj = get_sysorderstatus_by_id(db, orderstatusid)
++    if obj:
++        for k, v in vars(data).items():
++            if v is not None:
++                setattr(obj, k, v)
++        db.commit()
++        db.refresh(obj)
++    return obj
++
++
++def delete_sysorderstatus(db: Session, orderstatusid: int):
++    obj = get_sysorderstatus_by_id(db, orderstatusid)
++    if obj:
++        db.delete(obj)
++        db.commit()
++    return obj
+diff --git a/app/graphql/crud/systransactiontypes.py b/app/graphql/crud/systransactiontypes.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..b472ee703b03b6a136282b2efc8ddb2274f34862
+--- /dev/null
++++ b/app/graphql/crud/systransactiontypes.py
+@@ -0,0 +1,45 @@
++# app/graphql/crud/systransactiontypes.py
++from sqlalchemy.orm import Session
++from app.models.systransactiontypes import SysTransactionTypes
++from app.graphql.schemas.systransactiontypes import (
++    SysTransactionTypesCreate,
++    SysTransactionTypesUpdate,
++)
++
++
++def get_systransactiontypes(db: Session):
++    return db.query(SysTransactionTypes).all()
++
++
++def get_systransactiontypes_by_id(db: Session, id: int):
++    return (
++        db.query(SysTransactionTypes).filter(
++            SysTransactionTypes.TransactTypeID == id).first()
++    )
++
++
++def create_systransactiontype(db: Session, record: SysTransactionTypesCreate):
++    db_record = SysTransactionTypes(**record.__dict__)
++    db.add(db_record)
++    db.commit()
++    db.refresh(db_record)
++    return db_record
++
++
++def update_systransactiontype(db: Session, id: int, record: SysTransactionTypesUpdate):
++    db_record = get_systransactiontypes_by_id(db, id)
++    if db_record:
++        for k, v in record.__dict__.items():
++            if v is not None:
++                setattr(db_record, k, v)
++        db.commit()
++        db.refresh(db_record)
++    return db_record
++
++
++def delete_systransactiontype(db: Session, id: int):
++    db_record = get_systransactiontypes_by_id(db, id)
++    if db_record:
++        db.delete(db_record)
++        db.commit()
++    return db_record
+diff --git a/app/graphql/crud/transactiontypes.py b/app/graphql/crud/transactiontypes.py
+deleted file mode 100644
+index a273206b4f60a3ece1c5b77e7814b3bf32272933..0000000000000000000000000000000000000000
+--- a/app/graphql/crud/transactiontypes.py
++++ /dev/null
+@@ -1,44 +0,0 @@
+-from sqlalchemy.orm import Session
+-from app.models.transactiontypes import TransactionTypes
+-from app.graphql.schemas.transactiontypes import (
+-    TransactionTypesCreate,
+-    TransactionTypesUpdate,
+-)
+-
+-
+-def get_transactiontypes(db: Session):
+-    return db.query(TransactionTypes).all()
+-
+-
+-def get_transactiontypes_by_id(db: Session, id: int):
+-    return (
+-        db.query(TransactionTypes).filter(
+-            TransactionTypes.transactTypeID == id).first()
+-    )
+-
+-
+-def create(db: Session, record: TransactionTypesCreate):
+-    db_record = TransactionTypes(**record.__dict__)
+-    db.add(db_record)
+-    db.commit()
+-    db.refresh(db_record)
+-    return db_record
+-
+-
+-def update(db: Session, id: int, record: TransactionTypesUpdate):
+-    db_record = get_transactiontypes_by_id(db, id)
+-    if db_record:
+-        for k, v in record.__dict__.items():
+-            if v is not None:
+-                setattr(db_record, k, v)
+-        db.commit()
+-        db.refresh(db_record)
+-    return db_record
+-
+-
+-def delete(db: Session, id: int):
+-    db_record = get_transactiontypes_by_id(db, id)
+-    if db_record:
+-        db.delete(db_record)
+-        db.commit()
+-    return db_record
+diff --git a/app/graphql/resolvers/orderstatus.py b/app/graphql/resolvers/orderstatus.py
+deleted file mode 100644
+index 8aba4be0c72b7870d37c62d4f8e3925dfcaf918e..0000000000000000000000000000000000000000
+--- a/app/graphql/resolvers/orderstatus.py
++++ /dev/null
+@@ -1,34 +0,0 @@
+-# app/graphql/resolvers/orderstatus.py
+-import strawberry
+-from typing import List, Optional
+-from app.graphql.schemas.orderstatus import OrderStatusInDB
+-from app.graphql.crud.orderstatus import get_orderstatus, get_orderstatus_by_id
+-from app.db import get_db
+-from app.utils import list_to_schema, obj_to_schema
+-from strawberry.types import Info
+-
+-
+-@strawberry.type
+-class OrderstatusQuery:
+-    @strawberry.field
+-    def all_orderstatus(self, info: Info) -> List[OrderStatusInDB]:
+-        db_gen = get_db()
+-        db = next(db_gen)
+-        try:
+-            statuses = get_orderstatus(db)
+-            return list_to_schema(OrderStatusInDB, statuses)
+-        finally:
+-            db_gen.close()
+-
+-    @strawberry.field
+-    def orderstatus_by_id(self, info: Info, id: int) -> Optional[OrderStatusInDB]:
+-        db_gen = get_db()
+-        db = next(db_gen)
+-        try:
+-            status = get_orderstatus_by_id(db, id)
+-            return obj_to_schema(OrderStatusInDB, status) if status else None
+-        finally:
+-            db_gen.close()
+-
+-
+-orderstatusQuery = OrderstatusQuery()
+diff --git a/app/graphql/resolvers/sysorderstatus.py b/app/graphql/resolvers/sysorderstatus.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..1eb15f0a421a78be54383bdf861497d2101ecccd
+--- /dev/null
++++ b/app/graphql/resolvers/sysorderstatus.py
+@@ -0,0 +1,37 @@
++# app/graphql/resolvers/sysorderstatus.py
 +import strawberry
++from typing import List, Optional
++from app.graphql.schemas.sysorderstatus import SysOrderStatusInDB
++from app.graphql.crud.sysorderstatus import (
++    get_sysorderstatus,
++    get_sysorderstatus_by_id,
++)
++from app.db import get_db
++from app.utils import list_to_schema, obj_to_schema
 +from strawberry.types import Info
-+from app.utils.afip_client import get_ultimo_comprobante, constatar_comprobante
-+from app.graphql.schemas.afip import VoucherRequest, VoucherInfo
 +
 +
 +@strawberry.type
-+class AfipQuery:
++class SysorderstatusQuery:
 +    @strawberry.field
-+    def ultimo_comprobante(self, info: Info, pto_vta: int, cbte_tipo: int) -> int:
-+        """Devuelve el último número de comprobante autorizado."""
-+        nro = get_ultimo_comprobante(pto_vta, cbte_tipo)
-+        return nro or 0
++    def all_sysorderstatus(self, info: Info) -> List[SysOrderStatusInDB]:
++        db_gen = get_db()
++        db = next(db_gen)
++        try:
++            statuses = get_sysorderstatus(db)
++            return list_to_schema(SysOrderStatusInDB, statuses)
++        finally:
++            db_gen.close()
 +
 +    @strawberry.field
-+    def informacion_comprobante(self, info: Info, data: VoucherRequest) -> VoucherInfo:
-+        """Consulta la información de un comprobante en AFIP."""
-+        res = constatar_comprobante(data.__dict__)
-+        return VoucherInfo(raw=json.dumps(res))
++    def sysorderstatus_by_id(self, info: Info, id: int) -> Optional[SysOrderStatusInDB]:
++        db_gen = get_db()
++        db = next(db_gen)
++        try:
++            status = get_sysorderstatus_by_id(db, id)
++            return obj_to_schema(SysOrderStatusInDB, status) if status else None
++        finally:
++            db_gen.close()
++
++
++sysorderstatusQuery = SysorderstatusQuery()
+diff --git a/app/graphql/resolvers/systransactiontypes.py b/app/graphql/resolvers/systransactiontypes.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..01c65b0d9fe6c352660e44c8e462a92926fc7af2
+--- /dev/null
++++ b/app/graphql/resolvers/systransactiontypes.py
+@@ -0,0 +1,37 @@
++# app/graphql/resolvers/systransactiontypes.py
++import strawberry
++from typing import List, Optional
++from app.graphql.schemas.systransactiontypes import SysTransactionTypesInDB
++from app.graphql.crud.systransactiontypes import (
++    get_systransactiontypes,
++    get_systransactiontypes_by_id,
++)
++from app.db import get_db
++from app.utils import list_to_schema, obj_to_schema
++from strawberry.types import Info
++
++
++@strawberry.type
++class SystransactiontypesQuery:
++    @strawberry.field
++    def all_systransactiontypes(self, info: Info) -> List[SysTransactionTypesInDB]:
++        db_gen = get_db()
++        db = next(db_gen)
++        try:
++            transactiontypes = get_systransactiontypes(db)
++            return list_to_schema(SysTransactionTypesInDB, transactiontypes)
++        finally:
++            db_gen.close()
++
++    @strawberry.field
++    def systransactiontypes_by_id(self, info: Info, id: int) -> Optional[SysTransactionTypesInDB]:
++        db_gen = get_db()
++        db = next(db_gen)
++        try:
++            transactiontype = get_systransactiontypes_by_id(db, id)
++            return obj_to_schema(SysTransactionTypesInDB, transactiontype) if transactiontype else None
++        finally:
++            db_gen.close()
++
++
++systransactiontypesQuery = SystransactiontypesQuery()
+\ No newline at end of file
+diff --git a/app/graphql/resolvers/transactiontypes.py b/app/graphql/resolvers/transactiontypes.py
+deleted file mode 100644
+index 5bcd38f7985a6fb6f5f2eacf1c92222a5e926d16..0000000000000000000000000000000000000000
+--- a/app/graphql/resolvers/transactiontypes.py
++++ /dev/null
+@@ -1,34 +0,0 @@
+-# app/graphql/resolvers/transactiontypes.py
+-import strawberry
+-from typing import List, Optional
+-from app.graphql.schemas.transactiontypes import TransactionTypesInDB
+-from app.graphql.crud.transactiontypes import get_transactiontypes, get_transactiontypes_by_id
+-from app.db import get_db
+-from app.utils import list_to_schema, obj_to_schema
+-from strawberry.types import Info
+-
+-
+-@strawberry.type
+-class TransactiontypesQuery:
+-    @strawberry.field
+-    def all_transactiontypes(self, info: Info) -> List[TransactionTypesInDB]:
+-        db_gen = get_db()
+-        db = next(db_gen)
+-        try:
+-            transactiontypes = get_transactiontypes(db)
+-            return list_to_schema(TransactionTypesInDB, transactiontypes)
+-        finally:
+-            db_gen.close()
+-
+-    @strawberry.field
+-    def transactiontypes_by_id(self, info: Info, id: int) -> Optional[TransactionTypesInDB]:
+-        db_gen = get_db()
+-        db = next(db_gen)
+-        try:
+-            transactiontype = get_transactiontypes_by_id(db, id)
+-            return obj_to_schema(TransactionTypesInDB, transactiontype) if transactiontype else None
+-        finally:
+-            db_gen.close()
+-
+-
+-transactiontypesQuery = TransactiontypesQuery()
+\ No newline at end of file
 diff --git a/app/graphql/schema.py b/app/graphql/schema.py
-index cfb1d7fcec8c192f7dd69ed586837329205d4e58..325f9982f9dd974654ce31dfebbb0e56cdc8be20 100644
+index ee81025ac8bf31fe4458bfc9630814e31720c01d..5fca246af5ab45ce6709fba8febeeec665d4b3f5 100644
 --- a/app/graphql/schema.py
 +++ b/app/graphql/schema.py
-@@ -27,50 +27,51 @@ from app.graphql.resolvers.itempricehistory import ItempricehistoryQuery
+@@ -11,63 +11,63 @@ from app.graphql.resolvers.accountbalances import AccountbalancesQuery
+ from app.graphql.resolvers.branches import BranchesQuery
+ from app.graphql.resolvers.brands import BrandsQuery
+ from app.graphql.resolvers.carbrands import CarbrandsQuery
+ from app.graphql.resolvers.carmodels import CarmodelsQuery
+ from app.graphql.resolvers.cars import CarsQuery
+ from app.graphql.resolvers.clients import ClientsQuery
+ from app.graphql.resolvers.companydata import CompanydataQuery
+ from app.graphql.resolvers.countries import CountriesQuery
+ from app.graphql.resolvers.creditcardgroups import CreditcardgroupsQuery
+ from app.graphql.resolvers.creditcards import CreditcardsQuery
+ from app.graphql.resolvers.discounts import DiscountsQuery
+ from app.graphql.resolvers.sysdoctypes import SysdoctypesQuery
+ from app.graphql.resolvers.documents import DocumentsQuery
+ from app.graphql.resolvers.sysdocumenttypes import SysdocumenttypesQuery
+ from app.graphql.resolvers.cashboxes import CashboxesQuery
+ from app.graphql.resolvers.cashboxmovements import CashboxmovementsQuery
+ from app.graphql.resolvers.itemcategories import ItemcategoriesQuery
+ from app.graphql.resolvers.itempricehistory import ItempricehistoryQuery
  from app.graphql.resolvers.items import ItemsQuery
  from app.graphql.resolvers.itemstock import ItemstockQuery
  from app.graphql.resolvers.itemsubcategories import ItemsubcategoriesQuery
@@ -38,7 +599,8 @@ index cfb1d7fcec8c192f7dd69ed586837329205d4e58..325f9982f9dd974654ce31dfebbb0e56
  from app.graphql.resolvers.orderhistory import OrderhistoryQuery
  from app.graphql.resolvers.orderhistorydetails import OrderhistorydetailsQuery
  from app.graphql.resolvers.orders import OrdersQuery
- from app.graphql.resolvers.orderstatus import OrderstatusQuery
+-from app.graphql.resolvers.orderstatus import OrderstatusQuery
++from app.graphql.resolvers.sysorderstatus import SysorderstatusQuery
  from app.graphql.resolvers.pricelistitems import PricelistitemsQuery
  from app.graphql.resolvers.pricelists import PricelistsQuery
  from app.graphql.resolvers.provinces import ProvincesQuery
@@ -48,15 +610,16 @@ index cfb1d7fcec8c192f7dd69ed586837329205d4e58..325f9982f9dd974654ce31dfebbb0e56
  from app.graphql.resolvers.stockhistory import StockhistoryQuery
  from app.graphql.resolvers.suppliers import SuppliersQuery
  from app.graphql.resolvers.temporderdetails import TemporderdetailsQuery
- from app.graphql.resolvers.tempstockentries import TempstockentriesQuery
+ from app.graphql.resolvers.tempstockhistorydetails import TempstockhistorydetailsQuery
  from app.graphql.resolvers.transactions import TransactionsQuery
- from app.graphql.resolvers.transactiontypes import TransactiontypesQuery
+-from app.graphql.resolvers.transactiontypes import TransactiontypesQuery
++from app.graphql.resolvers.systransactiontypes import SystransactiontypesQuery
  from app.graphql.resolvers.useraccess import UseraccessQuery
  from app.graphql.resolvers.useractions import UseractionsQuery
  from app.graphql.resolvers.users import UsersQuery
  from app.graphql.resolvers.warehouses import WarehousesQuery
  from app.graphql.resolvers.vendors import VendorsQuery
-+from app.graphql.resolvers.afip import AfipQuery
+ from app.graphql.resolvers.afip import AfipQuery
  from app.graphql.mutations.clients import ClientsMutations
  from app.graphql.mutations.suppliers import SuppliersMutations
  from app.graphql.mutations.brands import BrandsMutations
@@ -74,15 +637,27 @@ index cfb1d7fcec8c192f7dd69ed586837329205d4e58..325f9982f9dd974654ce31dfebbb0e56
  from app.graphql.mutations.companydata import CompanydataMutations
  from app.graphql.mutations.warehouses import WarehousesMutations
  from app.graphql.mutations.pricelists import PricelistsMutations
+ from app.graphql.mutations.pricelistitems import PricelistitemsMutations
  from app.graphql.mutations.temporderdetails import TempOrderDetailsMutations
- from app.graphql.mutations.orders import OrdersMutations
- from app.graphql.mutations.servicetype import ServiceTypeMutations
- from app.graphql.mutations.documenttypes import DocumentTypesMutations
- from app.graphql.mutations.documents import DocumentsMutations
- from app.graphql.mutations.useractions import UserActionsMutations
- from app.graphql.mutations.roles import RolesMutations
- from app.graphql.mutations.users import UsersMutations
-@@ -323,50 +324,51 @@ class Query(
+@@ -314,65 +314,65 @@ class AdvancedResolver:
+ class Query(
+     AccountbalancesQuery,
+     BranchesQuery,
+     BrandsQuery,
+     CarbrandsQuery,
+     CarmodelsQuery,
+     CarsQuery,
+     ClientsQuery,
+     CompanydataQuery,
+     CountriesQuery,
+     CreditcardgroupsQuery,
+     CreditcardsQuery,
+     DiscountsQuery,
+     SysdoctypesQuery,
+     DocumentsQuery,
+     SysdocumenttypesQuery,
+     ItemcategoriesQuery,
+     ItempricehistoryQuery,
      ItemsQuery,
      ItemstockQuery,
      ItemsubcategoriesQuery,
@@ -90,7 +665,8 @@ index cfb1d7fcec8c192f7dd69ed586837329205d4e58..325f9982f9dd974654ce31dfebbb0e56
      OrderhistoryQuery,
      OrderhistorydetailsQuery,
      OrdersQuery,
-     OrderstatusQuery,
+-    OrderstatusQuery,
++    SysorderstatusQuery,
      PricelistitemsQuery,
      PricelistsQuery,
      ProvincesQuery,
@@ -100,15 +676,18 @@ index cfb1d7fcec8c192f7dd69ed586837329205d4e58..325f9982f9dd974654ce31dfebbb0e56
      StockhistoryQuery,
      SuppliersQuery,
      TemporderdetailsQuery,
-     TempstockentriesQuery,
+     TempstockhistorydetailsQuery,
+     CashboxesQuery,
+     CashboxmovementsQuery,
      TransactionsQuery,
-     TransactiontypesQuery,
+-    TransactiontypesQuery,
++    SystransactiontypesQuery,
      UseraccessQuery,
      UseractionsQuery,
      UsersQuery,
      WarehousesQuery,
      VendorsQuery,
-+    AfipQuery,
+     AfipQuery,
      AuthQuery,  # AGREGADO: Queries de autenticación
  ):
      """Query principal con todas las consultas disponibles"""
@@ -128,446 +707,1109 @@ index cfb1d7fcec8c192f7dd69ed586837329205d4e58..325f9982f9dd974654ce31dfebbb0e56
                  dependsOn=f.get("dependsOn"),
              )
              for f in filtros
-         ]
+diff --git a/app/graphql/schemas/orderstatus.py b/app/graphql/schemas/sysorderstatus.py
+similarity index 60%
+rename from app/graphql/schemas/orderstatus.py
+rename to app/graphql/schemas/sysorderstatus.py
+index 9e3eb0745174333dd5fd660f8a8d76c753e5160e..90879db1dbc57ddf63b7e53c07ed27a659b75bfc 100644
+--- a/app/graphql/schemas/orderstatus.py
++++ b/app/graphql/schemas/sysorderstatus.py
+@@ -1,16 +1,16 @@
+-# app/graphql/schemas/orderstatus.py
++# app/graphql/schemas/sysorderstatus.py
+ import strawberry
+ from typing import Optional
  
-     @strawberry.field
-     def dashboard_stats(self, info, filters: DashboardFilters) -> DashboardStats:
-         """Estadísticas completas del dashboard"""
-         resolver = AdvancedResolver()
-diff --git a/app/graphql/schemas/afip.py b/app/graphql/schemas/afip.py
-new file mode 100644
-index 0000000000000000000000000000000000000000..74a42d356b335a2dd184703d286b095a9721d52e
---- /dev/null
-+++ b/app/graphql/schemas/afip.py
-@@ -0,0 +1,22 @@
-+# app/graphql/schemas/afip.py
-+import strawberry
-+from typing import Optional
-+
-+
-+@strawberry.input
-+class VoucherRequest:
-+    CbteModo: str
-+    CuitEmisor: int
-+    PtoVta: int
-+    CbteTipo: int
-+    CbteNro: int
-+    CbteFch: int
-+    ImpTotal: float
-+    CodAutorizacion: str
-+    DocTipoReceptor: str
-+    DocNroReceptor: str
-+
-+
-+@strawberry.type
-+class VoucherInfo:
-+    raw: str
-diff --git a/app/utils/afip_client.py b/app/utils/afip_client.py
-new file mode 100644
-index 0000000000000000000000000000000000000000..9d8811817604b0a870d8fdbaa348644effb4189f
---- /dev/null
-+++ b/app/utils/afip_client.py
-@@ -0,0 +1,41 @@
-+# app/utils/afip_client.py
-+"""Funciones de integración con AFIP usando la librería afip.py."""
-+import json
-+import afip
-+
-+
-+def get_ultimo_comprobante(pto_vta: int, cbte_tipo: int):
-+    """Obtiene el número del último comprobante autorizado."""
-+    ws = afip.webService("wsfe")
-+    ta = ws.getTokenAuthorization()
-+    data = {
-+        "Auth": {
-+            "Token": ta["token"],
-+            "Sign": ta["sign"],
-+            "Cuit": afip.CUIT,
-+        },
-+        "PtoVta": pto_vta,
-+        "CbteTipo": cbte_tipo,
-+    }
-+    res = ws.executeRequest("FECompUltimoAutorizado", data)
-+    return res.get("CbteNro")
-+
-+
-+def constatar_comprobante(cmp_req: dict):
-+    """Confronta un comprobante contra AFIP.
-+
-+    El parámetro ``cmp_req`` debe contener los campos requeridos por el servicio
-+    ``wscdc``.
-+    """
-+    ws = afip.webService("wscdc")
-+    ta = ws.getTokenAuthorization()
-+    data = {
-+        "Auth": {
-+            "Token": ta["token"],
-+            "Sign": ta["sign"],
-+            "Cuit": afip.CUIT,
-+        },
-+        "CmpReq": cmp_req,
-+    }
-+    res = ws.executeRequest("ComprobanteConstatar", data)
-+    return json.loads(json.dumps(res))
-diff --git a/frontend/src/App.jsx b/frontend/src/App.jsx
-index d15d03c9b6d8f1db5fbc9e4f2b5986475f97f92c..eceaa6797da2a96e2e5a5421995f41f20505ca05 100644
---- a/frontend/src/App.jsx
-+++ b/frontend/src/App.jsx
-@@ -6,50 +6,52 @@ import Login from "./components/Login";
- import Dashboard from "./pages/Dashboard";
- import Clients from "./pages/Clients";
- import Suppliers from "./pages/Suppliers";
- import Brands from "./pages/Brands";
- import CarBrands from "./pages/CarBrands";
- import CarModels from "./pages/CarModels";
- import Cars from "./pages/Cars";
- import Branches from "./pages/Branches";
- import CompanyData from "./pages/CompanyData";
- import ItemCategories from "./pages/ItemCategories";
- import ItemSubcategories from "./pages/ItemSubcategories";
- import Items from "./pages/Items";
- import PriceLists from "./pages/PriceLists";
- import Warehouses from "./pages/Warehouses";
- import SaleConditions from "./pages/SaleConditions";
- import CreditCardGroups from "./pages/CreditCardGroups";
- import CreditCards from "./pages/CreditCards";
- import Discounts from "./pages/Discounts";
- import Vendors from "./pages/Vendors";
- import ServiceTypes from "./pages/ServiceTypes";
- import Documents from "./pages/Documents";
- import Orders from "./pages/Orders";
- import Roles from "./pages/Roles";
- import Users from "./pages/Users";
- import RolesUsers from "./pages/RolesUsers";
-+import FeLastVoucher from "./pages/FeLastVoucher";
-+import FeInfo from "./pages/FeInfo";
- import Layout from "./components/Layout";
- import RequireAuth from "./components/RequireAuth";
- import LogoutSuccess from "./pages/LogoutSuccess";
- import { UserProvider } from "./context/UserContext";
- import { AuthHelper } from "./utils/authHelper";
+ @strawberry.input
+-class OrderStatusCreate:
++class SysOrderStatusCreate:
+     Status: str
  
- // Redirecciona la raíz "/" según si hay token
- function RedirectRoot() {
-     const token = sessionStorage.getItem("token");
-     return <Navigate to={token ? "/dashboard" : "/login"} replace />;
+ @strawberry.input
+-class OrderStatusUpdate:
++class SysOrderStatusUpdate:
+     Status: Optional[str] = None
+ 
+ @strawberry.type
+-class OrderStatusInDB:
++class SysOrderStatusInDB:
+     OrderStatusID: int
+     Status: str
+diff --git a/app/graphql/schemas/transactiontypes.py b/app/graphql/schemas/systransactiontypes.py
+similarity index 58%
+rename from app/graphql/schemas/transactiontypes.py
+rename to app/graphql/schemas/systransactiontypes.py
+index 0b508ae22a1ec10e81301a11fb085da2bdcc9d15..22d088f00a475fb9edd14e75d6a75909d3637435 100644
+--- a/app/graphql/schemas/transactiontypes.py
++++ b/app/graphql/schemas/systransactiontypes.py
+@@ -1,16 +1,16 @@
+-# app/graphql/schemas/transactiontypes.py
++# app/graphql/schemas/systransactiontypes.py
+ import strawberry
+ from typing import Optional
+ 
+ @strawberry.input
+-class TransactionTypesCreate:
++class SysTransactionTypesCreate:
+     TypeName: str
+ 
+ @strawberry.input
+-class TransactionTypesUpdate:
++class SysTransactionTypesUpdate:
+     TypeName: Optional[str] = None
+ 
+ @strawberry.type
+-class TransactionTypesInDB:
++class SysTransactionTypesInDB:
+     TransactTypeID: int
+     TypeName: str
+diff --git a/app/models/__init__.py b/app/models/__init__.py
+index dc54b87cb3ce45748e13085647774504539b1f37..5c09307968a5f9c50f05dad775ae7f7b92d20e1a 100644
+--- a/app/models/__init__.py
++++ b/app/models/__init__.py
+@@ -3,95 +3,95 @@
+ # Importar explícitamente TODOS los modelos para que SQLAlchemy registre todas las clases
+ from .accountbalances import *
+ from .branches import *
+ from .brands import *
+ from .carbrands import *
+ from .carmodels import *
+ from .cars import *
+ from .clients import *
+ from .companydata import *
+ from .countries import *
+ from .creditcardgroups import *
+ from .creditcards import *
+ from .discounts import *
+ from .sysdoctypes import *
+ from .documents import *
+ from .sysdocumenttypes import *
+ from .itemcategories import *
+ from .itempricehistory import *
+ from .items import *
+ from .itemstock import *
+ from .itemsubcategories import *
+ from .orderdetails import *
+ from .orderhistory import *
+ from .orderhistorydetails import *
+ from .orders import *
+-from .orderstatus import *
++from .sysorderstatus import *
+ from .pricelistitems import *
+ from .pricelists import *
+ from .provinces import *
+ from .roles import *
+ from .saleconditions import *
+ from .servicetype import *
+ from .stockhistory import *
+ from .suppliers import *
+ from .temporderdetails import *
+ from .tempstockhistorydetails import *
+ from .cashboxes import *
+ from .cashboxmovements import *
+ from .transactions import *
+-from .transactiontypes import *
++from .systransactiontypes import *
+ from .useraccess import *
+ from .useractions import *
+ from .useractivitylog import *
+ from .users import *
+ from .vendors import *
+ from .warehouses import *
+ 
+ # Opcional: para poder usar "from app.models import *"
+ __all__ = [
+     "accountbalances",
+     "branches",
+     "brands",
+     "carbrands",
+     "carmodels",
+     "cars",
+     "clients",
+     "companydata",
+     "countries",
+     "creditcardgroups",
+     "creditcards",
+     "discounts",
+     "sysdoctypes",
+     "documents",
+     "sysdocumenttypes",
+     "itemcategories",
+     "itempricehistory",
+     "items",
+     "itemstock",
+     "itemsubcategories",
+     "orderdetails",
+     "orderhistory",
+     "orderhistorydetails",
+     "orders",
+-    "orderstatus",
++    "sysorderstatus",
+     "pricelistitems",
+     "pricelists",
+     "provinces",
+     "roles",
+     "saleconditions",
+     "servicetype",
+     "stockhistory",
+     "suppliers",
+     "temporderdetails",
+     "tempstockhistorydetails",
+     "cashboxes",
+     "cashboxmovements",
+     "transactions",
+-    "transactiontypes",
++    "systransactiontypes",
+     "useraccess",
+     "useractions",
+     "useractivitylog",
+     "users",
+     "vendors",
+     "warehouses",
+ ]
+diff --git a/app/models/orders.py b/app/models/orders.py
+index 04f113a31488ebbf658401974e0c22062791475e..830a7409c967a5e22fad1003bc8dd282a8941c82 100644
+--- a/app/models/orders.py
++++ b/app/models/orders.py
+@@ -1,95 +1,95 @@
+ # ========== Orders ===========
+ # app/models/orders.py
+ from __future__ import annotations
+ from typing import Optional, TYPE_CHECKING
+ 
+ if TYPE_CHECKING:    
+     from .branches import Branches
+     from .cars import Cars
+     from .clients import Clients
+     from .companydata import CompanyData
+     from .discounts import Discounts
+     from .sysdocumenttypes import SysDocumentTypes
+-    from .orderstatus import OrderStatus
++    from .sysorderstatus import SysOrderStatus
+     from .pricelists import PriceLists
+     from .saleconditions import SaleConditions
+     from .servicetype import ServiceType
+     from .users import Users
+     from .warehouses import Warehouses
+     from .orderdetails import OrderDetails
+     from .orderhistory import OrderHistory
+     from .temporderdetails import TempOrderDetails
+ 
+ from typing import List, Optional
+ 
+ from sqlalchemy import Column, Integer, Unicode, Boolean, DateTime, DECIMAL, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, Index, text
+ from sqlalchemy.orm import Mapped, relationship
+ 
+ from app.db import Base
+ 
+ 
+ class Orders(Base):
+     __tablename__ = 'Orders'
+     __table_args__ = (
+         ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK__Orders__branchID__01142BA1'),
+         ForeignKeyConstraint(['CarID'], ['Cars.CarID'], name='FK__Orders__carID__02FC7413'),
+         ForeignKeyConstraint(['ClientID'], ['Clients.ClientID'], name='FK__Orders__clientID__00200768'),
+         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__Orders__CompanyI__02084FDA'),
+         ForeignKeyConstraint(['DiscountID'], ['Discounts.DiscountID'], name='FK__Orders__Discount__04E4BC85'),
+         ForeignKeyConstraint(['DocumentID'], ['SysDocumentTypes.DocumentTypeID'], name='FK__Orders__SysDocume__06CD04F7'),
+-        ForeignKeyConstraint(['OrderStatusID'], ['OrderStatus.OrderstatusID'], name='FK_Orders_OrderStatus'),
++        ForeignKeyConstraint(['OrderStatusID'], ['sysOrderStatus.OrderstatusID'], name='FK_Orders_OrderStatus'),
+         ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK__Orders__PriceLis__08B54D69'),
+         ForeignKeyConstraint(['SaleConditionID'], ['SaleConditions.SaleConditionID'], name='FK__Orders__SaleCond__03F0984C'),
+         ForeignKeyConstraint(['ServiceTypeID'], ['ServiceType.ServiceTypeID'], name='FK_Orders_ServiceType'),        
+         ForeignKeyConstraint(['UserID'], ['Users.UserID'], name='FK__Orders__userID__05D8E0BE'),
+         ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_Orders_Warehouses'),
+         PrimaryKeyConstraint('OrderID', name='PK__Orders__C3905BAF2829B144'),
+         Index('idx_clientID', 'ClientID'),
+         Index('idx_companyID', 'CompanyID'),
+         Index('idx_OrderDate', 'Date')
+     )
+ 
+     OrderID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+     CompanyID = Column(Integer)
+     BranchID = Column(Integer)
+     Date_ = Column('Date', DateTime, server_default=text('(getdate())'))
+     ClientID = Column(Integer)
+     SaleConditionID = Column(Integer)
+     DiscountID = Column(Integer)
+     Subtotal = Column(DECIMAL(10, 2))
+     Total = Column(DECIMAL(10, 2))
+     VAT = Column(DECIMAL(10, 2))
+     UserID = Column(Integer)
+     DocumentID = Column(Integer)    
+     PriceListID = Column(Integer)
+     OrderStatusID = Column(Integer)
+     WarehouseID = Column(Integer)
+     CarID = Column(Integer)
+     IsService = Column(Boolean)
+     ServiceTypeID = Column(Integer)
+     Mileage = Column(Integer)
+     NextServiceMileage = Column(Integer)
+     Notes = Column(Unicode(500, 'Modern_Spanish_CI_AS'))
+ 
+     # Relaciones
+     branches_: Mapped['Branches'] = relationship('Branches', back_populates='orders')
+     cars_: Mapped[Optional['Cars']] = relationship('Cars', back_populates='orders')
+     clients_: Mapped['Clients'] = relationship('Clients', back_populates='orders')
+     companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='orders')
+     discounts_: Mapped['Discounts'] = relationship('Discounts', back_populates='orders')
+     sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship('SysDocumentTypes', back_populates='orders')
+-    orderStatus_: Mapped['OrderStatus'] = relationship('OrderStatus', foreign_keys=[OrderStatusID], back_populates='orders')    
++    orderStatus_: Mapped['SysOrderStatus'] = relationship('SysOrderStatus', foreign_keys=[OrderStatusID], back_populates='orders')
+     priceLists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='orders')
+     saleConditions_: Mapped['SaleConditions'] = relationship('SaleConditions', back_populates='orders')
+     serviceType_: Mapped[Optional['ServiceType']] = relationship('ServiceType', back_populates='orders')    
+     users_: Mapped['Users'] = relationship('Users', back_populates='orders')
+     warehouses_: Mapped['Warehouses'] = relationship('Warehouses', back_populates='orders')
+     orderDetails: Mapped[List['OrderDetails']] = relationship('OrderDetails', back_populates='orders_')
+     orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='orders_')
+     tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship('TempOrderDetails', back_populates='orders_')
+ 
+     @property
+     def Items(self) -> List['OrderDetails']:
+         """Alias de acceso para los detalles de la orden."""
+         return self.orderDetails
+ 
+diff --git a/app/models/orderstatus.py b/app/models/sysorderstatus.py
+similarity index 84%
+rename from app/models/orderstatus.py
+rename to app/models/sysorderstatus.py
+index 47f1a9a9c328606ec46a07d12d723f2d40ab1e01..23f7c853ad60645942dcdabf2385b6b1101cd573 100644
+--- a/app/models/orderstatus.py
++++ b/app/models/sysorderstatus.py
+@@ -1,28 +1,28 @@
+-# ========== OrderStatus ===========
+-# app/models/orderstatus.py
++# ========== SysOrderStatus ===========
++# app/models/sysorderstatus.py
+ from __future__ import annotations
+ from typing import Optional, TYPE_CHECKING
+ 
+ if TYPE_CHECKING:    
+     from .orders import Orders
+ 
+ from typing import List
+ 
+ from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
+ from sqlalchemy.orm import Mapped, relationship
+ 
+ from app.db import Base
+ 
+ 
+-class OrderStatus(Base):
+-    __tablename__ = 'OrderStatus'
++class SysOrderStatus(Base):
++    __tablename__ = 'sysOrderStatus'
+     __table_args__ = (
+         PrimaryKeyConstraint('OrderstatusID', name='PK__OrderSta__BC674F4170B3E561'),
+     )
+ 
+     OrderStatusID = Column("OrderstatusID", Integer, Identity(start=1, increment=1), primary_key=True)
+     Status = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
+ 
+     # Relaciones
+     orders: Mapped[List['Orders']] = relationship('Orders', foreign_keys='[Orders.OrderStatusID]', back_populates='orderStatus_')
+  
+\ No newline at end of file
+diff --git a/app/models/transactiontypes.py b/app/models/systransactiontypes.py
+similarity index 57%
+rename from app/models/transactiontypes.py
+rename to app/models/systransactiontypes.py
+index 1bc8d2d21e898aaf0567fbec3ef31a411abd93ad..f1da47e89e9f987ebdf1f9c195cba0819d74e646 100644
+--- a/app/models/transactiontypes.py
++++ b/app/models/systransactiontypes.py
+@@ -1,14 +1,15 @@
+-# ========== TransactionTypes ===========
+-# app/models/transactiontypes.py
++# ========== SysTransactionTypes ===========
++# app/models/systransactiontypes.py
+ from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
+ from app.db import Base
+ 
+ 
+-class TransactionTypes(Base):
+-    __tablename__ = 'TransactionTypes'
++class SysTransactionTypes(Base):
++    __tablename__ = 'sysTransactionTypes'
+     __table_args__ = (
+         PrimaryKeyConstraint('TransactTypeID', name='PK_TransactionTypes'),
+     )
+ 
+     TransactTypeID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+-    YypeName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+\ No newline at end of file
++    TypeName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
++
+diff --git a/app/utils/filter_schemas.py b/app/utils/filter_schemas.py
+index 4ab334453910a8da6e2b1b8de8eb80843424f876..b16f8eaa80263eee8882178da20beb367bce19a6 100644
+--- a/app/utils/filter_schemas.py
++++ b/app/utils/filter_schemas.py
+@@ -189,51 +189,51 @@ FILTER_SCHEMAS = {
+         {"field": "IsActive", "label": "Activo", "type": "boolean"}
+     ],
+     "orders": [
+         {"field": "OrderID", "label": "ID de orden", "type": "number"},
+         {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
+         {"field": "CompanyName", "label": "Compañía (nombre)", "type": "text"},
+         {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch", "dependsOn": "CompanyID"},
+         {"field": "BranchName", "label": "Sucursal (nombre)", "type": "text"},
+         {"field": "Date", "label": "Fecha", "type": "text"},
+         {"field": "ClientID", "label": "Cliente", "type": "select", "relationModel": "Client"},
+         {"field": "ClientName", "label": "Cliente (nombre)", "type": "text"},
+         {"field": "CarID", "label": "Auto", "type": "select", "relationModel": "Car"},
+         {"field": "CarLicensePlate", "label": "Patente", "type": "text"},
+         {"field": "IsService", "label": "Es servicio", "type": "boolean"},
+         {"field": "ServiceTypeID", "label": "Tipo de servicio", "type": "select", "relationModel": "ServiceType"},
+         {"field": "Mileage", "label": "Kilometraje", "type": "number"},
+         {"field": "NextServiceMileage", "label": "Próximo servicio km", "type": "number"},
+         {"field": "Notes", "label": "Notas", "type": "text"},
+         {"field": "SaleConditionID", "label": "Condición de venta", "type": "select", "relationModel": "SaleCondition"},
+         {"field": "DiscountID", "label": "Descuento", "type": "select", "relationModel": "Discount"},
+         {"field": "Subtotal", "label": "Subtotal", "type": "number"},
+         {"field": "Total", "label": "Total", "type": "number"},
+         {"field": "VAT", "label": "IVA", "type": "number"},
+         {"field": "UserID", "label": "Usuario", "type": "select", "relationModel": "User"},
+         {"field": "UserName", "label": "Usuario (nombre)", "type": "text"},
+-        {"field": "StatusID", "label": "Estado", "type": "select", "relationModel": "OrderStatus"},
++        {"field": "StatusID", "label": "Estado", "type": "select", "relationModel": "Sysorderstatus"},
+         {"field": "StatusName", "label": "Estado (nombre)", "type": "text"},
+         {"field": "PriceListID", "label": "Lista de precios", "type": "select", "relationModel": "PriceList"},
+         {"field": "WarehouseID", "label": "Depósito", "type": "select", "relationModel": "Warehouse"}
+     ],
+     "orderdetails": [
+         {"field": "OrderDetailID", "label": "ID de detalle", "type": "number"},
+         {"field": "OrderID", "label": "Orden", "type": "select", "relationModel": "Order"},
+         {"field": "ItemID", "label": "Ítem", "type": "select", "relationModel": "Item"},
+         {"field": "ItemCode", "label": "Código ítem", "type": "text"},
+         {"field": "ItemDescription", "label": "Descripción ítem", "type": "text"},
+         {"field": "Quantity", "label": "Cantidad", "type": "number"},
+         {"field": "UnitPrice", "label": "Precio unitario", "type": "number"},
+         {"field": "TotalPrice", "label": "Precio total", "type": "number"},
+         {"field": "Discount", "label": "Descuento", "type": "number"}
+     ],
+     "itemstock": [
+         {"field": "ItemStockID", "label": "ID de stock", "type": "number"},
+         {"field": "ItemID", "label": "Ítem", "type": "select", "relationModel": "Item"},
+         {"field": "ItemCode", "label": "Código ítem", "type": "text"},
+         {"field": "ItemDescription", "label": "Descripción ítem", "type": "text"},
+         {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
+         {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch", "dependsOn": "CompanyID"},
+         {"field": "WarehouseID", "label": "Depósito", "type": "select", "relationModel": "Warehouse"},
+         {"field": "SupplierID", "label": "Proveedor", "type": "select", "relationModel": "Supplier"},
+         {"field": "Quantity", "label": "Cantidad", "type": "number"},
+diff --git a/db/LubricentroDB2.dbml b/db/LubricentroDB2.dbml
+index 48e8bbd18599a9edd85a40a2d55a7b8b917c5ff4..e456c9f7a2df133795eed8571f9796d9e07bf5e0 100644
+--- a/db/LubricentroDB2.dbml
++++ b/db/LubricentroDB2.dbml
+@@ -415,78 +415,78 @@ Table CreditCards {
+   CreditCardID int [pk, increment]
+   CardName nvarchar(100) [not null]
+   Surcharge decimal(18,4) [default: 0]
+   Installments int
+   CreditCardGroupID int [not null, ref: > CreditCardGroups.CreditCardGroupID]
+   IsActive bit [not null, default: 1]
+   
+   Note: 'Tarjetas de crédito'
  }
  
- export default function App() {
-     const [userInfo, setUserInfo] = useState(null);
-     const [selectedAccess, setSelectedAccess] = useState(null);
+ Table SaleConditions {
+   SaleConditionID int [pk, increment]
+   Name nvarchar(100)
+   DueDate date [default: `getdate()`]
+   Surcharge decimal(10,2) [default: 0]
+   IsActive bit [default: 1]
+   CreditCardID int [not null, ref: > CreditCards.CreditCardID]
+   
+   Note: 'Condiciones de venta'
+ }
+ 
+ // ==========================================
+ // Gestión de órdenes
+ // ==========================================
+ 
+-Table OrderStatus {
++Table sysOrderStatus {
+   OrderStatusID int [pk, increment]
+   Status nvarchar(50) [not null]
+   
+   Note: 'Estados de órdenes'
+ }
+ 
+ Table Orders {
+   OrderID int [pk, increment]
+   CompanyID int [not null, ref: > CompanyData.CompanyID]
+   BranchID int [not null, ref: > Branches.BranchID]
+   Date datetime [not null, default: `getdate()`]
+   ClientID int [not null, ref: > Clients.ClientID]
+   CarID int [ref: > Cars.CarID]
+   IsService bit
+   ServiceTypeID int [ref: > ServiceType.ServiceTypeID]
+   Mileage int
+   NextServiceMileage int
+   Notes nvarchar(500)
+   SaleConditionID int [not null, ref: > SaleConditions.SaleConditionID]
+   DiscountID int [not null, ref: > Discounts.DiscountID]
+   Subtotal decimal(10,2) [not null]
+   Total decimal(10,2) [not null]
+   VAT decimal(10,2) [not null]
+   UserID int [not null, ref: > Users.UserID]
+   DocumentID int [not null, ref: > DocumentTypes.DocumentTypeID]
+   PriceListID int [not null, ref: > PriceLists.PriceListID]
+-  OrderStatusID int [not null, ref: > OrderStatus.OrderStatusID]
++  OrderStatusID int [not null, ref: > sysOrderStatus.OrderStatusID]
+   WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+   
+   indexes {
+     ClientID
+     CompanyID
+     Date
+   }
+   
+   Note: 'Órdenes de venta/servicio'
+ }
+ 
+ Table OrderDetails {
+   OrderDetailID int [pk, increment]
+   OrderID int [not null, ref: > Orders.OrderID]
+   ItemID int [not null, ref: > Items.ItemID]
+   WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+   Quantity int [not null]
+   UnitPrice decimal(10,2) [not null]
+   Description nvarchar(200) [not null]
+   LastModified datetime [default: `getdate()`]
+   
+   Note: 'Detalles de órdenes'
+ }
+ 
+ // ==========================================
+@@ -546,64 +546,64 @@ Table TempOrderDetails {
+   
+   Note: 'Detalles temporales de órdenes'
+ }
+ 
+ Table TempStockEntries {
+   TempStockEntryID int [pk, increment]
+   CompanyID int [not null, ref: > CompanyData.CompanyID]
+   BranchID int [not null, ref: > Branches.BranchID]
+   UniqueID uniqueidentifier [not null, default: `newid()`]
+   SessionID nvarchar(100) [not null]
+   UserID int [not null, ref: > Users.UserID]
+   ItemID int [not null, ref: > Items.ItemID]
+   WarehouseID int [not null, ref: > Warehouses.WarehouseID]
+   Quantity int [not null]
+   EntryDate datetime [not null, default: `getdate()`]
+   Reason nvarchar(200)
+   IsProcessed bit [not null, default: 0]
+   
+   Note: 'Entradas temporales de stock'
+ }
+ 
+ // ==========================================
+ // Gestión financiera
+ // ==========================================
+ 
+-Table TransactionTypes {
++Table sysTransactionTypes {
+   TransactTypeID int [pk, increment]
+   TypeName nvarchar(100) [not null]
+   
+   Note: 'Tipos de transacciones financieras'
+ }
+ 
+ Table Transactions {
+   TransactionID int [pk, increment]
+   CompanyID int [not null, ref: > CompanyData.CompanyID]
+   TransactionDate datetime [not null, default: `getdate()`]
+   ClientID int [ref: > Clients.ClientID]
+   SupplierID int [ref: > Suppliers.SupplierID]
+-  TransacTypeID int [not null, ref: > TransactionTypes.TransactTypeID]
++  TransacTypeID int [not null, ref: > sysTransactionTypes.TransactTypeID]
+   OrderID int [ref: > Orders.OrderID]
+   Subtotal decimal(10,2)
+   Taxes decimal(10,2)
+   Total decimal(10,2)
+   Notes nvarchar(200)
+   BranchID int [ref: > Branches.BranchID]
+   
+   indexes {
+     ClientID
+     SupplierID
+     TransactionDate
+   }
+   
+   Note: 'Transacciones financieras'
+ }
+ 
+ Table AccountBalances {
+   AccountID int [pk, increment]
+   SupplierID int [ref: > Suppliers.SupplierID]
+   ClientID int [ref: > Clients.ClientID]
+   Balance decimal(10,2) [not null, default: 0]
+   
+   Note: 'Saldos de cuentas'
+ }
+ 
+diff --git a/db/init_database.sql b/db/init_database.sql
+index 96d44408f6afc3f476a6839a523c9dae26e33627..29b9fef5335de4e3647af44a7fea1bd1fe16cc45 100644
+--- a/db/init_database.sql
++++ b/db/init_database.sql
+@@ -574,59 +574,59 @@ CREATE TABLE [dbo].[Orders](
+ 	[BranchID] [int] NOT NULL,
+ 	[Date] [datetime] NOT NULL,
+ 	[ClientID] [int] NOT NULL,
+ 	[CarID] [int] NULL,
+ 	[IsService] [bit] NULL,
+ 	[ServiceTypeID] [int] NULL,
+ 	[Mileage] [int] NULL,
+ 	[NextServiceMileage] [int] NULL,
+ 	[Notes] [nvarchar](500) NULL,
+ 	[SaleConditionID] [int] NOT NULL,
+ 	[DiscountID] [int] NOT NULL,
+ 	[Subtotal] [decimal](10, 2) NOT NULL,
+ 	[Total] [decimal](10, 2) NOT NULL,
+ 	[VAT] [decimal](10, 2) NOT NULL,
+ 	[UserID] [int] NOT NULL,
+ 	[DocumentID] [int] NOT NULL,
+ 	[PriceListID] [int] NOT NULL,
+ 	[OrderStatusID] [int] NOT NULL,
+ 	[WarehouseID] [int] NOT NULL,
+  CONSTRAINT [PK__Orders__C3905BAF2829B144] PRIMARY KEY CLUSTERED 
+ (
+ 	[OrderID] ASC
+ )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+ ) ON [PRIMARY]
+ GO
+-/****** Object:  Table [dbo].[OrderStatus]    Script Date: 9/7/2025 01:07:52 ******/
++/****** Object:  Table [dbo].[sysOrderStatus]    Script Date: 9/7/2025 01:07:52 ******/
+ SET ANSI_NULLS ON
+ GO
+ SET QUOTED_IDENTIFIER ON
+ GO
+-CREATE TABLE [dbo].[OrderStatus](
++CREATE TABLE [dbo].[sysOrderStatus](
+ 	[OrderStatusID] [int] IDENTITY(1,1) NOT NULL,
+ 	[Status] [nvarchar](50) NOT NULL,
+- CONSTRAINT [PK__OrderSta__BC674F4170B3E561] PRIMARY KEY CLUSTERED 
++CONSTRAINT [PK__OrderSta__BC674F4170B3E561] PRIMARY KEY CLUSTERED
+ (
+ 	[OrderStatusID] ASC
+ )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+ ) ON [PRIMARY]
+ GO
+ /****** Object:  Table [dbo].[PriceListItems]    Script Date: 9/7/2025 01:07:52 ******/
+ SET ANSI_NULLS ON
+ GO
+ SET QUOTED_IDENTIFIER ON
+ GO
+ CREATE TABLE [dbo].[PriceListItems](
+ 	[PriceListID] [int] NOT NULL,
+ 	[ItemID] [int] NOT NULL,
+ 	[Price] [decimal](10, 2) NOT NULL,
+ 	[EffectiveDate] [datetime] NOT NULL,
+  CONSTRAINT [PK_PriceListItems] PRIMARY KEY CLUSTERED 
+ (
+ 	[PriceListID] ASC,
+ 	[ItemID] ASC
+ )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+ ) ON [PRIMARY]
+ GO
+ /****** Object:  Table [dbo].[PriceLists]    Script Date: 9/7/2025 01:07:52 ******/
+ SET ANSI_NULLS ON
+ GO
+@@ -799,56 +799,56 @@ CREATE TABLE [dbo].[TempStockEntries](
+ GO
+ /****** Object:  Table [dbo].[Transactions]    Script Date: 9/7/2025 01:07:52 ******/
+ SET ANSI_NULLS ON
+ GO
+ SET QUOTED_IDENTIFIER ON
+ GO
+ CREATE TABLE [dbo].[Transactions](
+ 	[TransactionID] [int] IDENTITY(1,1) NOT NULL,
+ 	[CompanyID] [int] NOT NULL,
+ 	[TransactionDate] [datetime] NOT NULL,
+ 	[ClientID] [int] NULL,
+ 	[SupplierID] [int] NULL,
+ 	[TransacTypeID] [int] NOT NULL,
+ 	[OrderID] [int] NULL,
+ 	[Subtotal] [decimal](10, 2) NULL,
+ 	[Taxes] [decimal](10, 2) NULL,
+ 	[Total] [decimal](10, 2) NULL,
+ 	[Notes] [nvarchar](200) NULL,
+ 	[BranchID] [int] NULL,
+  CONSTRAINT [PK__Transact__55433A4BB5EE9535] PRIMARY KEY CLUSTERED 
+ (
+ 	[TransactionID] ASC
+ )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+ ) ON [PRIMARY]
+ GO
+-/****** Object:  Table [dbo].[TransactionTypes]    Script Date: 9/7/2025 01:07:52 ******/
++/****** Object:  Table [dbo].[sysTransactionTypes]    Script Date: 9/7/2025 01:07:52 ******/
+ SET ANSI_NULLS ON
+ GO
+ SET QUOTED_IDENTIFIER ON
+ GO
+-CREATE TABLE [dbo].[TransactionTypes](
++CREATE TABLE [dbo].[sysTransactionTypes](
+ 	[TransactTypeID] [int] IDENTITY(1,1) NOT NULL,
+ 	[TypeName] [nvarchar](100) NOT NULL,
+  CONSTRAINT [PK_TransactionTypes] PRIMARY KEY CLUSTERED 
+ (
+ 	[TransactTypeID] ASC
+ )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+ ) ON [PRIMARY]
+ GO
+ /****** Object:  Table [dbo].[UserAccess]    Script Date: 9/7/2025 01:07:52 ******/
+ SET ANSI_NULLS ON
+ GO
+ SET QUOTED_IDENTIFIER ON
+ GO
+ CREATE TABLE [dbo].[UserAccess](
+ 	[UserID] [int] NOT NULL,
+ 	[CompanyID] [int] NOT NULL,
+ 	[BranchID] [int] NOT NULL,
+ 	[RoleID] [int] NOT NULL,
+  CONSTRAINT [PK_UserAccess] PRIMARY KEY CLUSTERED 
+ (
+ 	[UserID] ASC,
+ 	[CompanyID] ASC,
+ 	[BranchID] ASC,
+ 	[RoleID] ASC
+ )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+@@ -1122,54 +1122,54 @@ SET IDENTITY_INSERT [dbo].[ItemSubcategories] ON
+ 
+ INSERT [dbo].[ItemSubcategories] ([ItemSubcategoryID], [ItemCategoryID], [SubcategoryName]) VALUES (1, 1, N'Teclados')
+ INSERT [dbo].[ItemSubcategories] ([ItemSubcategoryID], [ItemCategoryID], [SubcategoryName]) VALUES (2, 1, N'test')
+ INSERT [dbo].[ItemSubcategories] ([ItemSubcategoryID], [ItemCategoryID], [SubcategoryName]) VALUES (1002, 2, N'Sillas')
+ SET IDENTITY_INSERT [dbo].[ItemSubcategories] OFF
+ GO
+ SET IDENTITY_INSERT [dbo].[OrderDetails] ON 
+ 
+ INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ItemID], [WarehouseID], [Quantity], [UnitPrice], [Description], [LastModified]) VALUES (3, 6, 1, 1, 1, CAST(222.00 AS Decimal(10, 2)), N'ARTICULOTEST', CAST(N'2025-07-08T00:30:52.577' AS DateTime))
+ INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ItemID], [WarehouseID], [Quantity], [UnitPrice], [Description], [LastModified]) VALUES (4, 7, 2, 1, 1, CAST(222.00 AS Decimal(10, 2)), N'ARTICULOTEST2', CAST(N'2025-07-08T00:55:30.600' AS DateTime))
+ INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ItemID], [WarehouseID], [Quantity], [UnitPrice], [Description], [LastModified]) VALUES (5, 8, 2, 2, 1, CAST(332.00 AS Decimal(10, 2)), N'ARTICULOTEST2', CAST(N'2025-07-08T01:43:58.677' AS DateTime))
+ INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ItemID], [WarehouseID], [Quantity], [UnitPrice], [Description], [LastModified]) VALUES (6, 8, 1, 2, 12, CAST(300.00 AS Decimal(10, 2)), N'ARTICULOTEST', CAST(N'2025-07-08T01:43:58.677' AS DateTime))
+ INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ItemID], [WarehouseID], [Quantity], [UnitPrice], [Description], [LastModified]) VALUES (7, 9, 3, 2, 88, CAST(500.00 AS Decimal(10, 2)), N'Esunauto', CAST(N'2025-07-08T15:16:45.567' AS DateTime))
+ INSERT [dbo].[OrderDetails] ([OrderDetailID], [OrderID], [ItemID], [WarehouseID], [Quantity], [UnitPrice], [Description], [LastModified]) VALUES (8, 9, 1, 2, 1, CAST(5454.00 AS Decimal(10, 2)), N'ARTICULOTEST', CAST(N'2025-07-08T15:16:45.567' AS DateTime))
+ SET IDENTITY_INSERT [dbo].[OrderDetails] OFF
+ GO
+ SET IDENTITY_INSERT [dbo].[Orders] ON 
+ 
+ INSERT [dbo].[Orders] ([OrderID], [CompanyID], [BranchID], [Date], [ClientID], [CarID], [IsService], [ServiceTypeID], [Mileage], [NextServiceMileage], [Notes], [SaleConditionID], [DiscountID], [Subtotal], [Total], [VAT], [UserID], [DocumentID], [PriceListID], [OrderStatusID], [WarehouseID]) VALUES (1, 1, 1, CAST(N'2025-07-07T12:57:18.710' AS DateTime), 2, NULL, 0, NULL, NULL, NULL, N'Es una orden', 1, 1, CAST(100.00 AS Decimal(10, 2)), CAST(121.00 AS Decimal(10, 2)), CAST(21.00 AS Decimal(10, 2)), 1, 1, 1, 1, 1)
+ INSERT [dbo].[Orders] ([OrderID], [CompanyID], [BranchID], [Date], [ClientID], [CarID], [IsService], [ServiceTypeID], [Mileage], [NextServiceMileage], [Notes], [SaleConditionID], [DiscountID], [Subtotal], [Total], [VAT], [UserID], [DocumentID], [PriceListID], [OrderStatusID], [WarehouseID]) VALUES (6, 1, 1, CAST(N'2025-07-08T00:00:00.000' AS DateTime), 11, NULL, 0, NULL, NULL, NULL, NULL, 1, 1, CAST(222.00 AS Decimal(10, 2)), CAST(268.62 AS Decimal(10, 2)), CAST(46.62 AS Decimal(10, 2)), 1, 1, 1, 1, 1)
+ INSERT [dbo].[Orders] ([OrderID], [CompanyID], [BranchID], [Date], [ClientID], [CarID], [IsService], [ServiceTypeID], [Mileage], [NextServiceMileage], [Notes], [SaleConditionID], [DiscountID], [Subtotal], [Total], [VAT], [UserID], [DocumentID], [PriceListID], [OrderStatusID], [WarehouseID]) VALUES (7, 1, 1, CAST(N'2025-07-08T00:00:00.000' AS DateTime), 16, NULL, 0, NULL, NULL, NULL, NULL, 1, 1, CAST(222.00 AS Decimal(10, 2)), CAST(268.62 AS Decimal(10, 2)), CAST(46.62 AS Decimal(10, 2)), 1, 1, 1, 1, 1)
+ INSERT [dbo].[Orders] ([OrderID], [CompanyID], [BranchID], [Date], [ClientID], [CarID], [IsService], [ServiceTypeID], [Mileage], [NextServiceMileage], [Notes], [SaleConditionID], [DiscountID], [Subtotal], [Total], [VAT], [UserID], [DocumentID], [PriceListID], [OrderStatusID], [WarehouseID]) VALUES (8, 1, 1, CAST(N'2025-07-08T00:00:00.000' AS DateTime), 9, NULL, 0, NULL, NULL, NULL, NULL, 1, 1, CAST(3932.00 AS Decimal(10, 2)), CAST(4757.72 AS Decimal(10, 2)), CAST(825.72 AS Decimal(10, 2)), 1, 1, 2, 1, 2)
+ INSERT [dbo].[Orders] ([OrderID], [CompanyID], [BranchID], [Date], [ClientID], [CarID], [IsService], [ServiceTypeID], [Mileage], [NextServiceMileage], [Notes], [SaleConditionID], [DiscountID], [Subtotal], [Total], [VAT], [UserID], [DocumentID], [PriceListID], [OrderStatusID], [WarehouseID]) VALUES (9, 1, 1, CAST(N'2025-07-08T00:00:00.000' AS DateTime), 9, NULL, 0, NULL, NULL, NULL, NULL, 1, 1, CAST(49454.00 AS Decimal(10, 2)), CAST(59839.34 AS Decimal(10, 2)), CAST(10385.34 AS Decimal(10, 2)), 1, 1, 2, 1, 2)
+ SET IDENTITY_INSERT [dbo].[Orders] OFF
+ GO
+-SET IDENTITY_INSERT [dbo].[OrderStatus] ON 
++SET IDENTITY_INSERT [dbo].[sysOrderStatus] ON
+ 
+-INSERT [dbo].[OrderStatus] ([OrderStatusID], [Status]) VALUES (1, N'Ingresado')
+-SET IDENTITY_INSERT [dbo].[OrderStatus] OFF
++INSERT [dbo].[sysOrderStatus] ([OrderStatusID], [Status]) VALUES (1, N'Ingresado')
++SET IDENTITY_INSERT [dbo].[sysOrderStatus] OFF
+ GO
+ SET IDENTITY_INSERT [dbo].[PriceLists] ON 
+ 
+ INSERT [dbo].[PriceLists] ([PriceListID], [Name], [Description], [IsActive], [CreatedDate]) VALUES (1, N'Lista 1', N'Lista 1', 1, CAST(N'2025-05-16' AS Date))
+ INSERT [dbo].[PriceLists] ([PriceListID], [Name], [Description], [IsActive], [CreatedDate]) VALUES (2, N'Lista 2', N'Lista 2', 1, CAST(N'2025-05-24' AS Date))
+ INSERT [dbo].[PriceLists] ([PriceListID], [Name], [Description], [IsActive], [CreatedDate]) VALUES (3, N'Lista 33', N'', 1, CAST(N'2025-07-06' AS Date))
+ SET IDENTITY_INSERT [dbo].[PriceLists] OFF
+ GO
+ SET IDENTITY_INSERT [dbo].[Provinces] ON 
+ 
+ INSERT [dbo].[Provinces] ([ProvinceID], [CountryID], [Name]) VALUES (1, 54, N'CABA')
+ INSERT [dbo].[Provinces] ([ProvinceID], [CountryID], [Name]) VALUES (2, 54, N'Santa Fe')
+ INSERT [dbo].[Provinces] ([ProvinceID], [CountryID], [Name]) VALUES (3, 51, N'Lima')
+ SET IDENTITY_INSERT [dbo].[Provinces] OFF
+ GO
+ SET IDENTITY_INSERT [dbo].[Roles] ON 
+ 
+ INSERT [dbo].[Roles] ([RoleID], [RoleName]) VALUES (1, N'Admin')
+ INSERT [dbo].[Roles] ([RoleID], [RoleName]) VALUES (2, N'Usuario')
+ SET IDENTITY_INSERT [dbo].[Roles] OFF
+ GO
+ SET IDENTITY_INSERT [dbo].[SaleConditions] ON 
+ 
+ INSERT [dbo].[SaleConditions] ([SaleConditionID], [Name], [DueDate], [Surcharge], [IsActive], [CreditCardID]) VALUES (1, N'Contado', CAST(N'2025-05-26' AS Date), CAST(0.00 AS Decimal(10, 2)), 1, 1)
+ INSERT [dbo].[SaleConditions] ([SaleConditionID], [Name], [DueDate], [Surcharge], [IsActive], [CreditCardID]) VALUES (3, N'333333', CAST(N'2025-08-09' AS Date), CAST(0.00 AS Decimal(10, 2)), 1, 2)
+@@ -1650,51 +1650,51 @@ ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK__Orders__Discount__04
+ REFERENCES [dbo].[Discounts] ([DiscountID])
+ GO
+ ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK__Orders__Discount__04E4BC85]
+ GO
+ ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK__Orders__Document__06CD04F7] FOREIGN KEY([DocumentID])
+ REFERENCES [dbo].[DocumentTypes] ([DocumentTypeID])
+ GO
+ ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK__Orders__Document__06CD04F7]
+ GO
+ ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK__Orders__PriceLis__08B54D69] FOREIGN KEY([PriceListID])
+ REFERENCES [dbo].[PriceLists] ([PriceListID])
+ GO
+ ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK__Orders__PriceLis__08B54D69]
+ GO
+ ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK__Orders__SaleCond__03F0984C] FOREIGN KEY([SaleConditionID])
+ REFERENCES [dbo].[SaleConditions] ([SaleConditionID])
+ GO
+ ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK__Orders__SaleCond__03F0984C]
+ GO
+ ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK__Orders__UserID__05D8E0BE] FOREIGN KEY([UserID])
+ REFERENCES [dbo].[Users] ([UserID])
+ GO
+ ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK__Orders__UserID__05D8E0BE]
+ GO
+ ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK_Orders_OrderStatus] FOREIGN KEY([OrderStatusID])
+-REFERENCES [dbo].[OrderStatus] ([OrderStatusID])
++REFERENCES [dbo].[sysOrderStatus] ([OrderStatusID])
+ GO
+ ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK_Orders_OrderStatus]
+ GO
+ ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK_Orders_ServiceType] FOREIGN KEY([ServiceTypeID])
+ REFERENCES [dbo].[ServiceType] ([ServiceTypeID])
+ GO
+ ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK_Orders_ServiceType]
+ GO
+ ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK_Orders_Warehouses] FOREIGN KEY([WarehouseID])
+ REFERENCES [dbo].[Warehouses] ([WarehouseID])
+ GO
+ ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK_Orders_Warehouses]
+ GO
+ ALTER TABLE [dbo].[PriceListItems]  WITH CHECK ADD  CONSTRAINT [FK__PriceList__ItemI__76969D2E] FOREIGN KEY([ItemID])
+ REFERENCES [dbo].[Items] ([ItemID])
+ GO
+ ALTER TABLE [dbo].[PriceListItems] CHECK CONSTRAINT [FK__PriceList__ItemI__76969D2E]
+ GO
+ ALTER TABLE [dbo].[PriceListItems]  WITH CHECK ADD  CONSTRAINT [FK__PriceList__Price__75A278F5] FOREIGN KEY([PriceListID])
+ REFERENCES [dbo].[PriceLists] ([PriceListID])
+ GO
+ ALTER TABLE [dbo].[PriceListItems] CHECK CONSTRAINT [FK__PriceList__Price__75A278F5]
+ GO
+ ALTER TABLE [dbo].[Provinces]  WITH CHECK ADD  CONSTRAINT [FK__Provinces__Count__403A8C7D] FOREIGN KEY([CountryID])
+ REFERENCES [dbo].[Countries] ([CountryID])
+diff --git a/frontend/src/components/TableFilters.jsx b/frontend/src/components/TableFilters.jsx
+index 16ee9128f784ca89f791dd78ae2b7e09ba945a81..d19d162edfe347594a6e43b42462259e21f3b1b2 100644
+--- a/frontend/src/components/TableFilters.jsx
++++ b/frontend/src/components/TableFilters.jsx
+@@ -11,51 +11,51 @@ const TEXT_OPERATORS = [
+     { value: "notContains", label: "No contiene" },
+ ];
+ 
+ const pluralMap = {
+     Country: "Countries",
+     Province: "Provinces",
+     Branch: "Branches",
+     Company: "Companydata",
+     DocType: "Sysdoctypes",
+     SysDocumentType: "Sysdocumenttypes",
+     ItemCategory: "Itemcategories",
+     ItemSubcategory: "Itemsubcategories",
+     PriceList: "Pricelists",
+     Supplier: "Suppliers",
+     Vendor: "Vendors",
+     Warehouse: "Warehouses",
+     Brand: "Brands",
+     CarBrand: "Carbrands",
+     CarModel: "Carmodels",
+     Client: "Clients",
+     CreditCard: "Creditcards",
+     CreditCardGroup: "Creditcardgroups",
+     Discount: "Discounts",
+     Item: "Items",
+     Order: "Orders",
+-    OrderStatus: "Orderstatus",
++    OrderStatus: "Sysorderstatus",
+     SaleCondition: "Saleconditions",
+     ServiceType: "Servicetypes",
+     User: "Users"
+ };
+ 
+ const nameFieldMap = {
+     Vendor: "VendorName",
+     Client: "FirstName", // Para clientes, usar FirstName como campo principal
+     CreditCard: "CardName",
+     CreditCardGroup: "GroupName",
+     Discount: "DiscountName",
+     ItemCategory: "CategoryName",
+     ItemSubcategory: "SubcategoryName",
+     OrderStatus: "StatusName",
+     SaleCondition: "Name",
+     ServiceType: "Name",
+     User: "Fullname"
+ };
+ 
+ const getNameField = (model) => nameFieldMap[model] || "Name";
+ 
+ const getQueryName = (model) => {
+     const plural = pluralMap[model] || `${model}s`;
+     return `all${plural}`;
+ };
+diff --git a/frontend/src/pages/OrderCreate.jsx b/frontend/src/pages/OrderCreate.jsx
+index ca53b56d6a102c49d3439d3969764552671ac3ca..694c3eaa566e574ddcc240d4c073c4b26193a17c 100644
+--- a/frontend/src/pages/OrderCreate.jsx
++++ b/frontend/src/pages/OrderCreate.jsx
+@@ -1,34 +1,34 @@
+ // src/pages/OrderCreate.jsx
+ import React, { useEffect, useState } from "react";
+ import {
+     clientOperations,
+     carOperations,
+     serviceTypeOperations,
+     saleConditionOperations,
+     discountOperations,
+-    orderStatusOperations,
++    sysOrderStatusOperations,
+     pricelistOperations,
+     pricelistItemOperations,
+     companyOperations,
+     branchOperations,
+     warehouseOperations,
+     orderOperations,
+     tempOrderOperations,
+     itemOperations,
+ } from "../utils/graphqlClient";
+ import ItemSearchModal from "../components/ItemSearchModal";
+ import ClientSearchModal from "../components/ClientSearchModal";
+ import SaleConditionSearchModal from "../components/SaleConditionSearchModal";
+ import ItemConfirmationModal from "../components/ItemConfirmationModal";
+ 
+ export default function OrderCreate({ onClose, onSave, order: initialOrder = null, userInfo, windowRef }) {
+     const [formData, setFormData] = useState({
+         companyId: userInfo?.companyId || "1",
+         branchId: userInfo?.branchId || "1",
+         date: new Date().toISOString().slice(0, 10),
+         clientId: "",
+         carId: "",
+         isService: false,
+         serviceTypeId: "",
+         mileage: "",
+         nextServiceMileage: "",
+@@ -120,51 +120,51 @@ export default function OrderCreate({ onClose, onSave, order: initialOrder = nul
+                                 code,
+                                 description: d.Description || "",
+                                 quantity: d.Quantity,
+                                 price: d.UnitPrice,
+                                 priceListId: d.PriceListID,
+                                 warehouseId: d.WarehouseID,
+                                 subtotal: d.Quantity * d.UnitPrice,
+                                 orderSessionID: d.OrderSessionID,
+                             };
+                         })
+                     );
+                     setItems(parsed);
+                 } catch (err) {
+                     console.error("Error cargando items temporales:", err);
+                 }
+             })();
+         }
+     }, [initialOrder, userInfo?.userId, userInfo?.companyId, userInfo?.branchId]);
  
      useEffect(() => {
-         // Cargar información del usuario usando AuthHelper
-         const authUserInfo = AuthHelper.getUserInfoForHeader();
-         const authSelectedAccess = AuthHelper.getSelectedAccess();
+         const fetchData = async () => {
+             const [st, sc, d, os, pl, wh, comp, br] = await Promise.all([
+                 serviceTypeOperations.getAllServicetypes(),
+                 saleConditionOperations.getAllSaleConditions(),
+                 discountOperations.getAllDiscounts(),
+-                orderStatusOperations.getAllOrderstatus(),
++                sysOrderStatusOperations.getAllSysorderstatus(),
+                 pricelistOperations.getAllPricelists(),
+                 warehouseOperations.getAllWarehouses(),
+                 companyOperations.getAllCompanies(),
+                 branchOperations.getAllBranches(),
+             ]);
+             setServiceTypes(st);
+             setSaleConditions(sc);
+             setDiscounts(d);
+             setStatuses(os);
+             setPriceLists(pl);
+             setWarehouses(wh);
+             setCompanies(comp);
+             setBranches(br);
+         };
+         fetchData();
+     }, []);
  
-         if (authUserInfo) {
-             setUserInfo(authUserInfo);
-         }
- 
-@@ -200,32 +202,34 @@ export default function App() {
-                     <Route path="dashboard" element={<Dashboard />} />
-                     <Route path="clients" element={<Clients />} />
-                     <Route path="suppliers" element={<Suppliers />} />
-                     <Route path="brands" element={<Brands />} />
-                     <Route path="saleconditions" element={<SaleConditions />} />
-                     <Route path="creditcardgroups" element={<CreditCardGroups />} />
-                     <Route path="creditcards" element={<CreditCards />} />
-                     <Route path="discounts" element={<Discounts />} />
-                     <Route path="vendors" element={<Vendors />} />
-                     <Route path="servicetypes" element={<ServiceTypes />} />
-                     <Route path="itemcategories" element={<ItemCategories />} />
-                     <Route path="itemsubcategories" element={<ItemSubcategories />} />
-                     <Route path="items" element={<Items />} />
-                     <Route path="pricelists" element={<PriceLists />} />
-                     <Route path="warehouses" element={<Warehouses />} />
-                     <Route path="branches" element={<Branches />} />
-                     <Route path="companydata" element={<CompanyData />} />
-                     <Route path="carbrands" element={<CarBrands />} />
-                     <Route path="carmodels" element={<CarModels />} />
-                     <Route path="cars" element={<Cars />} />
-                     <Route path="documents" element={<Documents />} />
-                     <Route path="orders" element={<Orders />} />
-                     <Route path="roles" element={<Roles />} />
-                     <Route path="users" element={<Users />} />
-                     <Route path="rolesusers" element={<RolesUsers />} />
-+                    <Route path="fe-last" element={<FeLastVoucher />} />
-+                    <Route path="fe-info" element={<FeInfo />} />
-                     {/* Ruta fallback: todo lo desconocido a dashboard */}
-                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                 </Route>
-             </Routes>
-         </UserProvider>
+     const filteredBranches = branches.filter(
+         (b) => !formData.companyId || b.CompanyID === parseInt(formData.companyId)
      );
- }
-\ No newline at end of file
-diff --git a/frontend/src/components/Sidebar.jsx b/frontend/src/components/Sidebar.jsx
-index 7c75e4a1f1a8e48a8145849556cc15f4000fb42b..abe7ea5e8335a1a2714350cfd7447e6839cb822c 100644
---- a/frontend/src/components/Sidebar.jsx
-+++ b/frontend/src/components/Sidebar.jsx
-@@ -91,50 +91,62 @@ export default function Sidebar() {
-                         { label: "Marcas de autos", to: "/carbrands" },
-                         { label: "Modelos de autos", to: "/carmodels" },
-                         { label: "Autos", to: "/cars" },
-                     ],
-                 },
-             ],
-         },
-         {
-             title: "Pedidos",
-             items: [
-                 { label: "Listar pedidos", to: "/orders" },
-                 {
-                     label: "Cargar pedido",
-                     action: () => openPopup(OrderCreate, "Cargar Pedido", 1000, 700),
-                 },
-                 { label: "Historial", to: "/orderhistory" },
-             ],
-         },
-         {
-             title: "Inventario",
-             items: [
-                 { label: "Stock", to: "/itemstock" },
-                 { label: "Historial de stock", to: "/stockhistory" },
-             ],
-         },
-+        {
-+            title: "Consultas",
-+            items: [
-+                {
-+                    label: "Factura electrónica",
-+                    submenu: [
-+                        { label: "Último comprobante", to: "/fe-last" },
-+                        { label: "Información comprobante", to: "/fe-info" },
-+                    ],
-+                },
-+            ],
-+        },
-         {
-             title: "Configuración",
-             items: [
-                 { label: "Sucursales", to: "/branches" },
-                 { label: "Empresa", to: "/companydata" },
-                 { label: "Roles", to: "/roles" },
-                 {
-                     label: "Usuarios",
-                     submenu: [
-                         { label: "Usuarios", to: "/users" },
-                         { label: "Roles y Usuarios", to: "/rolesusers" },
-                     ],
-                 },
-             ],
-         },
-     ];
  
-     return (
-         <>
-             <aside className="w-64 bg-white border-r overflow-y-auto">
-                 <nav className="p-4 space-y-4">
-                     {sections.map((section) => {
-                         const isOpen = openSections[section.title];
-                         return (
-                             <div key={section.title}>
-diff --git a/frontend/src/pages/FeInfo.jsx b/frontend/src/pages/FeInfo.jsx
-new file mode 100644
-index 0000000000000000000000000000000000000000..50804763f28d6ca3af4049abcbab54c3b236feba
---- /dev/null
-+++ b/frontend/src/pages/FeInfo.jsx
-@@ -0,0 +1,73 @@
-+// frontend/src/pages/FeInfo.jsx
-+import { useState } from "react";
-+import { afipOperations } from "../utils/graphqlClient";
-+
-+export default function FeInfo() {
-+    const [form, setForm] = useState({
-+        CuitEmisor: "",
-+        PtoVta: "",
-+        CbteTipo: "",
-+        CbteNro: "",
-+        CbteFch: "",
-+        ImpTotal: "",
-+        CodAutorizacion: "",
-+        DocTipoReceptor: "",
-+        DocNroReceptor: "",
-+    });
-+    const [result, setResult] = useState("");
-+
-+    const handleChange = (e) => {
-+        const { name, value } = e.target;
-+        setForm((prev) => ({ ...prev, [name]: value }));
-+    };
-+
-+    const handleSubmit = async (e) => {
-+        e.preventDefault();
-+        try {
-+            const data = await afipOperations.informacionComprobante({
-+                CbteModo: "CAE",
-+                CuitEmisor: parseInt(form.CuitEmisor),
-+                PtoVta: parseInt(form.PtoVta),
-+                CbteTipo: parseInt(form.CbteTipo),
-+                CbteNro: parseInt(form.CbteNro),
-+                CbteFch: parseInt(form.CbteFch),
-+                ImpTotal: parseFloat(form.ImpTotal),
-+                CodAutorizacion: form.CodAutorizacion,
-+                DocTipoReceptor: form.DocTipoReceptor,
-+                DocNroReceptor: form.DocNroReceptor,
-+            });
-+            setResult(data);
-+        } catch (err) {
-+            console.error(err);
-+        }
-+    };
-+
-+    return (
-+        <div className="p-6">
-+            <h1 className="text-xl font-bold mb-4">Información Comprobante</h1>
-+            <form onSubmit={handleSubmit} className="space-y-4">
-+                {Object.entries(form).map(([key, value]) => (
-+                    <div key={key}>
-+                        <label className="block text-sm mb-1">{key}</label>
-+                        <input
-+                            name={key}
-+                            value={value}
-+                            onChange={handleChange}
-+                            className="border p-2 rounded w-full"
-+                            required
-+                        />
-+                    </div>
-+                ))}
-+                <button
-+                    type="submit"
-+                    className="px-4 py-2 bg-blue-500 text-white rounded"
-+                >
-+                    Consultar
-+                </button>
-+            </form>
-+            {result && (
-+                <pre className="mt-4 whitespace-pre-wrap">{result}</pre>
-+            )}
-+        </div>
-+    );
-+}
-diff --git a/frontend/src/pages/FeLastVoucher.jsx b/frontend/src/pages/FeLastVoucher.jsx
-new file mode 100644
-index 0000000000000000000000000000000000000000..5a0308e897cff6887fce039e6681b10453a17990
---- /dev/null
-+++ b/frontend/src/pages/FeLastVoucher.jsx
-@@ -0,0 +1,60 @@
-+// frontend/src/pages/FeLastVoucher.jsx
-+import { useState } from "react";
-+import { afipOperations } from "../utils/graphqlClient";
-+
-+export default function FeLastVoucher() {
-+    const [ptoVta, setPtoVta] = useState("");
-+    const [cbteTipo, setCbteTipo] = useState("");
-+    const [result, setResult] = useState(null);
-+
-+    const handleSubmit = async (e) => {
-+        e.preventDefault();
-+        try {
-+            const nro = await afipOperations.getUltimoComprobante(
-+                parseInt(ptoVta),
-+                parseInt(cbteTipo)
-+            );
-+            setResult(nro);
-+        } catch (err) {
-+            console.error(err);
-+            setResult(null);
-+        }
-+    };
-+
-+    return (
-+        <div className="p-6">
-+            <h1 className="text-xl font-bold mb-4">Último Comprobante</h1>
-+            <form onSubmit={handleSubmit} className="space-y-4">
-+                <div>
-+                    <label className="block text-sm">Punto de Venta</label>
-+                    <input
-+                        type="number"
-+                        value={ptoVta}
-+                        onChange={(e) => setPtoVta(e.target.value)}
-+                        className="border p-2 rounded w-full"
-+                        required
-+                    />
-+                </div>
-+                <div>
-+                    <label className="block text-sm">Tipo Comprobante</label>
-+                    <input
-+                        type="number"
-+                        value={cbteTipo}
-+                        onChange={(e) => setCbteTipo(e.target.value)}
-+                        className="border p-2 rounded w-full"
-+                        required
-+                    />
-+                </div>
-+                <button
-+                    type="submit"
-+                    className="px-4 py-2 bg-blue-500 text-white rounded"
-+                >
-+                    Consultar
-+                </button>
-+            </form>
-+            {result !== null && (
-+                <div className="mt-4">Último número: {result}</div>
-+            )}
-+        </div>
-+    );
-+}
+     useEffect(() => {
+         if (formData.clientId) {
+             carOperations
+                 .getAllCars()
 diff --git a/frontend/src/utils/graphql/operations.js b/frontend/src/utils/graphql/operations.js
-index 18b5d7162531bfab6ce54b7811099b8d5ae6e012..13e408a357402515af1f351ca7ab8f879321914d 100644
+index 956e664b4ff892597df511be504342443a2e45d2..d294c567a2bae18d2910d42a49866d98dbc0c38c 100644
 --- a/frontend/src/utils/graphql/operations.js
 +++ b/frontend/src/utils/graphql/operations.js
-@@ -1575,25 +1575,40 @@ export const branchOperations = {
-             console.error("Error creando sucursal:", error);
+@@ -1254,54 +1254,54 @@ export const warehouseOperations = {
+ };
+ 
+ export const serviceTypeOperations = {
+     async getAllServicetypes() {
+         const data = await graphqlClient.query(QUERIES.GET_ALL_SERVICETYPES);
+         return data.allServicetypes || [];
+     },
+     async getServicetypeById(id) {
+         const data = await graphqlClient.query(QUERIES.GET_SERVICETYPE_BY_ID, { id });
+         return data.servicetypesById;
+     },
+     async createServicetype(input) {
+         const data = await graphqlClient.mutation(MUTATIONS.CREATE_SERVICETYPE, { input });
+         return data.createServicetype;
+     },
+     async updateServicetype(id, input) {
+         const data = await graphqlClient.mutation(MUTATIONS.UPDATE_SERVICETYPE, { serviceTypeID: id, input });
+         return data.updateServicetype;
+     },
+     async deleteServicetype(id) {
+         const data = await graphqlClient.mutation(MUTATIONS.DELETE_SERVICETYPE, { serviceTypeID: id });
+         return data.deleteServicetype;
+     }
+ };
+ 
+-export const orderStatusOperations = {
+-    async getAllOrderstatus() {
+-        const data = await graphqlClient.query(QUERIES.GET_ALL_ORDERSTATUS);
+-        return data.allOrderstatus || [];
++export const sysOrderStatusOperations = {
++    async getAllSysorderstatus() {
++        const data = await graphqlClient.query(QUERIES.GET_ALL_SYSORDERSTATUS);
++        return data.allSysorderstatus || [];
+     }
+ };
+ 
+ export const sysDocTypeOperations = {
+     async getAllSysdoctypes() {
+         const data = await graphqlClient.query(QUERIES.GET_SYSDOC_TYPES);
+         return data.allSysdoctypes || [];
+     }
+ };
+ 
+ export const sysDocumentTypeOperations = {
+     async getAllSysdocumenttypes() {
+         const data = await graphqlClient.query(QUERIES.GET_SYSDOCUMENT_TYPES);
+         return data.allSysdocumenttypes || [];
+     }
+ };
+ 
+ // ===== FUNCIONES DE ÓRDENES - NUEVAS Y COMPLETAS =====
+ export const orderOperations = {
+     async getAllOrders() {
+         try {
+             const data = await graphqlClient.query(QUERIES.GET_ALL_ORDERS);
+             return data.allOrders || [];
+         } catch (error) {
+             console.error("Error obteniendo órdenes:", error);
+@@ -1390,51 +1390,51 @@ export const orderOperations = {
+             console.error("Error eliminando orden:", error);
              throw error;
          }
      },
  
-     async updateBranch(id, dataInput) {
+     // Función auxiliar para obtener datos del formulario de órdenes
+     async getOrderFormData() {
          try {
-             const data = await graphqlClient.mutation(MUTATIONS.UPDATE_BRANCH, { branchID: id, input: dataInput });
-             return data.updateBranch;
-         } catch (error) {
-             console.error("Error actualizando sucursal:", error);
-             throw error;
-         }
-     },
+             const [
+                 clients,
+                 cars,
+                 saleConditions,
+                 discounts,
+                 priceLists,
+                 warehouses,
+                 serviceTypes,
+                 orderStatus
+             ] = await Promise.all([
+                 clientOperations.getAllClients(),
+                 carOperations.getAllCars(),
+                 saleConditionOperations.getAllSaleConditions(),
+                 discountOperations.getAllDiscounts(),
+                 pricelistOperations.getAllPricelists(),
+                 warehouseOperations.getAllWarehouses(),
+                 serviceTypeOperations.getAllServicetypes(),
+-                orderStatusOperations.getAllOrderstatus()
++                sysOrderStatusOperations.getAllSysorderstatus()
+             ]);
  
-     async deleteBranch(id) {
-         try {
-             const data = await graphqlClient.mutation(MUTATIONS.DELETE_BRANCH, { branchID: id });
-             return data.deleteBranch;
+             return {
+                 clients: clients.filter(c => c.IsActive),
+                 cars,
+                 saleConditions: saleConditions.filter(sc => sc.IsActive),
+                 discounts,
+                 priceLists: priceLists.filter(pl => pl.IsActive),
+                 warehouses,
+                 serviceTypes,
+                 orderStatus
+             };
          } catch (error) {
-             console.error("Error eliminando sucursal:", error);
+             console.error("Error obteniendo datos del formulario de órdenes:", error);
              throw error;
          }
      }
  };
-+// AFIP operations
-+
-+export const afipOperations = {
-+    async getUltimoComprobante(ptoVta, cbteTipo) {
-+        const query = `query ($pto: Int!, $tipo: Int!) {\n  ultimoComprobante(ptoVta: $pto, cbteTipo: $tipo)\n}`;
-+        const data = await graphqlClient.query(query, { pto: ptoVta, tipo: cbteTipo });
-+        return data.ultimoComprobante;
-+    },
-+
-+    async informacionComprobante(input) {
-+        const query = `query ($data: VoucherRequest!) {\n  informacionComprobante(data: $data) { raw }\n}`;
-+        const data = await graphqlClient.query(query, { data: input });
-+        return data.informacionComprobante.raw;
-+    }
-+};
-diff --git a/requirements.txt b/requirements.txt
-index 6f133a7b7711090b1862e7cd128c824db8619a5e..1e63f7ff00d79298b823d00d7083f9175d925090 100644
-GIT binary patch
-delta 40
-vcmZqTTg114iCv*6wXig`xTM(D)=1CTNY8{TF)gz|ub|S_)=<w-&xi{E`~M4U
-
-delta 7
-OcmZ3)*TlDhi5&n5rUCi@
-
  
-EOF
-)
+ // ===== FUNCIONES PARA ITEMS TEMPORALES =====
+ export const tempOrderOperations = {
+     async createTempItem(data) {
+         try {
+             const result = await graphqlClient.mutation(
+                 MUTATIONS.CREATE_TEMPORDERDETAIL,
+diff --git a/frontend/src/utils/graphql/queries.js b/frontend/src/utils/graphql/queries.js
+index 357cf81738189558a7e4db90e9b89bbd6c3323df..6ba6f3f94894968727134cfb6c39fa44560431e8 100644
+--- a/frontend/src/utils/graphql/queries.js
++++ b/frontend/src/utils/graphql/queries.js
+@@ -159,53 +159,53 @@ export const QUERIES = {
+                 Name
+                 Addres
+             }
+         }
+     `,
+ 
+     // SERVICETYPES
+     GET_ALL_SERVICETYPES: `
+         query GetAllServicetypes {
+             allServicetypes {
+                 ServiceTypeID
+                 Type
+             }
+         }
+     `,
+     GET_SERVICETYPE_BY_ID: `
+         query GetServicetypeById($id: Int!) {
+             servicetypesById(id: $id) {
+                 ServiceTypeID
+                 Type
+             }
+         }
+     `,
+ 
+     // ORDER STATUS
+-    GET_ALL_ORDERSTATUS: `
+-        query GetAllOrderstatus {
+-            allOrderstatus {
++    GET_ALL_SYSORDERSTATUS: `
++        query GetAllSysorderstatus {
++            allSysorderstatus {
+                 OrderStatusID
+                 Status
+             }
+         }
+     `,
+ 
+     GET_VENDORS: `
+         query GetVendors {
+             allVendors {
+                 VendorID
+                 VendorName
+                 Commission
+                 IsActive
+             }
+         }
+     `,
+     // Alias para compatibilidad
+     GET_ALL_VENDORS: `
+         query GetAllVendors {
+             allVendors {
+                 VendorID
+                 VendorName
+                 Commission
+                 IsActive
+             }
