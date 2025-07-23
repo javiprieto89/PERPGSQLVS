@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from app.models.warehouses import Warehouses
 
 from sqlalchemy import Column, Integer, Unicode, Date, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, Index, text
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship, foreign
 from app.db import Base
 
 
@@ -49,7 +49,13 @@ class Itemstock(Base):
 
     # Relaciones
     branches_: Mapped[Branches] = relationship('Branches', back_populates='itemstock')
-    companyData_: Mapped[CompanyData] = relationship('CompanyData', back_populates='itemstock')
+    companyData_: Mapped[CompanyData] = relationship(
+        'CompanyData',
+        back_populates='itemstock',
+        primaryjoin='foreign(Itemstock.CompanyID) == CompanyData.CompanyID',
+        foreign_keys='Itemstock.CompanyID',
+        overlaps='branches',
+    )
     items_: Mapped[Items] = relationship('Items', back_populates='itemstock')
     suppliers_: Mapped[Suppliers] = relationship('Suppliers', back_populates='itemstock')
     warehouses_: Mapped[Warehouses] = relationship('Warehouses', back_populates='itemstock')
