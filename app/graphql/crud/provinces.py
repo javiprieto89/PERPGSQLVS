@@ -13,8 +13,16 @@ def get_provinces_by_country(db: Session, country_id: int):
     return db.query(Provinces).filter(Provinces.CountryID == country_id).all()
 
 
-def get_provinces_by_id(db: Session, provinceid: int):
-    return db.query(Provinces).filter(Provinces.ProvinceID == provinceid).first()
+def get_provinces_by_id(db: Session, country_id: int, province_id: int):
+    """Retrieve a province by its composite key."""
+    return (
+        db.query(Provinces)
+        .filter(
+            Provinces.CountryID == country_id,
+            Provinces.ProvinceID == province_id,
+        )
+        .first()
+    )
 
 
 def create_provinces(db: Session, data: ProvincesCreate):
@@ -25,8 +33,8 @@ def create_provinces(db: Session, data: ProvincesCreate):
     return obj
 
 
-def update_provinces(db: Session, provinceid: int, data: ProvincesUpdate):
-    obj = get_provinces_by_id(db, provinceid)
+def update_provinces(db: Session, country_id: int, province_id: int, data: ProvincesUpdate):
+    obj = get_provinces_by_id(db, country_id, province_id)
     if obj:
         for k, v in vars(data).items():
             if v is not None:
@@ -36,8 +44,8 @@ def update_provinces(db: Session, provinceid: int, data: ProvincesUpdate):
     return obj
 
 
-def delete_provinces(db: Session, provinceid: int):
-    obj = get_provinces_by_id(db, provinceid)
+def delete_provinces(db: Session, country_id: int, province_id: int):
+    obj = get_provinces_by_id(db, country_id, province_id)
     if obj:
         db.delete(obj)
         db.commit()

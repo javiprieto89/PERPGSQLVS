@@ -72,10 +72,10 @@ export default function Branches() {
         );
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (id, companyID) => {
         if (!confirm('¿Borrar sucursal?')) return;
         try {
-            await branchOperations.deleteBranch(id);
+            await branchOperations.deleteBranch(companyID, id);
             loadBranches();
         } catch (err) {
             alert('Error al borrar sucursal: ' + err.message);
@@ -117,7 +117,7 @@ export default function Branches() {
                             <p className="text-sm mb-2">Empresa ID: {br.CompanyID}</p>
                             <div className="flex space-x-2">
                                 <button onClick={() => handleEdit(br)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
-                                <button onClick={() => handleDelete(br.BranchID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
+                                <button onClick={() => handleDelete(br.BranchID, br.CompanyID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
                             </div>
                         </div>
                     ))}
