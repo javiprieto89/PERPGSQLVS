@@ -1,25 +1,19 @@
-# ========== DocTypes ===========
-# app/models/doctypes.py
+# app/models/sysdoctypes.py
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, List
 
-if TYPE_CHECKING:    
-    from .clients import Clients 
-    from .suppliers import Suppliers  
-
-from typing import List
+if TYPE_CHECKING:
+    from .clients import Clients
+    from .suppliers import Suppliers
 
 from sqlalchemy import Column, Integer, Unicode, Boolean, Identity, PrimaryKeyConstraint, text
 from sqlalchemy.orm import Mapped, relationship
-#from .clients import Clients
-#from .suppliers import Suppliers
 from app.db import Base
 
-
-class DocTypes(Base):
-    __tablename__ = 'DocTypes'
+class SysDocTypes(Base):
+    __tablename__ = 'SysDocTypes'
     __table_args__ = (
-        PrimaryKeyConstraint('DocTypeID', name='PK__DocTypes__055E26832A8E0FF3'),
+        PrimaryKeyConstraint('DocTypeID', name='PK__SysDocTypes__055E26832A8E0FF3'),
     )
 
     DocTypeID = Column(Integer, Identity(start=1, increment=1), primary_key=True)

@@ -1,21 +1,21 @@
-# app/graphql/schemas/documenttypes.py
+# app/graphql/schemas/sysdocumenttypes.py
 import strawberry
 from typing import Optional, List
 
 #from app.graphql.schemas.clients import ClientsInDB
 
 @strawberry.input
-class DocumentTypesCreate:
+class SysDocumentTypesCreate:
     Name: str
 
 
 @strawberry.input
-class DocumentTypesUpdate:
+class SysDocumentTypesUpdate:
     Name: Optional[str] = None
 
 
 @strawberry.type
-class DocumentTypesInDB:
+class SysDocumentTypesInDB:
     DocumentTypeID: int
     Name: str
 

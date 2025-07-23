@@ -5,7 +5,7 @@ from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:    
     from .countries import Countries
-    from .doctypes import DocTypes
+    from .sysdoctypes import SysDocTypes
     from .provinces import Provinces
     from .accountbalances import AccountBalances
     from .items import Items
@@ -24,7 +24,7 @@ class Suppliers(Base):
     __tablename__ = 'Suppliers'
     __table_args__ = (
         ForeignKeyConstraint(['CountryID'], ['Countries.CountryID'], name='FK__Suppliers__Count__440B1D61'),
-        ForeignKeyConstraint(['DocTypeID'], ['DocTypes.DocTypeID'], name='FK_Suppliers_DocTypes'),
+        ForeignKeyConstraint(['DocTypeID'], ['SysDocTypes.DocTypeID'], name='FK_Suppliers_SysDocTypes'),
         ForeignKeyConstraint(['ProvinceID'], ['Provinces.ProvinceID'], name='FK__Suppliers__Provi__44FF419A'),
         PrimaryKeyConstraint('SupplierID', name='PK__Supplier__4BE6669487E21347')
     )
@@ -45,7 +45,7 @@ class Suppliers(Base):
 
     # Relaciones
     countries_: Mapped['Countries'] = relationship('Countries', back_populates='suppliers')
-    docTypes_: Mapped['DocTypes'] = relationship('DocTypes', back_populates='suppliers')
+    docTypes_: Mapped['SysDocTypes'] = relationship('SysDocTypes', back_populates='suppliers')
     provinces_: Mapped['Provinces'] = relationship('Provinces', back_populates='suppliers')
     accountBalances: Mapped[List['AccountBalances']] = relationship('AccountBalances', back_populates='suppliers_')
     items: Mapped[List['Items']] = relationship('Items', back_populates='suppliers_')

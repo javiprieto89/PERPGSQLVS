@@ -1,6 +1,6 @@
 // frontend/src/pages/Documents.jsx
 import { useEffect, useState } from "react";
-import { documentOperations, companyOperations, branchOperations, documentTypeOperations } from "../utils/graphqlClient";
+import { documentOperations, companyOperations, branchOperations, sysDocumentTypeOperations } from "../utils/graphqlClient";
 import DocumentCreate from "./DocumentCreate";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
@@ -34,7 +34,7 @@ export default function Documents() {
                 documentOperations.getAllDocuments(),
                 companyOperations.getAllCompanies(),
                 branchOperations.getAllBranches(),
-                documentTypeOperations.getAllDocumenttypes(),
+                sysDocumentTypeOperations.getAllSysdocumenttypes(),
             ]);
             setAllDocs(docs);
             setDocuments(docs);

@@ -13,9 +13,9 @@ from .countries import *
 from .creditcardgroups import *
 from .creditcards import *
 from .discounts import *
-from .doctypes import *
+from .sysdoctypes import *
 from .documents import *
-from .documenttypes import *
+from .sysdocumenttypes import *
 from .itemcategories import *
 from .itempricehistory import *
 from .items import *
@@ -61,9 +61,9 @@ __all__ = [
     "creditcardgroups",
     "creditcards",
     "discounts",
-    "doctypes",
+    "sysdoctypes",
     "documents",
-    "documenttypes",
+    "sysdocumenttypes",
     "itemcategories",
     "itempricehistory",
     "items",

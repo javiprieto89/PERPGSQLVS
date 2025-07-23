@@ -25,7 +25,7 @@ export default function ClientCreate({
     });
 
     const [formData, setFormData] = useState({
-        docTypes: [],
+        sysDocTypes: [],
         countries: [],
         provinces: [],
         priceLists: [],
@@ -199,7 +199,7 @@ export default function ClientCreate({
                                 required
                             >
                                 <option value="">Seleccione</option>
-                                {formData.docTypes.map(dt => (
+                                {formData.sysDocTypes.map(dt => (
                                     <option key={dt.DocTypeID} value={dt.DocTypeID}>
                                         {dt.Name}
                                     </option>

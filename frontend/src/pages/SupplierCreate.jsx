@@ -18,7 +18,7 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
     });
 
     const [formData, setFormData] = useState({
-        docTypes: [],
+        sysDocTypes: [],
         countries: [],
         provinces: [],
     });
@@ -148,7 +148,7 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
                                 required
                             >
                                 <option value="">Seleccione</option>
-                                {formData.docTypes.map(dt => (
+                                {formData.sysDocTypes.map(dt => (
                                     <option key={dt.DocTypeID} value={dt.DocTypeID}>{dt.Name}</option>
                                 ))}
                             </select>
