@@ -1,4 +1,4 @@
-# crud/clients.py
+﻿# crud/clients.py
 from sqlalchemy.orm import Session
 from sqlalchemy import exists
 from app.models.clients import Clients

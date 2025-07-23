@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+ï»¿from sqlalchemy.orm import Session
 from app.models.transactions import Transactions
 from app.graphql.schemas.transactions import TransactionsCreate, TransactionsUpdate
 
@@ -16,7 +16,7 @@ def get_transactions_by_id(db: Session, transactionid: int):
 
 
 def create_transactions(db: Session, data: TransactionsCreate):
-    obj = Transactions(**vars(data))  # CORREGIDO: usar vars() como patrón consistente
+    obj = Transactions(**vars(data))  # CORREGIDO: usar vars() como patrÃ³n consistente
     db.add(obj)
     db.commit()
     db.refresh(obj)
@@ -26,8 +26,8 @@ def create_transactions(db: Session, data: TransactionsCreate):
 def update_transactions(db: Session, transactionid: int, data: TransactionsUpdate):
     obj = get_transactions_by_id(db, transactionid)
     if obj:
-        for k, v in vars(data).items():  # CORREGIDO: usar vars() como patrón consistente
-            if v is not None:  # AGREGAR: verificación None
+        for k, v in vars(data).items():  # CORREGIDO: usar vars() como patrÃ³n consistente
+            if v is not None:  # AGREGAR: verificaciÃ³n None
                 setattr(obj, k, v)
         db.commit()
         db.refresh(obj)

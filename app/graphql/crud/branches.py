@@ -1,4 +1,4 @@
-# branches.py
+﻿# branches.py
 from sqlalchemy.orm import Session
 from app.models.branches import Branches
 from app.graphql.schemas.branches import BranchesCreate, BranchesUpdate

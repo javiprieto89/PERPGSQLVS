@@ -1,4 +1,4 @@
-# brands.py
+﻿# brands.py
 from sqlalchemy.orm import Session
 from sqlalchemy import exists
 from app.models.items import Items

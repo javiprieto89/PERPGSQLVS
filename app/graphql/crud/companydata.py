@@ -1,4 +1,4 @@
-# crud/companydata.py
+﻿# crud/companydata.py
 from sqlalchemy.orm import Session
 from app.models.companydata import CompanyData
 from app.graphql.schemas.companydata import CompanyDataCreate, CompanyDataUpdate

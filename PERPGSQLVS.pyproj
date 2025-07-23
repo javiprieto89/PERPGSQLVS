@@ -14342,6 +14342,7 @@
     <Content Include="node_modules\vary\LICENSE" />
     <Content Include="node_modules\vary\package.json" />
     <Content Include="node_modules\vary\README.md" />
+    <Content Include="NoUTF8.ps1" />
     <Content Include="package-lock.json" />
     <Content Include="package.json" />
     <Content Include="pyrightconfig.json" />

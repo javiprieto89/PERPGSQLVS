@@ -1,4 +1,4 @@
-# app/graphql/crud/users.py
+﻿# app/graphql/crud/users.py
 from sqlalchemy.orm import Session
 from app.models.users import Users
 from app.graphql.schemas.users import UserCreate, UserUpdate
@@ -9,7 +9,7 @@ def get_users(db: Session):
 
 
 def get_user_by_nickname(db: Session, nickname: str):
-    # CORRECCI�N: Usar PascalCase como en toda la base de datos
+    # CORRECCIÓN: Usar PascalCase como en toda la base de datos
     return db.query(Users).filter(Users.Nickname == nickname).first()
 
 
