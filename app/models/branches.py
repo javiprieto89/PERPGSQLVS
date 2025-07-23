@@ -24,8 +24,15 @@ if TYPE_CHECKING:
 class Branches(Base):
     __tablename__ = 'Branches'
     __table_args__ = (
-        ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__Branches__Compan__398D8EEE'),
-        PrimaryKeyConstraint('BranchID', name='PK__Branches__A1682FA515D37C5D')
+        ForeignKeyConstraint(
+            ["CompanyID"], ["CompanyData.CompanyID"],
+            name="FK_Branches_CompanyData"
+        ),
+        PrimaryKeyConstraint(
+            "CompanyID",
+            "BranchID",
+            name="PK_Branches"
+        ),
     )
 
     BranchID = Column(Integer, Identity(start=1, increment=1), primary_key=True)

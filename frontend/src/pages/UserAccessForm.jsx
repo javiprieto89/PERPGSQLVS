@@ -237,6 +237,7 @@ export default function UserAccessForm({ onClose, onSave, record: initialRecord 
                     onClose={() => setShowBranchModal(false)}
                     onSelect={(b) => {
                         setBranchID(b.BranchID);
+                        if (!companyID) setCompanyID(b.CompanyID);
                         setShowBranchModal(false);
                     }}
                 />

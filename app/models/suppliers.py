@@ -23,9 +23,12 @@ from app.db import Base
 class Suppliers(Base):
     __tablename__ = 'Suppliers'
     __table_args__ = (
-        ForeignKeyConstraint(['CountryID'], ['Countries.CountryID'], name='FK__Suppliers__Count__440B1D61'),
         ForeignKeyConstraint(['DocTypeID'], ['SysDocTypes.DocTypeID'], name='FK_Suppliers_SysDocTypes'),
-        ForeignKeyConstraint(['ProvinceID'], ['Provinces.ProvinceID'], name='FK__Suppliers__Provi__44FF419A'),
+        ForeignKeyConstraint(
+            ['CountryID', 'ProvinceID'],
+            ['Provinces.CountryID', 'Provinces.ProvinceID'],
+            name='FK__Suppliers__Provi__44FF419A',
+        ),
         PrimaryKeyConstraint('SupplierID', name='PK__Supplier__4BE6669487E21347')
     )
 

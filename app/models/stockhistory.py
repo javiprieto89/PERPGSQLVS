@@ -37,7 +37,9 @@ class StockHistory(Base):
             name="FK__StockHist__Wareh__7B5B524B",
         ),
         ForeignKeyConstraint(
-            ["BranchID"], ["Branches.BranchID"], name="FK_StockHistory_Branches"
+            ["CompanyID", "BranchID"],
+            ["Branches.CompanyID", "Branches.BranchID"],
+            name="FK_StockHistory_Branches",
         ),
         ForeignKeyConstraint(
             ["CompanyID"], ["CompanyData.CompanyID"], name="FK_StockHistory_CompanyData"

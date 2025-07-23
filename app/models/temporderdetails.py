@@ -21,7 +21,11 @@ from app.db import Base
 class TempOrderDetails(Base):
     __tablename__ = 'TempOrderDetails'
     __table_args__ = (
-        ForeignKeyConstraint(['BranchID'], ['Branches.BranchID'], name='FK_TempOrderDetails_Branches'),
+        ForeignKeyConstraint(
+            ["CompanyID", "BranchID"],
+            ["Branches.CompanyID", "Branches.BranchID"],
+            name='FK_TempOrderDetails_Branches'
+        ),
         ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__TempOrder__Compa__0C85DE4D'),
         ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK__TempOrder__ItemI__0F624AF8'),
         ForeignKeyConstraint(['OrderID'], ['Orders.OrderID'], name='FK_TempOrderDetails_Orders'),

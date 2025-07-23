@@ -856,8 +856,8 @@ export const QUERIES = {
         }
     `,
     GET_BRANCH_BY_ID: `
-        query GetBranchById($id: Int!) {
-            branchesById(id: $id) {
+        query GetBranchById($companyID: Int!, $id: Int!) {
+            branchesById(companyID: $companyID, id: $id) {
                 BranchID
                 CompanyID
                 Name
