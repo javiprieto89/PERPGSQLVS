@@ -1,4 +1,4 @@
-# ========== sysTransactionTypes ===========
+﻿# ========== sysTransactionTypes ===========
 # app/models/systransactiontypes.py
 from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
 from app.db import Base

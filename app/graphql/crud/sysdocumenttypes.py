@@ -1,4 +1,4 @@
-# app/graphql/crud/sysdocumenttypes.py
+﻿# app/graphql/crud/sysdocumenttypes.py
 from sqlalchemy.orm import Session
 from sqlalchemy import exists
 from app.models.sysdocumenttypes import SysDocumentTypes

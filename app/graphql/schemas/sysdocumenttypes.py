@@ -1,4 +1,4 @@
-# app/graphql/schemas/sysdocumenttypes.py
+﻿# app/graphql/schemas/sysdocumenttypes.py
 import strawberry
 from typing import Optional, List
 

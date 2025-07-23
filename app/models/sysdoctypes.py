@@ -1,4 +1,4 @@
-# app/models/sysdoctypes.py
+﻿# app/models/sysdoctypes.py
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING, List
 

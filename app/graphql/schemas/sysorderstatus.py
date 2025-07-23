@@ -1,4 +1,4 @@
-# app/graphql/schemas/sysorderstatus.py
+﻿# app/graphql/schemas/sysorderstatus.py
 import strawberry
 from typing import Optional
 

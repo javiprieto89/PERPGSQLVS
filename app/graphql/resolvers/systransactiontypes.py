@@ -1,4 +1,4 @@
-# app/graphql/resolvers/systransactiontypes.py
+﻿# app/graphql/resolvers/systransactiontypes.py
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.systransactiontypes import SysTransactionTypesInDB

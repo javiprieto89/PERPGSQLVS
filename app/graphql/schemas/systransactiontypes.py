@@ -1,4 +1,4 @@
-# app/graphql/schemas/systransactiontypes.py
+﻿# app/graphql/schemas/systransactiontypes.py
 import strawberry
 from typing import Optional
 

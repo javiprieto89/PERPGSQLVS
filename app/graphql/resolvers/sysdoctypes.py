@@ -1,4 +1,4 @@
-# app/graphql/resolvers/sysdoctypes.py
+﻿# app/graphql/resolvers/sysdoctypes.py
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.sysdoctypes import SysDocTypesInDB

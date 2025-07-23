@@ -1,4 +1,4 @@
-# app/graphql/resolvers/sysorderstatus.py
+﻿# app/graphql/resolvers/sysorderstatus.py
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.sysorderstatus import SysOrderStatusInDB

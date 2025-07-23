@@ -1,4 +1,4 @@
-# app/graphql/resolvers/sysdocumenttypes.py
+﻿# app/graphql/resolvers/sysdocumenttypes.py
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.sysdocumenttypes import SysDocumentTypesInDB
