@@ -62,7 +62,13 @@ class Items(Base):
     # Relaciones
     branches_: Mapped[Branches] = relationship('Branches', back_populates='items')
     brands_: Mapped[Brands] = relationship('Brands', back_populates='items')
-    companyData_: Mapped[CompanyData] = relationship('CompanyData', back_populates='items')
+    companyData_: Mapped[CompanyData] = relationship(
+        'CompanyData',
+        back_populates='items',
+        primaryjoin='foreign(Items.CompanyID) == CompanyData.CompanyID',
+        foreign_keys='Items.CompanyID',
+        overlaps='branches',
+    )
     itemCategories_: Mapped[ItemCategories] = relationship('ItemCategories', back_populates='items')
     itemSubcategories_: Mapped[ItemSubcategories] = relationship('ItemSubcategories', back_populates='items')
     suppliers_: Mapped[Suppliers] = relationship('Suppliers', back_populates='items')

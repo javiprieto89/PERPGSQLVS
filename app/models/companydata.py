@@ -46,9 +46,19 @@ class CompanyData(Base):
         back_populates='companyData_',
         primaryjoin='CompanyData.CompanyID == foreign(Documents.CompanyID)',
         foreign_keys='Documents.CompanyID',
+        overlaps='documents',
     )
-    userAccess: Mapped[List['UserAccess']] = relationship('UserAccess', back_populates='companyData_')
-    items: Mapped[List['Items']] = relationship('Items', back_populates='companyData_')
+    userAccess: Mapped[List['UserAccess']] = relationship(
+        'UserAccess', back_populates='companyData_', overlaps='userAccess'
+    )
+    items: Mapped[List['Items']] = relationship(
+        'Items',
+        back_populates='companyData_',
+        primaryjoin='CompanyData.CompanyID == foreign(Items.CompanyID)',
+        foreign_keys='Items.CompanyID',
+        overlaps='branches',
+    )
+
     itemstock: Mapped[List['Itemstock']] = relationship('Itemstock', back_populates='companyData_')
     orders: Mapped[List['Orders']] = relationship('Orders', back_populates='companyData_')
     stockHistory: Mapped[List['StockHistory']] = relationship('StockHistory', back_populates='companyData_')
