@@ -77,6 +77,7 @@ from app.graphql.mutations.cashboxes import CashBoxesMutations
 from app.graphql.mutations.cashboxmovements import CashBoxMovementsMutations
 from app.graphql.mutations.stockhistory import StockHistoryMutations
 from app.graphql.mutations.servicetype import ServiceTypeMutations
+from app.graphql.mutations.sysdoctypes import SysDocTypesMutations
 from app.graphql.mutations.sysdocumenttypes import SysDocumentTypesMutations
 from app.graphql.mutations.documents import DocumentsMutations
 from app.graphql.mutations.useractions import UserActionsMutations
@@ -422,6 +423,7 @@ class Mutation(
     CreditCardGroupsMutations,
     CreditCardsMutations,
     DiscountsMutations,
+    SysDocTypesMutations,
     VendorsMutations,
     BranchesMutations,
     CompanydataMutations,
