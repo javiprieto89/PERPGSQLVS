@@ -27,5 +27,15 @@ class Countries(Base):
 
     # Relaciones
     provinces: Mapped[List['Provinces']] = relationship('Provinces', back_populates='countries_')
-    clients: Mapped[List['Clients']] = relationship('Clients', back_populates='countries_')
-    suppliers: Mapped[List['Suppliers']] = relationship('Suppliers', back_populates='countries_')
+    clients: Mapped[List['Clients']] = relationship(
+        'Clients',
+        back_populates='countries_',
+        primaryjoin='Clients.CountryID == Countries.CountryID',
+        foreign_keys='Clients.CountryID',
+    )
+    suppliers: Mapped[List['Suppliers']] = relationship(
+        'Suppliers',
+        back_populates='countries_',
+        primaryjoin='Suppliers.CountryID == Countries.CountryID',
+        foreign_keys='Suppliers.CountryID',
+    )
