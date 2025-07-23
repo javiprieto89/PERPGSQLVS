@@ -47,7 +47,12 @@ class Suppliers(Base):
     PostalCode = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    countries_: Mapped['Countries'] = relationship('Countries', back_populates='suppliers')
+    countries_: Mapped['Countries'] = relationship(
+        'Countries',
+        back_populates='suppliers',
+        primaryjoin='Suppliers.CountryID == Countries.CountryID',
+        foreign_keys='Suppliers.CountryID',
+    )
     docTypes_: Mapped['SysDocTypes'] = relationship('SysDocTypes', back_populates='suppliers')
     provinces_: Mapped['Provinces'] = relationship('Provinces', back_populates='suppliers')
     accountBalances: Mapped[List['AccountBalances']] = relationship('AccountBalances', back_populates='suppliers_')
