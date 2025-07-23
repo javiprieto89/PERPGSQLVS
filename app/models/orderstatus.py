@@ -15,7 +15,7 @@ from app.db import Base
 
 
 class OrderStatus(Base):
-    __tablename__ = 'OrderStatus'
+    __tablename__ = 'sysOrderStatus'
     __table_args__ = (
         PrimaryKeyConstraint('OrderstatusID', name='PK__OrderSta__BC674F4170B3E561'),
     )

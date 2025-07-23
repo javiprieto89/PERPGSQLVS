@@ -596,15 +596,15 @@ CREATE TABLE [dbo].[Orders](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[OrderStatus]    Script Date: 9/7/2025 01:07:52 ******/
+/****** Object:  Table [dbo].[sysOrderStatus]    Script Date: 9/7/2025 01:07:52 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[OrderStatus](
+CREATE TABLE [dbo].[sysOrderStatus](
 	[OrderStatusID] [int] IDENTITY(1,1) NOT NULL,
 	[Status] [nvarchar](50) NOT NULL,
- CONSTRAINT [PK__OrderSta__BC674F4170B3E561] PRIMARY KEY CLUSTERED 
+CONSTRAINT [PK__OrderSta__BC674F4170B3E561] PRIMARY KEY CLUSTERED
 (
 	[OrderStatusID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
@@ -821,12 +821,12 @@ CREATE TABLE [dbo].[Transactions](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TransactionTypes]    Script Date: 9/7/2025 01:07:52 ******/
+/****** Object:  Table [dbo].[sysTransactionTypes]    Script Date: 9/7/2025 01:07:52 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[TransactionTypes](
+CREATE TABLE [dbo].[sysTransactionTypes](
 	[TransactTypeID] [int] IDENTITY(1,1) NOT NULL,
 	[TypeName] [nvarchar](100) NOT NULL,
  CONSTRAINT [PK_TransactionTypes] PRIMARY KEY CLUSTERED 
@@ -1144,10 +1144,10 @@ INSERT [dbo].[Orders] ([OrderID], [CompanyID], [BranchID], [Date], [ClientID], [
 INSERT [dbo].[Orders] ([OrderID], [CompanyID], [BranchID], [Date], [ClientID], [CarID], [IsService], [ServiceTypeID], [Mileage], [NextServiceMileage], [Notes], [SaleConditionID], [DiscountID], [Subtotal], [Total], [VAT], [UserID], [DocumentID], [PriceListID], [OrderStatusID], [WarehouseID]) VALUES (9, 1, 1, CAST(N'2025-07-08T00:00:00.000' AS DateTime), 9, NULL, 0, NULL, NULL, NULL, NULL, 1, 1, CAST(49454.00 AS Decimal(10, 2)), CAST(59839.34 AS Decimal(10, 2)), CAST(10385.34 AS Decimal(10, 2)), 1, 1, 2, 1, 2)
 SET IDENTITY_INSERT [dbo].[Orders] OFF
 GO
-SET IDENTITY_INSERT [dbo].[OrderStatus] ON 
+SET IDENTITY_INSERT [dbo].[sysOrderStatus] ON
 
-INSERT [dbo].[OrderStatus] ([OrderStatusID], [Status]) VALUES (1, N'Ingresado')
-SET IDENTITY_INSERT [dbo].[OrderStatus] OFF
+INSERT [dbo].[sysOrderStatus] ([OrderStatusID], [Status]) VALUES (1, N'Ingresado')
+SET IDENTITY_INSERT [dbo].[sysOrderStatus] OFF
 GO
 SET IDENTITY_INSERT [dbo].[PriceLists] ON 
 
@@ -1672,7 +1672,7 @@ GO
 ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK__Orders__UserID__05D8E0BE]
 GO
 ALTER TABLE [dbo].[Orders]  WITH CHECK ADD  CONSTRAINT [FK_Orders_OrderStatus] FOREIGN KEY([OrderStatusID])
-REFERENCES [dbo].[OrderStatus] ([OrderStatusID])
+REFERENCES [dbo].[sysOrderStatus] ([OrderStatusID])
 GO
 ALTER TABLE [dbo].[Orders] CHECK CONSTRAINT [FK_Orders_OrderStatus]
 GO
