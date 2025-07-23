@@ -1,4 +1,4 @@
-# ========== sysOrderStatus ===========
+# ========== SysOrderStatus ===========
 # app/models/sysorderstatus.py
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
@@ -14,7 +14,7 @@ from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 
 
-class sysOrderStatus(Base):  # <--- corregido nombre de clase
+class SysOrderStatus(Base):  # <--- corregido nombre de clase
     __tablename__ = 'sysOrderStatus'
     __table_args__ = (
         PrimaryKeyConstraint('OrderstatusID', name='PK__OrderSta__BC674F4170B3E561'),
