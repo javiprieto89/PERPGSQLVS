@@ -20,14 +20,14 @@ class Provinces(Base):
     __tablename__ = 'Provinces'
     __table_args__ = (
         ForeignKeyConstraint(
-            ['CountryID'], ['Countries.CountryID'],
-            name='FK__Provinces__Count__403A8C7D'
+            ["CountryID"], ["Countries.CountryID"],
+            name="FK__Provinces__Count__403A8C7D",
         ),
-        PrimaryKeyConstraint('CountryID', 'ProvinceID', name='PK_Provinces')
+        PrimaryKeyConstraint("CountryID", "ProvinceID", name="PK_Provinces"),
     )
 
+    CountryID = Column(Integer, primary_key=True)
     ProvinceID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    CountryID = Column(Integer)
     Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
     # Relaciones

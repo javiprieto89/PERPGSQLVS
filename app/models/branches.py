@@ -26,17 +26,13 @@ class Branches(Base):
     __table_args__ = (
         ForeignKeyConstraint(
             ["CompanyID"], ["CompanyData.CompanyID"],
-            name="FK_Branches_CompanyData"
+            name="FK_Branches_CompanyData",
         ),
-        PrimaryKeyConstraint(
-            "CompanyID",
-            "BranchID",
-            name="PK_Branches"
-        ),
+        PrimaryKeyConstraint("CompanyID", "BranchID", name="PK_Branches"),
     )
 
+    CompanyID = Column(Integer, primary_key=True)
     BranchID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    CompanyID = Column(Integer)
     Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
     Address = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
     Phone = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
