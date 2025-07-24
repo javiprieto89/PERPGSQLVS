@@ -53,3 +53,8 @@ class SuppliersInDB:
     PostalCode: Optional[str] = None
     CompanyID: Optional[int] = None
     BranchID: Optional[int] = None
+    CompanyName: Optional[str] = None
+    BranchName: Optional[str] = None
+    DocTypeName: Optional[str] = None
+    CountryName: Optional[str] = None
+    ProvinceName: Optional[str] = None

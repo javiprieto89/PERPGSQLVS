@@ -38,12 +38,48 @@ def _safe_get_int(obj: Any, field_name: str) -> int:
         raise ValueError(f"No se puede convertir {field_name}={value} a int: {e}")
 
 
+from sqlalchemy.orm import joinedload
+
+
 def get_orders(db: Session):
-    return db.query(Orders).all()
+    return (
+        db.query(Orders)
+        .options(
+            joinedload(Orders.companyData_),
+            joinedload(Orders.branches_),
+            joinedload(Orders.saleConditions_),
+            joinedload(Orders.sysDocumentTypes_),
+            joinedload(Orders.warehouses_),
+            joinedload(Orders.clients_),
+            joinedload(Orders.discounts_),
+            joinedload(Orders.priceLists_),
+            joinedload(Orders.orderStatus_),
+            joinedload(Orders.cars_),
+            joinedload(Orders.serviceType_),
+        )
+        .all()
+    )
 
 
 def get_orders_by_id(db: Session, orderid: int):
-    return db.query(Orders).filter(Orders.OrderID == orderid).first()
+    return (
+        db.query(Orders)
+        .options(
+            joinedload(Orders.companyData_),
+            joinedload(Orders.branches_),
+            joinedload(Orders.saleConditions_),
+            joinedload(Orders.sysDocumentTypes_),
+            joinedload(Orders.warehouses_),
+            joinedload(Orders.clients_),
+            joinedload(Orders.discounts_),
+            joinedload(Orders.priceLists_),
+            joinedload(Orders.orderStatus_),
+            joinedload(Orders.cars_),
+            joinedload(Orders.serviceType_),
+        )
+        .filter(Orders.OrderID == orderid)
+        .first()
+    )
 
 
 def create_orders(db: Session, data: OrdersCreate):

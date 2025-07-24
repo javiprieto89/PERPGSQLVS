@@ -36,3 +36,5 @@ class OrderDetailsInDB:
     UnitPrice: float
     Description: Optional[str] = None
     LastModified: Optional[datetime] = None
+    ItemName: Optional[str] = None
+    WarehouseName: Optional[str] = None
