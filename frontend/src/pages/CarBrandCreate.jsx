@@ -33,7 +33,7 @@ export default function CarBrandCreate({ onClose, onSave, carBrand: initialCarBr
         setError(null);
         try {
             let result;
-            const payload = { Name: name, CompanyID: parseInt(companyID) };
+            const payload = { Name: name, CompanyID: companyID ? parseInt(companyID) : null };
             if (isEdit) {
                 result = await carBrandOperations.updateCarBrand(initialCarBrand.CarBrandID, payload);
             } else {
@@ -60,9 +60,8 @@ export default function CarBrandCreate({ onClose, onSave, carBrand: initialCarBr
                         value={companyID}
                         onChange={e => setCompanyID(e.target.value)}
                         className="w-full border p-2 rounded"
-                        required
                     >
-                        <option value="">Seleccione</option>
+                        <option value="">Todos</option>
                         {companies.map(c => (
                             <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
                         ))}
@@ -89,7 +88,7 @@ export default function CarBrandCreate({ onClose, onSave, carBrand: initialCarBr
                     </button>
                     <button
                         type="submit"
-                        disabled={loading || !name.trim() || !companyID}
+                        disabled={loading || !name.trim()}
                         className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                     >
                         {loading ? 'Guardando...' : 'Guardar'}

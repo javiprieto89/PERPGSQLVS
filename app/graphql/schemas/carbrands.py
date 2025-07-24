@@ -5,7 +5,7 @@ from typing import Optional
 @strawberry.input
 class CarBrandsCreate:
     Name: str
-    CompanyID: int
+    CompanyID: Optional[int] = None
 
 @strawberry.input
 class CarBrandsUpdate:

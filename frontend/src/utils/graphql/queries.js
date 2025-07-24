@@ -341,6 +341,7 @@ export const QUERIES = {
             }
             carBrands: allCarbrands {
                 CarBrandID
+                CompanyID
                 Name
             }
             carModels: allCarmodels {
