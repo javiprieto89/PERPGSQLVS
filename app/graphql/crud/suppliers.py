@@ -1,4 +1,4 @@
-﻿from sqlalchemy.orm import Session
+﻿from sqlalchemy.orm import Session, joinedload
 from app.models.items import Items
 from app.models.accountbalances import AccountBalances
 from app.models.suppliers import Suppliers
@@ -6,24 +6,63 @@ from app.graphql.schemas.suppliers import SuppliersCreate, SuppliersUpdate
 
 
 def get_suppliers(db: Session):
-    return db.query(Suppliers).all()
+    return (
+        db.query(Suppliers)
+        .options(
+            joinedload(Suppliers.docTypes_),
+            joinedload(Suppliers.countries_),
+            joinedload(Suppliers.provinces_),
+            joinedload(Suppliers.branches_),
+            joinedload(Suppliers.companyData_),
+        )
+        .all()
+    )
 
 
 def get_suppliers_by_company(db: Session, company_id: int):
     """Retrieve suppliers filtered by CompanyID"""
-    return db.query(Suppliers).filter(Suppliers.CompanyID == company_id).all()
+    return (
+        db.query(Suppliers)
+        .options(
+            joinedload(Suppliers.docTypes_),
+            joinedload(Suppliers.countries_),
+            joinedload(Suppliers.provinces_),
+            joinedload(Suppliers.branches_),
+            joinedload(Suppliers.companyData_),
+        )
+        .filter(Suppliers.CompanyID == company_id)
+        .all()
+    )
 
 
 def get_suppliers_by_branch(db: Session, company_id: int, branch_id: int):
     """Retrieve suppliers filtered by CompanyID and BranchID"""
     return (
         db.query(Suppliers)
+        .options(
+            joinedload(Suppliers.docTypes_),
+            joinedload(Suppliers.countries_),
+            joinedload(Suppliers.provinces_),
+            joinedload(Suppliers.branches_),
+            joinedload(Suppliers.companyData_),
+        )
         .filter(Suppliers.CompanyID == company_id, Suppliers.BranchID == branch_id)
         .all()
     )
 
 def get_suppliers_by_id(db: Session, supplierid: int):
-    return db.query(Suppliers).filter(Suppliers.SupplierID == supplierid).first()
+    return (
+        db.query(Suppliers)
+        .options(
+            joinedload(Suppliers.docTypes_),
+            joinedload(Suppliers.countries_),
+            joinedload(Suppliers.provinces_),
+            joinedload(Suppliers.branches_),
+            joinedload(Suppliers.companyData_),
+        )
+        .filter(Suppliers.SupplierID == supplierid)
+        .first()
+    )
 
 
 def create_suppliers(db: Session, data: SuppliersCreate):

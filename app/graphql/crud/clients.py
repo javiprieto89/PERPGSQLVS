@@ -1,5 +1,5 @@
 ﻿# crud/clients.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import exists
 from app.models.clients import Clients
 from app.models.orders import Orders
@@ -7,24 +7,71 @@ from app.graphql.schemas.clients import ClientsCreate, ClientsUpdate
 
 
 def get_clients(db: Session):
-    return db.query(Clients).all()
+    return (
+        db.query(Clients)
+        .options(
+            joinedload(Clients.docTypes_),
+            joinedload(Clients.countries_),
+            joinedload(Clients.provinces_),
+            joinedload(Clients.pricelists_),
+            joinedload(Clients.vendors_),
+            joinedload(Clients.branches_),
+            joinedload(Clients.companyData_),
+        )
+        .all()
+    )
 
 
 def get_clients_by_company(db: Session, company_id: int):
     """Retrieve clients filtered by CompanyID"""
-    return db.query(Clients).filter(Clients.CompanyID == company_id).all()
+    return (
+        db.query(Clients)
+        .options(
+            joinedload(Clients.docTypes_),
+            joinedload(Clients.countries_),
+            joinedload(Clients.provinces_),
+            joinedload(Clients.pricelists_),
+            joinedload(Clients.vendors_),
+            joinedload(Clients.branches_),
+            joinedload(Clients.companyData_),
+        )
+        .filter(Clients.CompanyID == company_id)
+        .all()
+    )
 
 
 def get_clients_by_branch(db: Session, company_id: int, branch_id: int):
     """Retrieve clients filtered by CompanyID and BranchID"""
     return (
         db.query(Clients)
+        .options(
+            joinedload(Clients.docTypes_),
+            joinedload(Clients.countries_),
+            joinedload(Clients.provinces_),
+            joinedload(Clients.pricelists_),
+            joinedload(Clients.vendors_),
+            joinedload(Clients.branches_),
+            joinedload(Clients.companyData_),
+        )
         .filter(Clients.CompanyID == company_id, Clients.BranchID == branch_id)
         .all()
     )
 
 def get_clients_by_id(db: Session, clientid: int):
-    return db.query(Clients).filter(Clients.ClientID == clientid).first()
+    return (
+        db.query(Clients)
+        .options(
+            joinedload(Clients.docTypes_),
+            joinedload(Clients.countries_),
+            joinedload(Clients.provinces_),
+            joinedload(Clients.pricelists_),
+            joinedload(Clients.vendors_),
+            joinedload(Clients.branches_),
+            joinedload(Clients.companyData_),
+        )
+        .filter(Clients.ClientID == clientid)
+        .first()
+    )
 
 
 def create_clients(db: Session, data: ClientsCreate):

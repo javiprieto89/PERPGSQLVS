@@ -50,6 +50,12 @@ def get_orders(db: Session):
             joinedload(Orders.saleConditions_),
             joinedload(Orders.sysDocumentTypes_),
             joinedload(Orders.warehouses_),
+            joinedload(Orders.clients_),
+            joinedload(Orders.discounts_),
+            joinedload(Orders.priceLists_),
+            joinedload(Orders.orderStatus_),
+            joinedload(Orders.cars_),
+            joinedload(Orders.serviceType_),
         )
         .all()
     )
@@ -64,6 +70,12 @@ def get_orders_by_id(db: Session, orderid: int):
             joinedload(Orders.saleConditions_),
             joinedload(Orders.sysDocumentTypes_),
             joinedload(Orders.warehouses_),
+            joinedload(Orders.clients_),
+            joinedload(Orders.discounts_),
+            joinedload(Orders.priceLists_),
+            joinedload(Orders.orderStatus_),
+            joinedload(Orders.cars_),
+            joinedload(Orders.serviceType_),
         )
         .filter(Orders.OrderID == orderid)
         .first()

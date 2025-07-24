@@ -1,21 +1,31 @@
 ﻿# brands.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.items import Items
 from app.models.brands import Brands
 from app.graphql.schemas.brands import BrandsCreate, BrandsUpdate
 
 
 def get_brands(db: Session):
-    return db.query(Brands).all()
+    return db.query(Brands).options(joinedload(Brands.companyData_)).all()
 
 
 def get_brands_by_company(db: Session, company_id: int):
     """Retrieve brands filtered by CompanyID"""
-    return db.query(Brands).filter(Brands.CompanyID == company_id).all()
+    return (
+        db.query(Brands)
+        .options(joinedload(Brands.companyData_))
+        .filter(Brands.CompanyID == company_id)
+        .all()
+    )
 
 
 def get_brands_by_id(db: Session, brandid: int):
-    return db.query(Brands).filter(Brands.BrandID == brandid).first()
+    return (
+        db.query(Brands)
+        .options(joinedload(Brands.companyData_))
+        .filter(Brands.BrandID == brandid)
+        .first()
+    )
 
 
 def create_brands(db: Session, data: BrandsCreate):
