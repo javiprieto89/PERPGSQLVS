@@ -1,6 +1,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { clientOperations } from "../utils/graphqlClient";
+import CompanySearchModal from "../components/CompanySearchModal";
+import BranchSearchModal from "../components/BranchSearchModal";
 
 export default function ClientCreate({
     onClose,
@@ -40,6 +42,8 @@ export default function ClientCreate({
     const [loading, setLoading] = useState(false);
     const [loadingForm, setLoadingForm] = useState(true);
     const [isEdit, setIsEdit] = useState(false);
+    const [showCompanyModal, setShowCompanyModal] = useState(false);
+    const [showBranchModal, setShowBranchModal] = useState(false);
 
     // Cargar datos del formulario al montar el componente
     // Función para cargar datos del formulario (usa useCallback)
@@ -240,36 +244,55 @@ const availableProvinces = formData.provinces.filter(
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium mb-2">Compañía</label>
-                            <select
-                                name="companyID"
-                                value={client.companyID}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option value="">Seleccione</option>
-                                {formData.companies.map(c => (
-                                    <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
-                                ))}
-                            </select>
+                            <div className="flex items-center space-x-2">
+                                <select
+                                    name="companyID"
+                                    value={client.companyID}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                >
+                                    <option value="">Todos</option>
+                                    {formData.companies.map(c => (
+                                        <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
+                                    ))}
+                                </select>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowCompanyModal(true)}
+                                    className="text-gray-500 hover:text-gray-700"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-2">Sucursal</label>
-                            <select
-                                name="branchID"
-                                value={client.branchID}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                disabled={!client.companyID}
-                            >
-                                <option value="">Seleccione</option>
-                                {availableBranches.length > 0 ? (
-                                    availableBranches.map(b => (
+                            <div className="flex items-center space-x-2">
+                                <select
+                                    name="branchID"
+                                    value={client.branchID}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    disabled={!client.companyID}
+                                >
+                                    <option value="">Todos</option>
+                                    {availableBranches.length > 0 && availableBranches.map(b => (
                                         <option key={b.BranchID} value={b.BranchID}>{b.Name}</option>
-                                    ))
-                                ) : (
-                                    <option value="">No hay sucursales</option>
-                                )}
-                            </select>
+                                    ))}
+                                </select>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowBranchModal(true)}
+                                    className="text-gray-500 hover:text-gray-700"
+                                    disabled={!client.companyID}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -526,6 +549,27 @@ const availableProvinces = formData.provinces.filter(
                     </button>
                 </div>
             </form>
+            {showCompanyModal && (
+                <CompanySearchModal
+                    isOpen={true}
+                    onClose={() => setShowCompanyModal(false)}
+                    onSelect={(c) => {
+                        setClient((prev) => ({ ...prev, companyID: c.CompanyID, branchID: "" }));
+                        setShowCompanyModal(false);
+                    }}
+                />
+            )}
+            {showBranchModal && (
+                <BranchSearchModal
+                    isOpen={true}
+                    companyID={client.companyID || null}
+                    onClose={() => setShowBranchModal(false)}
+                    onSelect={(b) => {
+                        setClient((prev) => ({ ...prev, branchID: b.BranchID, companyID: prev.companyID || b.CompanyID }));
+                        setShowBranchModal(false);
+                    }}
+                />
+            )}
         </div>
     );
 }
