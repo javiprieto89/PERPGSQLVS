@@ -134,6 +134,8 @@ export const clientOperations = {
                 sysDocTypes: data.sysDocTypes || [],
                 countries: data.countries || [],
                 provinces: data.provinces || [],
+                companies: data.companies || [],
+                branches: data.branches || [],
                 priceLists: data.priceLists?.filter(pl => pl.IsActive) || [],
                 vendors: data.vendors?.filter(v => v.IsActive) || []
             };
@@ -243,7 +245,9 @@ export const supplierOperations = {
             return {
                 sysDocTypes: data.sysDocTypes || [],
                 countries: data.countries || [],
-                provinces: data.provinces || []
+                provinces: data.provinces || [],
+                companies: data.companies || [],
+                branches: data.branches || []
             };
         } catch (error) {
             console.error("Error obteniendo datos del formulario:", error);

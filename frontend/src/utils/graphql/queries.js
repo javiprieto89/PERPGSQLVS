@@ -356,6 +356,15 @@ export const QUERIES = {
                 VendorName
                 IsActive
             }
+            companies: allCompanydata {
+                CompanyID
+                Name
+            }
+            branches: allBranches {
+                BranchID
+                CompanyID
+                Name
+            }
         }
     `,
 
@@ -373,6 +382,15 @@ export const QUERIES = {
             provinces: allProvinces {
                 ProvinceID
                 CountryID
+                Name
+            }
+            companies: allCompanydata {
+                CompanyID
+                Name
+            }
+            branches: allBranches {
+                BranchID
+                CompanyID
                 Name
             }
         }
