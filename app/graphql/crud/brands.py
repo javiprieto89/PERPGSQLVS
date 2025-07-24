@@ -13,7 +13,6 @@ def get_brands_by_company(db: Session, company_id: int):
     """Retrieve brands filtered by CompanyID"""
     return (
         db.query(Brands)
-        .options(joinedload(Brands.companyData_))
         .filter(Brands.CompanyID == company_id)
         .all()
     )
@@ -22,7 +21,6 @@ def get_brands_by_company(db: Session, company_id: int):
 def get_brands_by_id(db: Session, brandid: int):
     return (
         db.query(Brands)
-        .options(joinedload(Brands.companyData_))
         .filter(Brands.BrandID == brandid)
         .first()
     )

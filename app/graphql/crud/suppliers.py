@@ -12,8 +12,6 @@ def get_suppliers(db: Session):
             joinedload(Suppliers.docTypes_),
             joinedload(Suppliers.countries_),
             joinedload(Suppliers.provinces_),
-            joinedload(Suppliers.branches_),
-            joinedload(Suppliers.companyData_),
         )
         .all()
     )
@@ -27,8 +25,6 @@ def get_suppliers_by_company(db: Session, company_id: int):
             joinedload(Suppliers.docTypes_),
             joinedload(Suppliers.countries_),
             joinedload(Suppliers.provinces_),
-            joinedload(Suppliers.branches_),
-            joinedload(Suppliers.companyData_),
         )
         .filter(Suppliers.CompanyID == company_id)
         .all()
@@ -43,8 +39,6 @@ def get_suppliers_by_branch(db: Session, company_id: int, branch_id: int):
             joinedload(Suppliers.docTypes_),
             joinedload(Suppliers.countries_),
             joinedload(Suppliers.provinces_),
-            joinedload(Suppliers.branches_),
-            joinedload(Suppliers.companyData_),
         )
         .filter(Suppliers.CompanyID == company_id, Suppliers.BranchID == branch_id)
         .all()
@@ -57,8 +51,6 @@ def get_suppliers_by_id(db: Session, supplierid: int):
             joinedload(Suppliers.docTypes_),
             joinedload(Suppliers.countries_),
             joinedload(Suppliers.provinces_),
-            joinedload(Suppliers.branches_),
-            joinedload(Suppliers.companyData_),
         )
         .filter(Suppliers.SupplierID == supplierid)
         .first()

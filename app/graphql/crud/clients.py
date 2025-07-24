@@ -15,8 +15,6 @@ def get_clients(db: Session):
             joinedload(Clients.provinces_),
             joinedload(Clients.pricelists_),
             joinedload(Clients.vendors_),
-            joinedload(Clients.branches_),
-            joinedload(Clients.companyData_),
         )
         .all()
     )
@@ -32,8 +30,6 @@ def get_clients_by_company(db: Session, company_id: int):
             joinedload(Clients.provinces_),
             joinedload(Clients.pricelists_),
             joinedload(Clients.vendors_),
-            joinedload(Clients.branches_),
-            joinedload(Clients.companyData_),
         )
         .filter(Clients.CompanyID == company_id)
         .all()
@@ -50,8 +46,6 @@ def get_clients_by_branch(db: Session, company_id: int, branch_id: int):
             joinedload(Clients.provinces_),
             joinedload(Clients.pricelists_),
             joinedload(Clients.vendors_),
-            joinedload(Clients.branches_),
-            joinedload(Clients.companyData_),
         )
         .filter(Clients.CompanyID == company_id, Clients.BranchID == branch_id)
         .all()
@@ -66,8 +60,6 @@ def get_clients_by_id(db: Session, clientid: int):
             joinedload(Clients.provinces_),
             joinedload(Clients.pricelists_),
             joinedload(Clients.vendors_),
-            joinedload(Clients.branches_),
-            joinedload(Clients.companyData_),
         )
         .filter(Clients.ClientID == clientid)
         .first()
