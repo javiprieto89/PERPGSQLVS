@@ -40,7 +40,15 @@ class UserAccess(Base):
     RoleID = Column(Integer, primary_key=True)
 
     # Relaciones
-    branches_: Mapped['Branches'] = relationship('Branches', back_populates='userAccess')
-    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='userAccess')
+    branches_: Mapped['Branches'] = relationship(
+        'Branches',
+        back_populates='userAccess',
+        overlaps='userAccess'
+    )
+    companyData_: Mapped['CompanyData'] = relationship(
+        'CompanyData',
+        back_populates='userAccess',
+        overlaps='branches_,userAccess'
+    )
     roles_: Mapped['Roles'] = relationship('Roles', back_populates='user_access')
     users_: Mapped['Users'] = relationship('Users', back_populates='userAccess')
