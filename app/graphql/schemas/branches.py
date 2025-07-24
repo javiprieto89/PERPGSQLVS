@@ -29,3 +29,4 @@ class BranchesInDB:
     Address: Optional[str] = None
     Phone: Optional[str] = None
     Logo: Optional[str] = None  # Cambiado a str (base64)
+    CompanyName: Optional[str] = None

@@ -62,6 +62,13 @@ class ClientsInDB:
     VendorID: int
     CompanyID: int | None
     BranchID: int | None
+    CompanyName: Optional[str] = None
+    BranchName: Optional[str] = None
+    DocTypeName: Optional[str] = None
+    CountryName: Optional[str] = None
+    ProvinceName: Optional[str] = None
+    PriceListName: Optional[str] = None
+    VendorName: Optional[str] = None
 
 @strawberry.type
 class ClientsWithRelations:

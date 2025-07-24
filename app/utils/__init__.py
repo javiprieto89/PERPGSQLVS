@@ -31,6 +31,23 @@ def obj_to_schema(schema_type: Type[Any], obj: Any):
                 value = obj_dict.get(alt)
             else:
                 value = getattr(obj, alt, None)
+
+        suffix_map = {
+            "Name": "Name",
+            "DocNumber": "DocNumber",
+            "LicensePlate": "LicensePlate",
+        }
+        for suffix, attr in suffix_map.items():
+            if value is None and f.name.endswith(suffix):
+                base = f.name[: -len(suffix)].lower()
+                for attr_name in dir(obj):
+                    if attr_name.lower().startswith(base):
+                        rel = getattr(obj, attr_name, None)
+                        if rel is not None and hasattr(rel, attr):
+                            value = getattr(rel, attr)
+                            if value is not None:
+                                break
+
         if isinstance(value, (bytes, bytearray)) and _expects_str(f.type):
             value = base64.b64encode(value).decode("utf-8")
 
