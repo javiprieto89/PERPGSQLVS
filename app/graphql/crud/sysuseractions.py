@@ -1,6 +1,5 @@
 # app/graphql/crud/sysuseractions.py
 from sqlalchemy.orm import Session
-from sqlalchemy import exists
 from dataclasses import asdict
 from app.models.sysuseractions import SysUserActions
 from app.models.useractivitylog import UserActivityLog
@@ -42,7 +41,12 @@ def delete(db: Session, id: int):
     db_record = get_sysuseractions_by_id(db, id)
     if db_record:
         # Verify no activity logs depend on this action
-        linked = db.query(exists().where(UserActivityLog.UserActionID == id)).scalar()
+        linked = (
+            db.query(UserActivityLog)
+            .filter(UserActivityLog.UserActionID == id)
+            .first()
+            is not None
+        )
         if linked:
             raise ValueError(
                 "Cannot delete user action because it is referenced in the activity log"

@@ -2,7 +2,6 @@
 
 from unittest import result
 from sqlalchemy.orm import Session
-from sqlalchemy import exists
 from app.models.saleconditions import SaleConditions
 from app.models.creditcards import CreditCards
 from app.models.creditcardgroups import CreditCardGroups
@@ -64,9 +63,9 @@ def update_creditcard(db: Session, id: int, data: CreditCardsUpdate):
 def delete_creditcard(db: Session, id: int):
     obj = get_creditcard_by_id(db, id)
     if obj:
-        linked_conditions = db.query(
-            exists().where(SaleConditions.CreditCardID == id)
-        ).scalar()
+        linked_conditions = db.query(SaleConditions).filter(
+            SaleConditions.CreditCardID == id
+        ).first() is not None
         if linked_conditions:
             raise ValueError(
                 "Cannot delete credit card because it is referenced by sale conditions"

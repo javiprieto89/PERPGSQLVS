@@ -1,6 +1,5 @@
 # app/graphql/crud/servicetype.py
 from sqlalchemy.orm import Session
-from sqlalchemy import exists
 from dataclasses import asdict
 from app.models.servicetype import ServiceType
 from app.models.orders import Orders
@@ -39,10 +38,13 @@ def delete(db: Session, id: int):
     db_record = get_servicetypes_by_id(db, id)
     if db_record:
         # Ensure no orders or history records depend on this service type
-        has_orders = db.query(exists().where(Orders.ServiceTypeID == id)).scalar()
-        has_history = db.query(
-            exists().where(OrderHistory.ServiceTypeID == id)
-        ).scalar()
+        has_orders = db.query(Orders).filter(Orders.ServiceTypeID == id).first() is not None
+        has_history = (
+            db.query(OrderHistory)
+            .filter(OrderHistory.ServiceTypeID == id)
+            .first()
+            is not None
+        )
         if has_orders or has_history:
             raise ValueError(
                 "Cannot delete service type because it is referenced by existing orders"

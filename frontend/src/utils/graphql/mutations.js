@@ -111,10 +111,7 @@ export const MUTATIONS = {
     // ELIMINAR PROVEEDOR
     DELETE_SUPPLIER: `
         mutation DeleteSupplier($supplierID: Int!) {
-            deleteSupplier(supplierID: $supplierID) {
-                success
-                message
-            }
+            deleteSupplier(supplierID: $supplierID)
         }
     `,
 
@@ -151,10 +148,7 @@ export const MUTATIONS = {
     `,
     DELETE_VENDOR: `
         mutation DeleteVendor($vendorID: Int!) {
-            deleteVendor(vendorID: $vendorID) {
-                success
-                message
-            }
+            deleteVendor(vendorID: $vendorID)
         }
     `,
     TOGGLE_VENDOR_STATUS: `
@@ -187,10 +181,7 @@ export const MUTATIONS = {
     `,
     DELETE_BRAND: `
         mutation DeleteBrand($brandID: Int!) {
-            deleteBrand(brandID: $brandID) {
-                success
-                message
-            }
+            deleteBrand(brandID: $brandID)
         }
     `,
 
@@ -213,10 +204,7 @@ export const MUTATIONS = {
     `,
     DELETE_ITEMCATEGORY: `
         mutation DeleteItemCategory($categoryID: Int!) {
-            deleteItemcategory(categoryID: $categoryID) {
-                success
-                message
-            }
+            deleteItemcategory(categoryID: $categoryID)
         }
     `,
 
@@ -241,10 +229,7 @@ export const MUTATIONS = {
     `,
     DELETE_ITEMSUBCATEGORY: `
         mutation DeleteItemSubcategory($subcategoryID: Int!) {
-            deleteItemsubcategory(subcategoryID: $subcategoryID) {
-                success
-                message
-            }
+            deleteItemsubcategory(subcategoryID: $subcategoryID)
         }
     `,
     // MARCAS DE AUTO
@@ -266,10 +251,7 @@ export const MUTATIONS = {
     `,
     DELETE_CARBRAND: `
         mutation DeleteCarBrand($carBrandID: Int!) {
-            deleteCarbrand(carBrandID: $carBrandID) {
-                success
-                message
-            }
+            deleteCarbrand(carBrandID: $carBrandID)
         }
     `,
 
@@ -294,10 +276,7 @@ export const MUTATIONS = {
     `,
     DELETE_CARMODEL: `
         mutation DeleteCarModel($carModelID: Int!) {
-            deleteCarmodel(carModelID: $carModelID) {
-                success
-                message
-            }
+            deleteCarmodel(carModelID: $carModelID)
         }
     `,
 
@@ -332,10 +311,7 @@ export const MUTATIONS = {
     `,
     DELETE_CAR: `
         mutation DeleteCar($carID: Int!) {
-            deleteCar(carID: $carID) {
-                success
-                message
-            }
+            deleteCar(carID: $carID)
         }
     `,
 
@@ -358,10 +334,7 @@ export const MUTATIONS = {
     `,
     DELETE_CREDITCARDGROUP: `
         mutation DeleteCreditCardGroup($id: Int!) {
-            deleteCreditcardgroup(id: $id) {
-                success
-                message
-            }
+            deleteCreditcardgroup(id: $id)
         }
     `,
 
@@ -392,10 +365,7 @@ export const MUTATIONS = {
     `,
     DELETE_CREDITCARD: `
         mutation DeleteCreditCard($id: Int!) {
-            deleteCreditcard(id: $id) {
-                success
-                message
-            }
+            deleteCreditcard(id: $id)
         }
     `,
 
@@ -531,10 +501,7 @@ export const MUTATIONS = {
     `,
     DELETE_ITEM: `
         mutation DeleteItem($itemID: Int!) {
-            deleteItem(itemID: $itemID) {
-                success
-                message
-            }
+            deleteItem(itemID: $itemID)
         }
     `,
     CREATE_PRICELIST: `
@@ -559,10 +526,7 @@ export const MUTATIONS = {
     `,
     DELETE_PRICELIST: `
         mutation DeletePricelist($pricelistID: Int!) {
-            deletePricelist(pricelistID: $pricelistID) {
-                success
-                message
-            }
+            deletePricelist(pricelistID: $pricelistID)
         }
     `,
     CREATE_PRICELIST_ITEM: `
@@ -610,10 +574,7 @@ export const MUTATIONS = {
     `,
     DELETE_WAREHOUSE: `
         mutation DeleteWarehouse($warehouseID: Int!) {
-            deleteWarehouse(warehouseID: $warehouseID) {
-                success
-                message
-            }
+            deleteWarehouse(warehouseID: $warehouseID)
         }
     `,
 
@@ -768,10 +729,7 @@ export const MUTATIONS = {
 
     DELETE_ORDER: `
         mutation DeleteOrder($orderID: Int!) {
-            deleteOrder(orderID: $orderID) {
-                success
-                message
-            }
+            deleteOrder(orderID: $orderID)
         }
     `,
 
