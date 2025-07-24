@@ -44,6 +44,7 @@ def obj_to_schema(schema_type: Type[Any], obj: Any):
                 for attr_name in dir(obj):
                     if attr_name.lower().startswith(base):
                         rel = getattr(obj, attr_name, None)
+
                         if rel is None:
                             continue
                         candidates = [

@@ -6,7 +6,7 @@ from app.graphql.schemas.brands import BrandsCreate, BrandsUpdate
 
 
 def get_brands(db: Session):
-    return db.query(Brands).all()
+    return db.query(Brands).options(joinedload(Brands.companyData_)).all()
 
 
 def get_brands_by_company(db: Session, company_id: int):
