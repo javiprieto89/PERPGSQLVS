@@ -14,8 +14,9 @@ from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 
 
-class SysOrderStatus(Base):  # <--- corregido nombre de clase
-    __tablename__ = 'sysOrderStatus'
+class SysOrderStatus(Base):  # <--- nombre de la clase
+    # Mantener el nombre de la tabla igual al que referencia Orders
+    __tablename__ = 'SysOrderStatus'
     __table_args__ = (
         PrimaryKeyConstraint('OrderStatusID', name='PK__OrderSta__BC674F4170B3E561'),
     )

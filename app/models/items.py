@@ -60,14 +60,18 @@ class Items(Base):
     OEM = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    branches_: Mapped[Branches] = relationship('Branches', back_populates='items')
+    branches_: Mapped[Branches] = relationship(
+        'Branches',
+        back_populates='items',
+        overlaps='items'
+    )
     brands_: Mapped[Brands] = relationship('Brands', back_populates='items')
     companyData_: Mapped[CompanyData] = relationship(
         'CompanyData',
         back_populates='items',
         primaryjoin='foreign(Items.CompanyID) == CompanyData.CompanyID',
         foreign_keys='Items.CompanyID',
-        overlaps='branches',
+        overlaps='branches_,items'
     )
     itemCategories_: Mapped[ItemCategories] = relationship('ItemCategories', back_populates='items')
     itemSubcategories_: Mapped[ItemSubcategories] = relationship('ItemSubcategories', back_populates='items')

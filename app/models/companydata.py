@@ -46,7 +46,7 @@ class CompanyData(Base):
         back_populates='companyData_',
         primaryjoin='CompanyData.CompanyID == foreign(Documents.CompanyID)',
         foreign_keys='Documents.CompanyID',
-        overlaps='documents',
+        overlaps='documents'
     )
     userAccess: Mapped[List['UserAccess']] = relationship(
         'UserAccess', back_populates='companyData_', overlaps='userAccess'
@@ -56,7 +56,7 @@ class CompanyData(Base):
         back_populates='companyData_',
         primaryjoin='CompanyData.CompanyID == foreign(Items.CompanyID)',
         foreign_keys='Items.CompanyID',
-        overlaps='branches',
+        overlaps='branches,items'
     )
 
     itemstock: Mapped[List['Itemstock']] = relationship(
@@ -64,10 +64,20 @@ class CompanyData(Base):
         back_populates='companyData_',
         primaryjoin='CompanyData.CompanyID == foreign(Itemstock.CompanyID)',
         foreign_keys='Itemstock.CompanyID',
-        overlaps='branches',
+        overlaps='branches,itemstock'
     )
-    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='companyData_')
-    stockHistory: Mapped[List['StockHistory']] = relationship('StockHistory', back_populates='companyData_')
-    tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship('TempStockHistoryDetails', back_populates='companyData_')
-    orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='companyData_')
-    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship('TempOrderDetails', back_populates='companyData_')
+    orders: Mapped[List['Orders']] = relationship(
+        'Orders', back_populates='companyData_', overlaps='orders'
+    )
+    stockHistory: Mapped[List['StockHistory']] = relationship(
+        'StockHistory', back_populates='companyData_', overlaps='stockHistory'
+    )
+    tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship(
+        'TempStockHistoryDetails', back_populates='companyData_', overlaps='tempStockHistoryDetails'
+    )
+    orderHistory: Mapped[List['OrderHistory']] = relationship(
+        'OrderHistory', back_populates='companyData_', overlaps='orderHistory'
+    )
+    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship(
+        'TempOrderDetails', back_populates='companyData_', overlaps='tempOrderDetails'
+    )

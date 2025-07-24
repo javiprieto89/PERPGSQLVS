@@ -48,12 +48,16 @@ class Documents(Base):
     MaxItems = Column(Integer)
 
     # Relaciones
-    branches_: Mapped['Branches'] = relationship('Branches', back_populates='documents')
+    branches_: Mapped['Branches'] = relationship(
+        'Branches',
+        back_populates='documents',
+        overlaps='documents'
+    )
     companyData_: Mapped['CompanyData'] = relationship(
         'CompanyData',
         back_populates='documents',
         primaryjoin='foreign(Documents.CompanyID) == CompanyData.CompanyID',
         foreign_keys='Documents.CompanyID',
-        overlaps='branches_',
+        overlaps='branches_,documents'
     )
     sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship('SysDocumentTypes', back_populates='documents')

@@ -55,10 +55,18 @@ class OrderHistory(Base):
     Comments = Column(Unicode(500, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    branches_: Mapped['Branches'] = relationship('Branches', back_populates='orderHistory')
+    branches_: Mapped['Branches'] = relationship(
+        'Branches',
+        back_populates='orderHistory',
+        overlaps='orderHistory'
+    )
     cars_: Mapped[Optional['Cars']] = relationship('Cars', back_populates='orderHistory')
     suppliers_: Mapped['Suppliers'] = relationship('Suppliers', back_populates='orderHistory')
-    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='orderHistory')
+    companyData_: Mapped['CompanyData'] = relationship(
+        'CompanyData',
+        back_populates='orderHistory',
+        overlaps='branches_,orderHistory'
+    )
     orders_: Mapped['Orders'] = relationship('Orders', back_populates='orderHistory')
     serviceType_: Mapped[Optional['ServiceType']] = relationship('ServiceType', back_populates='orderHistory')
     users_: Mapped['Users'] = relationship('Users', back_populates='orderHistory')

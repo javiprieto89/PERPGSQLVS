@@ -48,13 +48,17 @@ class Itemstock(Base):
     ExpiryDate = Column(Date)
 
     # Relaciones
-    branches_: Mapped[Branches] = relationship('Branches', back_populates='itemstock')
+    branches_: Mapped[Branches] = relationship(
+        'Branches',
+        back_populates='itemstock',
+        overlaps='itemstock'
+    )
     companyData_: Mapped[CompanyData] = relationship(
         'CompanyData',
         back_populates='itemstock',
         primaryjoin='foreign(Itemstock.CompanyID) == CompanyData.CompanyID',
         foreign_keys='Itemstock.CompanyID',
-        overlaps='branches',
+        overlaps='branches_,itemstock'
     )
     items_: Mapped[Items] = relationship('Items', back_populates='itemstock')
     suppliers_: Mapped[Suppliers] = relationship('Suppliers', back_populates='itemstock')

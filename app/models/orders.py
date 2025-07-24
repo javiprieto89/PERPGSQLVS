@@ -76,10 +76,18 @@ class Orders(Base):
     Notes = Column(Unicode(500, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    branches_: Mapped['Branches'] = relationship('Branches', back_populates='orders')
+    branches_: Mapped['Branches'] = relationship(
+        'Branches',
+        back_populates='orders',
+        overlaps='orders'
+    )
     cars_: Mapped[Optional['Cars']] = relationship('Cars', back_populates='orders')
     clients_: Mapped['Clients'] = relationship('Clients', back_populates='orders')
-    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='orders')
+    companyData_: Mapped['CompanyData'] = relationship(
+        'CompanyData',
+        back_populates='orders',
+        overlaps='branches_,orders'
+    )
     discounts_: Mapped['Discounts'] = relationship('Discounts', back_populates='orders')
     sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship('SysDocumentTypes', back_populates='orders')
     orderStatus_: Mapped['SysOrderStatus'] = relationship('SysOrderStatus', foreign_keys=[OrderStatusID], back_populates='orders')   # <--- corregido acá
