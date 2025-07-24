@@ -68,9 +68,13 @@ class StockHistory(Base):
         "Warehouses", back_populates="stockHistory"
     )
     branches_: Mapped["Branches"] = relationship(
-        "Branches", back_populates="stockHistory"
+        "Branches",
+        back_populates="stockHistory",
+        overlaps="stockHistory"
     )
     companyData_: Mapped["CompanyData"] = relationship(
-        "CompanyData", back_populates="stockHistory"
+        "CompanyData",
+        back_populates="stockHistory",
+        overlaps="branches_,stockHistory"
     )
     users_: Mapped["Users"] = relationship("Users", back_populates="stockHistory")
