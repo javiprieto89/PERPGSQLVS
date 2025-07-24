@@ -1,17 +1,28 @@
 ﻿# app/graphql/crud/orderdetails.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.orderdetails import OrderDetails
 from app.graphql.schemas.orderdetails import OrderDetailsCreate, OrderDetailsUpdate
 
 
 def get_orderdetails(db: Session):
-    return db.query(OrderDetails).all()
+    return (
+        db.query(OrderDetails)
+        .options(
+            joinedload(OrderDetails.items_),
+            joinedload(OrderDetails.warehouses_),
+        )
+        .all()
+    )
 
 
 def get_orderdetails_by_id(db: Session, orderdetailid: int):
     # CORRECCIÓN: El campo correcto es OrderDetailID, no orderDetailsID
     return (
         db.query(OrderDetails)
+        .options(
+            joinedload(OrderDetails.items_),
+            joinedload(OrderDetails.warehouses_),
+        )
         .filter(OrderDetails.OrderDetailID == orderdetailid)
         .first()
     )

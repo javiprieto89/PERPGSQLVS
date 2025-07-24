@@ -23,3 +23,4 @@ class BrandsInDB:
     Name: str
     IsActive: Optional[bool]
     CompanyID: Optional[int]
+    CompanyName: Optional[str] = None

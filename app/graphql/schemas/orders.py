@@ -84,3 +84,15 @@ class OrdersInDB:
     NextServiceMileage: Optional[int] = None
     Notes: Optional[str] = None
     Items: Optional[List[OrderDetailsInDB]] = None
+    CompanyName: Optional[str] = None
+    BranchName: Optional[str] = None
+    SaleConditionName: Optional[str] = None
+    DocumentName: Optional[str] = None
+    WarehouseName: Optional[str] = None
+    ClientName: Optional[str] = None
+    ClientDocNumber: Optional[str] = None
+    DiscountName: Optional[str] = None
+    PriceListName: Optional[str] = None
+    OrderStatusName: Optional[str] = None
+    ServiceTypeName: Optional[str] = None
+    CarLicensePlate: Optional[str] = None
