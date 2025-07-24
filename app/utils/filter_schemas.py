@@ -58,11 +58,13 @@ FILTER_SCHEMAS = {
     ],
     "brands": [
         {"field": "BrandID", "label": "ID de marca", "type": "number"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "Name", "label": "Nombre", "type": "text"},
         {"field": "IsActive", "label": "Activo", "type": "boolean"}
     ],
     "carbrands": [
         {"field": "CarBrandID", "label": "ID de marca de auto", "type": "number"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "Name", "label": "Nombre", "type": "text"}
     ],
     "carmodels": [
@@ -73,6 +75,7 @@ FILTER_SCHEMAS = {
     ],
     "cars": [
         {"field": "CarID", "label": "ID de auto", "type": "number"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "CarModelID", "label": "Modelo", "type": "select", "relationModel": "CarModel"},
         {"field": "CarModelName", "label": "Modelo (nombre)", "type": "text"},
         {"field": "CarBrandID", "label": "Marca", "type": "select", "relationModel": "CarBrand"},

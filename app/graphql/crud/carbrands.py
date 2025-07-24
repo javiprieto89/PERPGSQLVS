@@ -9,6 +9,11 @@ def get_carbrands(db: Session):
     return db.query(CarBrands).all()
 
 
+def get_carbrands_by_company(db: Session, company_id: int):
+    """Retrieve car brands filtered by CompanyID"""
+    return db.query(CarBrands).filter(CarBrands.CompanyID == company_id).all()
+
+
 def get_carbrands_by_id(db: Session, carbrandid: int):
     return db.query(CarBrands).filter(CarBrands.CarBrandID == carbrandid).first()
 
