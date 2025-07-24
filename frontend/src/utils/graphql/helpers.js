@@ -45,6 +45,8 @@ export const clientHelpers = {
     prepareClientData(formData) {
         return {
             DocTypeID: parseInt(formData.docTypeID) || 1,
+            CompanyID: formData.companyID ? parseInt(formData.companyID) : null,
+            BranchID: formData.branchID ? parseInt(formData.branchID) : null,
             DocNumber: formData.docNumber?.trim() || null,
             FirstName: formData.firstName?.trim() || "",
             LastName: formData.lastName?.trim() || null,
@@ -87,6 +89,8 @@ export const supplierHelpers = {
     prepareSupplierData(formData) {
         return {
             DocTypeID: formData.docTypeID ? parseInt(formData.docTypeID) : null,
+            CompanyID: formData.companyID ? parseInt(formData.companyID) : null,
+            BranchID: formData.branchID ? parseInt(formData.branchID) : null,
             DocNumber: formData.docNumber?.trim() || null,
             FirstName: formData.firstName?.trim() || "",
             LastName: formData.lastName?.trim() || null,
