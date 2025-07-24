@@ -28,6 +28,26 @@ export const clientOperations = {
         }
     },
 
+    async getClientsByCompany(companyID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CLIENTS_BY_COMPANY, { companyID: parseInt(companyID) });
+            return data.clientsByCompany || [];
+        } catch (error) {
+            console.error("Error obteniendo clientes por compañía:", error);
+            throw error;
+        }
+    },
+
+    async getClientsByBranch(companyID, branchID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CLIENTS_BY_BRANCH, { companyID: parseInt(companyID), branchID: parseInt(branchID) });
+            return data.clientsByBranch || [];
+        } catch (error) {
+            console.error("Error obteniendo clientes por sucursal:", error);
+            throw error;
+        }
+    },
+
     // Crear nuevo cliente
     async createClient(clientData) {
         try {
@@ -114,6 +134,8 @@ export const clientOperations = {
                 sysDocTypes: data.sysDocTypes || [],
                 countries: data.countries || [],
                 provinces: data.provinces || [],
+                companies: data.companies || [],
+                branches: data.branches || [],
                 priceLists: data.priceLists?.filter(pl => pl.IsActive) || [],
                 vendors: data.vendors?.filter(v => v.IsActive) || []
             };
@@ -132,6 +154,26 @@ export const supplierOperations = {
             return data.allSuppliers || [];
         } catch (error) {
             console.error("Error obteniendo proveedores:", error);
+            throw error;
+        }
+    },
+
+    async getSuppliersByCompany(companyID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_SUPPLIERS_BY_COMPANY, { companyID: parseInt(companyID) });
+            return data.suppliersByCompany || [];
+        } catch (error) {
+            console.error("Error obteniendo proveedores por compañía:", error);
+            throw error;
+        }
+    },
+
+    async getSuppliersByBranch(companyID, branchID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_SUPPLIERS_BY_BRANCH, { companyID: parseInt(companyID), branchID: parseInt(branchID) });
+            return data.suppliersByBranch || [];
+        } catch (error) {
+            console.error("Error obteniendo proveedores por sucursal:", error);
             throw error;
         }
     },
@@ -203,7 +245,9 @@ export const supplierOperations = {
             return {
                 sysDocTypes: data.sysDocTypes || [],
                 countries: data.countries || [],
-                provinces: data.provinces || []
+                provinces: data.provinces || [],
+                companies: data.companies || [],
+                branches: data.branches || []
             };
         } catch (error) {
             console.error("Error obteniendo datos del formulario:", error);
@@ -463,6 +507,16 @@ export const brandOperations = {
         }
     },
 
+    async getBrandsByCompany(companyID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_BRANDS_BY_COMPANY, { companyID: parseInt(companyID) });
+            return data.brandsByCompany || [];
+        } catch (error) {
+            console.error("Error obteniendo marcas por compañía:", error);
+            throw error;
+        }
+    },
+
     async createBrand(brandData) {
         try {
             const data = await graphqlClient.mutation(MUTATIONS.CREATE_BRAND, {
@@ -516,6 +570,16 @@ export const carBrandOperations = {
             return data.carbrandsById;
         } catch (error) {
             console.error("Error obteniendo marca de auto:", error);
+            throw error;
+        }
+    },
+
+    async getCarBrandsByCompany(companyID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CARBRANDS_BY_COMPANY, { companyID: parseInt(companyID) });
+            return data.carbrandsByCompany || [];
+        } catch (error) {
+            console.error("Error obteniendo marcas de auto por compañía:", error);
             throw error;
         }
     },
@@ -680,6 +744,16 @@ export const carOperations = {
             return data.carsById;
         } catch (error) {
             console.error("Error obteniendo auto:", error);
+            throw error;
+        }
+    },
+
+    async getCarsByCompany(companyID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CARS_BY_COMPANY, { companyID: parseInt(companyID) });
+            return data.carsByCompany || [];
+        } catch (error) {
+            console.error("Error obteniendo autos por compañía:", error);
             throw error;
         }
     },

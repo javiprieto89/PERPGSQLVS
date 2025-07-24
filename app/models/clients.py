@@ -30,10 +30,17 @@ class Clients(Base):
             name='FK_Clients_Provinces',
         ),
         ForeignKeyConstraint(['VendorID'], ['Vendors.VendorID'], name='FK_Clients_Vendors'),
+        ForeignKeyConstraint(
+            ['CompanyID', 'BranchID'],
+            ['Branches.CompanyID', 'Branches.BranchID'],
+            name='FK_Clients_Branches',
+        ),
         PrimaryKeyConstraint('ClientID', name='PK__Clients__E67E1A048D5F930D')
     )
 
     ClientID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    CompanyID = Column(Integer)
+    BranchID = Column(Integer)
     DocTypeID = Column(Integer)
     FirstName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
     IsActive = Column(Boolean, server_default=text('((1))'))

@@ -9,6 +9,19 @@ def get_suppliers(db: Session):
     return db.query(Suppliers).all()
 
 
+def get_suppliers_by_company(db: Session, company_id: int):
+    """Retrieve suppliers filtered by CompanyID"""
+    return db.query(Suppliers).filter(Suppliers.CompanyID == company_id).all()
+
+
+def get_suppliers_by_branch(db: Session, company_id: int, branch_id: int):
+    """Retrieve suppliers filtered by CompanyID and BranchID"""
+    return (
+        db.query(Suppliers)
+        .filter(Suppliers.CompanyID == company_id, Suppliers.BranchID == branch_id)
+        .all()
+    )
+
 def get_suppliers_by_id(db: Session, supplierid: int):
     return db.query(Suppliers).filter(Suppliers.SupplierID == supplierid).first()
 

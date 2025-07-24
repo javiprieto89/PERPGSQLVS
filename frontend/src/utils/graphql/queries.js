@@ -45,6 +45,52 @@ export const QUERIES = {
             }
         }
     `,
+    GET_CLIENTS_BY_COMPANY: `
+        query GetClientsByCompany($companyID: Int!) {
+            clientsByCompany(companyID: $companyID) {
+                ClientID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                City
+                PostalCode
+                IsActive
+                CountryID
+                ProvinceID
+                PriceListID
+                VendorID
+                CompanyID
+                BranchID
+            }
+        }
+    `,
+    GET_CLIENTS_BY_BRANCH: `
+        query GetClientsByBranch($companyID: Int!, $branchID: Int!) {
+            clientsByBranch(companyID: $companyID, branchID: $branchID) {
+                ClientID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                City
+                PostalCode
+                IsActive
+                CountryID
+                ProvinceID
+                PriceListID
+                VendorID
+                CompanyID
+                BranchID
+            }
+        }
+    `,
 
     // DATOS MAESTROS PARA FORMULARIOS
     GET_SYSDOCUMENT_TYPES: `
@@ -310,6 +356,15 @@ export const QUERIES = {
                 VendorName
                 IsActive
             }
+            companies: allCompanydata {
+                CompanyID
+                Name
+            }
+            branches: allBranches {
+                BranchID
+                CompanyID
+                Name
+            }
         }
     `,
 
@@ -329,6 +384,15 @@ export const QUERIES = {
                 CountryID
                 Name
             }
+            companies: allCompanydata {
+                CompanyID
+                Name
+            }
+            branches: allBranches {
+                BranchID
+                CompanyID
+                Name
+            }
         }
     `,
 
@@ -341,6 +405,7 @@ export const QUERIES = {
             }
             carBrands: allCarbrands {
                 CarBrandID
+                CompanyID
                 Name
             }
             carModels: allCarmodels {
@@ -524,6 +589,48 @@ export const QUERIES = {
             }
         }
     `,
+    GET_SUPPLIERS_BY_COMPANY: `
+        query GetSuppliersByCompany($companyID: Int!) {
+            suppliersByCompany(companyID: $companyID) {
+                SupplierID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                IsActive
+                CountryID
+                ProvinceID
+                City
+                PostalCode
+                CompanyID
+                BranchID
+            }
+        }
+    `,
+    GET_SUPPLIERS_BY_BRANCH: `
+        query GetSuppliersByBranch($companyID: Int!, $branchID: Int!) {
+            suppliersByBranch(companyID: $companyID, branchID: $branchID) {
+                SupplierID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                IsActive
+                CountryID
+                ProvinceID
+                City
+                PostalCode
+                CompanyID
+                BranchID
+            }
+        }
+    `,
 
     // MARCAS
     GET_ALL_BRANDS: `
@@ -539,6 +646,16 @@ export const QUERIES = {
     GET_BRAND_BY_ID: `
         query GetBrandById($id: Int!) {
             brandsById(id: $id) {
+                BrandID
+                CompanyID
+                Name
+                IsActive
+            }
+        }
+    `,
+    GET_BRANDS_BY_COMPANY: `
+        query GetBrandsByCompany($companyID: Int!) {
+            brandsByCompany(companyID: $companyID) {
                 BrandID
                 CompanyID
                 Name
@@ -617,6 +734,15 @@ export const QUERIES = {
             }
         }
     `,
+    GET_CARBRANDS_BY_COMPANY: `
+        query GetCarBrandsByCompany($companyID: Int!) {
+            carbrandsByCompany(companyID: $companyID) {
+                CarBrandID
+                CompanyID
+                Name
+            }
+        }
+    `,
 
     // MODELOS DE AUTO
     GET_ALL_CARMODELS: `
@@ -655,6 +781,7 @@ export const QUERIES = {
         query GetAllCars {
             allCars {
                 CarID
+                CompanyID
                 LicensePlate
                 Year
                 CarModelID
@@ -674,6 +801,27 @@ export const QUERIES = {
     GET_CAR_BY_ID: `
         query GetCarById($id: Int!) {
             carsById(id: $id) {
+                CarID
+                CompanyID
+                LicensePlate
+                Year
+                CarModelID
+                CarModelName
+                CarBrandID
+                CarBrandName
+                ClientID
+                ClientFirstName
+                ClientLastName
+                ClientName
+                LastServiceMileage
+                IsDebtor
+                DiscountID
+            }
+        }
+    `,
+    GET_CARS_BY_COMPANY: `
+        query GetCarsByCompany($companyID: Int!) {
+            carsByCompany(companyID: $companyID) {
                 CarID
                 CompanyID
                 LicensePlate

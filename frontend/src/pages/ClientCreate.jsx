@@ -9,6 +9,8 @@ export default function ClientCreate({
 }) {
     const [client, setClient] = useState({
         docTypeID: "",
+        companyID: "",
+        branchID: "",
         docNumber: "",
         firstName: "",
         lastName: "",
@@ -29,7 +31,9 @@ export default function ClientCreate({
         countries: [],
         provinces: [],
         priceLists: [],
-        vendors: []
+        vendors: [],
+        companies: [],
+        branches: [],
     });
 
     const [error, setError] = useState(null);
@@ -68,6 +72,8 @@ export default function ClientCreate({
             setIsEdit(true);
             setClient({
                 docTypeID: initialClient.DocTypeID ? parseInt(initialClient.DocTypeID) : "",
+                companyID: initialClient.CompanyID ? parseInt(initialClient.CompanyID) : "",
+                branchID: initialClient.BranchID ? parseInt(initialClient.BranchID) : "",
                 docNumber: initialClient.DocNumber || "",
                 firstName: initialClient.FirstName || "",
                 lastName: initialClient.LastName || "",
@@ -111,6 +117,10 @@ export default function ClientCreate({
                 provinceID: countryProvinces.length > 0 ? countryProvinces[0].ProvinceID : ""
             }));
         }
+
+        if (name === "companyID") {
+            setClient(prev => ({ ...prev, branchID: "" }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -151,8 +161,11 @@ export default function ClientCreate({
     };
 
     // Filtrar provincias por país seleccionado
-    const availableProvinces = formData.provinces.filter(
-        p => p.CountryID === parseInt(client.countryID)
+const availableProvinces = formData.provinces.filter(
+    p => p.CountryID === parseInt(client.countryID)
+);
+    const availableBranches = formData.branches.filter(
+        b => b.CompanyID === parseInt(client.companyID)
     );
 
     if (loadingForm) {
@@ -218,6 +231,45 @@ export default function ClientCreate({
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 maxLength={50}
                             />
+                        </div>
+                    </div>
+                </div>
+                {/* Organización */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-4">Organización</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Compañía</label>
+                            <select
+                                name="companyID"
+                                value={client.companyID}
+                                onChange={handleChange}
+                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Seleccione</option>
+                                {formData.companies.map(c => (
+                                    <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Sucursal</label>
+                            <select
+                                name="branchID"
+                                value={client.branchID}
+                                onChange={handleChange}
+                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                disabled={!client.companyID}
+                            >
+                                <option value="">Seleccione</option>
+                                {availableBranches.length > 0 ? (
+                                    availableBranches.map(b => (
+                                        <option key={b.BranchID} value={b.BranchID}>{b.Name}</option>
+                                    ))
+                                ) : (
+                                    <option value="">No hay sucursales</option>
+                                )}
+                            </select>
                         </div>
                     </div>
                 </div>

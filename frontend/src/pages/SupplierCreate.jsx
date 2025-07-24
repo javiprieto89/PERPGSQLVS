@@ -4,6 +4,8 @@ import { supplierOperations } from "../utils/graphqlClient";
 export default function SupplierCreate({ onClose, onSave, supplier: initialSupplier = null }) {
     const [supplier, setSupplier] = useState({
         docTypeID: "",
+        companyID: "",
+        branchID: "",
         docNumber: "",
         firstName: "",
         lastName: "",
@@ -21,6 +23,8 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
         sysDocTypes: [],
         countries: [],
         provinces: [],
+        companies: [],
+        branches: [],
     });
 
     const [error, setError] = useState(null);
@@ -50,6 +54,8 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
             setIsEdit(true);
             setSupplier({
                 docTypeID: initialSupplier.DocTypeID ? parseInt(initialSupplier.DocTypeID) : "",
+                companyID: initialSupplier.CompanyID ? parseInt(initialSupplier.CompanyID) : "",
+                branchID: initialSupplier.BranchID ? parseInt(initialSupplier.BranchID) : "",
                 docNumber: initialSupplier.DocNumber || "",
                 firstName: initialSupplier.FirstName || "",
                 lastName: initialSupplier.LastName || "",
@@ -85,6 +91,12 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
                 provinceID: "",
             }));
         }
+        if (name === "companyID") {
+            setSupplier(prev => ({
+                ...prev,
+                branchID: "",
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -109,6 +121,7 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
     };
 
     const availableProvinces = formData.provinces.filter(p => p.CountryID === supplier.countryID);
+    const availableBranches = formData.branches.filter(b => b.CompanyID === parseInt(supplier.companyID));
 
     if (loadingForm) {
         return (
@@ -164,6 +177,44 @@ export default function SupplierCreate({ onClose, onSave, supplier: initialSuppl
                                 className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 maxLength={50}
                             />
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold mb-4">Organización</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Compañía</label>
+                            <select
+                                name="companyID"
+                                value={supplier.companyID}
+                                onChange={handleChange}
+                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                                <option value="">Seleccione</option>
+                                {formData.companies.map(c => (
+                                    <option key={c.CompanyID} value={c.CompanyID}>{c.Name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2">Sucursal</label>
+                            <select
+                                name="branchID"
+                                value={supplier.branchID}
+                                onChange={handleChange}
+                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                disabled={!supplier.companyID}
+                            >
+                                <option value="">Seleccione</option>
+                                {availableBranches.length > 0 ? (
+                                    availableBranches.map(b => (
+                                        <option key={b.BranchID} value={b.BranchID}>{b.Name}</option>
+                                    ))
+                                ) : (
+                                    <option value="">No hay sucursales</option>
+                                )}
+                            </select>
                         </div>
                     </div>
                 </div>
