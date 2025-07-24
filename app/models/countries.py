@@ -32,6 +32,7 @@ class Countries(Base):
         back_populates='countries_',
         primaryjoin='Clients.CountryID == Countries.CountryID',
         foreign_keys='Clients.CountryID',
+        overlaps='provinces_'
     )
     suppliers: Mapped[List['Suppliers']] = relationship(
         'Suppliers',
