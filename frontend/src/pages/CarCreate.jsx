@@ -71,7 +71,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
 
     // Filtrar marcas por compañía seleccionada
     const availableBrands = formData.carBrands.filter(b =>
-        !car.companyID || b.CompanyID === parseInt(car.companyID)
+        !car.companyID || b.CompanyID == null || b.CompanyID === parseInt(car.companyID)
     );
     // Actualizar modelos disponibles cuando cambia la marca
     const availableModels = formData.carModels.filter(
