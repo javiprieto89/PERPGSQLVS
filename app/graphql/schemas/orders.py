@@ -96,3 +96,4 @@ class OrdersInDB:
     OrderStatusName: Optional[str] = None
     ServiceTypeName: Optional[str] = None
     CarLicensePlate: Optional[str] = None
+
