@@ -2,7 +2,6 @@
 from sqlalchemy.orm import Session
 from app.models.cars import Cars
 from app.models.carmodels import CarModels
-from sqlalchemy import exists
 from app.models.orders import Orders
 from app.models.orderhistory import OrderHistory
 from app.models.carbrands import CarBrands
@@ -116,8 +115,8 @@ def update_cars(db: Session, carid: int, data: CarsUpdate):
 def delete_cars(db: Session, carid: int):
     obj = get_cars_by_id(db, carid)
     if obj:
-        linked_orders = db.query(exists().where(Orders.CarID == carid)).scalar()
-        linked_history = db.query(exists().where(OrderHistory.CarID == carid)).scalar()
+        linked_orders = db.query(Orders).filter(Orders.CarID == carid).first() is not None
+        linked_history = db.query(OrderHistory).filter(OrderHistory.CarID == carid).first() is not None
         if linked_orders or linked_history:
             raise ValueError("Cannot delete car because it is referenced by existing orders")
         db.delete(obj)

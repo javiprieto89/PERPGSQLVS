@@ -1,6 +1,5 @@
 # graphql/crud/saleconditions.py
 from sqlalchemy.orm import Session
-from sqlalchemy import exists
 from app.models.saleconditions import SaleConditions
 from app.models.orders import Orders
 from app.graphql.schemas.saleconditions import (
@@ -46,9 +45,12 @@ def delete_saleconditions(db: Session, saleconditionid: int):
     obj = get_saleconditions_by_id(db, saleconditionid)
     if obj:
         # Prevent deletion if there are orders depending on this sale condition
-        linked = db.query(
-            exists().where(Orders.SaleConditionID == saleconditionid)
-        ).scalar()
+        linked = (
+            db.query(Orders)
+            .filter(Orders.SaleConditionID == saleconditionid)
+            .first()
+            is not None
+        )
         if linked:
             raise ValueError(
                 "Cannot delete sale condition because there are orders referencing it"

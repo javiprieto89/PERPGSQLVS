@@ -1,6 +1,5 @@
 ﻿# carbrands.py
 from sqlalchemy.orm import Session
-from sqlalchemy import exists
 from app.models.carmodels import CarModels
 from app.models.carbrands import CarBrands
 from app.graphql.schemas.carbrands import CarBrandsCreate, CarBrandsUpdate
@@ -36,9 +35,12 @@ def update_carbrands(db: Session, carbrandid: int, data: CarBrandsUpdate):
 def delete_carbrands(db: Session, carbrandid: int):
     obj = get_carbrands_by_id(db, carbrandid)
     if obj:
-        linked_models = db.query(
-            exists().where(CarModels.CarBrandID == carbrandid)
-        ).scalar()
+        linked_models = (
+            db.query(CarModels)
+            .filter(CarModels.CarBrandID == carbrandid)
+            .first()
+            is not None
+        )
         if linked_models:
             raise ValueError(
                 "Cannot delete car brand because it is referenced by car models"

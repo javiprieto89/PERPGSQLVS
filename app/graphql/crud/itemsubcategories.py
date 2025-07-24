@@ -1,7 +1,6 @@
 # app/graphql/crud/itemsubcategories.py
 from sqlalchemy.orm import Session
 from dataclasses import asdict
-from sqlalchemy import exists
 from app.models.items import Items
 
 from app.models.itemsubcategories import ItemSubcategories
@@ -69,9 +68,12 @@ def update_itemsubcategories(db: Session, subcategoryid: int, data: ItemSubcateg
 def delete_itemsubcategories(db: Session, subcategoryid: int):
     obj = get_itemsubcategories_by_id(db, subcategoryid)
     if obj:
-        linked_items = db.query(
-            exists().where(Items.ItemSubcategoryID == subcategoryid)
-        ).scalar()
+        linked_items = (
+            db.query(Items)
+            .filter(Items.ItemSubcategoryID == subcategoryid)
+            .first()
+            is not None
+        )
         if linked_items:
             raise ValueError(
                 "Cannot delete item subcategory because it is referenced by other records"

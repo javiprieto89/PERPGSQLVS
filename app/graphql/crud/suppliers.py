@@ -1,5 +1,4 @@
 ﻿from sqlalchemy.orm import Session
-from sqlalchemy import exists
 from app.models.items import Items
 from app.models.accountbalances import AccountBalances
 from app.models.suppliers import Suppliers
@@ -36,10 +35,10 @@ def update_suppliers(db: Session, supplierid: int, data: SuppliersUpdate):
 def delete_suppliers(db: Session, supplierid: int):
     obj = get_suppliers_by_id(db, supplierid)
     if obj:
-        linked_items = db.query(exists().where(Items.SupplierID == supplierid)).scalar()
-        linked_accounts = db.query(
-            exists().where(AccountBalances.SupplierID == supplierid)
-        ).scalar()
+        linked_items = db.query(Items).filter(Items.SupplierID == supplierid).first() is not None
+        linked_accounts = db.query(AccountBalances).filter(
+            AccountBalances.SupplierID == supplierid
+        ).first() is not None
         if linked_items or linked_accounts:
             raise ValueError(
                 "Cannot delete supplier because it is referenced by other records"

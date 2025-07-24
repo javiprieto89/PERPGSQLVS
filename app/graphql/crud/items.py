@@ -1,6 +1,5 @@
 # app/graphql/crud/items.py
 from sqlalchemy.orm import Session
-from sqlalchemy import exists
 from app.models.pricelistitems import PriceListItems
 from app.models.orderdetails import OrderDetails
 from app.models.items import Items
@@ -69,12 +68,18 @@ def update_items(db: Session, item_id: int, item: ItemsUpdate):
 def delete_items(db: Session, item_id: int):
     db_item = get_items_by_id(db, item_id)
     if db_item:
-        linked_price_list = db.query(
-            exists().where(PriceListItems.ItemID == item_id)
-        ).scalar()
-        linked_order_detail = db.query(
-            exists().where(OrderDetails.ItemID == item_id)
-        ).scalar()
+        linked_price_list = (
+            db.query(PriceListItems)
+            .filter(PriceListItems.ItemID == item_id)
+            .first()
+            is not None
+        )
+        linked_order_detail = (
+            db.query(OrderDetails)
+            .filter(OrderDetails.ItemID == item_id)
+            .first()
+            is not None
+        )
         if linked_price_list or linked_order_detail:
             raise ValueError(
                 "Cannot delete item because it is referenced by existing records"

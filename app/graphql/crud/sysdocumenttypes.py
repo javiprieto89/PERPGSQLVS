@@ -1,6 +1,5 @@
 ﻿# app/graphql/crud/sysdocumenttypes.py
 from sqlalchemy.orm import Session
-from sqlalchemy import exists
 from app.models.sysdocumenttypes import SysDocumentTypes
 from app.models.orders import Orders
 from app.graphql.schemas.sysdocumenttypes import (
@@ -40,7 +39,7 @@ def delete_sysdocumenttypes(db: Session, id: int):
     obj = get_sysdocumenttypes_by_id(db, id)
     if obj:
         # Prevent deletion if there are orders linked to this document type
-        linked = db.query(exists().where(Orders.DocumentID == id)).scalar()
+        linked = db.query(Orders).filter(Orders.DocumentID == id).first() is not None
         if linked:
             raise ValueError(
                 "Cannot delete document type because there are orders referencing it"
