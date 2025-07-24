@@ -6,6 +6,8 @@ from typing import Optional
 class ClientsCreate:
     """Schema para crear un nuevo cliente"""
     DocTypeID: int
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
     DocNumber: Optional[str] = None
     FirstName: str
     LastName: Optional[str] = None
@@ -24,6 +26,8 @@ class ClientsCreate:
 class ClientsUpdate:
     """Schema para actualizar un cliente existente"""
     DocTypeID: Optional[int] = None
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
     DocNumber: Optional[str] = None
     FirstName: Optional[str] = None
     LastName: Optional[str] = None
@@ -56,6 +60,8 @@ class ClientsInDB:
     ProvinceID: int
     PriceListID: int
     VendorID: int
+    CompanyID: int | None
+    BranchID: int | None
 
 @strawberry.type
 class ClientsWithRelations:
@@ -75,6 +81,8 @@ class ClientsWithRelations:
     ProvinceID: int
     PriceListID: int
     VendorID: int
+    CompanyID: int | None
+    BranchID: int | None
     
     # Campos calculados
     FullName: Optional[str] = None

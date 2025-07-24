@@ -28,6 +28,26 @@ export const clientOperations = {
         }
     },
 
+    async getClientsByCompany(companyID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CLIENTS_BY_COMPANY, { companyID: parseInt(companyID) });
+            return data.clientsByCompany || [];
+        } catch (error) {
+            console.error("Error obteniendo clientes por compañía:", error);
+            throw error;
+        }
+    },
+
+    async getClientsByBranch(companyID, branchID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CLIENTS_BY_BRANCH, { companyID: parseInt(companyID), branchID: parseInt(branchID) });
+            return data.clientsByBranch || [];
+        } catch (error) {
+            console.error("Error obteniendo clientes por sucursal:", error);
+            throw error;
+        }
+    },
+
     // Crear nuevo cliente
     async createClient(clientData) {
         try {
@@ -132,6 +152,26 @@ export const supplierOperations = {
             return data.allSuppliers || [];
         } catch (error) {
             console.error("Error obteniendo proveedores:", error);
+            throw error;
+        }
+    },
+
+    async getSuppliersByCompany(companyID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_SUPPLIERS_BY_COMPANY, { companyID: parseInt(companyID) });
+            return data.suppliersByCompany || [];
+        } catch (error) {
+            console.error("Error obteniendo proveedores por compañía:", error);
+            throw error;
+        }
+    },
+
+    async getSuppliersByBranch(companyID, branchID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_SUPPLIERS_BY_BRANCH, { companyID: parseInt(companyID), branchID: parseInt(branchID) });
+            return data.suppliersByBranch || [];
+        } catch (error) {
+            console.error("Error obteniendo proveedores por sucursal:", error);
             throw error;
         }
     },

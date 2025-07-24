@@ -45,6 +45,52 @@ export const QUERIES = {
             }
         }
     `,
+    GET_CLIENTS_BY_COMPANY: `
+        query GetClientsByCompany($companyID: Int!) {
+            clientsByCompany(companyID: $companyID) {
+                ClientID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                City
+                PostalCode
+                IsActive
+                CountryID
+                ProvinceID
+                PriceListID
+                VendorID
+                CompanyID
+                BranchID
+            }
+        }
+    `,
+    GET_CLIENTS_BY_BRANCH: `
+        query GetClientsByBranch($companyID: Int!, $branchID: Int!) {
+            clientsByBranch(companyID: $companyID, branchID: $branchID) {
+                ClientID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                City
+                PostalCode
+                IsActive
+                CountryID
+                ProvinceID
+                PriceListID
+                VendorID
+                CompanyID
+                BranchID
+            }
+        }
+    `,
 
     // DATOS MAESTROS PARA FORMULARIOS
     GET_SYSDOCUMENT_TYPES: `
@@ -522,6 +568,48 @@ export const QUERIES = {
                 ProvinceID
                 City
                 PostalCode
+            }
+        }
+    `,
+    GET_SUPPLIERS_BY_COMPANY: `
+        query GetSuppliersByCompany($companyID: Int!) {
+            suppliersByCompany(companyID: $companyID) {
+                SupplierID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                IsActive
+                CountryID
+                ProvinceID
+                City
+                PostalCode
+                CompanyID
+                BranchID
+            }
+        }
+    `,
+    GET_SUPPLIERS_BY_BRANCH: `
+        query GetSuppliersByBranch($companyID: Int!, $branchID: Int!) {
+            suppliersByBranch(companyID: $companyID, branchID: $branchID) {
+                SupplierID
+                DocTypeID
+                DocNumber
+                FirstName
+                LastName
+                Phone
+                Email
+                Address
+                IsActive
+                CountryID
+                ProvinceID
+                City
+                PostalCode
+                CompanyID
+                BranchID
             }
         }
     `,
