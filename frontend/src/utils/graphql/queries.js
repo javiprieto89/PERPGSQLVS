@@ -341,6 +341,7 @@ export const QUERIES = {
             }
             carBrands: allCarbrands {
                 CarBrandID
+                CompanyID
                 Name
             }
             carModels: allCarmodels {
@@ -611,6 +612,15 @@ export const QUERIES = {
     GET_CARBRAND_BY_ID: `
         query GetCarBrandById($id: Int!) {
             carbrandsById(id: $id) {
+                CarBrandID
+                CompanyID
+                Name
+            }
+        }
+    `,
+    GET_CARBRANDS_BY_COMPANY: `
+        query GetCarBrandsByCompany($companyID: Int!) {
+            carbrandsByCompany(companyID: $companyID) {
                 CarBrandID
                 CompanyID
                 Name
