@@ -10,6 +10,19 @@ def get_clients(db: Session):
     return db.query(Clients).all()
 
 
+def get_clients_by_company(db: Session, company_id: int):
+    """Retrieve clients filtered by CompanyID"""
+    return db.query(Clients).filter(Clients.CompanyID == company_id).all()
+
+
+def get_clients_by_branch(db: Session, company_id: int, branch_id: int):
+    """Retrieve clients filtered by CompanyID and BranchID"""
+    return (
+        db.query(Clients)
+        .filter(Clients.CompanyID == company_id, Clients.BranchID == branch_id)
+        .all()
+    )
+
 def get_clients_by_id(db: Session, clientid: int):
     return db.query(Clients).filter(Clients.ClientID == clientid).first()
 

@@ -5,6 +5,8 @@ FILTER_SCHEMAS = {
         {"field": "ClientID", "label": "ID de cliente", "type": "number"},
         {"field": "DocTypeID", "label": "Tipo de documento", "type": "select", "relationModel": "DocType"},
         {"field": "DocNumber", "label": "Número de documento", "type": "text"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
+        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch", "dependsOn": "CompanyID"},
         {"field": "FirstName", "label": "Nombre", "type": "text"},
         {"field": "LastName", "label": "Apellido", "type": "text"},
         {"field": "Phone", "label": "Teléfono", "type": "text"},
@@ -22,6 +24,8 @@ FILTER_SCHEMAS = {
         {"field": "SupplierID", "label": "ID de proveedor", "type": "number"},
         {"field": "DocTypeID", "label": "Tipo de documento", "type": "select", "relationModel": "DocType"},
         {"field": "DocNumber", "label": "Número de documento", "type": "text"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
+        {"field": "BranchID", "label": "Sucursal", "type": "select", "relationModel": "Branch", "dependsOn": "CompanyID"},
         {"field": "FirstName", "label": "Nombre", "type": "text"},
         {"field": "LastName", "label": "Apellido", "type": "text"},
         {"field": "Phone", "label": "Teléfono", "type": "text"},
@@ -58,11 +62,13 @@ FILTER_SCHEMAS = {
     ],
     "brands": [
         {"field": "BrandID", "label": "ID de marca", "type": "number"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "Name", "label": "Nombre", "type": "text"},
         {"field": "IsActive", "label": "Activo", "type": "boolean"}
     ],
     "carbrands": [
         {"field": "CarBrandID", "label": "ID de marca de auto", "type": "number"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "Name", "label": "Nombre", "type": "text"}
     ],
     "carmodels": [
@@ -73,6 +79,7 @@ FILTER_SCHEMAS = {
     ],
     "cars": [
         {"field": "CarID", "label": "ID de auto", "type": "number"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "CarModelID", "label": "Modelo", "type": "select", "relationModel": "CarModel"},
         {"field": "CarModelName", "label": "Modelo (nombre)", "type": "text"},
         {"field": "CarBrandID", "label": "Marca", "type": "select", "relationModel": "CarBrand"},

@@ -29,10 +29,17 @@ class Suppliers(Base):
             ['Provinces.CountryID', 'Provinces.ProvinceID'],
             name='FK__Suppliers__Provi__44FF419A',
         ),
+        ForeignKeyConstraint(
+            ['CompanyID', 'BranchID'],
+            ['Branches.CompanyID', 'Branches.BranchID'],
+            name='FK_Suppliers_Branches',
+        ),
         PrimaryKeyConstraint('SupplierID', name='PK__Supplier__4BE6669487E21347')
     )
 
     SupplierID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    CompanyID = Column(Integer)
+    BranchID = Column(Integer)
     DocTypeID = Column(Integer)
     FirstName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
     IsActive = Column(Boolean, server_default=text('((1))'))
