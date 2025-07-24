@@ -37,6 +37,37 @@ def get_cars(db: Session):
     return cars
 
 
+def get_cars_by_company(db: Session, company_id: int):
+    """Retrieve cars filtered by CompanyID"""
+    results = (
+        db.query(
+            Cars,
+            CarModels.Model.label("CarModelName"),
+            CarBrands.Name.label("CarBrandName"),
+            CarBrands.CarBrandID.label("CarBrandID"),
+            Clients.FirstName.label("ClientFirstName"),
+            Clients.LastName.label("ClientLastName"),
+        )
+        .join(CarModels, Cars.CarModelID == CarModels.CarModelID)
+        .join(CarBrands, CarModels.CarBrandID == CarBrands.CarBrandID)
+        .join(Clients, Cars.ClientID == Clients.ClientID)
+        .filter(Cars.CompanyID == company_id)
+        .all()
+    )
+
+    cars = []
+    for c, model_name, brand_name, brand_id, client_first_name, client_last_name in results:
+        setattr(c, "CarModelName", model_name)
+        setattr(c, "CarBrandName", brand_name)
+        setattr(c, "CarBrandID", brand_id)
+        setattr(c, "ClientFirstName", client_first_name)
+        setattr(c, "ClientLastName", client_last_name)
+        client_full_name = f"{client_first_name or ''} {client_last_name or ''}".strip()
+        setattr(c, "ClientName", client_full_name if client_full_name else "Sin nombre")
+        cars.append(c)
+    return cars
+
+
 def get_cars_by_id(db: Session, carid: int):
     result = db.query(
         Cars,

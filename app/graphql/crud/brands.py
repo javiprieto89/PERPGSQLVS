@@ -9,6 +9,11 @@ def get_brands(db: Session):
     return db.query(Brands).all()
 
 
+def get_brands_by_company(db: Session, company_id: int):
+    """Retrieve brands filtered by CompanyID"""
+    return db.query(Brands).filter(Brands.CompanyID == company_id).all()
+
+
 def get_brands_by_id(db: Session, brandid: int):
     return db.query(Brands).filter(Brands.BrandID == brandid).first()
 

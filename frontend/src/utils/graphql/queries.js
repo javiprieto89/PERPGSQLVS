@@ -547,6 +547,16 @@ export const QUERIES = {
             }
         }
     `,
+    GET_BRANDS_BY_COMPANY: `
+        query GetBrandsByCompany($companyID: Int!) {
+            brandsByCompany(companyID: $companyID) {
+                BrandID
+                CompanyID
+                Name
+                IsActive
+            }
+        }
+    `,
 
     // CATEGORÍAS DE ÍTEM
     GET_ALL_ITEMCATEGORIES: `
@@ -665,6 +675,7 @@ export const QUERIES = {
         query GetAllCars {
             allCars {
                 CarID
+                CompanyID
                 LicensePlate
                 Year
                 CarModelID
@@ -684,6 +695,27 @@ export const QUERIES = {
     GET_CAR_BY_ID: `
         query GetCarById($id: Int!) {
             carsById(id: $id) {
+                CarID
+                CompanyID
+                LicensePlate
+                Year
+                CarModelID
+                CarModelName
+                CarBrandID
+                CarBrandName
+                ClientID
+                ClientFirstName
+                ClientLastName
+                ClientName
+                LastServiceMileage
+                IsDebtor
+                DiscountID
+            }
+        }
+    `,
+    GET_CARS_BY_COMPANY: `
+        query GetCarsByCompany($companyID: Int!) {
+            carsByCompany(companyID: $companyID) {
                 CarID
                 CompanyID
                 LicensePlate
