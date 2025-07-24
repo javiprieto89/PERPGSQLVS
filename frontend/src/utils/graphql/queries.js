@@ -618,6 +618,15 @@ export const QUERIES = {
             }
         }
     `,
+    GET_CARBRANDS_BY_COMPANY: `
+        query GetCarBrandsByCompany($companyID: Int!) {
+            carbrandsByCompany(companyID: $companyID) {
+                CarBrandID
+                CompanyID
+                Name
+            }
+        }
+    `,
 
     // MODELOS DE AUTO
     GET_ALL_CARMODELS: `

@@ -63,6 +63,7 @@ FILTER_SCHEMAS = {
     ],
     "carbrands": [
         {"field": "CarBrandID", "label": "ID de marca de auto", "type": "number"},
+        {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
         {"field": "Name", "label": "Nombre", "type": "text"}
     ],
     "carmodels": [

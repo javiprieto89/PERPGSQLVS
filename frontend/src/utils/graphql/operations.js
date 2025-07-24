@@ -520,6 +520,16 @@ export const carBrandOperations = {
         }
     },
 
+    async getCarBrandsByCompany(companyID) {
+        try {
+            const data = await graphqlClient.query(QUERIES.GET_CARBRANDS_BY_COMPANY, { companyID: parseInt(companyID) });
+            return data.carbrandsByCompany || [];
+        } catch (error) {
+            console.error("Error obteniendo marcas de auto por compañía:", error);
+            throw error;
+        }
+    },
+
     async createCarBrand(carBrandData) {
         try {
             const data = await graphqlClient.mutation(MUTATIONS.CREATE_CARBRAND, {
