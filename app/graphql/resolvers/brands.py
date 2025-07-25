@@ -19,16 +19,7 @@ class BrandsQuery:
         db = next(db_gen)
         try:
             items = get_brands(db)
-            result = []
-            for item in items:
-                data = {
-                    "BrandID": int(item.__dict__["BrandID"]),
-                    "Name": str(item.__dict__["Name"]),
-                    "IsActive": bool(item.__dict__.get("IsActive", True)),
-                    "CompanyID": item.__dict__.get("CompanyID"),
-                }
-                result.append(BrandsInDB(**data))
-            return result
+            return list_to_schema(BrandsInDB, items)
         finally:
             db_gen.close()
 
@@ -38,15 +29,7 @@ class BrandsQuery:
         db = next(db_gen)
         try:
             item = get_brands_by_id(db, id)
-            if item:
-                data = {
-                    "BrandID": int(item.__dict__["BrandID"]),
-                    "Name": str(item.__dict__["Name"]),
-                    "IsActive": bool(item.__dict__.get("IsActive", True)),
-                    "CompanyID": item.__dict__.get("CompanyID"),
-                }
-                return BrandsInDB(**data)
-            return None
+            return obj_to_schema(BrandsInDB, item) if item else None
         finally:
             db_gen.close()
 
@@ -57,16 +40,7 @@ class BrandsQuery:
         db = next(db_gen)
         try:
             items = get_brands_by_company(db, companyID)
-            result = []
-            for item in items:
-                data = {
-                    "BrandID": int(item.BrandID),
-                    "Name": str(item.Name),
-                    "IsActive": bool(item.IsActive) if item.IsActive is not None else True,
-                    "CompanyID": item.CompanyID,
-                }
-                result.append(BrandsInDB(**data))
-            return result
+            return list_to_schema(BrandsInDB, items)
         finally:
             db_gen.close()
 

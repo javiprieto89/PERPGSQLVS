@@ -1,31 +1,50 @@
 ﻿# app/graphql/crud/orderdetails.py
 from sqlalchemy.orm import Session, joinedload
 from app.models.orderdetails import OrderDetails
+from app.models.items import Items
+from app.models.warehouses import Warehouses
 from app.graphql.schemas.orderdetails import OrderDetailsCreate, OrderDetailsUpdate
 
 
 def get_orderdetails(db: Session):
-    return (
-        db.query(OrderDetails)
-        .options(
-            joinedload(OrderDetails.items_),
-            joinedload(OrderDetails.warehouses_),
+    results = (
+        db.query(
+            OrderDetails,
+            Items.Description.label("ItemName"),
+            Warehouses.Name.label("WarehouseName"),
         )
+        .join(Items, OrderDetails.ItemID == Items.ItemID)
+        .join(Warehouses, OrderDetails.WarehouseID == Warehouses.WarehouseID)
         .all()
     )
 
+    orderdetails = []
+    for od, item_name, warehouse_name in results:
+        setattr(od, "ItemName", item_name)
+        setattr(od, "WarehouseName", warehouse_name)
+        orderdetails.append(od)
+    return orderdetails
+
 
 def get_orderdetails_by_id(db: Session, orderdetailid: int):
-    # CORRECCIÓN: El campo correcto es OrderDetailID, no orderDetailsID
-    return (
-        db.query(OrderDetails)
-        .options(
-            joinedload(OrderDetails.items_),
-            joinedload(OrderDetails.warehouses_),
+    result = (
+        db.query(
+            OrderDetails,
+            Items.Description.label("ItemName"),
+            Warehouses.Name.label("WarehouseName"),
         )
+        .join(Items, OrderDetails.ItemID == Items.ItemID)
+        .join(Warehouses, OrderDetails.WarehouseID == Warehouses.WarehouseID)
         .filter(OrderDetails.OrderDetailID == orderdetailid)
         .first()
     )
+
+    if result:
+        od, item_name, warehouse_name = result
+        setattr(od, "ItemName", item_name)
+        setattr(od, "WarehouseName", warehouse_name)
+        return od
+    return None
 
 
 def create_orderdetails(db: Session, data: OrderDetailsCreate):
