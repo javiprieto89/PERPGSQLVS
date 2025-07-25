@@ -51,7 +51,13 @@ def obj_to_schema(schema_type: Any, obj: Any):
                             a
                             for a in dir(rel)
                             if not a.startswith("_")
-                            and a.lower().endswith(suffix.lower())
+                            and (
+                                a.lower().endswith(suffix.lower())
+                                or (
+                                    suffix == "Name"
+                                    and a.lower().endswith("description")
+                                )
+                            )
                         ]
                         for cand in candidates:
                             cand_value = getattr(rel, cand, None)
