@@ -1,5 +1,5 @@
 from dataclasses import fields
-from typing import Any, Type, List, Sequence, get_origin, get_args, Union
+from typing import Any, List, Sequence, get_origin, get_args, Union
 import dataclasses
 import base64
 
@@ -17,7 +17,7 @@ def _expects_str(field_type: Any) -> bool:
     return False
 
 
-def obj_to_schema(schema_type: Type[Any], obj: Any):
+def obj_to_schema(schema_type: Any, obj: Any):
     data = {}
     obj_dict = getattr(obj, "__dict__", {})
     for f in fields(schema_type):
@@ -51,7 +51,13 @@ def obj_to_schema(schema_type: Type[Any], obj: Any):
                             a
                             for a in dir(rel)
                             if not a.startswith("_")
-                            and a.lower().endswith(suffix.lower())
+                            and (
+                                a.lower().endswith(suffix.lower())
+                                or (
+                                    suffix == "Name"
+                                    and a.lower().endswith("description")
+                                )
+                            )
                         ]
                         for cand in candidates:
                             cand_value = getattr(rel, cand, None)
@@ -82,5 +88,5 @@ def obj_to_schema(schema_type: Type[Any], obj: Any):
     return schema_type(**data)
 
 
-def list_to_schema(schema_type: Type[Any], objects: Sequence[Any]) -> List[Any]:
+def list_to_schema(schema_type: Any, objects: Sequence[Any]) -> List[Any]:
     return [obj_to_schema(schema_type, obj) for obj in objects if obj is not None]
