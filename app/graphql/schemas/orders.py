@@ -1,6 +1,7 @@
 ﻿# app/graphql/schemas/orders.py
 import strawberry
 from typing import List, Optional
+from app.graphql.schemas.companydata import CompanyDataInDB
 from datetime import datetime
 from dataclasses import field
 from app.graphql.schemas.orderdetails import (
@@ -84,7 +85,7 @@ class OrdersInDB:
     NextServiceMileage: Optional[int] = None
     Notes: Optional[str] = None
     Items: Optional[List[OrderDetailsInDB]] = None
-    CompanyName: Optional[str] = None
+    CompanyData: Optional[CompanyDataInDB] = None
     BranchName: Optional[str] = None
     SaleConditionName: Optional[str] = None
     DocumentName: Optional[str] = None

@@ -1,6 +1,7 @@
 # app/graphql/schemas/suppliers.py
 import strawberry
 from typing import Optional
+from app.graphql.schemas.companydata import CompanyDataInDB
 
 @strawberry.input
 class SuppliersCreate:
@@ -53,8 +54,8 @@ class SuppliersInDB:
     PostalCode: Optional[str] = None
     CompanyID: Optional[int] = None
     BranchID: Optional[int] = None
-    CompanyName: Optional[str] = None
     BranchName: Optional[str] = None
+    CompanyData: Optional[CompanyDataInDB] = None
     DocTypeName: Optional[str] = None
     CountryName: Optional[str] = None
     ProvinceName: Optional[str] = None

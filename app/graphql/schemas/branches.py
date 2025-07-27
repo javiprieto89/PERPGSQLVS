@@ -1,6 +1,7 @@
 ﻿import base64
 import strawberry
 from typing import Optional
+from app.graphql.schemas.companydata import CompanyDataInDB
 
 
 @strawberry.input
@@ -29,4 +30,4 @@ class BranchesInDB:
     Address: Optional[str] = None
     Phone: Optional[str] = None
     Logo: Optional[str] = None  # Cambiado a str (base64)
-    CompanyName: Optional[str] = None
+    CompanyData: Optional[CompanyDataInDB] = None
