@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from .tempstockhistorydetails import TempStockHistoryDetails
     from .orderhistory import OrderHistory
     from .temporderdetails import TempOrderDetails
+    from .clients import Clients
 
 from typing import List
 
@@ -81,3 +82,5 @@ class CompanyData(Base):
     tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship(
         'TempOrderDetails', back_populates='companyData_', overlaps='tempOrderDetails'
     )
+    clients: Mapped[List['Clients']] = relationship('Clients', back_populates='companyData_')
+

@@ -13,6 +13,8 @@ if TYPE_CHECKING:
     from app.models.pricelists import PriceLists
     from app.models.provinces import Provinces
     from app.models.vendors import Vendors
+    from app.models.branches import Branches
+    from app.models.companydata import CompanyData
 
 from sqlalchemy import Column, Integer, Unicode, Boolean, Date, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
 from sqlalchemy.orm import Mapped, relationship
@@ -74,5 +76,5 @@ class Clients(Base):
     accountBalances: Mapped[List['AccountBalances']] = relationship('AccountBalances', back_populates='clients_')
     cars: Mapped[List['Cars']] = relationship('Cars', back_populates='clients_')
     orders: Mapped[List['Orders']] = relationship('Orders', back_populates='clients_')
-
-    
+    branches_: Mapped['Branches'] = relationship('Branches', back_populates='clients')
+    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='clients')
