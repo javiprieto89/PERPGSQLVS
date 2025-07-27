@@ -2,6 +2,16 @@
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.companydata import CompanyDataInDB
+from app.graphql.schemas.branches import BranchesInDB
+from app.graphql.schemas.saleconditions import SaleConditionsInDB
+from app.graphql.schemas.sysdocumenttypes import SysDocumentTypesInDB
+from app.graphql.schemas.warehouses import WarehousesInDB
+from app.graphql.schemas.clients import ClientsInDB
+from app.graphql.schemas.discounts import DiscountsInDB
+from app.graphql.schemas.pricelists import PriceListsInDB
+from app.graphql.schemas.sysorderstatus import SysOrderStatusInDB
+from app.graphql.schemas.cars import CarsInDB
+from app.graphql.schemas.servicetype import ServiceTypeInDB
 from datetime import datetime
 from dataclasses import field
 from app.graphql.schemas.orderdetails import (
@@ -86,14 +96,13 @@ class OrdersInDB:
     Notes: Optional[str] = None
     Items: Optional[List[OrderDetailsInDB]] = None
     CompanyData: Optional[CompanyDataInDB] = None
-    BranchName: Optional[str] = None
-    SaleConditionName: Optional[str] = None
-    DocumentName: Optional[str] = None
-    WarehouseName: Optional[str] = None
-    ClientName: Optional[str] = None
-    ClientDocNumber: Optional[str] = None
-    DiscountName: Optional[str] = None
-    PriceListName: Optional[str] = None
-    OrderStatusName: Optional[str] = None
-    ServiceTypeName: Optional[str] = None
-    CarLicensePlate: Optional[str] = None
+    BranchData: Optional[BranchesInDB] = None
+    SaleConditionData: Optional[SaleConditionsInDB] = None
+    DocumentData: Optional[SysDocumentTypesInDB] = None
+    WarehouseData: Optional[WarehousesInDB] = None
+    ClientData: Optional[ClientsInDB] = None
+    DiscountData: Optional[DiscountsInDB] = None
+    PriceListData: Optional[PriceListsInDB] = None
+    OrderStatusData: Optional[SysOrderStatusInDB] = None
+    ServiceTypeData: Optional[ServiceTypeInDB] = None
+    CarData: Optional[CarsInDB] = None

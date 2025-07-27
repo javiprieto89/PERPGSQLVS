@@ -1,6 +1,8 @@
 ﻿# app/graphql/schemas/orderdetails.py
 import strawberry
 from typing import Optional
+from app.graphql.schemas.items import ItemsInDB
+from app.graphql.schemas.warehouses import WarehousesInDB
 from datetime import datetime
 
 
@@ -36,5 +38,5 @@ class OrderDetailsInDB:
     UnitPrice: float
     Description: Optional[str] = None
     LastModified: Optional[datetime] = None
-    ItemName: Optional[str] = None
-    WarehouseName: Optional[str] = None
+    ItemData: Optional[ItemsInDB] = None
+    WarehouseData: Optional[WarehousesInDB] = None

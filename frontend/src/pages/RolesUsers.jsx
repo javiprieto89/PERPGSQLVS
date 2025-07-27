@@ -118,7 +118,7 @@ export default function RolesUsers() {
                     {records.map((r, idx) => (
                         <li key={idx} className="border p-2 rounded flex justify-between items-center">
                             <span>
-                                Usuario: {r.UserName || r.UserID} - Compañía: {r.CompanyData?.Name || r.CompanyID} - Sucursal: {r.BranchName || r.BranchID} - Rol: {r.RoleName || r.RoleID}
+                                Usuario: {r.UserData?.FullName || r.UserID} - Compañía: {r.CompanyData?.Name || r.CompanyID} - Sucursal: {r.BranchData?.Name || r.BranchID} - Rol: {r.RoleData?.RoleName || r.RoleID}
                             </span>
                             <span className="space-x-2">
                                 <button onClick={() => handleEdit(r)} className="px-2 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200">Editar</button>
