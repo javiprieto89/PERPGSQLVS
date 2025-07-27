@@ -82,9 +82,10 @@ class ItemSearchResult:
     ItemID: int
     Code: str
     Description: str
-    BrandName: Optional[str] = None
-    CategoryName: Optional[str] = None
-    SubcategoryName: Optional[str] = None
-    SupplierName: Optional[str] = None
+    Brand: Optional[BrandsInDB] = None
+    Category: Optional[ItemCategoriesInDB] = None
+    Subcategory: Optional[ItemSubcategoriesInDB] = None
+    Supplier: Optional[SuppliersInDB] = None
+    Warehouse: Optional[WarehousesInDB] = None
     Price: Optional[float] = None
     StockQuantity: Optional[int] = None

@@ -37,6 +37,8 @@ FILTER_SCHEMAS = {
         {"field": "City", "label": "Ciudad", "type": "text"},
         {"field": "PostalCode", "label": "Código postal", "type": "text"},
     ],
+    # Los filtros que terminan en "Name" se mantienen para facilitar
+    # la búsqueda de texto desde el frontend sin realizar joins.
     "items": [
         {"field": "ItemID", "label": "ID de ítem", "type": "number"},
         {"field": "CompanyID", "label": "Compañía", "type": "select", "relationModel": "Company"},
