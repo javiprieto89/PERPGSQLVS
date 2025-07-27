@@ -1,4 +1,4 @@
-# ========== Clients ===========
+﻿# ========== Clients ===========
 # app/models/clients.py
 from __future__ import annotations
 from typing import List, TYPE_CHECKING
@@ -76,5 +76,15 @@ class Clients(Base):
     accountBalances: Mapped[List['AccountBalances']] = relationship('AccountBalances', back_populates='clients_')
     cars: Mapped[List['Cars']] = relationship('Cars', back_populates='clients_')
     orders: Mapped[List['Orders']] = relationship('Orders', back_populates='clients_')
-    branches_: Mapped['Branches'] = relationship('Branches', back_populates='clients')
-    companyData_: Mapped['CompanyData'] = relationship('CompanyData', back_populates='clients')
+    branches_: Mapped['Branches'] = relationship(
+        'Branches', 
+        back_populates='clients',
+        primaryjoin='and_(Clients.CompanyID == Branches.CompanyID, Clients.BranchID == Branches.BranchID)',
+        foreign_keys='[Clients.CompanyID, Clients.BranchID]'
+    )
+    companyData_: Mapped['CompanyData'] = relationship(
+        'CompanyData', 
+        back_populates='clients',
+        primaryjoin='Clients.CompanyID == CompanyData.CompanyID',
+        foreign_keys='[Clients.CompanyID]'
+    )

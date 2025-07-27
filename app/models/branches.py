@@ -1,4 +1,4 @@
-# ========== Branches ===========
+﻿# ========== Branches ===========
 # app/models/branches.py
 from __future__ import annotations
 from typing import List, Optional, TYPE_CHECKING
@@ -51,5 +51,10 @@ class Branches(Base):
     orderHistory: Mapped[List[OrderHistory]] = relationship('OrderHistory', back_populates='branches_')
     tempOrderDetails: Mapped[List[TempOrderDetails]] = relationship('TempOrderDetails', back_populates='branches_')
     transactions: Mapped[List[Transactions]] = relationship('Transactions', back_populates='branches_')
-    cashBoxes: Mapped[List[CashBoxes]] = relationship('CashBoxes', back_populates='branches_')
-    clients: Mapped[List['Clients']] = relationship('Clients', back_populates='branches_')
+    cashBoxes: Mapped[List[CashBoxes]] = relationship('CashBoxes', back_populates='branches_')    
+    clients: Mapped[List['Clients']] = relationship(
+        'Clients', 
+        back_populates='branches_',
+        primaryjoin='and_(Branches.CompanyID == foreign(Clients.CompanyID), Branches.BranchID == foreign(Clients.BranchID))',
+        foreign_keys='[Clients.CompanyID, Clients.BranchID]'
+    )
