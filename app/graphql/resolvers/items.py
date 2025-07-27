@@ -1,9 +1,14 @@
 ﻿# app/graphql/resolvers/items.py
 import strawberry
-from typing import List, Optional, cast, Any
-from sqlalchemy.orm import Session, joinedload, selectinload
-from sqlalchemy import and_, or_, func
+from typing import List, Optional, Any
+from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy import and_, or_
 from app.graphql.schemas.items import ItemsInDB, ItemSearchResult
+from app.graphql.schemas.brands import BrandsInDB
+from app.graphql.schemas.itemcategories import ItemCategoriesInDB
+from app.graphql.schemas.itemsubcategories import ItemSubcategoriesInDB
+from app.graphql.schemas.suppliers import SuppliersInDB
+from app.graphql.schemas.warehouses import WarehousesInDB
 from app.models.items import Items
 from app.models.itemstock import Itemstock
 from app.db import get_db
@@ -197,31 +202,36 @@ class ItemsQuery:
                     except:
                         total_stock = 0
                 
-                # Obtener nombres relacionados de forma segura
-                brand_name = None
+                # Obtener datos relacionados de forma segura
+                brand_data = None
                 if hasattr(item, 'brands_') and item.brands_:
-                    brand_name = safe_str(getattr(item.brands_, 'Name', None))
-                
-                category_name = None
+                    brand_data = obj_to_schema(BrandsInDB, item.brands_)
+
+                category_data = None
                 if hasattr(item, 'itemCategories_') and item.itemCategories_:
-                    category_name = safe_str(getattr(item.itemCategories_, 'CategoryName', None))
-                
-                subcategory_name = None
+                    category_data = obj_to_schema(ItemCategoriesInDB, item.itemCategories_)
+
+                subcategory_data = None
                 if hasattr(item, 'itemSubcategories_') and item.itemSubcategories_:
-                    subcategory_name = safe_str(getattr(item.itemSubcategories_, 'SubcategoryName', None))
-                
-                supplier_name = None
+                    subcategory_data = obj_to_schema(ItemSubcategoriesInDB, item.itemSubcategories_)
+
+                supplier_data = None
                 if hasattr(item, 'suppliers_') and item.suppliers_:
-                    supplier_name = safe_str(getattr(item.suppliers_, 'FirstName', None))
+                    supplier_data = obj_to_schema(SuppliersInDB, item.suppliers_)
+
+                warehouse_data = None
+                if hasattr(item, 'warehouses_') and item.warehouses_:
+                    warehouse_data = obj_to_schema(WarehousesInDB, item.warehouses_)
                 
                 items_result.append(ItemSearchResult(
                     ItemID=safe_int(getattr(item, 'ItemID', 0)),
                     Code=safe_str(getattr(item, 'Code', '')),
                     Description=safe_str(getattr(item, 'Description', '')),
-                    BrandName=brand_name,
-                    CategoryName=category_name,
-                    SubcategoryName=subcategory_name,
-                    SupplierName=supplier_name,
+                    Brand=brand_data,
+                    Category=category_data,
+                    Subcategory=subcategory_data,
+                    Supplier=supplier_data,
+                    Warehouse=warehouse_data,
                     Price=latest_price,
                     StockQuantity=total_stock
                 ))
@@ -282,23 +292,24 @@ class ItemsQuery:
                                 stock_quantity = safe_int(qty)
                                 break
                 
-                # Obtener nombres relacionados de forma segura
-                brand_name = None
+                # Obtener datos relacionados de forma segura
+                brand_data = None
                 if hasattr(item, 'brands_') and item.brands_:
-                    brand_name = safe_str(getattr(item.brands_, 'Name', None))
-                
-                category_name = None
+                    brand_data = obj_to_schema(BrandsInDB, item.brands_)
+
+                category_data = None
                 if hasattr(item, 'itemCategories_') and item.itemCategories_:
-                    category_name = safe_str(getattr(item.itemCategories_, 'CategoryName', None))
+                    category_data = obj_to_schema(ItemCategoriesInDB, item.itemCategories_)
                 
                 result.append(ItemSearchResult(
                     ItemID=safe_int(getattr(item, 'ItemID', 0)),
                     Code=safe_str(getattr(item, 'Code', '')),
                     Description=safe_str(getattr(item, 'Description', '')),
-                    BrandName=brand_name,
-                    CategoryName=category_name,
-                    SubcategoryName=None,
-                    SupplierName=None,
+                    Brand=brand_data,
+                    Category=category_data,
+                    Subcategory=None,
+                    Supplier=None,
+                    Warehouse=None,
                     Price=None,
                     StockQuantity=stock_quantity
                 ))
