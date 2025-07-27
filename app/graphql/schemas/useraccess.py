@@ -6,7 +6,6 @@ from app.graphql.schemas.branches import BranchesInDB
 from app.graphql.schemas.roles import RolesInDB
 from app.graphql.schemas.users import UsersInDB
 
-
 @strawberry.input
 class UserAccessCreate:
     UserID: int    
