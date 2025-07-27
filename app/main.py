@@ -13,6 +13,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.routing import Route, Mount
 from strawberry.asgi import GraphQL
 from app.auth import get_userinfo_from_token, authenticate_user, create_access_token
+from datetime import datetime
 
 from app.graphql.schema import schema
 from app.db import Base, engine
@@ -55,15 +56,19 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 class ProcessTimeMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         start_time = time.time()
-        logger.info(f"[REQUEST] {request.method} {request.url.path}")
+        ip = request.client.host if request.client else "unknown"
+        start_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        logger.info(f"[{start_timestamp}] [FROM {ip}] {request.method} {request.url.path}")
 
         response = await call_next(request)
 
         process_time = time.time() - start_time
+        end_timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         response.headers["X-Process-Time"] = str(process_time)
 
         status_emoji = "[OK]" if response.status_code < 400 else "[ERROR]"
-        logger.info(f"{status_emoji} {response.status_code} - {process_time:.3f}s")
+        logger.info(f"[{end_timestamp}] {status_emoji} {response.status_code} - {process_time:.3f}s")
 
         return response
 
