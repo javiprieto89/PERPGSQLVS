@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from .temporderdetails import TempOrderDetails
     from .transactions import Transactions
     from .cashboxes import CashBoxes
+    from .clients import Clients
 
 
 class Branches(Base):
@@ -51,3 +52,4 @@ class Branches(Base):
     tempOrderDetails: Mapped[List[TempOrderDetails]] = relationship('TempOrderDetails', back_populates='branches_')
     transactions: Mapped[List[Transactions]] = relationship('Transactions', back_populates='branches_')
     cashBoxes: Mapped[List[CashBoxes]] = relationship('CashBoxes', back_populates='branches_')
+    clients: Mapped[List['Clients']] = relationship('Clients', back_populates='branches_')

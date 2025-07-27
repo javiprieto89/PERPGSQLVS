@@ -1,6 +1,8 @@
 ﻿# app/graphql/schemas/clients.py
 import strawberry
 from typing import Optional
+from app.graphql.schemas.companydata import CompanyDataInDB
+from app.graphql.schemas.branches import BranchesInDB
 
 @strawberry.input
 class ClientsCreate:
@@ -62,8 +64,8 @@ class ClientsInDB:
     VendorID: int
     CompanyID: int | None
     BranchID: int | None
-    CompanyName: Optional[str] = None
-    BranchName: Optional[str] = None
+    CompanyData: Optional[CompanyDataInDB] = None
+    BranchData: Optional[BranchesInDB] = None
     DocTypeName: Optional[str] = None
     CountryName: Optional[str] = None
     ProvinceName: Optional[str] = None
