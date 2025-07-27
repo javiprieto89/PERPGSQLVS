@@ -1,52 +1,39 @@
 # app/graphql/crud/items.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.pricelistitems import PriceListItems
 from app.models.orderdetails import OrderDetails
 from app.models.items import Items
-from app.models.brands import Brands
-from app.models.itemcategories import ItemCategories
-from app.models.itemsubcategories import ItemSubcategories
 from app.graphql.schemas.items import ItemsCreate, ItemsUpdate
 from dataclasses import asdict
 
 def get_items(db: Session):
-    """Obtener items junto con nombres relacionados"""
-    results = db.query(
-        Items,
-        Brands.Name.label("BrandName"),
-        ItemCategories.CategoryName.label("CategoryName"),
-        ItemSubcategories.SubcategoryName.label("SubcategoryName"),
-    ).join(Brands, Brands.BrandID == Items.BrandID)
-    results = results.join(ItemCategories, ItemCategories.ItemCategoryID == Items.ItemCategoryID)
-    results = results.join(ItemSubcategories, ItemSubcategories.ItemSubcategoryID == Items.ItemSubcategoryID)
-    rows = results.all()
-
-    items = []
-    for item, brand_name, cat_name, sub_name in rows:
-        setattr(item, "BrandName", brand_name)
-        setattr(item, "CategoryName", cat_name)
-        setattr(item, "SubcategoryName", sub_name)
-        items.append(item)
-    return items
+    """Obtener items con todas sus relaciones"""
+    return db.query(Items).options(
+        joinedload(Items.brands_),
+        joinedload(Items.itemCategories_),
+        joinedload(Items.itemSubcategories_),
+        joinedload(Items.suppliers_),
+        joinedload(Items.warehouses_),
+        joinedload(Items.branches_),
+        joinedload(Items.companyData_),
+    ).all()
 
 def get_items_by_id(db: Session, item_id: int):
-    """Obtener item por ID con nombres relacionados"""
-    result = db.query(
-        Items,
-        Brands.Name.label("BrandName"),
-        ItemCategories.CategoryName.label("CategoryName"),
-        ItemSubcategories.SubcategoryName.label("SubcategoryName"),
-    ).join(Brands, Brands.BrandID == Items.BrandID)
-    result = result.join(ItemCategories, ItemCategories.ItemCategoryID == Items.ItemCategoryID)
-    result = result.join(ItemSubcategories, ItemSubcategories.ItemSubcategoryID == Items.ItemSubcategoryID)
-    result = result.filter(Items.ItemID == item_id).first()
-    if result:
-        item, brand_name, cat_name, sub_name = result
-        setattr(item, "BrandName", brand_name)
-        setattr(item, "CategoryName", cat_name)
-        setattr(item, "SubcategoryName", sub_name)
-        return item
-    return None
+    """Obtener item por ID con sus relaciones"""
+    return (
+        db.query(Items)
+        .options(
+            joinedload(Items.brands_),
+            joinedload(Items.itemCategories_),
+            joinedload(Items.itemSubcategories_),
+            joinedload(Items.suppliers_),
+            joinedload(Items.warehouses_),
+            joinedload(Items.branches_),
+            joinedload(Items.companyData_),
+        )
+        .filter(Items.ItemID == item_id)
+        .first()
+    )
 
 def create_items(db: Session, item: ItemsCreate):
     db_item = Items(**asdict(item))

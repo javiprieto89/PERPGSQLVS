@@ -2,6 +2,8 @@
 import strawberry
 from datetime import datetime
 from typing import Optional
+from app.graphql.schemas.pricelists import PriceListsInDB
+from app.graphql.schemas.items import ItemsInDB
 
 @strawberry.input
 class PriceListItemsCreate:
@@ -21,7 +23,6 @@ class PriceListItemsInDB:
     ItemID: int
     Price: float
     EffectiveDate: datetime
-    PriceListName: Optional[str] = None
-    Code: Optional[str] = None
-    Description: Optional[str] = None
+    PriceListData: Optional[PriceListsInDB] = None
+    ItemData: Optional[ItemsInDB] = None
 

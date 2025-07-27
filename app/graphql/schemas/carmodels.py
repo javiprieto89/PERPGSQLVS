@@ -1,6 +1,7 @@
 # app/graphql/schemas/carmodels.py
 import strawberry
 from typing import Optional
+from app.graphql.schemas.carbrands import CarBrandsInDB
 
 @strawberry.input
 class CarModelsCreate:
@@ -17,4 +18,4 @@ class CarModelsInDB:
     CarModelID: int
     CarBrandID: int
     Model: str
-    CarBrandName: Optional[str] = None
+    CarBrandData: Optional[CarBrandsInDB] = None

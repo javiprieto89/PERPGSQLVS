@@ -1,5 +1,5 @@
 # app/graphql/crud/pricelistitems.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.pricelistitems import PriceListItems
 from app.models.pricelists import PriceLists
 from app.models.items import Items
@@ -10,76 +10,36 @@ from app.graphql.schemas.pricelistitems import (
 
 
 def get_pricelistitems(db: Session):
-    query = (
-        db.query(
-            PriceListItems,
-            PriceLists.Name.label("PriceListName"),
-            Items.Code.label("Code"),
-            Items.Description.label("Description"),
-        )
-        .join(PriceLists, PriceListItems.PriceListID == PriceLists.PriceListID)
-        .join(Items, PriceListItems.ItemID == Items.ItemID)
+    return (
+        db.query(PriceListItems)
+        .options(joinedload(PriceListItems.priceLists_), joinedload(PriceListItems.items_))
+        .all()
     )
-    rows = query.all()
-    results = []
-    for pli, list_name, code, desc in rows:
-        setattr(pli, "PriceListName", list_name)
-        setattr(pli, "Code", code)
-        setattr(pli, "Description", desc)
-        results.append(pli)
-    return results
 
 
 def get_pricelistitem(db: Session, pricelist_id: int, item_id: int):
-    query = (
-        db.query(
-            PriceListItems,
-            PriceLists.Name.label("PriceListName"),
-            Items.Code.label("Code"),
-            Items.Description.label("Description"),
-        )
-        .join(PriceLists, PriceListItems.PriceListID == PriceLists.PriceListID)
-        .join(Items, PriceListItems.ItemID == Items.ItemID)
+    return (
+        db.query(PriceListItems)
+        .options(joinedload(PriceListItems.priceLists_), joinedload(PriceListItems.items_))
         .filter(
             PriceListItems.PriceListID == pricelist_id,
             PriceListItems.ItemID == item_id,
         )
+        .first()
     )
-    result = query.first()
-    if result:
-        pli, list_name, code, desc = result
-        setattr(pli, "PriceListName", list_name)
-        setattr(pli, "Code", code)
-        setattr(pli, "Description", desc)
-        return pli
-    return None
 
 
 def get_pricelistitems_filtered(
     db: Session, pricelist_id: int | None = None, item_id: int | None = None
 ):
-    query = (
-        db.query(
-            PriceListItems,
-            PriceLists.Name.label("PriceListName"),
-            Items.Code.label("Code"),
-            Items.Description.label("Description"),
-        )
-        .join(PriceLists, PriceListItems.PriceListID == PriceLists.PriceListID)
-        .join(Items, PriceListItems.ItemID == Items.ItemID)
+    query = db.query(PriceListItems).options(
+        joinedload(PriceListItems.priceLists_), joinedload(PriceListItems.items_)
     )
     if pricelist_id is not None:
         query = query.filter(PriceListItems.PriceListID == pricelist_id)
     if item_id is not None:
         query = query.filter(PriceListItems.ItemID == item_id)
-    rows = query.all()
-    results = []
-    for pli, list_name, code, desc in rows:
-        setattr(pli, "PriceListName", list_name)
-        setattr(pli, "Code", code)
-        setattr(pli, "Description", desc)
-        results.append(pli)
-    return results
+    return query.all()
 
 
 def create_pricelistitem(db: Session, data: PriceListItemsCreate):
