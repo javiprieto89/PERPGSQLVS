@@ -1,7 +1,7 @@
 # app/graphql/crud/creditcards.py
 
 from unittest import result
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.saleconditions import SaleConditions
 from app.models.creditcards import CreditCards
 from app.models.creditcardgroups import CreditCardGroups
@@ -9,36 +9,24 @@ from app.graphql.schemas.creditcards import CreditCardsCreate, CreditCardsUpdate
 
 
 def get_creditcards(db: Session):
-    result = db.query(
-        CreditCards,
-        CreditCardGroups.GroupName.label("GroupName"),
-    ).join(CreditCardGroups, CreditCardGroups.CreditCardGroupID == CreditCards.CreditCardGroupID).all()
-    records = []
-    for credit_card, group_name in result:
-        setattr(credit_card, "GroupName", group_name)
-        records.append(credit_card)
-    return records
+    return db.query(CreditCards).options(joinedload(CreditCards.creditCardGroups_)).all()
 
 def get_creditcard_by_id(db: Session, id: int):
-    result = db.query(
-        CreditCards,
-        CreditCardGroups.GroupName.label("GroupName"),
-    ).join(CreditCardGroups, CreditCardGroups.CreditCardGroupID == CreditCards.CreditCardGroupID)
-    result = result.filter(CreditCards.CreditCardID == id).first()    
-    if result:
-        credit_card, group_name = result
-        setattr(credit_card, "GroupName", group_name)
-        return credit_card
-    return None
+    return (
+        db.query(CreditCards)
+        .options(joinedload(CreditCards.creditCardGroups_))
+        .filter(CreditCards.CreditCardID == id)
+        .first()
+    )
 
 
 def get_creditcard_by_name(db: Session, name: str):
-    result = db.query(
-        CreditCards,
-        CreditCardGroups.GroupName.label("GroupName"),
-    ).join(CreditCardGroups, CreditCardGroups.CreditCardGroupID == CreditCards.CreditCardGroupID)
-    result = result.filter(CreditCards.CardName.ilike(f"%{name}%")).all()
-    return result
+    return (
+        db.query(CreditCards)
+        .options(joinedload(CreditCards.creditCardGroups_))
+        .filter(CreditCards.CardName.ilike(f"%{name}%"))
+        .all()
+    )
 
 
 def create_creditcard(db: Session, data: CreditCardsCreate):

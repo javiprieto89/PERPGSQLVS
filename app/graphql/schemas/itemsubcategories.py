@@ -1,6 +1,7 @@
 # app/graphql/schemas/itemsubcategories.py
 import strawberry
 from typing import Optional
+from app.graphql.schemas.itemcategories import ItemCategoriesInDB
 
 @strawberry.input
 class ItemSubcategoriesCreate:
@@ -17,4 +18,4 @@ class ItemSubcategoriesInDB:
     ItemSubcategoryID: int
     ItemCategoryID: int
     SubcategoryName: str
-    CategoryName: Optional[str] = None
+    CategoryData: Optional[ItemCategoriesInDB] = None

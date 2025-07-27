@@ -1,5 +1,5 @@
 # app/graphql/crud/itemsubcategories.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from dataclasses import asdict
 from app.models.items import Items
 
@@ -8,44 +8,26 @@ from app.models.itemcategories import ItemCategories
 from app.graphql.schemas.itemsubcategories import ItemSubcategoriesCreate, ItemSubcategoriesUpdate
 
 def get_itemsubcategories(db: Session):
-    """Obtener subcategorías con el nombre de categoría"""
-    results = db.query(
-        ItemSubcategories,
-        ItemCategories.CategoryName.label("CategoryName"),
-    ).join(ItemCategories, ItemCategories.ItemCategoryID == ItemSubcategories.ItemCategoryID).all()
-
-    records = []
-    for subcat, cat_name in results:
-        setattr(subcat, "CategoryName", cat_name)
-        records.append(subcat)
-    return records
+    """Obtener subcategorías con sus relaciones"""
+    return db.query(ItemSubcategories).options(joinedload(ItemSubcategories.itemCategories_)).all()
 
 def get_itemsubcategories_by_id(db: Session, subcategoryid: int):
-    """Obtener subcategoría por ID con nombre de categoría"""
-    result = db.query(
-        ItemSubcategories,
-        ItemCategories.CategoryName.label("CategoryName"),
-    ).join(ItemCategories, ItemCategories.ItemCategoryID == ItemSubcategories.ItemCategoryID)
-    result = result.filter(ItemSubcategories.ItemSubcategoryID == subcategoryid).first()
-    if result:
-        subcat, cat_name = result
-        setattr(subcat, "CategoryName", cat_name)
-        return subcat
-    return None
+    """Obtener subcategoría por ID con relaciones"""
+    return (
+        db.query(ItemSubcategories)
+        .options(joinedload(ItemSubcategories.itemCategories_))
+        .filter(ItemSubcategories.ItemSubcategoryID == subcategoryid)
+        .first()
+    )
 
 def get_itemsubcategories_by_category_id(db: Session, category_id: int):
-    """Obtener subcategorías filtradas por categoría incluyendo su nombre"""
-    results = db.query(
-        ItemSubcategories,
-        ItemCategories.CategoryName.label("CategoryName"),
-    ).join(ItemCategories, ItemCategories.ItemCategoryID == ItemSubcategories.ItemCategoryID)
-    results = results.filter(ItemSubcategories.ItemCategoryID == category_id).all()
-
-    records = []
-    for subcat, cat_name in results:
-        setattr(subcat, "CategoryName", cat_name)
-        records.append(subcat)
-    return records
+    """Obtener subcategorías filtradas por categoría"""
+    return (
+        db.query(ItemSubcategories)
+        .options(joinedload(ItemSubcategories.itemCategories_))
+        .filter(ItemSubcategories.ItemCategoryID == category_id)
+        .all()
+    )
 
 def create_itemsubcategories(db: Session, data: ItemSubcategoriesCreate):
     obj = ItemSubcategories(**asdict(data))

@@ -2,6 +2,7 @@
 
 import strawberry
 from typing import Optional
+from app.graphql.schemas.creditcardgroups import CreditCardGroupsInDB
 
 
 @strawberry.input
@@ -26,8 +27,8 @@ class CreditCardsUpdate:
 class CreditCardsInDB:
     CreditCardID: int
     CreditCardGroupID: int
-    GroupName: Optional[str] = None
     CardName: str
     Surcharge: Optional[float] = None
     Installments: Optional[int] = None
     IsActive: Optional[bool] = None
+    GroupData: Optional[CreditCardGroupsInDB] = None

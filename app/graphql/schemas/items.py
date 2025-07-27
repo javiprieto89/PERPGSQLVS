@@ -2,6 +2,13 @@
 import strawberry
 from typing import Optional
 from datetime import date
+from app.graphql.schemas.brands import BrandsInDB
+from app.graphql.schemas.itemcategories import ItemCategoriesInDB
+from app.graphql.schemas.itemsubcategories import ItemSubcategoriesInDB
+from app.graphql.schemas.suppliers import SuppliersInDB
+from app.graphql.schemas.branches import BranchesInDB
+from app.graphql.schemas.companydata import CompanyDataInDB
+from app.graphql.schemas.warehouses import WarehousesInDB
 
 
 @strawberry.input
@@ -60,9 +67,13 @@ class ItemsInDB:
     LastModified: Optional[date]  # Corregido nombre del campo (era lastModified)
     WarehouseID: int
     IsActive: bool
-    BrandName: Optional[str] = None
-    CategoryName: Optional[str] = None
-    SubcategoryName: Optional[str] = None
+    CompanyData: Optional[CompanyDataInDB] = None
+    BranchData: Optional[BranchesInDB] = None
+    BrandData: Optional[BrandsInDB] = None
+    CategoryData: Optional[ItemCategoriesInDB] = None
+    SubcategoryData: Optional[ItemSubcategoriesInDB] = None
+    SupplierData: Optional[SuppliersInDB] = None
+    WarehouseData: Optional[WarehousesInDB] = None
 
 
 

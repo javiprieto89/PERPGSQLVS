@@ -32,9 +32,18 @@ def obj_to_schema(schema_type: Any, obj: Any):
         "OrderStatusData": ["orderStatus_"],
         "CarData": ["cars_"],
         "ServiceTypeData": ["serviceType_"],
+        "CarModelData": ["carModels_"],
+        "CarBrandData": ["carBrand", "carModels_.carBrand"],
+        "GroupData": ["creditCardGroups_"],
+        "ItemData": ["items_"],
         "DocTypeData": ["docTypes_"],
         "CountryData": ["countries_"],
         "ProvinceData": ["provinces_"],
+        "BrandData": ["brands_"],
+        "CategoryData": ["itemCategories_"],
+        "SubcategoryData": ["itemSubcategories_"],
+        "SupplierData": ["suppliers_"],
+        "CompanyData": ["companyData_"],
     }
     obj_dict = getattr(obj, "__dict__", {})
     for f in fields(schema_type):
@@ -58,9 +67,24 @@ def obj_to_schema(schema_type: Any, obj: Any):
 
         if value is None and f.name in alt_map:
             for alt_attr in alt_map[f.name]:
-                if hasattr(obj, alt_attr):
-                    value = getattr(obj, alt_attr)
+                target = obj
+                for part in alt_attr.split('.'):
+                    if hasattr(target, part):
+                        target = getattr(target, part)
+                    else:
+                        target = None
+                        break
+                if target is not None:
+                    value = target
                     break
+        if value is None and f.name.endswith("Data") and dataclasses.is_dataclass(f.type):
+            base = f.name[:-4]
+            candidates = [base, base.lower(), base + '_', base.lower() + '_']
+            for cand in candidates:
+                if hasattr(obj, cand):
+                    value = getattr(obj, cand)
+                    if value is not None:
+                        break
 
         suffix_map = {
             "Name": "Name",

@@ -1,5 +1,5 @@
 # crud/cars.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.cars import Cars
 from app.models.carmodels import CarModels
 from app.models.orders import Orders
@@ -10,118 +10,55 @@ from app.graphql.schemas.cars import CarsCreate, CarsUpdate
 
 
 def get_cars(db: Session):
-    results = db.query(
-        Cars,
-        CarModels.Model.label("CarModelName"),
-        CarBrands.Name.label("CarBrandName"),
-        CarBrands.CarBrandID.label("CarBrandID"),
-        # AGREGADO: Información del cliente
-        Clients.FirstName.label("ClientFirstName"),
-        Clients.LastName.label("ClientLastName")
-    ).join(CarModels, Cars.CarModelID == CarModels.CarModelID)\
-     .join(CarBrands, CarModels.CarBrandID == CarBrands.CarBrandID)\
-     .join(Clients, Cars.ClientID == Clients.ClientID).all()  # AGREGADO: Join con clientes
-    
-    cars = []
-    for c, model_name, brand_name, brand_id, client_first_name, client_last_name in results:
-        setattr(c, "CarModelName", model_name)
-        setattr(c, "CarBrandName", brand_name)
-        setattr(c, "CarBrandID", brand_id)
-        # AGREGADO: Agregar información del cliente
-        setattr(c, "ClientFirstName", client_first_name)
-        setattr(c, "ClientLastName", client_last_name)
-        # AGREGADO: Crear nombre completo del cliente
-        client_full_name = f"{client_first_name or ''} {client_last_name or ''}".strip()
-        setattr(c, "ClientName", client_full_name if client_full_name else "Sin nombre")
-        cars.append(c)
-    return cars
+    return (
+        db.query(Cars)
+        .options(
+            joinedload(Cars.carModels_).joinedload(CarModels.carBrand),
+            joinedload(Cars.clients_),
+            joinedload(Cars.discounts_),
+        )
+        .all()
+    )
 
 
 def get_cars_by_company(db: Session, company_id: int):
     """Retrieve cars filtered by CompanyID"""
-    results = (
-        db.query(
-            Cars,
-            CarModels.Model.label("CarModelName"),
-            CarBrands.Name.label("CarBrandName"),
-            CarBrands.CarBrandID.label("CarBrandID"),
-            Clients.FirstName.label("ClientFirstName"),
-            Clients.LastName.label("ClientLastName"),
+    return (
+        db.query(Cars)
+        .options(
+            joinedload(Cars.carModels_).joinedload(CarModels.carBrand),
+            joinedload(Cars.clients_),
+            joinedload(Cars.discounts_),
         )
-        .join(CarModels, Cars.CarModelID == CarModels.CarModelID)
-        .join(CarBrands, CarModels.CarBrandID == CarBrands.CarBrandID)
-        .join(Clients, Cars.ClientID == Clients.ClientID)
         .filter(Cars.CompanyID == company_id)
         .all()
     )
 
-    cars = []
-    for c, model_name, brand_name, brand_id, client_first_name, client_last_name in results:
-        setattr(c, "CarModelName", model_name)
-        setattr(c, "CarBrandName", brand_name)
-        setattr(c, "CarBrandID", brand_id)
-        setattr(c, "ClientFirstName", client_first_name)
-        setattr(c, "ClientLastName", client_last_name)
-        client_full_name = f"{client_first_name or ''} {client_last_name or ''}".strip()
-        setattr(c, "ClientName", client_full_name if client_full_name else "Sin nombre")
-        cars.append(c)
-    return cars
-
 
 def get_cars_by_id(db: Session, carid: int):
-    result = db.query(
-        Cars,
-        CarModels.Model.label("CarModelName"),
-        CarBrands.Name.label("CarBrandName"),
-        CarBrands.CarBrandID.label("CarBrandID"),
-        # AGREGADO: Información del cliente
-        Clients.FirstName.label("ClientFirstName"),
-        Clients.LastName.label("ClientLastName")
-    ).join(CarModels, Cars.CarModelID == CarModels.CarModelID)\
-     .join(CarBrands, CarModels.CarBrandID == CarBrands.CarBrandID)\
-     .join(Clients, Cars.ClientID == Clients.ClientID)\
-     .filter(Cars.CarID == carid).first()
-    
-    if result:
-        c, model_name, brand_name, brand_id, client_first_name, client_last_name = result
-        setattr(c, "CarModelName", model_name)
-        setattr(c, "CarBrandName", brand_name)
-        setattr(c, "CarBrandID", brand_id)
-        # AGREGADO: Agregar información del cliente
-        setattr(c, "ClientFirstName", client_first_name)
-        setattr(c, "ClientLastName", client_last_name)
-        client_full_name = f"{client_first_name or ''} {client_last_name or ''}".strip()
-        setattr(c, "ClientName", client_full_name if client_full_name else "Sin nombre")
-        return c
-    return None
+    return (
+        db.query(Cars)
+        .options(
+            joinedload(Cars.carModels_).joinedload(CarModels.carBrand),
+            joinedload(Cars.clients_),
+            joinedload(Cars.discounts_),
+        )
+        .filter(Cars.CarID == carid)
+        .first()
+    )
 
 
 def get_cars_by_client_id(db: Session, client_id: int):
-    results = db.query(
-        Cars,
-        CarModels.Model.label("CarModelName"),
-        CarBrands.Name.label("CarBrandName"),
-        CarBrands.CarBrandID.label("CarBrandID"),
-        # AGREGADO: Información del cliente
-        Clients.FirstName.label("ClientFirstName"),
-        Clients.LastName.label("ClientLastName")
-    ).join(CarModels, Cars.CarModelID == CarModels.CarModelID)\
-     .join(CarBrands, CarModels.CarBrandID == CarBrands.CarBrandID)\
-     .join(Clients, Cars.ClientID == Clients.ClientID)\
-     .filter(Cars.ClientID == client_id).all()
-    
-    cars = []
-    for c, model_name, brand_name, brand_id, client_first_name, client_last_name in results:
-        setattr(c, "CarModelName", model_name)
-        setattr(c, "CarBrandName", brand_name)
-        setattr(c, "CarBrandID", brand_id)
-        # AGREGADO: Agregar información del cliente
-        setattr(c, "ClientFirstName", client_first_name)
-        setattr(c, "ClientLastName", client_last_name)
-        client_full_name = f"{client_first_name or ''} {client_last_name or ''}".strip()
-        setattr(c, "ClientName", client_full_name if client_full_name else "Sin nombre")
-        cars.append(c)
-    return cars
+    return (
+        db.query(Cars)
+        .options(
+            joinedload(Cars.carModels_).joinedload(CarModels.carBrand),
+            joinedload(Cars.clients_),
+            joinedload(Cars.discounts_),
+        )
+        .filter(Cars.ClientID == client_id)
+        .all()
+    )
 
 
 def create_cars(db: Session, data: CarsCreate):
