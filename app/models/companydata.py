@@ -83,9 +83,10 @@ class CompanyData(Base):
         'TempOrderDetails', back_populates='companyData_', overlaps='tempOrderDetails'
     )    
     clients: Mapped[List['Clients']] = relationship(
-        'Clients', 
+        'Clients',
         back_populates='companyData_',
         primaryjoin='CompanyData.CompanyID == foreign(Clients.CompanyID)',
-        foreign_keys='[Clients.CompanyID]'
+        foreign_keys='[Clients.CompanyID]',
+        overlaps='branches_,clients'
     )
 
