@@ -1,0 +1,44 @@
+﻿version: "3.9"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "Ladeda78"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    depends_on:
+      - sqlserver
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    depends_on:
+      - sqlserver
+    volumes:
+      - ./DB/LubricentroDB2.sql:/init.sql
+    entrypoint: ["/bin/bash", "-c"]
+    command: >
+      "
+      sleep 25 &&
+      /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P Ladeda78 -Q 'IF DB_ID(''LubricentroDB2'') IS NULL BEGIN :r /init.sql END'
+      "
+    restart: "no"
+
+volumes:
+  mssql_data:
