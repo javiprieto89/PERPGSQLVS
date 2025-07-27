@@ -305,7 +305,6 @@ export const QUERIES = {
                 UserID
                 UserName
                 CompanyID
-                CompanyName
                 BranchID
                 BranchName
                 RoleID
@@ -320,7 +319,6 @@ export const QUERIES = {
                 UserID
                 UserName
                 CompanyID
-                CompanyName
                 BranchID
                 BranchName
                 RoleID

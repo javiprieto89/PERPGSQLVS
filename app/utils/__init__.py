@@ -33,6 +33,12 @@ def obj_to_schema(schema_type: Any, obj: Any):
             else:
                 value = getattr(obj, alt, None)
 
+        if value is None:
+            alt_lower = f.name[0].lower() + f.name[1:]
+            value = getattr(obj, alt_lower, None)
+            if value is None:
+                value = getattr(obj, alt_lower + "_", None)
+
         suffix_map = {
             "Name": "Name",
             "DocNumber": "DocNumber",
