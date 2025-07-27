@@ -20,6 +20,8 @@ export const QUERIES = {
                 ProvinceID
                 PriceListID
                 VendorID
+                CompanyID
+                BranchID
             }
         }
     `,
@@ -42,6 +44,8 @@ export const QUERIES = {
                 ProvinceID
                 PriceListID
                 VendorID
+                CompanyID
+                BranchID
             }
         }
     `,
