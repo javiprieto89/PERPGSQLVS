@@ -19,6 +19,23 @@ def _expects_str(field_type: Any) -> bool:
 
 def obj_to_schema(schema_type: Any, obj: Any):
     data = {}
+    alt_map = {
+        "BranchData": ["branches_"],
+        "RoleData": ["roles_"],
+        "UserData": ["users_"],
+        "WarehouseData": ["warehouses_"],
+        "SaleConditionData": ["saleConditions_"],
+        "DocumentData": ["sysDocumentTypes_"],
+        "ClientData": ["clients_"],
+        "DiscountData": ["discounts_"],
+        "PriceListData": ["priceLists_"],
+        "OrderStatusData": ["orderStatus_"],
+        "CarData": ["cars_"],
+        "ServiceTypeData": ["serviceType_"],
+        "DocTypeData": ["docTypes_"],
+        "CountryData": ["countries_"],
+        "ProvinceData": ["provinces_"],
+    }
     obj_dict = getattr(obj, "__dict__", {})
     for f in fields(schema_type):
         if f.name in obj_dict:
@@ -32,6 +49,18 @@ def obj_to_schema(schema_type: Any, obj: Any):
                 value = obj_dict.get(alt)
             else:
                 value = getattr(obj, alt, None)
+
+        if value is None:
+            alt_lower = f.name[0].lower() + f.name[1:]
+            value = getattr(obj, alt_lower, None)
+            if value is None:
+                value = getattr(obj, alt_lower + "_", None)
+
+        if value is None and f.name in alt_map:
+            for alt_attr in alt_map[f.name]:
+                if hasattr(obj, alt_attr):
+                    value = getattr(obj, alt_attr)
+                    break
 
         suffix_map = {
             "Name": "Name",

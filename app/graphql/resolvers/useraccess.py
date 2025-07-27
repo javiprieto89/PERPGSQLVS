@@ -4,6 +4,7 @@ from typing import List, Optional
 from app.graphql.schemas.useraccess import UserAccessInDB
 from app.graphql.crud.useraccess import get_useraccess, get_useraccess_by_id
 from app.db import get_db
+from app.utils import list_to_schema, obj_to_schema
 
 from strawberry.types import Info
 
@@ -16,20 +17,7 @@ class UseraccessQuery:
         db = next(db_gen)
         try:
             records = get_useraccess(db)
-            result = []
-            for r in records:
-                data = {
-                    'UserID': r.UserID,
-                    'CompanyID': r.CompanyID,
-                    'BranchID': r.BranchID,
-                    'RoleID': r.RoleID,
-                    'UserName': getattr(r.users_, 'FullName', None),
-                    'CompanyName': getattr(r.companyData_, 'Name', None),
-                    'BranchName': getattr(r.branches_, 'Name', None),
-                    'RoleName': getattr(r.roles_, 'RoleName', None),
-                }
-                result.append(UserAccessInDB(**data))
-            return result
+            return list_to_schema(UserAccessInDB, records)
         finally:
             db_gen.close()
 
@@ -40,19 +28,7 @@ class UseraccessQuery:
         try:
             record = get_useraccess_by_id(
                 db, userID, companyID, branchID, roleID)
-            if record:
-                data = {
-                    'UserID': record.UserID,
-                    'CompanyID': record.CompanyID,
-                    'BranchID': record.BranchID,
-                    'RoleID': record.RoleID,
-                    'UserName': getattr(record.users_, 'FullName', None),
-                    'CompanyName': getattr(record.companyData_, 'Name', None),
-                    'BranchName': getattr(record.branches_, 'Name', None),
-                    'RoleName': getattr(record.roles_, 'RoleName', None),
-                }
-                return UserAccessInDB(**data)
-            return None
+            return obj_to_schema(UserAccessInDB, record) if record else None
         finally:
             db_gen.close()
 

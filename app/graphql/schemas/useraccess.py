@@ -1,6 +1,10 @@
 # app/graphql/schemas/useraccess.py
 
 import strawberry
+from app.graphql.schemas.companydata import CompanyDataInDB
+from app.graphql.schemas.branches import BranchesInDB
+from app.graphql.schemas.roles import RolesInDB
+from app.graphql.schemas.users import UsersInDB
 
 
 @strawberry.input
@@ -25,7 +29,7 @@ class UserAccessInDB:
     CompanyID: int
     BranchID: int
     RoleID: int
-    UserName: str | None = None
-    CompanyName: str | None = None
-    BranchName: str | None = None
-    RoleName: str | None = None
+    UserData: UsersInDB | None = None
+    BranchData: BranchesInDB | None = None
+    RoleData: RolesInDB | None = None
+    CompanyData: CompanyDataInDB | None = None

@@ -1,6 +1,7 @@
 # app/graphql/schemas/brands.py
 import strawberry
 from typing import Optional
+from app.graphql.schemas.companydata import CompanyDataInDB
 
 
 @strawberry.input
@@ -23,4 +24,4 @@ class BrandsInDB:
     Name: str
     IsActive: Optional[bool]
     CompanyID: Optional[int]
-    CompanyName: Optional[str] = None
+    CompanyData: Optional[CompanyDataInDB] = None

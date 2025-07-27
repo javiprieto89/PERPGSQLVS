@@ -7,44 +7,26 @@ from app.graphql.schemas.orderdetails import OrderDetailsCreate, OrderDetailsUpd
 
 
 def get_orderdetails(db: Session):
-    results = (
-        db.query(
-            OrderDetails,
-            Items.Description.label("ItemName"),
-            Warehouses.Name.label("WarehouseName"),
+    return (
+        db.query(OrderDetails)
+        .options(
+            joinedload(OrderDetails.items_),
+            joinedload(OrderDetails.warehouses_),
         )
-        .join(Items, OrderDetails.ItemID == Items.ItemID)
-        .join(Warehouses, OrderDetails.WarehouseID == Warehouses.WarehouseID)
         .all()
     )
 
-    orderdetails = []
-    for od, item_name, warehouse_name in results:
-        setattr(od, "ItemName", item_name)
-        setattr(od, "WarehouseName", warehouse_name)
-        orderdetails.append(od)
-    return orderdetails
-
 
 def get_orderdetails_by_id(db: Session, orderdetailid: int):
-    result = (
-        db.query(
-            OrderDetails,
-            Items.Description.label("ItemName"),
-            Warehouses.Name.label("WarehouseName"),
+    return (
+        db.query(OrderDetails)
+        .options(
+            joinedload(OrderDetails.items_),
+            joinedload(OrderDetails.warehouses_),
         )
-        .join(Items, OrderDetails.ItemID == Items.ItemID)
-        .join(Warehouses, OrderDetails.WarehouseID == Warehouses.WarehouseID)
         .filter(OrderDetails.OrderDetailID == orderdetailid)
         .first()
     )
-
-    if result:
-        od, item_name, warehouse_name = result
-        setattr(od, "ItemName", item_name)
-        setattr(od, "WarehouseName", warehouse_name)
-        return od
-    return None
 
 
 def create_orderdetails(db: Session, data: OrderDetailsCreate):
