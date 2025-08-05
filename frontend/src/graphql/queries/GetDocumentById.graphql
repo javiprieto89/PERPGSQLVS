@@ -1,0 +1,20 @@
+query GetDocumentById($id: Int!) {
+  documentsById(id: $id) {
+    DocumentID
+    CompanyID
+    BranchID
+    DocumentTypeID
+    Description
+    DocumentNumber
+    PointOfSale
+    IsActive
+    Testing
+    ShouldAccount
+    MovesStock
+    IsFiscal
+    IsElectronic
+    IsManual
+    IsQuotation
+    MaxItems
+  }
+}

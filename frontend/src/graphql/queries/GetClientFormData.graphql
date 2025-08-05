@@ -1,0 +1,26 @@
+query GetClientFormData {
+  docTypes: allSysdoctypes {
+    DocTypeID
+    Name
+  }
+  countries: allCountries {
+    CountryID
+    Name
+  }
+  provinces: allProvinces {
+    ProvinceID
+    CountryID
+    Name
+  }
+  priceLists: allPricelists {
+    PriceListID
+    Name
+    Description
+    IsActive
+  }
+  vendors: allVendors {
+    VendorID
+    VendorName
+    IsActive
+  }
+}

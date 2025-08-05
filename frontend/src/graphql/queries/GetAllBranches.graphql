@@ -1,0 +1,9 @@
+query GetAllBranches {
+  allBranches {
+    BranchID
+    CompanyID
+    Name
+    Address
+    Phone
+  }
+}

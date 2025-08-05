@@ -1,0 +1,7 @@
+query GetProvinces {
+  allProvinces {
+    ProvinceID
+    CountryID
+    Name
+  }
+}

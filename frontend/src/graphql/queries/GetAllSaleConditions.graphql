@@ -1,0 +1,10 @@
+query GetAllSaleConditions {
+  allSaleconditions {
+    SaleConditionID
+    CreditCardID
+    Name
+    DueDate
+    Surcharge
+    IsActive
+  }
+}

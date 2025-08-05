@@ -1,0 +1,8 @@
+query GetPriceLists {
+  allPricelists {
+    PriceListID
+    Name
+    Description
+    IsActive
+  }
+}

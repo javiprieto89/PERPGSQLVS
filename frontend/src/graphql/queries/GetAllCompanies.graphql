@@ -1,0 +1,11 @@
+query GetAllCompanies {
+  allCompanydata {
+    CompanyID
+    Name
+    Address
+    CUIT
+    Grossincome
+    Startdate
+    Logo
+  }
+}

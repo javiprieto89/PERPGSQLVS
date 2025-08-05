@@ -1,0 +1,38 @@
+{
+  "search.exclude": {
+    "**/node_modules/**": true,
+    "**/bower_components/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/coverage/**": true,
+    "**/.next/**": true,
+    "**/.vercel/**": true,
+    "**/.cache/**": true,
+    "**/.git/**": true,
+    "*-lock.*": true,
+    "*.bkp.*": true,
+    "*.patch": true,
+    "package-lock.json": true,
+    "yarn-lock.json": true,
+    "pnpm-lock.json": true
+  },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always",
+    "source.organizeImports": "always"
+  },
+  "cSpell.words": [
+    "noopener",
+    "noreferrer",
+    "svgr",
+    "tailwind",
+    "tailwindcss",
+    "tanstack",
+    "typecheck",
+    "vaporwave",
+    "virtuals",
+    "youtube",
+    "zustand"
+  ],
+  "cSpell.language": "en,es"
+}

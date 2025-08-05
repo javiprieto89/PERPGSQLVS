@@ -1,0 +1,7 @@
+query GetAllDiscounts {
+  allDiscounts {
+    DiscountID
+    DiscountName
+    Percentage
+  }
+}

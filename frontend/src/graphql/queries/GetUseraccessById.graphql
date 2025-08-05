@@ -1,0 +1,31 @@
+query GetUseraccessById(
+  $userID: Int!
+  $companyID: Int!
+  $branchID: Int!
+  $roleID: Int!
+) {
+  useraccessById(
+    userID: $userID
+    companyID: $companyID
+    branchID: $branchID
+    roleID: $roleID
+  ) {
+    UserID
+    CompanyID
+    BranchID
+    RoleID
+    UserData {
+      Nickname
+      FullName
+    }
+    CompanyData {
+      Name
+    }
+    RoleData {
+      RoleName
+    }
+    BranchData {
+      Name
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "data": {
+    "filterFields": [
+      {
+        "field": "SaleConditionID",
+        "label": "ID de condición",
+        "type": "number",
+        "relationModel": null,
+        "dependsOn": null
+      },
+      {
+        "field": "CreditCardID",
+        "label": "Tarjeta",
+        "type": "select",
+        "relationModel": "CreditCard",
+        "dependsOn": null
+      },
+      {
+        "field": "CardName",
+        "label": "Tarjeta (nombre)",
+        "type": "text",
+        "relationModel": null,
+        "dependsOn": null
+      },
+      {
+        "field": "Name",
+        "label": "Nombre",
+        "type": "text",
+        "relationModel": null,
+        "dependsOn": null
+      },
+      {
+        "field": "DueDate",
+        "label": "Vencimiento",
+        "type": "text",
+        "relationModel": null,
+        "dependsOn": null
+      },
+      {
+        "field": "Surcharge",
+        "label": "Recargo",
+        "type": "number",
+        "relationModel": null,
+        "dependsOn": null
+      },
+      {
+        "field": "IsActive",
+        "label": "Activo",
+        "type": "boolean",
+        "relationModel": null,
+        "dependsOn": null
+      }
+    ]
+  }
+}

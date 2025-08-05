@@ -1,0 +1,9 @@
+query GetBranchById($id: Int!, $CompanyID: Int!) {
+  branchesById(id: $id, companyID: $CompanyID) {
+    BranchID
+    CompanyID
+    Name
+    Address
+    Phone
+  }
+}

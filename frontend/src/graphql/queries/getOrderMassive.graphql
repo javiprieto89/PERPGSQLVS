@@ -1,0 +1,62 @@
+query getOrderMassive {
+  allOrders {
+    OrderID
+    CompanyID
+    BranchID
+    Date_
+    ClientID
+    CarID
+    IsService
+    ServiceTypeID
+    Mileage
+    NextServiceMileage
+    Notes
+    SaleConditionID
+    DiscountID
+    Subtotal
+    Total
+    VAT
+    UserID
+    DocumentID
+    PriceListID
+    OrderStatusID
+    WarehouseID
+  }
+  allClients {
+    ClientID
+    DocTypeID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    Address
+    City
+    PostalCode
+    IsActive
+    CountryID
+    ProvinceID
+    PriceListID
+    VendorID
+  }
+  allSaleconditions {
+    SaleConditionID
+    CreditCardID
+    Name
+    DueDate
+    Surcharge
+    IsActive
+  }
+  allUsers {
+    UserID
+    Nickname
+    FullName
+    IsActive
+  }
+  allVendors {
+    VendorID
+    VendorName
+    Commission
+    IsActive
+  }
+}
