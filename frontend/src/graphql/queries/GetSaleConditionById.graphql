@@ -1,0 +1,10 @@
+query GetSaleConditionById($id: Int!) {
+  saleconditionsById(id: $id) {
+    SaleConditionID
+    CreditCardID
+    Name
+    DueDate
+    Surcharge
+    IsActive
+  }
+}

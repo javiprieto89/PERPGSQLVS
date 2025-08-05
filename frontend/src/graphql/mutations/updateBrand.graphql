@@ -1,0 +1,7 @@
+mutation UpdateBrand($brandID: Int!, $input: BrandsUpdate!) {
+  updateBrand(brandID: $brandID, data: $input) {
+    BrandID
+    Name
+    IsActive
+  }
+}

@@ -1,0 +1,19 @@
+mutation UpdateClient($clientID: Int!, $input: ClientsUpdate!) {
+  updateClient(clientID: $clientID, data: $input) {
+    ClientID
+    DocTypeID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    Address
+    City
+    PostalCode
+    IsActive
+    CountryID
+    ProvinceID
+    PriceListID
+    VendorID
+  }
+}

@@ -1,0 +1,19 @@
+mutation CreateClient($input: ClientsCreate!) {
+  createClient(data: $input) {
+    ClientID
+    DocTypeID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    Address
+    City
+    PostalCode
+    IsActive
+    CountryID
+    ProvinceID
+    PriceListID
+    VendorID
+  }
+}

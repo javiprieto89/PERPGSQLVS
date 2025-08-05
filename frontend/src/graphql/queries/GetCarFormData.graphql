@@ -1,0 +1,20 @@
+query GetCarFormData {
+  carBrands: allCarbrands {
+    CarBrandID
+    Name
+  }
+  carModels: allCarmodels {
+    CarModelID
+    CarBrandID
+    Model
+  }
+  clients: allClients {
+    ClientID
+    FirstName
+    LastName
+  }
+  discounts: allDiscounts {
+    DiscountID
+    DiscountName
+  }
+}

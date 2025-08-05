@@ -1,6 +1,3 @@
-
-const BASE_URL = "http://127.0.0.1:8000";
-
 const apiFetch = async (url, options = {}) => {
   const token = sessionStorage.getItem("token");
 
@@ -21,7 +18,7 @@ const apiFetch = async (url, options = {}) => {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}${url}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}${url}`, {
       ...options,
       headers,
     });

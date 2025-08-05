@@ -1,0 +1,10 @@
+query GetAllItemSubcategories {
+  allItemsubcategories {
+    ItemSubcategoryID
+    ItemCategoryID
+    SubcategoryName
+    CategoryData {
+      CategoryName
+    }
+  }
+}

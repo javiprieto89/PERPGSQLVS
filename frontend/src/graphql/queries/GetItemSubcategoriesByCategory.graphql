@@ -1,0 +1,7 @@
+query GetItemSubcategoriesByCategory($categoryID: Int!) {
+  itemsubcategoriesByCategory(categoryID: $categoryID) {
+    ItemSubcategoryID
+    SubcategoryName
+    ItemCategoryID
+  }
+}

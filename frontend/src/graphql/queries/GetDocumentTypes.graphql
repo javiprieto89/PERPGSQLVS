@@ -1,0 +1,6 @@
+query GetDocumentTypes {
+  allSysdocumenttypes {
+    DocumentTypeID
+    Name
+  }
+}

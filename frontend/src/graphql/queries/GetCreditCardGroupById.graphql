@@ -1,0 +1,6 @@
+query GetCreditCardGroupById($id: Int!) {
+  creditcardgroupById(id: $id) {
+    CreditCardGroupID
+    GroupName
+  }
+}

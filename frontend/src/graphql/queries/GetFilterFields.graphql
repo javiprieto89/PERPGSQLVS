@@ -1,0 +1,9 @@
+query GetFilterFields($model: String!) {
+  filterFields(model: $model) {
+    field
+    label
+    type
+    relationModel
+    dependsOn
+  }
+}

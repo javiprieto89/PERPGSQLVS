@@ -1,6 +1,6 @@
 // frontend/src/components/ItemSelectWindow.jsx
 import { useEffect, useState } from "react";
-import { itemOperations } from "../utils/graphqlClient";
+import { itemOperations } from "~/graphql/operations.js";
 
 export default function ItemSelectWindow({ onSelect, onClose }) {
   const [items, setItems] = useState([]);
@@ -63,8 +63,12 @@ export default function ItemSelectWindow({ onSelect, onClose }) {
             {filtered.map((item) => (
               <tr key={item.itemID} className="hover:bg-gray-50">
                 <td className="px-2 py-1 whitespace-nowrap">{item.Code}</td>
-                <td className="px-2 py-1 whitespace-nowrap">{item.description}</td>
-                <td className="px-2 py-1 text-right">{item.price?.toFixed(2) ?? "-"}</td>
+                <td className="px-2 py-1 whitespace-nowrap">
+                  {item.description}
+                </td>
+                <td className="px-2 py-1 text-right">
+                  {item.price?.toFixed(2) ?? "-"}
+                </td>
                 <td className="px-2 py-1 text-center">
                   <input
                     type="number"

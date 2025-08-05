@@ -1,0 +1,3 @@
+mutation DeleteBrand($brandID: Int!) {
+  deleteBrand(brandID: $brandID)
+}

@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { carBrandOperations } from "../utils/graphqlClient";
+import { useEffect, useState } from "react";
+import { carBrandOperations } from "~/graphql/operations";
 import TableFilters from "./TableFilters";
 
-export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) {
+export default function CarBrandSearchModal({
+  isOpen,
+  onClose,
+  onBrandSelect,
+}) {
   const [brands, setBrands] = useState([]);
   const [filteredBrands, setFilteredBrands] = useState([]);
   const [query, setQuery] = useState("");
@@ -43,8 +47,19 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
             onClick={onClose}
             className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -66,15 +81,26 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
         </div>
         {showFilters && (
           <div className="fixed inset-0 bg-black bg-opacity-40 flex items-start justify-center pt-10 z-60">
-          <div className="bg-white rounded-md shadow-lg p-4 w-full max-w-xl space-y-4 max-h-[80vh] overflow-y-auto">
+            <div className="bg-white rounded-md shadow-lg p-4 w-full max-w-xl space-y-4 max-h-[80vh] overflow-y-auto">
               <div className="flex justify-between items-center pb-2 border-b">
                 <h4 className="text-lg font-semibold">Filtros</h4>
                 <button
                   onClick={() => setShowFilters(false)}
                   className="text-gray-500 hover:text-gray-700"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -90,10 +116,18 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 sticky top-0">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Compañía</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acción</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ID
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Compañía
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Nombre
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Acción
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -107,9 +141,15 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
                       onClose();
                     }}
                   >
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{b.CarBrandID}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{b.CompanyID}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{b.Name}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                      {b.CarBrandID}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                      {b.CompanyID}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                      {b.Name}
+                    </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={() => {
@@ -125,7 +165,10 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
                 ))
               ) : (
                 <tr>
-                  <td colSpan="3" className="px-4 py-10 text-center text-sm text-gray-500">
+                  <td
+                    colSpan="3"
+                    className="px-4 py-10 text-center text-sm text-gray-500"
+                  >
                     {isLoading ? "Cargando..." : "No se encontraron marcas"}
                   </td>
                 </tr>
@@ -134,7 +177,10 @@ export default function CarBrandSearchModal({ isOpen, onClose, onBrandSelect }) 
           </table>
         </div>
         <div className="pt-3 border-t flex justify-end">
-          <button onClick={onClose} className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-md shadow-sm text-sm">
+          <button
+            onClick={onClose}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-md shadow-sm text-sm"
+          >
             Cerrar
           </button>
         </div>
