@@ -98,7 +98,7 @@ export default function Users() {
           </button>
           <button
             onClick={loadUsers}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="px-4 py-2 bg-primary text-white rounded"
           >
             Recargar
           </button>
@@ -122,7 +122,7 @@ export default function Users() {
       {loading ? (
         <p>Cargando...</p>
       ) : error ? (
-        <p className="text-red-600">{error}</p>
+        <p className="text-destructive">{error}</p>
       ) : (
         <ul className="space-y-2">
           {users.map((u) => (
@@ -136,7 +136,7 @@ export default function Users() {
               <span className="space-x-2">
                 <button
                   onClick={() => handleEdit(u)}
-                  className="px-2 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200"
+                  className="px-2 py-1 text-sm  rounded hover:"
                 >
                   Editar
                 </button>

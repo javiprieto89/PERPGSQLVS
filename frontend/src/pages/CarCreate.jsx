@@ -173,7 +173,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <svg
-              className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4"
+              className="animate-spin h-8 w-8 text-primary mx-auto mb-4"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -192,7 +192,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <p className="text-gray-600">Cargando formulario...</p>
+            <p className="text-muted-foreground">Cargando formulario...</p>
           </div>
         </div>
       </div>
@@ -201,12 +201,12 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
 
   return (
     <>
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
+      <div className=" p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
         <h2 className="text-2xl font-bold mb-4">
           {initialData ? "Editar Auto" : "Nuevo Auto"}
         </h2>
 
-        {error && <div className="text-red-600 mb-2">{error}</div>}
+        {error && <div className="text-destructive mb-2">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Compañía */}
@@ -261,7 +261,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
               <button
                 type="button"
                 onClick={() => setShowBrandModal(true)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-foreground/80 hover:text-foreground"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -309,7 +309,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
               <button
                 type="button"
                 onClick={() => setShowModelModal(true)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-foreground/80 hover:text-foreground"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -356,7 +356,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
               <button
                 type="button"
                 onClick={() => setShowClientModal(true)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-foreground/80 hover:text-foreground"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -467,7 +467,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+              className="px-4 py-2 border  rounded hover: disabled:opacity-50"
             >
               Cancelar
             </button>
@@ -481,7 +481,7 @@ export default function CarCreate({ initialData = null, onClose, onSave }) {
                 !car.clientID ||
                 !car.discountID
               }
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              className="px-4 py-2 bg-primary text-white rounded hover:bg-primary disabled:opacity-50"
             >
               {loading ? "Guardando..." : "Guardar"}
             </button>

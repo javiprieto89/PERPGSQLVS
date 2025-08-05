@@ -38,15 +38,15 @@ export default function WarehouseSearchModal({ isOpen, onClose, onSelect }) {
   );
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-start pt-10">
-      <div className="relative mx-auto p-5 border w-full max-w-xl shadow-lg rounded-md bg-white space-y-4">
+    <div className="fixed inset-0  bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-start pt-10">
+      <div className="relative mx-auto p-5 border w-full max-w-xl shadow-lg rounded-md  space-y-4 bg-background">
         <div className="flex justify-between items-center pb-3 border-b">
-          <h3 className="text-xl font-semibold text-gray-700">
+          <h3 className="text-xl font-semibold text-foreground/80">
             Buscar Depósito
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+            className="text-gray-400 bg-transparent hover: hover:text-foreground rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +81,7 @@ export default function WarehouseSearchModal({ isOpen, onClose, onSelect }) {
           </button>
         </div>
         {showFilters && (
-          <div className="border border-gray-200 rounded-md p-4 bg-gray-50">
+          <div className="border  rounded-md p-4 ">
             <TableFilters
               modelName="warehouses"
               data={warehouses}
@@ -94,7 +94,7 @@ export default function WarehouseSearchModal({ isOpen, onClose, onSelect }) {
         ) : (
           <div className="max-h-80 overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200 text-sm">
-              <thead className="bg-gray-50 sticky top-0">
+              <thead className=" sticky top-0">
                 <tr>
                   <th className="px-4 py-2 text-left">ID</th>
                   <th className="px-4 py-2 text-left">Nombre</th>
@@ -106,7 +106,7 @@ export default function WarehouseSearchModal({ isOpen, onClose, onSelect }) {
                   list.map((w) => (
                     <tr
                       key={w.WarehouseID}
-                      className="hover:bg-gray-50"
+                      className="hover:"
                       onDoubleClick={() => {
                         onSelect(w);
                         onClose();
@@ -120,7 +120,7 @@ export default function WarehouseSearchModal({ isOpen, onClose, onSelect }) {
                             onSelect(w);
                             onClose();
                           }}
-                          className="text-blue-600 hover:underline"
+                          className="text-primary hover:underline"
                         >
                           Seleccionar
                         </button>
@@ -131,7 +131,7 @@ export default function WarehouseSearchModal({ isOpen, onClose, onSelect }) {
                   <tr>
                     <td
                       colSpan="3"
-                      className="px-4 py-8 text-center text-gray-500"
+                      className="px-4 py-8 text-center text-foreground/80"
                     >
                       No se encontraron depósitos
                     </td>

@@ -103,7 +103,7 @@ export default function RolesUsers() {
           </button>
           <button
             onClick={loadData}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="px-4 py-2 bg-primary text-white rounded"
           >
             Recargar
           </button>
@@ -127,7 +127,7 @@ export default function RolesUsers() {
       {loading ? (
         <p>Cargando...</p>
       ) : error ? (
-        <p className="text-red-600">{error}</p>
+        <p className="text-destructive">{error}</p>
       ) : (
         <ul className="space-y-2">
           {records.map((r, idx) => (
@@ -144,7 +144,7 @@ export default function RolesUsers() {
               <span className="space-x-2">
                 <button
                   onClick={() => handleEdit(r)}
-                  className="px-2 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200"
+                  className="px-2 py-1 text-sm  rounded hover:"
                 >
                   Editar
                 </button>

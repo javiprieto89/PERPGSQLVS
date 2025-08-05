@@ -397,7 +397,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
           <div className="space-y-2">
             <div className="flex space-x-2">
               <select
-                className="w-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-32 px-3 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={operator}
                 onChange={(e) =>
                   handleOperatorChange(field.field, e.target.value)
@@ -411,7 +411,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
               </select>
               <input
                 type="text"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="flex-1 px-3 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={value}
                 onChange={(e) => handleChange(field.field, e.target.value)}
                 placeholder={`Buscar por ${field.label.toLowerCase()}...`}
@@ -424,7 +424,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
         return (
           <input
             type="number"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={value}
             onChange={(e) => handleChange(field.field, e.target.value)}
             placeholder={`Buscar por ${field.label.toLowerCase()}...`}
@@ -434,7 +434,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
       if (field.type === "boolean")
         return (
           <select
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={value}
             onChange={(e) => handleChange(field.field, e.target.value)}
           >
@@ -447,7 +447,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
       if (field.type === "select")
         return (
           <select
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-3 py-2 border  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={value}
             onChange={(e) => handleChange(field.field, e.target.value)}
             disabled={field.dependsOn && !filters[field.dependsOn]}
@@ -486,18 +486,15 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
   }, [memoizedModelName]);
 
   return (
-    <div
-      key={componentKey}
-      className="bg-white rounded-lg border border-gray-200"
-    >
-      <div className="px-4 py-3 border-b border-gray-200">
+    <div key={componentKey} className=" rounded-lg border ">
+      <div className="px-4 py-3 border-b ">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-foreground">
             Filtros {memoizedModelName && `- ${memoizedModelName}`}
           </h3>
           <button
             onClick={clearFilters}
-            className="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="inline-flex items-center px-3 py-1 border  shadow-sm text-sm leading-4 font-medium rounded-md text-foreground/80  hover: focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <svg
               className="w-4 h-4 mr-1"
@@ -524,17 +521,17 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
             <span className="ml-2 text-gray-600">Cargando filtros...</span>
           </div>
         ) : filterFields.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-foreground/80">
             No hay filtros disponibles para este modelo
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filterFields.map((field) => (
               <div key={`${field.field}-${componentKey}`} className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-foreground/80">
                   {field.label}
                   {field.dependsOn && (
-                    <span className="text-xs text-gray-500 ml-1">
+                    <span className="text-xs text-foreground/80 ml-1">
                       (depende de{" "}
                       {
                         filterFields.find((f) => f.field === field.dependsOn)
@@ -555,9 +552,9 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
       {Object.keys(filters).filter(
         (key) => !key.endsWith("_op") && filters[key] && filters[key] !== ""
       ).length > 0 && (
-        <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
+        <div className="px-4 py-3  border-t ">
           <div className="flex flex-wrap gap-2">
-            <span className="text-sm font-medium text-gray-700 mr-2">
+            <span className="text-sm font-medium text-foreground/80 mr-2">
               Filtros activos:
             </span>
             {filterFields.map((field) => {
@@ -583,12 +580,12 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
               return (
                 <span
                   key={field.field}
-                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary text-foreground"
                 >
                   {field.label}: {displayValue}
                   <button
                     onClick={() => handleChange(field.field, "")}
-                    className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-600"
+                    className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full text-primary-foreground hover:bg-blue-200 hover:text-primary"
                   >
                     <svg
                       className="w-3 h-3"

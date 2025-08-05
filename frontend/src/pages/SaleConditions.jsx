@@ -104,7 +104,7 @@ export default function SaleConditions() {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
+        <h1 className="text-3xl font-bold text-foreground">
           Condiciones de Venta
         </h1>
         <div className="flex space-x-2">
@@ -116,7 +116,7 @@ export default function SaleConditions() {
           </button>
           <button
             onClick={loadSCs}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary"
           >
             Recargar
           </button>
@@ -137,7 +137,7 @@ export default function SaleConditions() {
           />
         </div>
       )}
-      {error && <div className="text-red-600 mb-4">{error}</div>}
+      {error && <div className="text-destructive mb-4">{error}</div>}
       {loading ? (
         <div>Cargando...</div>
       ) : (
@@ -150,10 +150,7 @@ export default function SaleConditions() {
                 )
               : null;
             return (
-              <div
-                key={sc.SaleConditionID}
-                className="bg-white rounded shadow p-4"
-              >
+              <div key={sc.SaleConditionID} className=" rounded shadow p-4">
                 <h3 className="text-lg font-semibold mb-2">{sc.Name}</h3>
                 <p className="text-sm">
                   Tarjeta: {card ? card.CardName : sc.CreditCardID}
@@ -166,7 +163,7 @@ export default function SaleConditions() {
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleEdit(sc)}
-                    className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200"
+                    className="mt-2 px-3 py-1  text-sm rounded hover:"
                   >
                     Editar
                   </button>

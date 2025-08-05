@@ -46,7 +46,7 @@ export default function FeLastVoucher() {
   };
 
   const getStatusColor = (success) => {
-    return success ? "text-green-600" : "text-red-600";
+    return success ? "text-green-600" : "text-destructive";
   };
 
   const tiposComprobante = [
@@ -67,7 +67,7 @@ export default function FeLastVoucher() {
       <h1 className="text-2xl font-bold mb-6">Último Comprobante Autorizado</h1>
 
       {/* Estado de conexión */}
-      <div className="mb-6 p-4 border rounded-lg bg-gray-50">
+      <div className="mb-6 p-4 border rounded-lg ">
         <h2 className="font-semibold mb-2">Estado de Conexión AFIP</h2>
         {connectionStatus ? (
           <div>
@@ -80,21 +80,23 @@ export default function FeLastVoucher() {
                 ? "✅ Conectado"
                 : "❌ Error de conexión"}
             </p>
-            <p className="text-sm text-gray-600">{connectionStatus.message}</p>
+            <p className="text-sm text-muted-foreground">
+              {connectionStatus.message}
+            </p>
             <button
               onClick={testConnection}
-              className="mt-2 px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="mt-2 px-3 py-1 text-sm bg-primary text-white rounded hover:bg-primary"
             >
               Probar Conexión
             </button>
           </div>
         ) : (
-          <p className="text-gray-500">Verificando conexión...</p>
+          <p className="text-foreground/80">Verificando conexión...</p>
         )}
       </div>
 
       {/* Formulario */}
-      <div className="border rounded-lg p-6 bg-white shadow-sm">
+      <div className="border rounded-lg p-6  shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-2">
@@ -110,7 +112,7 @@ export default function FeLastVoucher() {
               max="9999"
               required
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-foreground/80 mt-1">
               Número del punto de venta (1-9999)
             </p>
           </div>
@@ -131,7 +133,7 @@ export default function FeLastVoucher() {
                 </option>
               ))}
             </select>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-foreground/80 mt-1">
               Seleccione el tipo de comprobante a consultar
             </p>
           </div>
@@ -139,7 +141,7 @@ export default function FeLastVoucher() {
           <button
             type="submit"
             disabled={loading || !connectionStatus?.success}
-            className="w-full px-4 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400 font-medium"
+            className="w-full px-4 py-3 bg-primary text-white rounded hover:bg-primary disabled: font-medium"
           >
             {loading ? "Consultando..." : "Consultar Último Número"}
           </button>
@@ -148,16 +150,16 @@ export default function FeLastVoucher() {
 
       {/* Resultado */}
       {result !== null && (
-        <div className="mt-6 p-6 border rounded-lg bg-gray-50">
+        <div className="mt-6 p-6 border rounded-lg ">
           <h2 className="text-lg font-semibold mb-3">Resultado</h2>
 
           {typeof result === "number" ? (
             <div className="space-y-2">
               <div className="text-3xl font-bold text-green-600">{result}</div>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Último número de comprobante autorizado para:
               </p>
-              <ul className="text-sm text-gray-700 space-y-1">
+              <ul className="text-sm text-foreground/80 space-y-1">
                 <li>
                   • <strong>Punto de Venta:</strong> {ptoVta}
                 </li>
@@ -178,16 +180,16 @@ export default function FeLastVoucher() {
             </div>
           ) : (
             <div className="p-3 bg-red-100 border border-red-400 rounded">
-              <p className="text-red-800 text-sm">❌ {result}</p>
+              <p className="text-destructive text-sm">❌ {result}</p>
             </div>
           )}
         </div>
       )}
 
       {/* Información de ayuda */}
-      <div className="mt-8 p-4 bg-blue-50 border-l-4 border-blue-400">
-        <h3 className="font-semibold text-blue-800 mb-2">Información</h3>
-        <ul className="text-sm text-blue-700 space-y-1">
+      <div className="mt-8 p-4 bg-accent border-l-4 border-blue-400">
+        <h3 className="font-semibold text-foreground mb-2">Información</h3>
+        <ul className="text-sm text-foreground/80 space-y-1">
           <li>• Esta consulta usa el servicio WSFE de AFIP</li>
           <li>• Se obtiene automáticamente un token del WSAA</li>
           <li>

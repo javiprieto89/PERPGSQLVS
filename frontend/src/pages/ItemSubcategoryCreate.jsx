@@ -71,14 +71,14 @@ export default function ItemSubcategoryCreate({
       <h2 className="text-xl font-bold mb-4">
         {isEdit ? "Editar Subcategoría" : "Nueva Subcategoría"}
       </h2>
-      {error && <div className="text-red-600 mb-2">{error}</div>}
+      {error && <div className="text-destructive mb-2">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Categoría</label>
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded"
+            className="w-full border  p-2 rounded"
             required
           >
             <option value="">Seleccione</option>
@@ -95,7 +95,7 @@ export default function ItemSubcategoryCreate({
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded"
+            className="w-full border  p-2 rounded"
             required
           />
         </div>
@@ -104,14 +104,14 @@ export default function ItemSubcategoryCreate({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+            className="px-4 py-2 border  rounded hover: disabled:opacity-50"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={loading || !name.trim() || !categoryId}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary disabled:opacity-50"
           >
             {loading ? "Guardando..." : "Guardar"}
           </button>

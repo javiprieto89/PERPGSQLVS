@@ -87,7 +87,7 @@ export default function SaleConditionCreate({
       <h2 className="text-xl font-bold mb-4">
         {isEdit ? "Editar Condición" : "Nueva Condición"}
       </h2>
-      {error && <div className="text-red-600 mb-2">{error}</div>}
+      {error && <div className="text-destructive mb-2">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Nombre</label>
@@ -95,7 +95,7 @@ export default function SaleConditionCreate({
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded"
+            className="w-full border  p-2 rounded"
             required
           />
         </div>
@@ -105,7 +105,7 @@ export default function SaleConditionCreate({
             type="date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded"
+            className="w-full border  p-2 rounded"
             required
           />
         </div>
@@ -120,7 +120,7 @@ export default function SaleConditionCreate({
                 e.target.value === "" ? "" : parseInt(e.target.value)
               )
             }
-            className="w-full border border-gray-300 p-2 rounded"
+            className="w-full border  p-2 rounded"
           >
             <option value="">Seleccione</option>
             {cards.map((card) => (
@@ -136,7 +136,7 @@ export default function SaleConditionCreate({
             type="number"
             value={surcharge}
             onChange={(e) => setSurcharge(e.target.value)}
-            className="w-full border border-gray-300 p-2 rounded"
+            className="w-full border  p-2 rounded"
             step="0.01"
           />
         </div>
@@ -156,14 +156,14 @@ export default function SaleConditionCreate({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+            className="px-4 py-2 border  rounded hover: disabled:opacity-50"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={loading || !name.trim() || !dueDate}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary disabled:opacity-50"
           >
             {loading ? "Guardando..." : "Guardar"}
           </button>

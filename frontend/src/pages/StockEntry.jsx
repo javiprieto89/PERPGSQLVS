@@ -1,5 +1,6 @@
 // frontend/src/pages/StockEntry.jsx
 import { useEffect, useState } from "react";
+import { Button } from "~/components/ui/button";
 import {
   branchOperations,
   companyOperations,
@@ -149,8 +150,8 @@ export default function StockEntry({ onClose, windowRef, userInfo }) {
   if (error) {
     return (
       <div className="p-6">
-        <div className="text-red-600 mb-4">Error: {error}</div>
-        <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">
+        <div className="text-destructive mb-4">Error: {error}</div>
+        <button onClick={onClose} className="px-4 py-2  rounded">
           Cerrar
         </button>
       </div>
@@ -189,7 +190,7 @@ export default function StockEntry({ onClose, windowRef, userInfo }) {
               <button
                 type="button"
                 onClick={() => setShowCompanyModal(true)}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-muted-foreground"
               >
                 <svg
                   className="h-4 w-4"
@@ -238,7 +239,7 @@ export default function StockEntry({ onClose, windowRef, userInfo }) {
               <button
                 type="button"
                 onClick={() => setShowBranchModal(true)}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-muted-foreground"
               >
                 <svg
                   className="h-4 w-4"
@@ -261,13 +262,13 @@ export default function StockEntry({ onClose, windowRef, userInfo }) {
       </div>
       <button
         onClick={() => setShowItemSearch(true)}
-        className="px-4 py-2 bg-blue-600 text-white rounded"
+        className="px-4 py-2 bg-primary text-white rounded"
       >
         Buscar Ítem
       </button>
       {entries.length > 0 && (
         <table className="w-full text-sm">
-          <thead className="bg-gray-100">
+          <thead className="">
             <tr>
               <th className="px-2">Ítem</th>
               <th className="px-2">Depósito</th>
@@ -289,13 +290,10 @@ export default function StockEntry({ onClose, windowRef, userInfo }) {
         </table>
       )}
       <div className="flex justify-end gap-2">
-        <button
-          onClick={handleProcess}
-          className="px-4 py-2 bg-indigo-600 text-white rounded"
-        >
+        <Button variant="primary" onClick={handleProcess}>
           Guardar
-        </button>
-        <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">
+        </Button>
+        <button onClick={onClose} className="px-4 py-2  rounded">
           Cancelar
         </button>
       </div>

@@ -123,7 +123,6 @@ const sections = [
 ];
 
 function Item({ label, to, action }) {
-  console.log({ label, to });
   return (
     <li key={label}>
       {to ? (

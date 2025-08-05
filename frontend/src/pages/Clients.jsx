@@ -1,10 +1,5 @@
-import { useEffect, useState } from "react";
-import { diagnosticGraphQL } from "~/graphql/diagnostic";
-import { graphqlClient } from "~/graphql/graphqlClient";
-import { clientOperations } from "~/graphql/operations";
-import { QUERIES } from "~/graphql/queries/queries";
-
 import {
+  EllipsisVertical,
   Eye,
   Funnel,
   FunnelX,
@@ -12,9 +7,29 @@ import {
   RefreshCcw,
   Stethoscope,
   Trash,
+  TriangleAlert,
   UserRoundPlus,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+
+import { diagnosticGraphQL } from "~/graphql/diagnostic";
+import { graphqlClient } from "~/graphql/graphqlClient";
+import { clientOperations } from "~/graphql/operations";
+import { QUERIES } from "~/graphql/queries/queries";
+import { openReactWindow } from "../utils/openReactWindow";
+
+import TableFilters from "~/components/TableFilters";
+import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { Input } from "~/components/ui/input";
 import {
   Table,
@@ -24,8 +39,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import TableFilters from "../components/TableFilters";
-import { openReactWindow } from "../utils/openReactWindow";
+
 import ClientCreate from "./ClientCreate";
 
 // Modal simple para mostrar los datos del cliente seleccionado
@@ -207,20 +221,21 @@ export default function Clients() {
           <h1 className="text-3xl font-bold">Clientes</h1>
           <div className="flex items-center space-x-2">
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-            <span className="text-blue-600">Cargando...</span>
+            <span className="text-primary">Cargando...</span>
           </div>
         </div>
 
         {debugInfo && (
-          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
-            <p className="text-blue-800 text-sm">{debugInfo}</p>
-          </div>
+          <Alert variant="default">
+            <TriangleAlert />
+            <AlertDescription>{debugInfo}</AlertDescription>
+          </Alert>
         )}
 
         <div className="animate-pulse">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-gray-200 h-32 rounded"></div>
+              <div key={i} className=" h-32 rounded"></div>
             ))}
           </div>
         </div>
@@ -274,10 +289,10 @@ export default function Clients() {
 
       {/* Información de debug */}
       {debugInfo && (
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="mb-4 p-4 bg-accent border border-blue-200 rounded-lg">
           <div className="flex items-center">
             <svg
-              className="w-5 h-5 text-blue-600 mr-2"
+              className="w-5 h-5 text-primary mr-2"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -287,7 +302,7 @@ export default function Clients() {
                 clipRule="evenodd"
               />
             </svg>
-            <p className="text-blue-800 text-sm">{debugInfo}</p>
+            <p className="text-foreground text-sm">{debugInfo}</p>
           </div>
         </div>
       )}
@@ -297,7 +312,7 @@ export default function Clients() {
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
           <div className="flex items-start">
             <svg
-              className="w-5 h-5 text-red-600 mr-2 mt-0.5"
+              className="w-5 h-5 text-destructive mr-2 mt-0.5"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -308,11 +323,11 @@ export default function Clients() {
               />
             </svg>
             <div>
-              <h4 className="text-red-800 font-semibold mb-1">
+              <h4 className="text-destructive font-semibold mb-1">
                 Error cargando clientes
               </h4>
-              <p className="text-red-700 text-sm">{error}</p>
-              <div className="mt-3 text-sm text-red-600">
+              <p className="text-destructive text-sm">{error}</p>
+              <div className="mt-3 text-sm text-destructive">
                 <p className="font-medium">Posibles soluciones:</p>
                 <ul className="list-disc list-inside mt-1 space-y-1">
                   <li>
@@ -352,14 +367,16 @@ export default function Clients() {
 
           <Table>
             <TableHeader>
-              <TableHead>ID</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Address</TableHead>
-              <TableHead>Doc</TableHead>
-              <TableHead>Active</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Address</TableHead>
+                <TableHead>Doc</TableHead>
+                <TableHead>Active</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
             </TableHeader>
             <TableBody>
               {clients.map((client) => (
@@ -370,26 +387,64 @@ export default function Clients() {
                   <TableCell>{client.Phone}</TableCell>
                   <TableCell>{client.Address}</TableCell>
                   <TableCell>{client.DocNumber}</TableCell>
-                  <TableCell>{client.IsActive}</TableCell>
                   <TableCell>
-                    <Button onClick={() => handleViewDetails(client)}>
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        client.IsActive
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-destructive"
+                      }`}
+                    >
+                      {client.IsActive ? "Activo" : "Inactivo"}
+                    </span>
+                  </TableCell>
+                  <TableCell className="flex gap-2">
+                    <Button
+                      className="hidden md:inline"
+                      onClick={() => handleViewDetails(client)}
+                    >
                       <Eye />
-                      <span className="hidden md:inline">Ver Detalles</span>
                     </Button>
                     <Button
                       onClick={() => handleEditClient(client)}
-                      className="px-3 py-2 text-sm rounded"
+                      className="hidden md:inline px-3 py-2 text-sm rounded"
                     >
                       <Pencil />
-                      <span className="hidden md:inline">Editar</span>
                     </Button>
-                    <Button
-                      variant="destructive"
-                      onClick={() => handleDeleteClient(client.ClientID)}
-                    >
-                      <Trash />
-                      <span className="hidden md:inline">Eliminar</span>
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button>
+                          <EllipsisVertical />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem
+                          onClick={() => handleViewDetails(client)}
+                        >
+                          <Eye />
+                          <span className="hidden md:inline">Ver Detalles</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <NavLink
+                            onClick={() => handleEditClient(client)}
+                            className="px-3 py-2 text-sm rounded"
+                            target="_blank"
+                          >
+                            <Pencil />
+                            Edit
+                          </NavLink>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={() => handleDeleteClient(client.ClientID)}
+                        >
+                          <Trash />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}
@@ -413,7 +468,7 @@ export default function Clients() {
                     className={`px-2 py-1 text-xs font-medium rounded-full ${
                       client.IsActive
                         ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                        : "bg-red-100 text-destructive"
                     }`}
                   >
                     {client.IsActive ? "Activo" : "Inactivo"}
@@ -483,7 +538,7 @@ export default function Clients() {
                   )}
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-gray-200 flex space-x-2">
+                <div className="mt-4 pt-4 border-t  flex space-x-2">
                   <Button onClick={() => handleViewDetails(client)}>
                     <Eye />
                     <span className="hidden md:inline">Ver Detalles</span>
@@ -530,7 +585,7 @@ export default function Clients() {
           <div className="mt-6">
             <button
               onClick={handleCreateClient}
-              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md  bg-blue-600 hover:bg-blue-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md  bg-primary hover:bg-primary"
             >
               Crear Primer Cliente
             </button>

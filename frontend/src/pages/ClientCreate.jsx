@@ -195,7 +195,7 @@ export default function ClientCreate({
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <svg
-              className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4"
+              className="animate-spin h-8 w-8 text-primary mx-auto mb-4"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -214,7 +214,7 @@ export default function ClientCreate({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <p className="text-gray-600">Cargando formulario...</p>
+            <p className="text-muted-foreground">Cargando formulario...</p>
           </div>
         </div>
       </div>
@@ -229,13 +229,13 @@ export default function ClientCreate({
 
       {error && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-600">{error}</p>
+          <p className="text-destructive">{error}</p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Información del documento */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">
             Información del Documento
           </h3>
@@ -248,7 +248,7 @@ export default function ClientCreate({
                 name="docTypeID"
                 value={client.docTypeID}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               >
                 <option value="">Seleccione</option>
@@ -270,14 +270,14 @@ export default function ClientCreate({
                 placeholder="Ingrese el número de documento"
                 value={client.docNumber}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 maxLength={50}
               />
             </div>
           </div>
         </div>
         {/* Organización */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">Organización</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -287,7 +287,7 @@ export default function ClientCreate({
                   name="companyID"
                   value={client.companyID}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="">Todos</option>
                   {formData.companies.map((c) => (
@@ -299,7 +299,7 @@ export default function ClientCreate({
                 <button
                   type="button"
                   onClick={() => setShowCompanyModal(true)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-foreground/80 hover:text-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -325,7 +325,7 @@ export default function ClientCreate({
                   name="branchID"
                   value={client.branchID}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled={!client.companyID}
                 >
                   <option value="">Todos</option>
@@ -339,7 +339,7 @@ export default function ClientCreate({
                 <button
                   type="button"
                   onClick={() => setShowBranchModal(true)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-foreground/80 hover:text-foreground"
                   disabled={!client.companyID}
                 >
                   <svg
@@ -362,7 +362,7 @@ export default function ClientCreate({
           </div>
         </div>
         {/* Información personal */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">Información Personal</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -373,7 +373,7 @@ export default function ClientCreate({
                 placeholder="Nombre del cliente"
                 value={client.firstName}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
                 maxLength={100}
               />
@@ -387,7 +387,7 @@ export default function ClientCreate({
                 placeholder="Apellido del cliente"
                 value={client.lastName}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 maxLength={100}
               />
             </div>
@@ -395,7 +395,7 @@ export default function ClientCreate({
         </div>
 
         {/* Información de contacto */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">
             Información de Contacto
           </h3>
@@ -408,7 +408,7 @@ export default function ClientCreate({
                 placeholder="email@ejemplo.com"
                 value={client.email}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 maxLength={100}
               />
             </div>
@@ -421,7 +421,7 @@ export default function ClientCreate({
                 placeholder="Número de teléfono"
                 value={client.phone}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 maxLength={20}
               />
             </div>
@@ -429,7 +429,7 @@ export default function ClientCreate({
         </div>
 
         {/* Información de ubicación */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">
             Información de Ubicación
           </h3>
@@ -444,7 +444,7 @@ export default function ClientCreate({
                 placeholder="Dirección completa"
                 value={client.address}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 maxLength={200}
               />
             </div>
@@ -456,7 +456,7 @@ export default function ClientCreate({
                   name="countryID"
                   value={client.countryID}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required
                 >
                   <option value="">Seleccione</option>
@@ -476,7 +476,7 @@ export default function ClientCreate({
                   name="provinceID"
                   value={client.provinceID}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required
                 >
                   <option value="">Seleccione</option>
@@ -503,7 +503,7 @@ export default function ClientCreate({
                   placeholder="Ciudad"
                   value={client.city}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   maxLength={100}
                 />
               </div>
@@ -520,7 +520,7 @@ export default function ClientCreate({
                   placeholder="Código postal"
                   value={client.postalCode}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   maxLength={20}
                 />
               </div>
@@ -529,7 +529,7 @@ export default function ClientCreate({
         </div>
 
         {/* Configuración comercial */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">
             Configuración Comercial
           </h3>
@@ -542,7 +542,7 @@ export default function ClientCreate({
                 name="priceListID"
                 value={client.priceListID}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               >
                 <option value="">Seleccione</option>
@@ -566,7 +566,7 @@ export default function ClientCreate({
                 name="vendorID"
                 value={client.vendorID}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               >
                 <option value="">Seleccione</option>
@@ -586,11 +586,11 @@ export default function ClientCreate({
                 name="isActive"
                 checked={client.isActive}
                 onChange={handleChange}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="w-4 h-4 text-primary   rounded focus:ring-blue-500"
               />
               <span className="text-sm font-medium">Cliente activo</span>
             </label>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-foreground/80 mt-1">
               Los clientes inactivos no aparecerán en las búsquedas por defecto
             </p>
           </div>
@@ -598,11 +598,11 @@ export default function ClientCreate({
 
         {/* Resumen de datos (solo en edición) */}
         {isEdit && (
-          <div className="bg-blue-50 p-4 rounded-lg">
+          <div className="bg-accent p-4 rounded-lg">
             <h3 className="text-lg font-semibold mb-2">
               Información del Cliente
             </h3>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-muted-foreground">
               <p>
                 <strong>ID:</strong> {initialClient?.ClientID}
               </p>
@@ -623,14 +623,14 @@ export default function ClientCreate({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-6 py-3 border  rounded-lg hover: disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={loading || !client.firstName.trim()}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors"
+            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors"
           >
             {loading ? (
               <>

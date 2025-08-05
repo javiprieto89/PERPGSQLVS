@@ -338,7 +338,7 @@ export default function Dashboard() {
             <div className="border border-red-200 rounded-lg p-4 mb-4">
               <div className="flex items-center">
                 <svg
-                  className="w-5 h-5 text-red-600 mr-2"
+                  className="w-5 h-5 text-destructive mr-2"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -348,17 +348,17 @@ export default function Dashboard() {
                     clipRule="evenodd"
                   />
                 </svg>
-                <h4 className="text-red-800 font-semibold">
+                <h4 className="text-destructive font-semibold">
                   Atención: Stock Bajo
                 </h4>
               </div>
-              <p className="text-red-700 mt-1">
+              <p className="text-destructive mt-1">
                 Hay {dashboardStats.lowStockItems} item(s) con stock por debajo
                 del mínimo requerido.
               </p>
               <Button
                 onClick={() => window.open("/items?filter=lowstock", "_blank")}
-                className="mt-2 text-red-800 underline hover:text-red-600"
+                className="mt-2 text-destructive underline hover:text-destructive"
               >
                 Ver items con stock bajo →
               </Button>
@@ -372,7 +372,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <button
             onClick={() => window.open("/clients", "_blank")}
-            className="p-4 bg-card hover:bg-blue-100/10 hover:shadow-sm border hover:border-blue-500/80 rounded-lg border-l-4 text-left"
+            className="p-4 bg-card hover:bg-primary/10 hover:shadow-sm border hover:border-blue-500/80 rounded-lg border-l-4 text-left"
           >
             <div className="flex items-center mb-2 gap-1">
               <UserRoundCog />
@@ -451,7 +451,7 @@ export default function Dashboard() {
       </div>
 
       {/* Footer del dashboard */}
-      <div className="mt-8 pt-6 border-t border-gray-200">
+      <div className="mt-8 pt-6 border-t ">
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <div>
             <p className="text-sm text-muted-foreground">

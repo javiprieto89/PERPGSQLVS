@@ -261,7 +261,7 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }) {
           <h3 className="text-2xl font-semibold">Buscar Ítems</h3>
           <Button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+            className="text-gray-400 hover:text-foreground rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -291,7 +291,7 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }) {
               id="filter_item_id"
               value={filters.item_id}
               onChange={handleFilterChange}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
+              className="mt-1 block w-full  rounded-md shadow-sm py-2 px-3 sm:text-sm"
             />
           </div>
 
@@ -305,7 +305,7 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }) {
                 id="filter_code"
                 value={filters.code.value}
                 onChange={handleFilterChange}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
+                className="mt-1 block w-full  rounded-md shadow-sm py-2 px-3 sm:text-sm"
               />
             </div>
             <div>
@@ -345,7 +345,7 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }) {
                 id="filter_description"
                 value={filters.description.value}
                 onChange={handleFilterChange}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
+                className="mt-1 block w-full  rounded-md shadow-sm py-2 px-3 sm:text-sm"
               />
             </div>
             <div>
@@ -486,7 +486,7 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }) {
                 id="filter_oem"
                 value={filters.oem.value}
                 onChange={handleFilterChange}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm"
+                className="mt-1 block w-full  rounded-md shadow-sm py-2 px-3 sm:text-sm"
               />
             </div>
             <div>
@@ -566,7 +566,7 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }) {
                 <TableRow key="no-results">
                   <TableCell
                     colSpan="8"
-                    className="px-4 py-10 text-center text-sm text-gray-500"
+                    className="px-4 py-10 text-center text-sm text-foreground/80"
                   >
                     {isLoading
                       ? "Cargando resultados..."

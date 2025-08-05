@@ -1,5 +1,6 @@
 // src/pages/OrderCreate.jsx
 import { useEffect, useState } from "react";
+import { Button } from "~/components/ui/button";
 import {
   branchOperations,
   carOperations,
@@ -586,15 +587,15 @@ export default function OrderCreate({
   }, [sessionId, windowRef]);
 
   return (
-    <div className="container mx-auto p-4 md:p-6 bg-gray-100 min-h-screen">
-      <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl space-y-8 max-w-5xl mx-auto">
-        <h1 className="text-3xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-4 mb-8">
+    <div className="container mx-auto p-4 md:p-6  min-h-screen">
+      <div className=" p-6 md:p-8 rounded-xl shadow-2xl space-y-8 max-w-5xl mx-auto">
+        <h1 className="text-3xl font-semibold text-foreground border-b-2  pb-4 mb-8">
           {isEdit ? "Editar Pedido" : "Cargar Nuevo Pedido"}
         </h1>
         <form onSubmit={handleSubmit} className="space-y-10">
           {/* Sección Datos Generales */}
-          <section className="p-6 border border-gray-200 rounded-lg shadow-md bg-white">
-            <h2 className="text-xl font-medium text-indigo-700 mb-6">
+          <section className="p-6 border  rounded-lg shadow-md ">
+            <h2 className="text-xl font-medium text-foreground mb-6">
               <span className="border-b-2 border-indigo-200 pb-1">
                 Datos Generales
               </span>
@@ -603,7 +604,7 @@ export default function OrderCreate({
               <div>
                 <label
                   htmlFor="date"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   Fecha del Pedido
                 </label>
@@ -613,13 +614,13 @@ export default function OrderCreate({
                   id="date"
                   value={formData.date}
                   onChange={handleChange}
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
+                  className="mt-1 block w-full  rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
                 />
               </div>
               <div>
                 <label
                   htmlFor="companyId"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   Compañía
                 </label>
@@ -628,7 +629,7 @@ export default function OrderCreate({
                   id="companyId"
                   value={formData.companyId}
                   onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
+                  className="mt-1 block w-full border  rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
                   required
                 >
                   <option value="">Seleccione</option>
@@ -642,7 +643,7 @@ export default function OrderCreate({
               <div>
                 <label
                   htmlFor="branchId"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   Sucursal
                 </label>
@@ -651,7 +652,7 @@ export default function OrderCreate({
                   id="branchId"
                   value={formData.branchId}
                   onChange={handleChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
+                  className="mt-1 block w-full border  rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
                   required
                 >
                   <option value="">Seleccione</option>
@@ -666,15 +667,15 @@ export default function OrderCreate({
           </section>
 
           {/* Sección Cliente */}
-          <section className="p-6 border border-gray-200 rounded-lg shadow-md bg-white">
-            <h2 className="text-xl font-medium text-indigo-700 mb-6">
+          <section className="p-6 border  rounded-lg shadow-md ">
+            <h2 className="text-xl font-medium text-foreground mb-6">
               <span className="border-b-2 border-indigo-200 pb-1">Cliente</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6 items-end">
               <div className="md:col-span-1">
                 <label
                   htmlFor="clientId"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   ID Cliente *
                 </label>
@@ -685,14 +686,14 @@ export default function OrderCreate({
                   value={formData.clientId}
                   onChange={handleChange}
                   placeholder="ID Numérico"
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
+                  className="mt-1 block w-full  rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
                   required
                 />
               </div>
               <div className="md:col-span-2 relative">
                 <label
                   htmlFor="clientSearch"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   Buscar Cliente por Nombre
                 </label>
@@ -719,13 +720,13 @@ export default function OrderCreate({
                     if (clientSearch.trim() !== "") setShowClientDropdown(true);
                   }}
                   placeholder="Escriba para buscar..."
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
+                  className="mt-1 block w-full  rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
                   autoComplete="off"
                 />
                 <button
                   type="button"
                   onClick={() => setShowClientSearchModal(true)}
-                  className="absolute right-2 top-9 text-gray-500 hover:text-gray-700"
+                  className="absolute right-2 top-9 text-foreground/80 hover:text-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -745,7 +746,7 @@ export default function OrderCreate({
                 {showClientDropdown && (
                   <ul
                     id="client-dropdown-list"
-                    className="absolute z-30 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+                    className="absolute z-30 mt-1 w-full  shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
                   >
                     {filteredClients.length > 0
                       ? filteredClients.map((c) => (
@@ -755,13 +756,13 @@ export default function OrderCreate({
                               e.preventDefault();
                               handleClientSelection(c);
                             }}
-                            className="text-gray-800 cursor-pointer select-none relative py-2 pl-4 pr-4 hover:bg-indigo-500 hover:text-white rounded-md mx-1 my-0.5"
+                            className="text-foreground cursor-pointer select-none relative py-2 pl-4 pr-4 hover:bg-indigo-500 hover:text-white rounded-md mx-1 my-0.5"
                           >
                             ({c.ClientID}) - {c.FirstName} {c.LastName || ""}
                           </li>
                         ))
                       : clientSearch.trim() !== "" && (
-                          <li className="text-gray-500 cursor-default select-none relative py-2 px-4">
+                          <li className="text-foreground/80 cursor-default select-none relative py-2 px-4">
                             No se encontraron clientes.
                           </li>
                         )}
@@ -772,7 +773,7 @@ export default function OrderCreate({
           </section>
 
           {/* Sección Servicio */}
-          <section className="p-6 border border-gray-200 rounded-lg shadow-md bg-white">
+          <section className="p-6 border  rounded-lg shadow-md ">
             <div className="flex items-center mb-6">
               <input
                 id="isService"
@@ -780,25 +781,25 @@ export default function OrderCreate({
                 type="checkbox"
                 checked={formData.isService}
                 onChange={handleChange}
-                className="h-5 w-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 focus:ring-offset-0"
+                className="h-5 w-5 text-primary  rounded focus:ring-indigo-500 focus:ring-offset-0"
               />
               <label
                 htmlFor="isService"
-                className="ml-3 block text-sm font-medium text-gray-700"
+                className="ml-3 block text-sm font-medium text-foreground/80"
               >
                 Marcar si es un Pedido de Servicio
               </label>
             </div>
 
             {formData.isService && (
-              <div className="space-y-6 pt-4 border-t border-gray-200">
-                <h3 className="text-lg font-medium text-indigo-600 mb-4">
+              <div className="space-y-6 pt-4 border-t ">
+                <h3 className="text-lg font-medium text-primary mb-4">
                   Detalles del Servicio
                 </h3>
                 <div>
                   <label
                     htmlFor="carId"
-                    className="block text-sm font-medium text-gray-600 mb-1"
+                    className="block text-sm font-medium text-muted-foreground mb-1"
                   >
                     Vehículo del Cliente
                   </label>
@@ -808,7 +809,7 @@ export default function OrderCreate({
                     value={formData.carId}
                     onChange={handleChange}
                     disabled={!formData.clientId || cars.length === 0}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md disabled:bg-gray-100 disabled:text-gray-400"
+                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base  focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md disabled: disabled:text-muted-foreground"
                   >
                     <option value="">
                       {formData.clientId
@@ -829,7 +830,7 @@ export default function OrderCreate({
                 <div>
                   <label
                     htmlFor="serviceTypeId"
-                    className="block text-sm font-medium text-gray-600 mb-1"
+                    className="block text-sm font-medium text-muted-foreground mb-1"
                   >
                     Tipo de Servicio
                   </label>
@@ -838,7 +839,7 @@ export default function OrderCreate({
                     id="serviceTypeId"
                     value={formData.serviceTypeId}
                     onChange={handleChange}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
+                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base  focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
                   >
                     <option value="">Seleccionar tipo de servicio...</option>
                     {serviceTypes.map((st) => (
@@ -853,7 +854,7 @@ export default function OrderCreate({
                   <div>
                     <label
                       htmlFor="mileage"
-                      className="block text-sm font-medium text-gray-600 mb-1"
+                      className="block text-sm font-medium text-muted-foreground mb-1"
                     >
                       Kilometraje Actual
                     </label>
@@ -864,13 +865,13 @@ export default function OrderCreate({
                       value={formData.mileage}
                       onChange={handleChange}
                       placeholder="Ej: 120000"
-                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
+                      className="mt-1 block w-full  rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
                     />
                   </div>
                   <div>
                     <label
                       htmlFor="nextServiceMileage"
-                      className="block text-sm font-medium text-gray-600 mb-1"
+                      className="block text-sm font-medium text-muted-foreground mb-1"
                     >
                       Próximo Servicio (Km)
                     </label>
@@ -881,7 +882,7 @@ export default function OrderCreate({
                       value={formData.nextServiceMileage}
                       onChange={handleChange}
                       placeholder="Ej: 130000"
-                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
+                      className="mt-1 block w-full  rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
                     />
                   </div>
                 </div>
@@ -890,8 +891,8 @@ export default function OrderCreate({
           </section>
 
           {/* Sección Condiciones Comerciales */}
-          <section className="p-6 border border-gray-200 rounded-lg shadow-md bg-white">
-            <h2 className="text-xl font-medium text-indigo-700 mb-6">
+          <section className="p-6 border  rounded-lg shadow-md ">
+            <h2 className="text-xl font-medium text-foreground mb-6">
               <span className="border-b-2 border-indigo-200 pb-1">
                 Notas y Condiciones Comerciales
               </span>
@@ -900,7 +901,7 @@ export default function OrderCreate({
               <div className="md:col-span-2">
                 <label
                   htmlFor="notes"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   Notas Adicionales
                 </label>
@@ -910,14 +911,14 @@ export default function OrderCreate({
                   rows="4"
                   value={formData.notes}
                   onChange={handleChange}
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
+                  className="mt-1 block w-full  rounded-md shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 py-2 px-3"
                   placeholder="Observaciones sobre el pedido o servicio..."
                 ></textarea>
               </div>
               <div className="relative">
                 <label
                   htmlFor="saleConditionId"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   Condición de Venta *
                 </label>
@@ -926,7 +927,7 @@ export default function OrderCreate({
                   id="saleConditionId"
                   value={formData.saleConditionId}
                   onChange={handleChange}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base  focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
                   required
                 >
                   <option value="">Seleccionar condición...</option>
@@ -939,7 +940,7 @@ export default function OrderCreate({
                 <button
                   type="button"
                   onClick={() => setShowSaleConditionModal(true)}
-                  className="absolute right-2 top-9 text-gray-500 hover:text-gray-700"
+                  className="absolute right-2 top-9 text-foreground/80 hover:text-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -960,7 +961,7 @@ export default function OrderCreate({
               <div>
                 <label
                   htmlFor="discountId"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   Descuento Aplicado *
                 </label>
@@ -969,7 +970,7 @@ export default function OrderCreate({
                   id="discountId"
                   value={formData.discountId}
                   onChange={handleChange}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base  focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
                   required
                 >
                   <option value="">Seleccionar descuento...</option>
@@ -983,7 +984,7 @@ export default function OrderCreate({
               <div>
                 <label
                   htmlFor="priceListId"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   Lista de Precios *
                 </label>
@@ -992,7 +993,7 @@ export default function OrderCreate({
                   id="priceListId"
                   value={formData.priceListId}
                   onChange={handleChange}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base  focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
                   required
                 >
                   <option value="">Seleccionar lista de precios...</option>
@@ -1006,7 +1007,7 @@ export default function OrderCreate({
               <div>
                 <label
                   htmlFor="orderStatusId"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   Estado del Pedido *
                 </label>
@@ -1015,7 +1016,7 @@ export default function OrderCreate({
                   id="orderStatusId"
                   value={formData.orderStatusId}
                   onChange={handleChange}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base  focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
                   required
                 >
                   <option value="">Seleccionar estado...</option>
@@ -1029,7 +1030,7 @@ export default function OrderCreate({
               <div>
                 <label
                   htmlFor="warehouseId"
-                  className="block text-sm font-medium text-gray-600 mb-1"
+                  className="block text-sm font-medium text-muted-foreground mb-1"
                 >
                   Depósito *
                 </label>
@@ -1038,7 +1039,7 @@ export default function OrderCreate({
                   id="warehouseId"
                   value={formData.warehouseId}
                   onChange={handleChange}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base  focus:outline-none focus:ring-indigo-200 focus:border-indigo-500 sm:text-sm rounded-md"
                   required
                 >
                   <option value="">Seleccionar depósito...</option>
@@ -1053,9 +1054,9 @@ export default function OrderCreate({
           </section>
 
           {/* Sección Ítems del Pedido */}
-          <section className="p-6 border border-gray-200 rounded-lg shadow-md bg-white">
+          <section className="p-6 border  rounded-lg shadow-md ">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-medium text-indigo-700">
+              <h2 className="text-xl font-medium text-foreground">
                 <span className="border-b-2 border-indigo-200 pb-1">
                   Ítems del Pedido
                 </span>
@@ -1072,49 +1073,49 @@ export default function OrderCreate({
             {/* DataGrid de ítems */}
             {items.length > 0 && (
               <div className="flow-root mt-6">
-                <div className="overflow-x-auto border border-gray-200 rounded-md">
+                <div className="overflow-x-auto border  rounded-md">
                   <table className="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead className="bg-gray-50">
+                    <thead className="">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                           Código
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                           Descripción
                         </th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-right text-xs font-medium text-foreground/80 uppercase tracking-wider">
                           Cantidad
                         </th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-right text-xs font-medium text-foreground/80 uppercase tracking-wider">
                           Precio Unit.
                         </th>
-                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-right text-xs font-medium text-foreground/80 uppercase tracking-wider">
                           Subtotal
                         </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-3 text-center text-xs font-medium text-foreground/80 uppercase tracking-wider">
                           Acciones
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className=" divide-y divide-gray-200">
                       {items.map((item, index) => (
                         <tr
                           key={item.tempId ?? `${item.itemID}-${index}`}
-                          className="hover:bg-gray-50"
+                          className="hover:"
                         >
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-foreground/80">
                             {item.code || "N/A"}
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-700 max-w-xs truncate">
+                          <td className="px-4 py-3 text-sm text-foreground/80 max-w-xs truncate">
                             {item.description}
                           </td>
-                          <td className="px-4 py-3 text-right text-sm text-gray-700">
+                          <td className="px-4 py-3 text-right text-sm text-foreground/80">
                             {item.quantity}
                           </td>
-                          <td className="px-4 py-3 text-right text-sm text-gray-700">
+                          <td className="px-4 py-3 text-right text-sm text-foreground/80">
                             ${parseFloat(item.price).toFixed(2)}
                           </td>
-                          <td className="px-4 py-3 text-right text-sm text-gray-700 font-medium">
+                          <td className="px-4 py-3 text-right text-sm text-foreground/80 font-medium">
                             ${item.subtotal.toFixed(2)}
                           </td>
                           <td className="px-4 py-3 text-center">
@@ -1122,14 +1123,14 @@ export default function OrderCreate({
                               <button
                                 type="button"
                                 onClick={() => handleEditItem(index)}
-                                className="text-indigo-600 hover:text-indigo-800 font-medium"
+                                className="text-primary hover:text-indigo-800 font-medium"
                               >
                                 Editar
                               </button>
                               <button
                                 type="button"
                                 onClick={() => handleRemoveItem(index)}
-                                className="text-red-600 hover:text-red-800 font-medium"
+                                className="text-destructive hover:text-destructive font-medium"
                               >
                                 Eliminar
                               </button>
@@ -1144,7 +1145,7 @@ export default function OrderCreate({
             )}
 
             {items.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-foreground/80">
                 <p className="text-lg">No hay ítems agregados al pedido</p>
                 <p className="text-sm">
                   Use el botón "Buscar Ítem Avanzado" para agregar productos
@@ -1154,13 +1155,13 @@ export default function OrderCreate({
           </section>
 
           {/* Sección Totales y Guardar */}
-          <section className="p-6 border border-gray-200 rounded-lg shadow-md bg-white">
-            <h2 className="text-xl font-medium text-indigo-700 mb-6">
+          <section className="p-6 border  rounded-lg shadow-md ">
+            <h2 className="text-xl font-medium text-foreground mb-6">
               <span className="border-b-2 border-indigo-200 pb-1">
                 Resumen y Guardar
               </span>
             </h2>
-            <div className="space-y-3 text-right mb-6 text-gray-700">
+            <div className="space-y-3 text-right mb-6 text-foreground/80">
               <p className="text-lg">
                 Subtotal:{" "}
                 <span className="font-semibold">
@@ -1173,7 +1174,7 @@ export default function OrderCreate({
                   ${formData.vat.toFixed(2)}
                 </span>
               </p>
-              <p className="text-2xl font-bold text-indigo-600">
+              <p className="text-2xl font-bold text-primary">
                 Total:{" "}
                 <span className="font-extrabold">
                   ${formData.total.toFixed(2)}
@@ -1185,7 +1186,7 @@ export default function OrderCreate({
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                className="px-4 py-2 border  rounded hover:"
               >
                 Cancelar
               </button>
@@ -1196,12 +1197,9 @@ export default function OrderCreate({
               >
                 Emitir
               </button>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
+              <Button variant="primary" type="submit">
                 {isEdit ? "Guardar Cambios" : "Guardar Pedido"}
-              </button>
+              </Button>
             </div>
           </section>
         </form>

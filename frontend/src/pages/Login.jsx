@@ -1,12 +1,12 @@
+import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../hooks/useUser";
-import { Eye, EyeOff, LoaderCircle } from "lucide-react";
-import { AuthHelper } from "../utils/authHelper";
 import { Button } from "~/components/ui/button";
+import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Card } from "~/components/ui/card";
+import { useUser } from "../hooks/useUser";
+import { AuthHelper } from "../utils/authHelper";
 
 export default function Login() {
   const [nickname, setNickname] = useState("");
@@ -73,12 +73,12 @@ export default function Login() {
       <Card className="p-8 rounded-xl shadow-xl w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-xl font-bold mb-2">ERP System</h1>
-          <h2 className="text-gray-600">Iniciar sesión</h2>
+          <h2 className="text-muted-foreground">Iniciar sesión</h2>
         </div>
 
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600 text-sm">{error}</p>
+            <p className="text-destructive text-sm">{error}</p>
           </div>
         )}
 
@@ -148,11 +148,11 @@ export default function Login() {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             ¿Problemas para acceder?{" "}
             <button
               type="button"
-              className="text-blue-600 hover:text-blue-700 font-medium"
+              className="text-primary hover:text-foreground/80 font-medium"
               onClick={() => setError("Contacte al administrador del sistema")}
             >
               Contactar soporte
