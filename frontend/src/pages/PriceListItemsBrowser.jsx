@@ -96,7 +96,7 @@ export default function PriceListItemsBrowser() {
         />
         <button
           onClick={loadResults}
-          className="px-4 py-2 bg-blue-600 text-white rounded"
+          className="px-4 py-2 bg-primary text-white rounded"
         >
           Filtrar
         </button>
@@ -168,7 +168,7 @@ export default function PriceListItemsBrowser() {
                         </button>
                         <button
                           onClick={() => setEditing(null)}
-                          className="px-2 text-gray-600"
+                          className="px-2 text-muted-foreground"
                         >
                           Cancelar
                         </button>
@@ -182,7 +182,7 @@ export default function PriceListItemsBrowser() {
                           });
                           setEditPrice(pl.Price);
                         }}
-                        className="px-2 text-blue-600"
+                        className="px-2 text-primary"
                       >
                         Editar
                       </button>

@@ -1,3 +1,10 @@
+import {
+  EllipsisVertical,
+  Eye,
+  Pencil,
+  Trash,
+  TriangleAlert,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { diagnosticGraphQL } from "~/graphql/diagnostic.js";
@@ -5,6 +12,24 @@ import { graphqlClient } from "~/graphql/graphqlClient.js";
 import { supplierOperations } from "~/graphql/operations.js";
 import { QUERIES } from "~/graphql/queries/queries.js";
 
+import { NavLink } from "react-router-dom";
+import { Alert, AlertDescription } from "~/components/ui/alert";
+import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import SupplierCreate from "./SupplierCreate";
@@ -12,8 +37,8 @@ import SupplierCreate from "./SupplierCreate";
 function SupplierDetails({ supplier, onClose }) {
   if (!supplier) return null;
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-lg w-full p-6 space-y-4">
+    <div className="fixed inset-0 bg-background/90 flex items-center justify-center z-50 p-4">
+      <div className=" rounded-lg max-w-lg w-full p-6 space-y-4">
         <h2 className="text-xl font-bold">Detalles del Proveedor</h2>
         <div className="space-y-1 text-sm">
           <p>
@@ -38,7 +63,7 @@ function SupplierDetails({ supplier, onClose }) {
         <div className="text-right mt-4">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary"
           >
             Cerrar
           </button>
@@ -173,21 +198,22 @@ export default function Suppliers() {
     return (
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">Proveedores</h1>
+          <h1 className="text-3xl font-bold text-foreground">Proveedores</h1>
           <div className="flex items-center space-x-2">
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-            <span className="text-blue-600">Cargando...</span>
+            <span className="text-primary">Cargando...</span>
           </div>
         </div>
         {debugInfo && (
-          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
-            <p className="text-blue-800 text-sm">{debugInfo}</p>
-          </div>
+          <Alert variant="default">
+            <TriangleAlert />
+            <AlertDescription>{debugInfo}</AlertDescription>
+          </Alert>
         )}
         <div className="animate-pulse">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-gray-200 h-32 rounded"></div>
+              <div key={i} className=" h-32 rounded"></div>
             ))}
           </div>
         </div>
@@ -198,7 +224,7 @@ export default function Suppliers() {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Proveedores</h1>
+        <h1 className="text-3xl font-bold text-foreground">Proveedores</h1>
         <div className="flex space-x-2">
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -208,13 +234,13 @@ export default function Suppliers() {
           </button>
           <button
             onClick={runDiagnostic}
-            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+            className="px-4 py-2 0 text-white rounded hover: transition-colors"
           >
             Diagnóstico
           </button>
           <button
             onClick={loadSuppliers}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary transition-colors"
           >
             Recargar
           </button>
@@ -236,10 +262,10 @@ export default function Suppliers() {
         </div>
       )}
       {debugInfo && (
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="mb-4 p-4 bg-accent border  rounded-lg">
           <div className="flex items-center">
             <svg
-              className="w-5 h-5 text-blue-600 mr-2"
+              className="w-5 h-5 text-primary mr-2"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -249,7 +275,7 @@ export default function Suppliers() {
                 clipRule="evenodd"
               />
             </svg>
-            <p className="text-blue-800 text-sm">{debugInfo}</p>
+            <p className="text-foreground text-sm">{debugInfo}</p>
           </div>
         </div>
       )}
@@ -257,7 +283,7 @@ export default function Suppliers() {
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
           <div className="flex items-start">
             <svg
-              className="w-5 h-5 text-red-600 mr-2 mt-0.5"
+              className="w-5 h-5 text-destructive mr-2 mt-0.5"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -268,10 +294,10 @@ export default function Suppliers() {
               />
             </svg>
             <div>
-              <h4 className="text-red-800 font-semibold mb-1">
+              <h4 className="text-destructive font-semibold mb-1">
                 Error cargando proveedores
               </h4>
-              <p className="text-red-700 text-sm">{error}</p>
+              <p className="text-destructive text-sm">{error}</p>
             </div>
           </div>
         </div>
@@ -279,23 +305,111 @@ export default function Suppliers() {
       {!error && suppliers.length > 0 && (
         <div>
           <div className="mb-4 flex items-center justify-between">
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Mostrando {suppliers.length} proveedor
               {suppliers.length !== 1 ? "es" : ""}
             </p>
           </div>
+
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Address</TableHead>
+                <TableHead>Doc</TableHead>
+                <TableHead>Active</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {suppliers.map((supplier) => (
+                <TableRow key={supplier.SupplierID}>
+                  <TableCell>{supplier.SupplierID}</TableCell>
+                  <TableCell>{`${supplier.FirstName} ${supplier.LastName}`}</TableCell>
+                  <TableCell>{supplier.Email}</TableCell>
+                  <TableCell>{supplier.Phone}</TableCell>
+                  <TableCell>{supplier.Address}</TableCell>
+                  <TableCell>{supplier.DocNumber}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        supplier.IsActive
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-destructive"
+                      }`}
+                    >
+                      {supplier.IsActive ? "Activo" : "Inactivo"}
+                    </span>
+                  </TableCell>
+                  <TableCell className="flex gap-2">
+                    <Button
+                      className="hidden md:inline"
+                      onClick={() => handleViewDetails(supplier)}
+                    >
+                      <Eye />
+                    </Button>
+                    <Button
+                      onClick={() => handleEditSupplier(supplier)}
+                      className="hidden md:inline px-3 py-2 text-sm rounded"
+                    >
+                      <Pencil />
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button>
+                          <EllipsisVertical />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem
+                          onClick={() => handleViewDetails(supplier)}
+                        >
+                          <Eye />
+                          <span className="hidden md:inline">Ver Detalles</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <NavLink
+                            onClick={() => handleEditSupplier(supplier)}
+                            className="px-3 py-2 text-sm rounded"
+                            target="_blank"
+                          >
+                            <Pencil />
+                            Edit
+                          </NavLink>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onClick={() =>
+                            handleDeleteSupplier(supplier.SupplierID)
+                          }
+                        >
+                          <Trash />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {suppliers.map((supplier) => (
               <div
                 key={supplier.SupplierID}
-                className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow"
+                className=" rounded-lg shadow-md border  p-6 hover:shadow-lg transition-shadow"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-foreground">
                       {supplier.FirstName} {supplier.LastName}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       ID: {supplier.SupplierID}
                     </p>
                   </div>
@@ -303,7 +417,7 @@ export default function Suppliers() {
                     className={`px-2 py-1 text-xs font-medium rounded-full ${
                       supplier.IsActive
                         ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
+                        : "bg-red-100 text-destructive"
                     }`}
                   >
                     {supplier.IsActive ? "Activo" : "Inactivo"}
@@ -313,14 +427,14 @@ export default function Suppliers() {
                   {supplier.Email && (
                     <div className="flex items-center">
                       <svg
-                        className="w-4 h-4 text-gray-400 mr-2"
+                        className="w-4 h-4 text-muted-foreground mr-2"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                       </svg>
-                      <span className="text-gray-700 truncate">
+                      <span className="text-foreground/80 truncate">
                         {supplier.Email}
                       </span>
                     </div>
@@ -328,19 +442,21 @@ export default function Suppliers() {
                   {supplier.Phone && (
                     <div className="flex items-center">
                       <svg
-                        className="w-4 h-4 text-gray-400 mr-2"
+                        className="w-4 h-4 text-muted-foreground mr-2"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
                         <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                       </svg>
-                      <span className="text-gray-700">{supplier.Phone}</span>
+                      <span className="text-foreground/80">
+                        {supplier.Phone}
+                      </span>
                     </div>
                   )}
                   {supplier.Address && (
                     <div className="flex items-center">
                       <svg
-                        className="w-4 h-4 text-gray-400 mr-2"
+                        className="w-4 h-4 text-muted-foreground mr-2"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -350,7 +466,7 @@ export default function Suppliers() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="text-gray-700 truncate">
+                      <span className="text-foreground/80 truncate">
                         {supplier.Address}
                       </span>
                     </div>
@@ -358,7 +474,7 @@ export default function Suppliers() {
                   {supplier.DocNumber && (
                     <div className="flex items-center">
                       <svg
-                        className="w-4 h-4 text-gray-400 mr-2"
+                        className="w-4 h-4 text-muted-foreground mr-2"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -368,31 +484,31 @@ export default function Suppliers() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      <span className="text-gray-700">
+                      <span className="text-foreground/80">
                         Doc: {supplier.DocNumber}
                       </span>
                     </div>
                   )}
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-200 flex space-x-2">
-                  <button
+                <div className="mt-4 pt-4 border-t  flex space-x-2">
+                  <Button
+                    variant="primary"
                     onClick={() => handleViewDetails(supplier)}
-                    className="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
                   >
                     Ver Detalles
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="outline"
                     onClick={() => handleEditSupplier(supplier)}
-                    className="px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200"
                   >
                     Editar
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="destructive"
                     onClick={() => handleDeleteSupplier(supplier.SupplierID)}
-                    className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700"
                   >
                     Eliminar
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -402,7 +518,7 @@ export default function Suppliers() {
       {!error && !loading && suppliers.length === 0 && (
         <div className="text-center py-12">
           <svg
-            className="mx-auto h-12 w-12 text-gray-400"
+            className="mx-auto h-12 w-12 text-muted-foreground"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -414,16 +530,16 @@ export default function Suppliers() {
               d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">
+          <h3 className="mt-2 text-sm font-medium text-foreground">
             No hay proveedores
           </h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-foreground/80">
             Comienza creando tu primer proveedor.
           </p>
           <div className="mt-6">
             <button
               onClick={handleCreateSupplier}
-              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary"
             >
               Crear Primer Proveedor
             </button>

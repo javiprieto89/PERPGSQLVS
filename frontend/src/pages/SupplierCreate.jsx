@@ -154,7 +154,7 @@ export default function SupplierCreate({
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <svg
-              className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-4"
+              className="animate-spin h-8 w-8 text-primary mx-auto mb-4"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -173,7 +173,7 @@ export default function SupplierCreate({
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <p className="text-gray-600">Cargando formulario...</p>
+            <p className="text-muted-foreground">Cargando formulario...</p>
           </div>
         </div>
       </div>
@@ -187,11 +187,11 @@ export default function SupplierCreate({
       </h2>
       {error && (
         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-600">{error}</p>
+          <p className="text-destructive">{error}</p>
         </div>
       )}
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">
             Información del Documento
           </h3>
@@ -204,7 +204,7 @@ export default function SupplierCreate({
                 name="docTypeID"
                 value={supplier.docTypeID}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               >
                 <option value="">Seleccione</option>
@@ -225,13 +225,13 @@ export default function SupplierCreate({
                 placeholder="Ingrese el número de documento"
                 value={supplier.docNumber}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 maxLength={50}
               />
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">Organización</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -241,7 +241,7 @@ export default function SupplierCreate({
                   name="companyID"
                   value={supplier.companyID}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="">Todos</option>
                   {formData.companies.map((c) => (
@@ -253,7 +253,7 @@ export default function SupplierCreate({
                 <button
                   type="button"
                   onClick={() => setShowCompanyModal(true)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-foreground/80 hover:text-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -279,7 +279,7 @@ export default function SupplierCreate({
                   name="branchID"
                   value={supplier.branchID}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   disabled={!supplier.companyID}
                 >
                   <option value="">Todos</option>
@@ -293,7 +293,7 @@ export default function SupplierCreate({
                 <button
                   type="button"
                   onClick={() => setShowBranchModal(true)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-foreground/80 hover:text-foreground"
                   disabled={!supplier.companyID}
                 >
                   <svg
@@ -315,7 +315,7 @@ export default function SupplierCreate({
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">Información Personal</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -326,7 +326,7 @@ export default function SupplierCreate({
                 placeholder="Nombre del proveedor"
                 value={supplier.firstName}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
                 maxLength={100}
               />
@@ -339,13 +339,13 @@ export default function SupplierCreate({
                 placeholder="Apellido del proveedor"
                 value={supplier.lastName}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 maxLength={100}
               />
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">
             Información de Contacto
           </h3>
@@ -358,7 +358,7 @@ export default function SupplierCreate({
                 placeholder="email@ejemplo.com"
                 value={supplier.email}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 maxLength={100}
               />
             </div>
@@ -370,13 +370,13 @@ export default function SupplierCreate({
                 placeholder="Número de teléfono"
                 value={supplier.phone}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 maxLength={20}
               />
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-4">
             Información de Ubicación
           </h3>
@@ -391,7 +391,7 @@ export default function SupplierCreate({
                 placeholder="Dirección completa"
                 value={supplier.address}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 maxLength={200}
               />
             </div>
@@ -402,7 +402,7 @@ export default function SupplierCreate({
                   name="countryID"
                   value={supplier.countryID}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required
                 >
                   <option value="">Seleccione</option>
@@ -421,7 +421,7 @@ export default function SupplierCreate({
                   name="provinceID"
                   value={supplier.provinceID}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required
                 >
                   <option value="">Seleccione</option>
@@ -444,7 +444,7 @@ export default function SupplierCreate({
                   placeholder="Ciudad"
                   value={supplier.city}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   maxLength={100}
                 />
               </div>
@@ -460,14 +460,14 @@ export default function SupplierCreate({
                   placeholder="Código postal"
                   value={supplier.postalCode}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border  p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   maxLength={20}
                 />
               </div>
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className=" p-4 rounded-lg">
           <div className="mt-4">
             <label className="flex items-center space-x-3">
               <input
@@ -475,11 +475,11 @@ export default function SupplierCreate({
                 name="isActive"
                 checked={supplier.isActive}
                 onChange={handleChange}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                className="w-4 h-4 text-primary   rounded focus:ring-blue-500"
               />
               <span className="text-sm font-medium">Proveedor activo</span>
             </label>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-foreground/80 mt-1">
               Los proveedores inactivos no aparecerán en las búsquedas por
               defecto
             </p>
@@ -490,14 +490,14 @@ export default function SupplierCreate({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-6 py-3 border  rounded-lg hover: disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={loading || !supplier.firstName.trim()}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors"
+            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center transition-colors"
           >
             {loading ? (
               <>

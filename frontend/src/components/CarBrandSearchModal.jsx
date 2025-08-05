@@ -39,13 +39,15 @@ export default function CarBrandSearchModal({
   );
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-start pt-10">
-      <div className="relative mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white space-y-4">
+    <div className="fixed inset-0  bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-start pt-10">
+      <div className="relative mx-auto p-5 border w-full max-w-md shadow-lg rounded-md  space-y-4">
         <div className="flex justify-between items-center pb-3 border-b">
-          <h3 className="text-xl font-semibold text-gray-700">Buscar Marcas</h3>
+          <h3 className="text-xl font-semibold text-foreground/80">
+            Buscar Marcas
+          </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+            className="text-gray-400 bg-transparent hover: hover:text-foreground rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -80,13 +82,13 @@ export default function CarBrandSearchModal({
           </button>
         </div>
         {showFilters && (
-          <div className="fixed inset-0 bg-black bg-opacity-40 flex items-start justify-center pt-10 z-60">
-            <div className="bg-white rounded-md shadow-lg p-4 w-full max-w-xl space-y-4 max-h-[80vh] overflow-y-auto">
+          <div className="fixed inset-0 bg-background/90 bg-opacity-40 flex items-start justify-center pt-10 z-60">
+            <div className=" rounded-md shadow-lg p-4 w-full max-w-xl space-y-4 max-h-[80vh] overflow-y-auto">
               <div className="flex justify-between items-center pb-2 border-b">
                 <h4 className="text-lg font-semibold">Filtros</h4>
                 <button
                   onClick={() => setShowFilters(false)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-foreground/80 hover:text-foreground"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -114,40 +116,40 @@ export default function CarBrandSearchModal({
         )}
         <div className="max-h-80 overflow-y-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50 sticky top-0">
+            <thead className=" sticky top-0">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                   ID
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                   Compañía
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                   Nombre
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                   Acción
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className=" divide-y divide-gray-200">
               {filtered.length > 0 ? (
                 filtered.map((b) => (
                   <tr
                     key={b.CarBrandID}
-                    className="hover:bg-gray-50"
+                    className="hover:"
                     onDoubleClick={() => {
                       onBrandSelect(b);
                       onClose();
                     }}
                   >
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-foreground/80">
                       {b.CarBrandID}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-foreground/80">
                       {b.CompanyID}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                    <td className="px-4 py-3 whitespace-nowrap text-sm text-foreground/80">
                       {b.Name}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-medium">
@@ -167,7 +169,7 @@ export default function CarBrandSearchModal({
                 <tr>
                   <td
                     colSpan="3"
-                    className="px-4 py-10 text-center text-sm text-gray-500"
+                    className="px-4 py-10 text-center text-sm text-foreground/80"
                   >
                     {isLoading ? "Cargando..." : "No se encontraron marcas"}
                   </td>
@@ -179,7 +181,7 @@ export default function CarBrandSearchModal({
         <div className="pt-3 border-t flex justify-end">
           <button
             onClick={onClose}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-md shadow-sm text-sm"
+            className=" hover: text-gray-800 font-semibold py-2 px-4 rounded-md shadow-sm text-sm"
           >
             Cerrar
           </button>

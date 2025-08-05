@@ -72,7 +72,7 @@ export default function FeLessInfo() {
   // Función removida - se usa loadTestData directamente
 
   const getStatusColor = (success) => {
-    return success ? "text-green-600" : "text-red-600";
+    return success ? "text-green-600" : "text-destructive";
   };
 
   return (
@@ -82,7 +82,7 @@ export default function FeLessInfo() {
       </h1>
 
       {/* Estado de conexión */}
-      <div className="mb-6 p-4 border rounded-lg bg-gray-50">
+      <div className="mb-6 p-4 border rounded-lg ">
         <h2 className="font-semibold mb-2">Estado de Conexión AFIP</h2>
         {connectionStatus ? (
           <div>
@@ -95,16 +95,18 @@ export default function FeLessInfo() {
                 ? "✅ Conectado"
                 : "❌ Error de conexión"}
             </p>
-            <p className="text-sm text-gray-600">{connectionStatus.message}</p>
+            <p className="text-sm text-muted-foreground">
+              {connectionStatus.message}
+            </p>
             <button
               onClick={testConnection}
-              className="mt-2 px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="mt-2 px-3 py-1 text-sm bg-primary text-white rounded hover:bg-primary"
             >
               Probar Conexión
             </button>
           </div>
         ) : (
-          <p className="text-gray-500">Verificando conexión...</p>
+          <p className="text-foreground/80">Verificando conexión...</p>
         )}
       </div>
 
@@ -205,7 +207,7 @@ export default function FeLessInfo() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
+              className="w-full px-4 py-2 bg-primary text-white rounded hover:bg-primary disabled:"
             >
               {loading ? "Consultando..." : "Consultar Comprobante"}
             </button>
@@ -215,22 +217,22 @@ export default function FeLessInfo() {
         {/* Resultado */}
         <div>
           <h2 className="text-lg font-semibold mb-4">Respuesta de AFIP</h2>
-          <div className="border rounded-lg p-4 bg-gray-50 h-96 overflow-auto">
+          <div className="border rounded-lg p-4  h-96 overflow-auto">
             {result ? (
               <pre className="text-sm whitespace-pre-wrap">{result}</pre>
             ) : (
-              <p className="text-gray-500">No hay resultados aún</p>
+              <p className="text-foreground/80">No hay resultados aún</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Información de ayuda */}
-      <div className="mt-8 p-4 bg-blue-50 border-l-4 border-blue-400">
-        <h3 className="font-semibold text-blue-800 mb-2">
+      <div className="mt-8 p-4 bg-accent border-l-4 border-blue-400">
+        <h3 className="font-semibold text-foreground mb-2">
           Información de Prueba
         </h3>
-        <ul className="text-sm text-blue-700 space-y-1">
+        <ul className="text-sm text-foreground/80 space-y-1">
           <li>
             • <strong>Datos Válidos (A):</strong> Factura A con CUIT 20111111112
             (garantiza respuesta válida)

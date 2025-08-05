@@ -45,16 +45,16 @@ export default function ClientSearchModal({ isOpen, onClose, onClientSelect }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-start pt-10">
-      <div className="relative mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white space-y-4">
+    <div className="fixed inset-0  bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-start pt-10">
+      <div className="relative mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md  space-y-4">
         {/* Header */}
         <div className="flex justify-between items-center pb-3 border-b">
-          <h3 className="text-xl font-semibold text-gray-700">
+          <h3 className="text-xl font-semibold text-foreground/80">
             Buscar Clientes
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+            className="text-gray-400 bg-transparent hover: hover:text-foreground rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +79,7 @@ export default function ClientSearchModal({ isOpen, onClose, onClientSelect }) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 border  rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Buscar por nombre o documento..."
           />
           <button
@@ -97,7 +97,7 @@ export default function ClientSearchModal({ isOpen, onClose, onClientSelect }) {
 
         {/* Filters section */}
         {showFilters && (
-          <div className="border border-gray-200 rounded-md p-4 bg-gray-50">
+          <div className="border  rounded-md p-4 ">
             <TableFilters
               modelName="clients"
               data={clients}
@@ -116,47 +116,47 @@ export default function ClientSearchModal({ isOpen, onClose, onClientSelect }) {
 
         {/* Client list */}
         {!isLoading && (
-          <div className="max-h-96 overflow-y-auto border border-gray-200 rounded-md">
+          <div className="max-h-96 overflow-y-auto border  rounded-md">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50 sticky top-0">
+              <thead className=" sticky top-0">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                     ID
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                     Nombre
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                     Documento
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                     Teléfono
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                     Email
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-foreground/80 uppercase tracking-wider">
                     Acción
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className=" divide-y divide-gray-200">
                 {filtered.length > 0 ? (
                   filtered.map((client) => (
-                    <tr key={client.ClientID} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                    <tr key={client.ClientID} className="hover:">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-foreground">
                         {client.ClientID}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-foreground">
                         {client.FirstName} {client.LastName}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-foreground/80">
                         {client.DocNumber || "-"}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-foreground/80">
                         {client.Phone || "-"}
                       </td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-foreground/80">
                         {client.Email || "-"}
                       </td>
                       <td className="px-4 py-2 whitespace-nowrap text-sm font-medium">
@@ -173,7 +173,7 @@ export default function ClientSearchModal({ isOpen, onClose, onClientSelect }) {
                   <tr>
                     <td
                       colSpan="6"
-                      className="px-4 py-8 text-center text-gray-500"
+                      className="px-4 py-8 text-center text-foreground/80"
                     >
                       {query || showFilters
                         ? "No se encontraron clientes con los criterios especificados"
