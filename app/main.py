@@ -14,6 +14,7 @@ from starlette.routing import Route, Mount
 from strawberry.asgi import GraphQL
 from app.auth import get_userinfo_from_token, authenticate_user, create_access_token
 from datetime import datetime
+from app.config import settings
 
 from app.graphql.schema import schema
 from app.db import Base, engine
@@ -25,10 +26,14 @@ logger = logging.getLogger(__name__)
 # Cargar variables de entorno
 load_dotenv()
 
-# Crear tablas si estamos en desarrollo
-if os.getenv("ENVIRONMENT") == "development":
-    Base.metadata.create_all(bind=engine)
-    logger.info("[DATABASE] Tablas de base de datos verificadas")
+# Función para crear tablas (llamada después de que la aplicación esté lista)
+def create_tables():
+    if settings.ENVIRONMENT == "development":
+        try:
+            Base.metadata.create_all(bind=engine)
+            logger.info("[DATABASE] Tablas de base de datos verificadas")
+        except Exception as e:
+            logger.warning(f"[DATABASE] No se pudieron crear las tablas: {e}")
 
 # =======================
 # Rate limiting básico
@@ -148,10 +153,7 @@ app = Starlette(
 # Middlewares globales
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5173",
-        "http://localhost:5173",
-    ],
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True,
