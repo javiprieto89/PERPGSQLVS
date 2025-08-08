@@ -1,16 +1,18 @@
 .vs/
-*.env
+.env
 __pycache__/
 *.pyc
 *.db
 node_modules/
-.env.*
-!.env.template
+
+# Allow .env.example but exclude all others
+!.env.example
 perpgsqlvs/
 
 svgr
+*.backup
 *.bkp
 *.bkp.*
-bkp
+bkp/
 *.http
 .vercel

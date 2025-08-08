@@ -1,8 +1,10 @@
-﻿# app/main.py
+# app/main.py
 import os
 import time
 import logging
 from dotenv import load_dotenv
+# Import event loop utility for cross-platform compatibility
+from app.utils.event_loop import setup_event_loop, setup_uvicorn_loop_config
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import JSONResponse

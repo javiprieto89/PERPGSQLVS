@@ -5,23 +5,38 @@ from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load .env from project root (parent directory)
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env_path = os.path.join(project_root, '.env')
+load_dotenv(env_path)
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
+    # Use the same env_path we calculated above
+    model_config = SettingsConfigDict(env_file=env_path, case_sensitive=True)
     
-    # Base de datos
-    DATABASE_URL: str = Field(
-        default="mssql+pyodbc://sa:Ladeda78@127.0.0.1/LubricentroDB2?driver=ODBC+Driver+18+for+SQL+Server"
-    )
-    SQLALCHEMY_DATABASE_URL: str = Field(
-        default="mssql+pyodbc://sa:Ladeda78@127.0.0.1/LubricentroDB2?driver=ODBC+Driver+18+for+SQL+Server"
-    )
+    # Database configuration components
+    DB_USER: str = Field(default="sa")
+    DB_PASSWORD: str = Field(default="Ladeda78")
+    DB_HOST: str = Field(default="127.0.0.1")
+    DB_NAME: str = Field(default="LubricentroDB2")
+    DB_DRIVER: str = Field(default="ODBC+Driver+18+for+SQL+Server")
+    DB_TRUST_CERTIFICATE: str = Field(default="yes")
+    DB_ENCRYPT: str = Field(default="optional")
+    
+    # The connection string is auto-built from components above
+    # This property will be set programmatically after initialization
+    DATABASE_URL: Optional[str] = Field(default=None)
     
     # JWT
     SECRET_KEY: str = Field(default="changeme-in-production")
     ALGORITHM: str = Field(default="HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=300)
+    
+    # AFIP Configuration (Argentina Tax Authority)
+    AFIP_CUIT: Optional[str] = Field(default=None)
+    AFIP_CERT_PATH: Optional[str] = Field(default=None)
+    AFIP_CERT_PASSWORD: Optional[str] = Field(default=None)
+    AFIP_PRODUCTION: bool = Field(default=False)
     
     # CORS - Handle comma-separated string
     ALLOWED_ORIGINS: Union[str, List[str]] = Field(default="http://localhost:5173,http://localhost:3000")
@@ -60,9 +75,27 @@ class Settings(BaseSettings):
     # Metricas
     ENABLE_METRICS: bool = Field(default=True)
     ENABLE_DETAILED_LOGGING: bool = Field(default=True)
+    
+    # Backwards compatibility property
+    @property
+    def SQLALCHEMY_DATABASE_URL(self) -> Optional[str]:
+        """Backwards compatibility - returns the same as DATABASE_URL"""
+        return self.DATABASE_URL
 
 # Crear instancia
 settings = Settings()
+
+# Build database URL from components if not already provided
+if not settings.DATABASE_URL:
+    # Build from individual components with proper encoding
+    driver_encoded = settings.DB_DRIVER.replace(" ", "+")
+    settings.DATABASE_URL = (
+        f"mssql+pyodbc://{settings.DB_USER}:{settings.DB_PASSWORD}@"
+        f"{settings.DB_HOST}/{settings.DB_NAME}?"
+        f"driver={driver_encoded}"
+        f"&TrustServerCertificate={settings.DB_TRUST_CERTIFICATE}"
+        f"&Encrypt={settings.DB_ENCRYPT}"
+    )
 
 # Configuracion especifica por entorno
 if settings.ENVIRONMENT == "production":
