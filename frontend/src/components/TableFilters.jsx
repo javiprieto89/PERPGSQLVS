@@ -132,6 +132,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
               }
 
               const res = await graphqlClient.query(query);
+              console.log("res", JSON.stringify(res));
               newOptions[field.field] = res[queryName] || [];
             }
           } catch (err) {

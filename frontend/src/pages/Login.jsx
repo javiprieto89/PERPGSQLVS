@@ -69,7 +69,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen flex items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center">
       <Card className="p-8 rounded-xl shadow-xl w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-xl font-bold mb-2">ERP System</h1>

@@ -1,41 +1,56 @@
+import { BrushCleaning, CircleX, X } from "lucide-react";
+import { useEffect } from "react";
 // import { useGetFilterFieldsQuery } from "~/graphql/_generated/graphql";
-import { BrushCleaning, X } from "lucide-react";
-import { GetFilterFieldsQuery, useGetFilterFieldsQuery } from "~/graphql/_generated/graphql";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import { nameFieldMap, TEXT_OPERATORS } from "./constants";
+import { data as filterData } from "~/graphql/mockups/getFilterFields.json";
+
+import { TEXT_OPERATORS } from "./constants";
+import { FilterField } from "./types";
+
 import useFilterState from "./hooks/useFilterState";
-import RenderInputs, { FilterFieldProps } from "./RenderInputs";
+
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import { Label } from "~/components/ui/label";
+
+import { Alert, AlertDescription } from "../ui/alert";
+import RenderInputs from "./RenderInputs";
 
 const filterValues = (filters: Record<string, string>) => (Object.keys(filters).filter((key) => !key.endsWith('_op') && filters[key] !== '' && filters[key] !== null));
 const findFilterByField = (filters: Record<string, any>[], field: string) => filters.find(f => f.field === field);
 
 type AdvancedFilterProps = {
   modelName: string;
-  data?: GetFilterFieldsQuery['filterFields'];
-  onFilterChange: (value: GetFilterFieldsQuery['filterFields']) => void
+  data?: FilterField[];
+  onFilterChange: (value: FilterField[]) => void
 }
 
 export default function AdvancedFilter({ modelName, data, onFilterChange }: AdvancedFilterProps) {
   console.log({ modelName, data, onFilterChange })
 
   // 1. Cargar definición de filtros del backend
-  const {
-    data: filterData,
-    loading,
-    error,
-  } = useGetFilterFieldsQuery({
-    variables: {
-      model: modelName,
-    },
-  });
+  // const {
+  //   data: filterData,
+  //   loading,
+  //   error,
+  // } = useGetFilterFieldsQuery({
+  //   variables: {
+  //     model: modelName,
+  //   },
+  // });
 
-  // TODO hardcode options
-  const options: Record<string, any>[] = [{}];
+  const loading = false;
+  const error: Error | null = null;
+
 
   // TODO cuando graphql vuelva a funcionar utilizamos este hook
   // const { queryModel } = useModelLoader();
+
+  // 2. Cargar opciones para campos de tipo select
+  useEffect(() => {
+    if (filterData?.filterFields) {
+      return;
+    }
+  }, [filterData?.filterFields])
 
   const { filters, setFilter, removeFilter, clearFilters } = useFilterState<string>()
 
@@ -53,12 +68,20 @@ export default function AdvancedFilter({ modelName, data, onFilterChange }: Adva
         </div>
       </div>
       <div className="p-4">
+        {error && (
+          <Alert variant="default">
+            <CircleX />
+            <AlertDescription>{error.message}</AlertDescription>
+          </Alert>
+        )}
+      </div>
+      <div className="p-4">
         {loading ? (
           <div className="flex items-center justify-center py-8">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2"></div>
             <span className="ml-2 ">Cargando filtros...</span>
           </div>
-        ) : filterData?.filterFields.length === 0 ? (
+        ) : error || filterData?.filterFields.length === 0 ? (
           <div className="text-center py-8 ">
             No hay filtros disponibles para este modelo
           </div>
@@ -82,14 +105,11 @@ export default function AdvancedFilter({ modelName, data, onFilterChange }: Adva
                 <RenderInputs
                   id={field.field}
                   name={field.field}
-                  type={field.type as FilterFieldProps['type']}
                   value={filters[field.field] || ""}
-                  label={field.label || ""}
                   operator={filters[`${field.field}_op`] || "contains"}
-                  relationModel={field.relationModel as keyof typeof nameFieldMap}
                   onChange={setFilter}
                   disabled={field.dependsOn ? !filters[field.dependsOn] : false}
-                  options={options}
+                  filterField={field as FilterField}
                 />
               </div>
             ))}

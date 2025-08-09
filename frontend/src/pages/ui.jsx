@@ -1,5 +1,7 @@
 import { ApolloProvider } from "@apollo/client";
 import AdvancedFilter from "~/components/filter/AdvancedFilter";
+// import TableFilters from "~/components/TableFilters";
+import allClientsMock from "~/graphql/mockups/getAllClientsExtended.json";
 import apolloClient from "~/lib/apollo";
 
 export default function UiPage() {
@@ -49,6 +51,17 @@ export default function UiPage() {
           {/* <SaleConditionSearchModal
             onClose={(data) => console.log("ON CLOSE", data)}
             onSelect={(data) => console.log("ON CLOSE", data)}
+          /> */}
+          <AdvancedFilter
+            modelName="clients"
+            data={allClientsMock.allClients}
+            onFilterChange={console.log}
+          />
+          {/* <TableFilters
+            modelName="clients"
+            // lista original sin filtrar
+            data={allClientsMock.allClients}
+            onFilterChange={console.log}
           /> */}
         </ApolloProvider>
       </div>

@@ -5,5 +5,8 @@ query GetAllBranches {
     Name
     Address
     Phone
+    CompanyData {
+      Name
+    }
   }
 }

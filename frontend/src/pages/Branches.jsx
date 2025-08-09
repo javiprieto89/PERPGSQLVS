@@ -1,31 +1,32 @@
 // frontend/src/pages/Branches.jsx
-import { useEffect, useState } from "react";
+import {
+  EllipsisVertical,
+  Pencil,
+  Plus,
+  RefreshCcw,
+  Trash,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { AdminTable } from "~/components/TanstackTable";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { useGetAllBranchesQuery } from "~/graphql/_generated/graphql";
 import { branchOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import BranchCreate from "./BranchCreate";
 
 export default function Branches() {
-  const [allBranches, setAllBranches] = useState([]);
+  const { data, error, loading, refetch } = useGetAllBranchesQuery();
   const [branches, setBranches] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-
-  const loadBranches = async () => {
-    try {
-      setLoading(true);
-      const data = await branchOperations.getAllBranches();
-      setAllBranches(data);
-      setBranches(data);
-    } catch (err) {
-      console.error("Error cargando sucursales:", err);
-      setError(err.message);
-      setBranches([]);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleCreate = () => {
     openReactWindow(
@@ -44,7 +45,7 @@ export default function Branches() {
 
   const handleFilterChange = (filtered) => setBranches(filtered);
 
-  const handleEdit = (br) => {
+  const handleEdit = useCallback((br) => {
     openReactWindow(
       (popup) => (
         <BranchCreate
@@ -58,62 +59,136 @@ export default function Branches() {
       ),
       "Editar Sucursal"
     );
-  };
-
-  const handleDelete = async (id, companyID) => {
-    if (!confirm("¿Borrar sucursal?")) return;
-    try {
-      await branchOperations.deleteBranch(companyID, id);
-      loadBranches();
-    } catch (err) {
-      alert("Error al borrar sucursal: " + err.message);
-    }
-  };
-
-  useEffect(() => {
-    loadBranches();
   }, []);
+
+  const handleDelete = useCallback(
+    async (id, companyID) => {
+      if (!confirm("¿Borrar sucursal?")) return;
+      try {
+        await branchOperations.deleteBranch(companyID, id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar sucursal: " + err.message);
+      }
+    },
+    [refetch]
+  );
+
+  const handleRefetch = async () => {
+    await refetch();
+  };
 
   useEffect(() => {
     const handler = (e) => {
       if (e.data === "reload-branches") {
-        loadBranches();
+        refetch();
       }
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, []);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (data) {
+      setBranches(data.allBranches);
+    }
+  }, [data, setBranches]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "BranchID",
+        className: "first w-3",
+      },
+      {
+        header: "Nombre",
+        accessorKey: "Name",
+      },
+      {
+        header: "Empresa ID",
+        accessorKey: "CompanyID",
+      },
+      {
+        header: "Empresa",
+        accessorKey: "CompanyData.Name",
+      },
+      {
+        header: "Teléfono",
+        accessorKey: "Phone",
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "ItemCategoryID",
+        cell: ({ row }) => {
+          return (
+            <div className="flex gap-2 justify-end">
+              <Button
+                onClick={() => handleEdit(row)}
+                className="hidden md:inline px-3 py-2 text-sm rounded"
+              >
+                <Pencil />
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button>
+                    <EllipsisVertical />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => handleDelete(row.BranchID, row.CompanyID)}
+                  >
+                    <Trash />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          );
+        },
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
+
+  console.log("branches", branches);
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-foreground">Sucursales</h1>
         <div className="flex space-x-2">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
-          <button
-            onClick={loadBranches}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary"
-          >
+          {data && data.allBranches.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allBranches}
+                onSearch={(rows) => setBranches(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <Button onClick={handleRefetch}>
+            <RefreshCcw />
             Recargar
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
+          </Button>
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus />
             Nueva Sucursal
-          </button>
+          </Button>
         </div>
       </div>
       {showFilters && (
         <div className="mb-6">
           <TableFilters
             modelName="branches"
-            data={allBranches}
+            data={data ? data.allBranches : []} // ← lista original sin filtrar
             onFilterChange={handleFilterChange}
           />
         </div>
@@ -122,28 +197,14 @@ export default function Branches() {
       {loading ? (
         <div>Cargando...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {branches.map((br) => (
-            <div key={br.BranchID} className=" rounded shadow p-4">
-              <h3 className="text-lg font-semibold mb-2">{br.Name}</h3>
-              <p className="text-sm mb-2">Empresa ID: {br.CompanyID}</p>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(br)}
-                  className="mt-2 px-3 py-1  text-sm rounded hover:"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(br.BranchID, br.CompanyID)}
-                  className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+        <AdminTable
+          getRowCanExpand={() => true}
+          renderSubComponent={({ row }) => (
+            <ClientDetails client={row.original} />
+          )}
+          columns={columns}
+          data={branches || []}
+        />
       )}
     </div>
   );

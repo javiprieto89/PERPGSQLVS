@@ -53,7 +53,6 @@ export function RedirectRoot() {
 export default function App() {
   const [userInfo, setUserInfo] = useState(null);
   const [selectedAccess, setSelectedAccess] = useState(null);
-  // const { startDiagnostic } = diagnosticGraphQL();
 
   useEffect(() => {
     // Cargar información del usuario usando AuthHelper
@@ -136,16 +135,6 @@ export default function App() {
       window.removeEventListener("accessChanged", handleAccessChange);
     };
   }, []);
-
-  // useEffect(() => {
-  //   // Ejecutar diagnóstico automáticamente en desarrollo
-  //   if (
-  //     typeof window !== "undefined" &&
-  //     window.location.hostname === "localhost"
-  //   ) {
-  //     startDiagnostic();
-  //   }
-  // }, [startDiagnostic]);
 
   // Manejar cambio de acceso
   const handleAccessChange = (newAccess) => {

@@ -1,6 +1,6 @@
-import { type GetFilterFieldsQuery } from "~/graphql/_generated/graphql";
+import { FilterField } from "../types";
 
-function switchTextOperator(operator: string, field: string, data: GetFilterFieldsQuery['filterFields'], value: string) {
+function switchTextOperator(operator: string, field: string, data: FilterField[], value: string) {
   if (!data) {
     return [];
   }
@@ -52,7 +52,7 @@ function switchTextOperator(operator: string, field: string, data: GetFilterFiel
 
 export default function useFilterOperator() {
 
-  function filterOperation(type: string, operator: string, field: string, filtered: GetFilterFieldsQuery['filterFields'], value: string) {
+  function filterOperation(type: string, operator: string, field: string, filtered: FilterField[], value: string) {
     console.log("filterOperation", { operator, field, filtered, value })
     switch (type) {
       case "text":

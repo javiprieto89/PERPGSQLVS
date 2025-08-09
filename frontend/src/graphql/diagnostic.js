@@ -32,7 +32,7 @@ export const diagnosticGraphQL = () => {
             console.log("4. Probando datos del formulario...");
             const formData = await clientOperations.getClientFormData();
             if (!formData) throw new Error("❌ Error obteniendo datos del formulario:");
-            console.log("✅ Tipos de documento:", formData.documentTypes.length);
+            console.log("✅ Tipos de documento:", formData?.documentTypes?.length);
             console.log("✅ Países:", formData.countries.length);
             console.log("✅ Provincias:", formData.provinces.length);
             console.log("✅ Listas de precios:", formData.priceLists.length);

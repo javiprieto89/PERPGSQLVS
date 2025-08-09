@@ -1,6 +1,6 @@
-import { nameFieldMap, pluralMap } from "./constants";
+import { type NameFieldMap, nameFieldMap, pluralMap } from "./constants";
 
-export const getNameField = (model: keyof typeof nameFieldMap | null) =>
+export const getNameField = (model: NameFieldMap | null) =>
   model ? nameFieldMap[model] : "Name";
 
 export const getQueryName = (model: string) => {

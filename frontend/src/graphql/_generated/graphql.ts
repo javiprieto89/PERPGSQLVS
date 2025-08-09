@@ -2736,7 +2736,7 @@ export type UpdateVendorMutation = { __typename?: 'Mutation', updateVendor?: { _
 export type GetAllBranchesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllBranchesQuery = { __typename?: 'Query', allBranches: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, Name: string, Address?: string | null, Phone?: string | null }> };
+export type GetAllBranchesQuery = { __typename?: 'Query', allBranches: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, Name: string, Address?: string | null, Phone?: string | null, CompanyData?: { __typename?: 'CompanyDataInDB', Name?: string | null } | null }> };
 
 export type GetAllBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3701,6 +3701,9 @@ export const GetAllBranchesDocument = gql`
     Name
     Address
     Phone
+    CompanyData {
+      Name
+    }
   }
 }
     `;

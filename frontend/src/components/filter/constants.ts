@@ -21,6 +21,8 @@ export const nameFieldMap = {
   User: "Fullname",
 } as const;
 
+export type NameFieldMap = keyof typeof nameFieldMap;
+
 export const pluralMap = {
   Country: "Countries",
   Province: "Provinces",

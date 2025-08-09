@@ -19,6 +19,10 @@ import { QUERIES } from "~/graphql/queries/queries.js";
 import { dashboardHelpers } from "~/utils/dashboard";
 
 import { NavLink } from "react-router-dom";
+import {
+  DiagnosticButton,
+  DiagnosticInfo,
+} from "~/components/diagnostic/Diagnostic";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 
@@ -127,8 +131,14 @@ export default function Dashboard() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold  mb-6">Dashboard</h1>
+      <div className="flex justify-between">
+        <h1 className="text-3xl font-bold  mb-6">Dashboard</h1>
+        <div>
+          <DiagnosticButton />
+        </div>
+      </div>
 
+      <DiagnosticInfo />
       {error && (
         <Alert variant="default | destructive">
           <TriangleAlert />
