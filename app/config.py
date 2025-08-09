@@ -1,94 +1,118 @@
 # app/config.py
-# import os
-# from pydantic_settings import BaseSettings
-# from dotenv import load_dotenv
-
-# load_dotenv()  # Carga variables desde un .env si existe
-
-
-# class Settings(BaseSettings):
-#     SECRET_KEY: str = os.getenv("SECRET_KEY", "lvCExuRie_iGmnAcbsyvMODcNWbPuFOmTmHGo77t4rE")
-#     ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
-#     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
-#         os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 300)
-#     )
-
-
-# settings = Settings()
-#------------------------------------
-# app/config.py
 import os
-from typing import List, Optional
-from pydantic_settings import BaseSettings
+from typing import List, Optional, Union
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load .env from project root (parent directory)
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env_path = os.path.join(project_root, '.env')
+load_dotenv(env_path)
 
 class Settings(BaseSettings):
-    # Base de datos
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL", 
-        "mssql+pyodbc://sa:Ladeda78@127.0.0.1/LubricentroDB2?driver=ODBC+Driver+17+for+SQL+Server"
-    )
+    # Use the same env_path we calculated above
+    model_config = SettingsConfigDict(env_file=env_path, case_sensitive=True)
+    
+    # Database configuration components
+    DB_USER: str = Field(default="sa")
+    DB_PASSWORD: str = Field(default="Ladeda78")
+    DB_HOST: str = Field(default="127.0.0.1")
+    DB_NAME: str = Field(default="LubricentroDB2")
+    DB_DRIVER: str = Field(default="ODBC+Driver+18+for+SQL+Server")
+    DB_TRUST_CERTIFICATE: str = Field(default="yes")
+    DB_ENCRYPT: str = Field(default="optional")
+    
+    # The connection string is auto-built from components above
+    # This property will be set programmatically after initialization
+    DATABASE_URL: Optional[str] = Field(default=None)
     
     # JWT
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "changeme-in-production")
-    ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "300"))
+    SECRET_KEY: str = Field(default="changeme-in-production")
+    ALGORITHM: str = Field(default="HS256")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=300)
     
-    # CORS
-    ALLOWED_ORIGINS: List[str] = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+    # AFIP Configuration (Argentina Tax Authority)
+    AFIP_CUIT: Optional[str] = Field(default=None)
+    AFIP_CERT_PATH: Optional[str] = Field(default=None)
+    AFIP_CERT_PASSWORD: Optional[str] = Field(default=None)
+    AFIP_PRODUCTION: bool = Field(default=False)
+    
+    # CORS - Handle comma-separated string
+    ALLOWED_ORIGINS: Union[str, List[str]] = Field(default="http://localhost:5173,http://localhost:3000")
+    
+    @field_validator('ALLOWED_ORIGINS')
+    @classmethod
+    def parse_origins(cls, v):
+        if isinstance(v, str):
+            return [origin.strip() for origin in v.split(',') if origin.strip()]
+        return v
     
     # Cache
-    CACHE_TTL_STATIC: int = int(os.getenv("CACHE_TTL_STATIC", "3600"))  # 1 hora
-    CACHE_TTL_DYNAMIC: int = int(os.getenv("CACHE_TTL_DYNAMIC", "300"))  # 5 minutos
-    CACHE_TTL_USER: int = int(os.getenv("CACHE_TTL_USER", "600"))  # 10 minutos
+    CACHE_TTL_STATIC: int = Field(default=3600)  # 1 hora
+    CACHE_TTL_DYNAMIC: int = Field(default=300)  # 5 minutos
+    CACHE_TTL_USER: int = Field(default=600)  # 10 minutos
     
     # Rate limiting
-    RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "100"))
-    RATE_LIMIT_WINDOW: int = int(os.getenv("RATE_LIMIT_WINDOW", "60"))  # segundos
+    RATE_LIMIT_REQUESTS: int = Field(default=100)
+    RATE_LIMIT_WINDOW: int = Field(default=60)  # segundos
     
-    # Paginación
-    DEFAULT_PAGE_SIZE: int = int(os.getenv("DEFAULT_PAGE_SIZE", "25"))
-    MAX_PAGE_SIZE: int = int(os.getenv("MAX_PAGE_SIZE", "100"))
+    # Paginacion
+    DEFAULT_PAGE_SIZE: int = Field(default=25)
+    MAX_PAGE_SIZE: int = Field(default=100)
     
     # Logs
-    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
-    LOG_FORMAT: str = os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    LOG_LEVEL: str = Field(default="INFO")
+    LOG_FORMAT: str = Field(default="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     
     # Entorno
-    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
-    DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
+    ENVIRONMENT: str = Field(default="development")
+    DEBUG: bool = Field(default=True)
     
-    # Compresión
-    GZIP_MINIMUM_SIZE: int = int(os.getenv("GZIP_MINIMUM_SIZE", "1000"))
+    # Compresion
+    GZIP_MINIMUM_SIZE: int = Field(default=1000)
     
-    # Métricas
-    ENABLE_METRICS: bool = os.getenv("ENABLE_METRICS", "True").lower() == "true"
-    ENABLE_DETAILED_LOGGING: bool = os.getenv("ENABLE_DETAILED_LOGGING", "True").lower() == "true"
+    # Metricas
+    ENABLE_METRICS: bool = Field(default=True)
+    ENABLE_DETAILED_LOGGING: bool = Field(default=True)
+    
+    # Backwards compatibility property
+    @property
+    def SQLALCHEMY_DATABASE_URL(self) -> Optional[str]:
+        """Backwards compatibility - returns the same as DATABASE_URL"""
+        return self.DATABASE_URL
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
-
+# Crear instancia
 settings = Settings()
 
-# Configuración específica por entorno
+# Build database URL from components if not already provided
+if not settings.DATABASE_URL:
+    # Build from individual components with proper encoding
+    driver_encoded = settings.DB_DRIVER.replace(" ", "+")
+    settings.DATABASE_URL = (
+        f"mssql+pyodbc://{settings.DB_USER}:{settings.DB_PASSWORD}@"
+        f"{settings.DB_HOST}/{settings.DB_NAME}?"
+        f"driver={driver_encoded}"
+        f"&TrustServerCertificate={settings.DB_TRUST_CERTIFICATE}"
+        f"&Encrypt={settings.DB_ENCRYPT}"
+    )
+
+# Configuracion especifica por entorno
 if settings.ENVIRONMENT == "production":
-    # Configuración de producción
+    # Configuracion de produccion
     settings.DEBUG = False
     settings.LOG_LEVEL = "WARNING"
     settings.CACHE_TTL_STATIC = 7200  # 2 horas
-    settings.RATE_LIMIT_REQUESTS = 50  # Más restrictivo
+    settings.RATE_LIMIT_REQUESTS = 50  # Mas restrictivo
     
 elif settings.ENVIRONMENT == "testing":
-    # Configuración de testing
+    # Configuracion de testing
     settings.CACHE_TTL_STATIC = 60  # Cache corto para tests
     settings.CACHE_TTL_DYNAMIC = 30
     settings.ACCESS_TOKEN_EXPIRE_MINUTES = 60
     
 elif settings.ENVIRONMENT == "development":
-    # Configuración de desarrollo
+    # Configuracion de desarrollo
     settings.DEBUG = True
     settings.LOG_LEVEL = "DEBUG"
     settings.ENABLE_DETAILED_LOGGING = True

@@ -230,15 +230,42 @@ ENVIRONMENT=development
 JWT_SECRET_KEY=your-secret-key
 ```
 
+### **Compatibilidad Multiplataforma**
+El sistema soporta automáticamente ambos entornos:
+- **Windows**: Utiliza `winloop` para mejor performance
+- **Linux/Unix**: Utiliza `uvloop` para mejor performance  
+- **Docker**: Utiliza `uvloop` en contenedores Linux
+- **Fallback**: `asyncio` por defecto si no están disponibles
+
 ### **Comandos de Desarrollo**
+
+#### **Desarrollo en Windows**
 ```bash
-# Backend
+# Opción 1: Script automático (recomendado)
+python start_dev_windows.py
+
+# Opción 2: uvicorn directo
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
 
-# Frontend
+#### **Desarrollo en Linux/Mac**
+```bash
+# uvicorn directo
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+#### **Desarrollo con Docker**
+```bash
+# Levantar todo el stack
+docker compose up --build
+
+# Solo el backend
+docker compose up --build backend
+```
+
+#### **Frontend (ambas plataformas)**
+```bash
 npm run dev
-
-# Linting
 npm run lint
 ```
 

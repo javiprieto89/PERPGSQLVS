@@ -244,8 +244,15 @@ def create_production_configs():
 ENVIRONMENT=production
 DEBUG=False
 
-# Database
-SQLALCHEMY_DATABASE_URL=mssql+pyodbc://sa:Ladeda78@127.0.0.1/LubricentroDB2?driver=ODBC+Driver+17+for+SQL+Server
+# Database - Individual components
+DB_USER=sa
+DB_PASSWORD=Ladeda78
+DB_HOST=127.0.0.1
+DB_NAME=LubricentroDB2
+DB_DRIVER=ODBC+Driver+18+for+SQL+Server
+
+# Full connection string (will be built from components above)
+# SQLALCHEMY_DATABASE_URL=mssql+pyodbc://sa:Ladeda78@127.0.0.1/LubricentroDB2?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes&Encrypt=optional
 
 # Backend Port
 PORT=8000
