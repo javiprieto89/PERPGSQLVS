@@ -1,0 +1,26 @@
+query GetDashboardData {
+  clients: allClients {
+    ClientID
+    IsActive
+  }
+  items: allItems {
+    ItemID
+    CompanyID
+    IsActive
+    ControlStock
+    ReplenishmentStock
+  }
+  orders: allOrders {
+    OrderID
+    CompanyID
+    OrderStatusID
+    Total
+    Date_
+  }
+  itemstock: allItemstock {
+    ItemID
+    Quantity
+    MinStockLevel
+    CompanyID
+  }
+}

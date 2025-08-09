@@ -1,0 +1,19 @@
+query GetAllItems {
+  allItems {
+    ItemID
+    CompanyID
+    BranchID
+    Code
+    Description
+    BrandID
+    ItemCategoryID
+    ItemSubcategoryID
+    SupplierID
+    ControlStock
+    ReplenishmentStock
+    IsActive
+    OEM
+    WarehouseID
+    LastModified
+  }
+}

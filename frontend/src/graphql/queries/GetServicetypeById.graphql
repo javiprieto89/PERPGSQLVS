@@ -1,0 +1,6 @@
+query GetServicetypeById($id: Int!) {
+  servicetypesById(id: $id) {
+    ServiceTypeID
+    Type
+  }
+}

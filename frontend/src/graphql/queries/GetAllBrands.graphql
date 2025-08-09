@@ -1,0 +1,7 @@
+query GetAllBrands {
+  allBrands {
+    BrandID
+    Name
+    IsActive
+  }
+}

@@ -1,0 +1,13 @@
+query GetPricelistItemsFiltered($priceListID: Int, $itemID: Int) {
+  pricelistitemsFiltered(pricelistID: $priceListID, itemID: $itemID) {
+    PriceListID
+    ItemID
+    Price
+    EffectiveDate
+    # TODO Code // check if this code is related with another relation
+    PriceListData {
+      Name
+      Description
+    }
+  }
+}

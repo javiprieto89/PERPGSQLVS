@@ -1,0 +1,32 @@
+query GetOrderById($id: Int!) {
+  ordersById(id: $id) {
+    OrderID
+    CompanyID
+    BranchID
+    Date_
+    ClientID
+    CarID
+    IsService
+    ServiceTypeID
+    Mileage
+    NextServiceMileage
+    Notes
+    SaleConditionID
+    DiscountID
+    Subtotal
+    Total
+    VAT
+    UserID
+    DocumentID
+    PriceListID
+    OrderStatusID
+    WarehouseID
+    Items {
+      OrderDetailID
+      ItemID
+      Quantity
+      UnitPrice
+      Description
+    }
+  }
+}

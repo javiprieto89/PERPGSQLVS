@@ -1,0 +1,6 @@
+mutation ToggleSupplierStatus($supplierID: Int!, $isActive: Boolean!) {
+  updateSupplier(supplierID: $supplierID, data: { IsActive: $isActive }) {
+    SupplierID
+    IsActive
+  }
+}

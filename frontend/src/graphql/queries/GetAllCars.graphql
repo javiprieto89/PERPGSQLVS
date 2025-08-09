@@ -1,0 +1,23 @@
+query GetAllCars {
+  allCars {
+    CarID
+    LicensePlate
+    Year
+    CarModelID
+    ClientID
+    LastServiceMileage
+    IsDebtor
+    DiscountID
+    CarModelData {
+      Model
+    }
+    CarBrandData {
+      CarBrandID
+      Name
+    }
+    ClientData {
+      FirstName
+      LastName
+    }
+  }
+}

@@ -1,0 +1,8 @@
+mutation CreateVendor($input: VendorsCreate!) {
+  createVendor(data: $input) {
+    VendorID
+    VendorName
+    Commission
+    IsActive
+  }
+}

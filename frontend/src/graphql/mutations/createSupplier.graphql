@@ -1,0 +1,17 @@
+mutation CreateSupplier($input: SuppliersCreate!) {
+  createSupplier(data: $input) {
+    SupplierID
+    DocTypeID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    Address
+    IsActive
+    CountryID
+    ProvinceID
+    City
+    PostalCode
+  }
+}

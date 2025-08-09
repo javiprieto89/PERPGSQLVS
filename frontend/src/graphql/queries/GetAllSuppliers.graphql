@@ -1,0 +1,17 @@
+query GetAllSuppliers {
+  allSuppliers {
+    SupplierID
+    DocTypeID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    Address
+    IsActive
+    CountryID
+    ProvinceID
+    City
+    PostalCode
+  }
+}

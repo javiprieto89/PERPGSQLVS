@@ -1,0 +1,8 @@
+query GetPricelistById($id: Int!) {
+  pricelistsById(id: $id) {
+    PriceListID
+    Name
+    Description
+    IsActive
+  }
+}

@@ -1,0 +1,13 @@
+query GetCreditCardById($id: Int!) {
+  creditcardById(id: $id) {
+    CreditCardID
+    CreditCardGroupID
+    CardName
+    Surcharge
+    Installments
+    IsActive
+    GroupData {
+      GroupName
+    }
+  }
+}

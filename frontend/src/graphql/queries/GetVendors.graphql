@@ -1,0 +1,8 @@
+query GetVendors {
+  allVendors {
+    VendorID
+    VendorName
+    Commission
+    IsActive
+  }
+}

@@ -1,0 +1,15 @@
+query GetSupplierFormData {
+  docTypes: allSysdoctypes {
+    DocTypeID
+    Name
+  }
+  countries: allCountries {
+    CountryID
+    Name
+  }
+  provinces: allProvinces {
+    ProvinceID
+    CountryID
+    Name
+  }
+}

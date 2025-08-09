@@ -1,0 +1,10 @@
+query GetCarModelById($id: Int!) {
+  carmodelsById(id: $id) {
+    CarModelID
+    CarBrandID
+    Model
+    CarBrandData {
+      Name
+    }
+  }
+}

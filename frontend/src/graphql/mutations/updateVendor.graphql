@@ -1,0 +1,8 @@
+mutation UpdateVendor($vendorID: Int!, $input: VendorsUpdate!) {
+  updateVendor(vendorID: $vendorID, data: $input) {
+    VendorID
+    VendorName
+    Commission
+    IsActive
+  }
+}

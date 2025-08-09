@@ -1,0 +1,12 @@
+query SearchClients($searchTerm: String!, $isActive: Boolean) {
+  allClients {
+    ClientID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    City
+    IsActive
+  }
+}

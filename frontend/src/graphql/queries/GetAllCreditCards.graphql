@@ -1,0 +1,13 @@
+query GetAllCreditCards {
+  allCreditcards {
+    CreditCardID
+    CreditCardGroupID
+    CardName
+    Surcharge
+    Installments
+    IsActive
+    GroupData {
+      GroupName
+    }
+  }
+}

@@ -1,0 +1,20 @@
+query GetAllUseraccess {
+  allUseraccess {
+    UserID
+    CompanyID
+    BranchID
+    RoleID
+    UserData {
+      FullName
+    }
+    CompanyData {
+      Name
+    }
+    BranchData {
+      Name
+    }
+    RoleData {
+      RoleName
+    }
+  }
+}

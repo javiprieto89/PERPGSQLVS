@@ -1,0 +1,7 @@
+query GetDiscountById($id: Int!) {
+  discountsById(id: $id) {
+    DiscountID
+    DiscountName
+    Percentage
+  }
+}

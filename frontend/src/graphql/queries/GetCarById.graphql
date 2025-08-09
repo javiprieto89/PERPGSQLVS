@@ -1,0 +1,23 @@
+query GetCarById($id: Int!) {
+  carsById(id: $id) {
+    CarID
+    LicensePlate
+    Year
+    CarModelID
+    # TODO Check CarBrandID if could be added again
+    ClientID
+    LastServiceMileage
+    IsDebtor
+    DiscountID
+    CarModelData {
+      Model
+    }
+    CarBrandData {
+      Name
+    }
+    ClientData {
+      FirstName
+      LastName
+    }
+  }
+}

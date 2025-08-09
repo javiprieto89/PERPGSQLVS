@@ -1,0 +1,6 @@
+query GetAllItemCategories {
+  allItemcategories {
+    ItemCategoryID
+    CategoryName
+  }
+}

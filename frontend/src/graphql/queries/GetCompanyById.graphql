@@ -1,0 +1,11 @@
+query GetCompanyById($id: Int!) {
+  companydataById(id: $id) {
+    CompanyID
+    Name
+    Address
+    CUIT
+    Grossincome
+    Startdate
+    Logo
+  }
+}

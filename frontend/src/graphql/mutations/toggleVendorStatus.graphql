@@ -1,0 +1,6 @@
+mutation ToggleVendorStatus($vendorID: Int!, $isActive: Boolean!) {
+  toggleVendorStatus(vendorID: $vendorID, isActive: $isActive) {
+    VendorID
+    IsActive
+  }
+}

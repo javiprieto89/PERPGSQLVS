@@ -1,0 +1,6 @@
+query GetAllCarBrands {
+  allCarbrands {
+    CarBrandID
+    Name
+  }
+}

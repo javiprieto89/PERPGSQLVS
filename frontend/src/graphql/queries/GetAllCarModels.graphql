@@ -1,0 +1,10 @@
+query GetAllCarModels {
+  allCarmodels {
+    CarModelID
+    CarBrandID
+    Model
+    CarBrandData {
+      Name
+    }
+  }
+}
