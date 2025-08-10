@@ -1,15 +1,18 @@
 // frontend/src/pages/Branches.jsx
 import {
   EllipsisVertical,
+  LoaderCircle,
   Pencil,
   Plus,
   RefreshCcw,
   Trash,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
 import { AdminTable } from "~/components/TanstackTable";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -193,10 +196,14 @@ export default function Branches() {
           />
         </div>
       )}
-      {error && <div className="text-destructive mb-4">{error}</div>}
-      {loading ? (
-        <div>Cargando...</div>
-      ) : (
+      {error && <ApiErrorMessage error={error} />}
+      {loading && (
+        <Alert className="my-4">
+          <LoaderCircle className="animate-spin" />
+          <AlertDescription>Cargando...</AlertDescription>
+        </Alert>
+      )}
+      {branches.length > 0 && (
         <AdminTable
           getRowCanExpand={() => true}
           renderSubComponent={({ row }) => (

@@ -1,5 +1,6 @@
 import {
   EllipsisVertical,
+  LoaderCircle,
   Pencil,
   Plus,
   RefreshCcw,
@@ -15,8 +16,10 @@ import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { Button } from "~/components/ui/button";
 import TableFilters from "../components/TableFilters";
 
+import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { AdminTable } from "~/components/TanstackTable";
+import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { Alert, AlertDescription } from "~/components/ui/alert";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -179,12 +182,17 @@ export default function ItemCategories() {
           />
         </div>
       )}
-      {error && <div className="text-destructive mb-4">{error.message}</div>}
-      {loading ? (
-        <div>Cargando...</div>
-      ) : (
+      {loading && (
+        <Alert className="my-4">
+          <LoaderCircle className="animate-spin" />
+          <AlertDescription>Cargando...</AlertDescription>
+        </Alert>
+      )}
+      {error && <ApiErrorMessage error={error} />}
+      {categories.length > 0 && (
         <AdminTable columns={columns} data={categories || []} />
       )}
+      {loading && <AdminTableLoading />}
     </div>
   );
 }

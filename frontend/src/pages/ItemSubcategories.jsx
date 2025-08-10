@@ -1,46 +1,41 @@
-import { useEffect, useState } from "react";
+import {
+  EllipsisVertical,
+  LoaderCircle,
+  Pencil,
+  Plus,
+  RefreshCcw,
+  Trash,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ApiErrorMessage } from "~/components/ApiErrorMessage";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { Alert, AlertDescription } from "~/components/ui/alert";
+import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { useGetAllItemSubcategoriesQuery } from "~/graphql/_generated/graphql";
 import { itemSubcategoryOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import ItemSubcategoryCreate from "./ItemSubcategoryCreate";
 
 export default function ItemSubcategories() {
-  const [allSubcategories, setAllSubcategories] = useState([]);
+  const { data, error, loading, refetch } = useGetAllItemSubcategoriesQuery();
+
   const [subcategories, setSubcategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    loadSubcategories();
+  const handleFilterChange = useCallback((filtered) => {
+    setSubcategories(filtered);
   }, []);
 
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.data === "reload-itemsubcategories") {
-        loadSubcategories();
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, []);
-
-  const loadSubcategories = async () => {
-    try {
-      setLoading(true);
-      const data = await itemSubcategoryOperations.getAllItemSubcategories();
-      setAllSubcategories(data);
-      setSubcategories(data);
-    } catch (err) {
-      console.error("Error cargando subcategorías:", err);
-      setError(err.message);
-      setSubcategories([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     openReactWindow(
       (popup) => (
         <ItemSubcategoryCreate
@@ -48,106 +43,167 @@ export default function ItemSubcategories() {
             popup.opener.postMessage("reload-itemsubcategories", "*");
             popup.close();
           }}
-          onClose={() => popup.close()}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
         />
       ),
       "Nueva Subcategoría"
     );
-  };
+  }, [refetch]);
 
-  const handleFilterChange = (filtered) => {
-    setSubcategories(filtered);
-  };
+  const handleEdit = useCallback(
+    (subcat) => {
+      openReactWindow(
+        (popup) => (
+          <ItemSubcategoryCreate
+            subcategory={subcat}
+            onSave={() => {
+              popup.opener.postMessage("reload-itemsubcategories", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Subcategoría"
+      );
+    },
+    [refetch]
+  );
 
-  const handleEdit = (subcat) => {
-    openReactWindow(
-      (popup) => (
-        <ItemSubcategoryCreate
-          subcategory={subcat}
-          onSave={() => {
-            popup.opener.postMessage("reload-itemsubcategories", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Editar Subcategoría"
-    );
-  };
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar subcategoría?")) return;
+      try {
+        await itemSubcategoryOperations.deleteItemSubcategory(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar subcategoría: " + err.message);
+      }
+    },
+    [refetch]
+  );
 
-  const handleDelete = async (id) => {
-    if (!confirm("¿Borrar subcategoría?")) return;
-    try {
-      await itemSubcategoryOperations.deleteItemSubcategory(id);
-      loadSubcategories();
-    } catch (err) {
-      alert("Error al borrar subcategoría: " + err.message);
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data === "reload-itemsubcategories") {
+        refetch();
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (data?.allItemsubcategories) {
+      setSubcategories(data.allItemsubcategories);
     }
-  };
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "ItemSubcategoryID",
+        className: "first w-3",
+      },
+      {
+        header: "Subcategory Name",
+        accessorKey: "SubcategoryName",
+      },
+      {
+        header: "Category",
+        accessorKey: "CategoryData.CategoryName",
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "ItemSubcategoryID",
+        cell: ({ row, getValue }) => {
+          return (
+            <div className="flex gap-2 justify-end">
+              <Button
+                onClick={() => handleEdit(row.original)}
+                className="hidden md:inline px-3 py-2 text-sm rounded"
+              >
+                <Pencil />
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button>
+                    <EllipsisVertical />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => handleDelete(getValue())}
+                  >
+                    <Trash />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          );
+        },
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-foreground">Subcategorías</h1>
         <div className="flex space-x-2">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
-          <button
-            onClick={loadSubcategories}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary"
-          >
+          {data && data.allItemsubcategories.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allItemsubcategories}
+                onSearch={(rows) => setSubcategories(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <Button onClick={() => refetch()}>
+            <RefreshCcw />
             Recargar
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Nueva Subcategoría
-          </button>
+          </Button>
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus />
+            Nuevo
+          </Button>
         </div>
       </div>
       {showFilters && (
         <div className="mb-6">
           <TableFilters
             modelName="itemsubcategories"
-            data={allSubcategories}
+            data={data?.allSubcategories || []}
             onFilterChange={handleFilterChange}
           />
         </div>
       )}
-      {error && <div className="text-destructive mb-4">{error}</div>}
-      {loading ? (
-        <div>Cargando...</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {subcategories.map((sc) => (
-            <div key={sc.ItemSubcategoryID} className=" rounded shadow p-4">
-              <h3 className="text-lg font-semibold mb-2">
-                {sc.SubcategoryName}
-              </h3>
-              <p className="text-sm mb-2">Categoría: {sc.CategoryName}</p>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(sc)}
-                  className="mt-2 px-3 py-1  text-sm rounded hover:"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(sc.ItemSubcategoryID)}
-                  className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+      {error && <ApiErrorMessage error={error} />}
+      {loading && (
+        <Alert className="my-4">
+          <LoaderCircle className="animate-spin" />
+          <AlertDescription>Cargando...</AlertDescription>
+        </Alert>
       )}
+      {subcategories.length > 0 && (
+        <AdminTable columns={columns} data={subcategories || []} />
+      )}
+      {loading && <AdminTableLoading />}
     </div>
   );
 }

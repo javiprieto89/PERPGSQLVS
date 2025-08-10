@@ -3,6 +3,7 @@ import {
   ChartColumnBig,
   ChevronRight,
   CircleAlert,
+  LoaderCircle,
   PackageCheck,
   PackagePlus,
   PiggyBank,
@@ -14,8 +15,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { graphqlClient } from "~/graphql/graphqlClient.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
+import { useGetDashboardDataQuery } from "~/graphql/_generated/graphql";
+import { useAuthSelectedAccess } from "~/hooks/useAuthSelectedAccess";
 import { dashboardHelpers } from "~/utils/dashboard";
 
 import { NavLink } from "react-router-dom";
@@ -26,108 +27,41 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 
+const dashboardStatsInit = {
+  totalClients: 0,
+  activeClients: 0,
+  totalItems: 0,
+  activeItems: 0,
+  lowStockItems: 0,
+  pendingOrders: 0,
+  totalOrders: 0,
+  completedOrders: 0,
+  monthlySales: 0,
+  monthlyOrdersCount: 0,
+};
+
 export default function Dashboard() {
-  const [, setSelectedAccess] = useState(null);
-  const [dashboardStats, setDashboardStats] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { errorAcess, selectedAccess, loadingSelectedAccess } =
+    useAuthSelectedAccess();
+  const { data, error, loading } = useGetDashboardDataQuery();
+  const [dashboardStats, setDashboardStats] = useState(dashboardStatsInit);
+  const [errorStats, setErrorStats] = useState(null);
 
   useEffect(() => {
-    async function initializeDashboard() {
-      try {
-        setLoading(true);
-
-        // Cargar acceso seleccionado del sessionStorage
-        const storedSelected = sessionStorage.getItem("selected_access");
-
-        if (storedSelected) {
-          const selected = JSON.parse(storedSelected);
-          setSelectedAccess(selected);
-          await loadStats(selected);
-        } else {
-          // Si no hay acceso seleccionado, verificar si hay datos de acceso
-          const storedAccess = sessionStorage.getItem("access_data");
-          if (storedAccess) {
-            const parsedAccess = JSON.parse(storedAccess);
-            if (parsedAccess.length > 0) {
-              const firstAccess = parsedAccess[0];
-              setSelectedAccess(firstAccess);
-              sessionStorage.setItem(
-                "selected_access",
-                JSON.stringify(firstAccess)
-              );
-              await loadStats(firstAccess);
-            } else {
-              setError("No hay accesos configurados para este usuario.");
-            }
-          } else {
-            setError("No se pudieron cargar los datos de acceso del usuario.");
-          }
-        }
-      } catch (err) {
-        console.error("Error inicializando dashboard:", err);
-        setError("Error al cargar el dashboard");
-      } finally {
-        setLoading(false);
-      }
+    try {
+      if (!data || !selectedAccess) return;
+      const companyId = selectedAccess?.companyID || selectedAccess?.CompanyID;
+      const stats = dashboardHelpers.processDashboardData(data, companyId);
+      console.log("Estadísticas procesadas:", stats);
+      setDashboardStats(stats);
+    } catch (err) {
+      console.error("Error cargando estadísticas:", err);
+      // Fallback: establecer estadísticas en cero
+      setDashboardStats(dashboardStatsInit);
+      // Mostrar error pero permitir que el dashboard se muestre
+      setErrorStats(`Error cargando datos: ${err.message}`);
     }
-
-    async function loadStats(access) {
-      try {
-        console.log("Cargando estadísticas para:", access);
-
-        // Usar la consulta corregida que funciona con tus resolvers
-        const data = await graphqlClient.query(QUERIES.GET_DASHBOARD_DATA);
-
-        console.log("Datos recibidos del GraphQL:", data);
-
-        // Procesar los datos usando el helper
-        const companyId = access?.companyID || access?.CompanyID;
-        const stats = dashboardHelpers.processDashboardData(data, companyId);
-
-        console.log("Estadísticas procesadas:", stats);
-
-        setDashboardStats(stats);
-        setError(null);
-      } catch (err) {
-        console.error("Error cargando estadísticas:", err);
-
-        // Fallback: establecer estadísticas en cero
-        setDashboardStats({
-          totalClients: 0,
-          activeClients: 0,
-          totalItems: 0,
-          activeItems: 0,
-          lowStockItems: 0,
-          pendingOrders: 0,
-          totalOrders: 0,
-          completedOrders: 0,
-          monthlySales: 0,
-          monthlyOrdersCount: 0,
-        });
-
-        // Mostrar error pero permitir que el dashboard se muestre
-        setError(`Error cargando datos: ${err.message}`);
-      }
-    }
-
-    initializeDashboard();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="p-6">
-        <div className="animate-pulse">
-          <div className="h-8  rounded mb-6"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className=" h-32 rounded"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  }, [data, selectedAccess, setErrorStats]);
 
   return (
     <div className="p-6">
@@ -138,15 +72,53 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <DiagnosticInfo />
-      {error && (
-        <Alert variant="default | destructive">
-          <TriangleAlert />
-          <AlertDescription>{error}</AlertDescription>
+      {loading && (
+        <>
+          <Alert className="mb-8">
+            <LoaderCircle className="animate-spin" />
+            <AlertDescription>Cargando...</AlertDescription>
+          </Alert>
+          <div className="animate-pulse">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="bg-accent h-32 p-6 rounded-lg border border-l-4"
+                />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {loadingSelectedAccess && (
+        <Alert className="my-4">
+          <LoaderCircle className="animate-spin" />
+          <AlertDescription>Cargando Acceso...</AlertDescription>
         </Alert>
       )}
 
-      {dashboardStats?.pendingOrders > 0 && (
+      <DiagnosticInfo />
+      {error && (
+        <Alert variant="destructive">
+          <TriangleAlert />
+          <AlertDescription>{error.message}</AlertDescription>
+        </Alert>
+      )}
+      {errorAcess && (
+        <Alert variant="destructive">
+          <TriangleAlert />
+          <AlertDescription>{errorAcess}</AlertDescription>
+        </Alert>
+      )}
+      {errorStats && (
+        <Alert variant="destructive">
+          <TriangleAlert />
+          <AlertDescription>{errorStats}</AlertDescription>
+        </Alert>
+      )}
+
+      {!loading && dashboardStats?.pendingOrders > 0 && (
         <Alert className="relative border rounded-lg p-4 mb-8">
           <CircleAlert />
           <AlertTitle>Órdenes Pendientes</AlertTitle>
@@ -169,7 +141,7 @@ export default function Dashboard() {
         </Alert>
       )}
 
-      {dashboardStats && (
+      {!loading && dashboardStats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-card p-6 rounded-lg border border-l-4 border-l-primary">
             <div className="flex items-center justify-between">
@@ -254,7 +226,7 @@ export default function Dashboard() {
       )}
 
       {/* Resumen adicional */}
-      {dashboardStats && (
+      {!loading && dashboardStats && (
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-card p-6 rounded-lg border">
             <h3 className="text-lg font-semibold  mb-4">

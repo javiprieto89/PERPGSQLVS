@@ -1,152 +1,207 @@
 // frontend/src/pages/Warehouses.jsx
-import { useEffect, useState } from "react";
+import {
+  EllipsisVertical,
+  LoaderCircle,
+  Pencil,
+  Plus,
+  RefreshCcw,
+  Trash,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ApiErrorMessage } from "~/components/ApiErrorMessage";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { Alert, AlertDescription } from "~/components/ui/alert";
+import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { useGetWarehousesQuery } from "~/graphql/_generated/graphql";
 import { warehouseOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import WarehouseCreate from "./WarehouseCreate";
 
 export default function Warehouses() {
-  const [allWare, setAllWare] = useState([]);
+  const { data, error, loading, refetch } = useGetWarehousesQuery();
   const [warehouses, setWarehouses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-
-  useEffect(() => {
-    loadWarehouses();
-  }, []);
-
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.data === "reload-warehouses") {
-        loadWarehouses();
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, []);
-
-  const loadWarehouses = async () => {
-    try {
-      setLoading(true);
-      const data = await warehouseOperations.getAllWarehouses();
-      setAllWare(data);
-      setWarehouses(data);
-    } catch (err) {
-      console.error("Error cargando depósitos:", err);
-      setError(err.message);
-      setWarehouses([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreate = () => {
-    openReactWindow(
-      (popup) => (
-        <WarehouseCreate
-          onSave={() => {
-            popup.opener.postMessage("reload-warehouses", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Nuevo Depósito"
-    );
-  };
 
   const handleFilterChange = (filtered) => {
     setWarehouses(filtered);
   };
 
-  const handleEdit = (wh) => {
+  const handleCreate = useCallback(() => {
     openReactWindow(
       (popup) => (
         <WarehouseCreate
-          warehouse={wh}
           onSave={() => {
             popup.opener.postMessage("reload-warehouses", "*");
             popup.close();
           }}
-          onClose={() => popup.close()}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
         />
       ),
-      "Editar Depósito"
+      "Nuevo Depósito"
     );
-  };
+  }, [refetch]);
 
-  const handleDelete = async (id) => {
-    if (!confirm("¿Borrar depósito?")) return;
-    try {
-      await warehouseOperations.deleteWarehouse(id);
-      loadWarehouses();
-    } catch (err) {
-      alert("Error al borrar depósito: " + err.message);
+  const handleEdit = useCallback(
+    (wh) => {
+      openReactWindow(
+        (popup) => (
+          <WarehouseCreate
+            warehouse={wh}
+            onSave={() => {
+              popup.opener.postMessage("reload-warehouses", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Depósito"
+      );
+    },
+    [refetch]
+  );
+
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar depósito?")) return;
+      try {
+        await warehouseOperations.deleteWarehouse(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar depósito: " + err.message);
+      }
+    },
+    [refetch]
+  );
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data === "reload-warehouses") {
+        refetch();
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (data?.allWarehouses) {
+      setWarehouses(data.allWarehouses);
     }
-  };
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "WarehouseID",
+        className: "first w-3",
+      },
+      {
+        header: "Name",
+        accessorKey: "Name",
+      },
+      {
+        header: "Addres",
+        accessorKey: "Addres",
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "WarehouseID",
+        cell: ({ row, getValue }) => {
+          return (
+            <div className="flex gap-2 justify-end">
+              <Button
+                onClick={() => handleEdit(row.original)}
+                className="hidden md:inline px-3 py-2 text-sm rounded"
+              >
+                <Pencil />
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button>
+                    <EllipsisVertical />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => handleDelete(getValue())}
+                  >
+                    <Trash />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          );
+        },
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-foreground">Depósitos</h1>
         <div className="flex space-x-2">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
-          <button
-            onClick={loadWarehouses}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-blue-700"
-          >
+          {data && data.allWarehouses.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allWarehouses}
+                onSearch={(rows) => setWarehouses(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <Button onClick={() => refetch()}>
+            <RefreshCcw />
             Recargar
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Nuevo Depósito
-          </button>
+          </Button>
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus />
+            Nuevo
+          </Button>
         </div>
       </div>
       {showFilters && (
         <div className="mb-6">
           <TableFilters
             modelName="warehouses"
-            data={allWare}
+            data={data.allWarehouses}
             onFilterChange={handleFilterChange}
           />
         </div>
       )}
-      {error && <div className="text-destructive mb-4">{error}</div>}
-      {loading ? (
-        <div>Cargando...</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {warehouses.map((wh) => (
-            <div key={wh.WarehouseID} className=" rounded shadow p-4">
-              <h3 className="text-lg font-semibold mb-2">{wh.Name}</h3>
-              <p className="text-sm mb-2">{wh.Addres}</p>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(wh)}
-                  className="mt-2 px-3 py-1  text-sm rounded hover:"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(wh.WarehouseID)}
-                  className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+      {error && <ApiErrorMessage error={error} />}
+      {loading && (
+        <Alert className="my-4">
+          <LoaderCircle className="animate-spin" />
+          <AlertDescription>Cargando...</AlertDescription>
+        </Alert>
       )}
+      <AdminTable columns={columns} data={warehouses || []} />
+      {loading && <AdminTableLoading />}
     </div>
   );
 }

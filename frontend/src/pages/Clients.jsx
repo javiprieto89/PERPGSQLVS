@@ -2,7 +2,7 @@ import { atom, useAtom } from "jotai";
 import {
   EllipsisVertical,
   Eye,
-  Info,
+  LoaderCircle,
   Pencil,
   RefreshCcw,
   Trash,
@@ -257,7 +257,7 @@ export default function Clients() {
 
       {loading && (
         <Alert className="my-4">
-          <Info />
+          <LoaderCircle className="animate-spin" />
           <AlertDescription>Cargando...</AlertDescription>
         </Alert>
       )}
@@ -298,7 +298,6 @@ export default function Clients() {
           </div>
         </>
       )}
-
       {loading && <AdminTableLoading />}
     </div>
   );

@@ -581,7 +581,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
               return (
                 <span
                   key={field.field}
-                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary text-foreground"
+                  className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary text-primary-foreground"
                 >
                   {field.label}: {displayValue}
                   <button
