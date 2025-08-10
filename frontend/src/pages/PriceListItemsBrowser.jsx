@@ -1,5 +1,5 @@
 // frontend/src/pages/PriceListItemsBrowser.jsx
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   pricelistItemOperations,
   pricelistOperations,
@@ -29,9 +29,9 @@ export default function PriceListItemsBrowser() {
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, [selectedList, selectedItem]);
+  }, [selectedList, selectedItem, loadResults]);
 
-  const loadResults = async () => {
+  const loadResults = useCallback(async () => {
     if (!selectedList && !selectedItem) {
       setResults([]);
       return;
@@ -41,7 +41,7 @@ export default function PriceListItemsBrowser() {
       selectedItem?.ItemID || null
     );
     setResults(data);
-  };
+  }, [selectedItem, selectedList]);
 
   const handleSelectItem = (item) => {
     setSelectedItem({

@@ -51,7 +51,7 @@ export default function SupplierCreate({
     } finally {
       setLoadingForm(false);
     }
-  }, [isEdit]);
+  }, []);
 
   useEffect(() => {
     loadFormData();

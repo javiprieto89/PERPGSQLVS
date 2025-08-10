@@ -60,7 +60,7 @@ export default function DocumentCreate({
       }
     }
     loadData();
-  }, []);
+  }, [branches, companies, documentTypes]);
 
   useEffect(() => {
     if (initialDoc) {
