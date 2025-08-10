@@ -1,45 +1,24 @@
-import { useEffect, useState } from "react";
+import { Plus, RefreshCcw } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AlertLoading } from "~/components/AlertLoading";
+import { ApiErrorMessage } from "~/components/ApiErrorMessage";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { TableActionButton } from "~/components/TableActionButtons";
+import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { Button } from "~/components/ui/button";
+import { useGetAllCreditCardGroupsQuery } from "~/graphql/_generated/graphql";
 import { creditCardGroupOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import CreditCardGroupCreate from "./CreditCardGroupCreate";
 
 export default function CreditCardGroups() {
-  const [allGroups, setAllGroups] = useState([]);
+  const { data, error, loading, refetch } = useGetAllCreditCardGroupsQuery();
   const [groups, setGroups] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    loadGroups();
-  }, []);
-
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.data === "reload-cardgroups") {
-        loadGroups();
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, []);
-
-  const loadGroups = async () => {
-    try {
-      setLoading(true);
-      const data = await creditCardGroupOperations.getAllGroups();
-      setAllGroups(data);
-      setGroups(data);
-    } catch (err) {
-      setError(err.message);
-      setGroups([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     openReactWindow(
       (popup) => (
         <CreditCardGroupCreate
@@ -47,42 +26,97 @@ export default function CreditCardGroups() {
             popup.opener.postMessage("reload-cardgroups", "*");
             popup.close();
           }}
-          onClose={() => popup.close()}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
         />
       ),
       "Nuevo Grupo"
     );
-  };
+  }, [refetch]);
 
   const handleFilterChange = (filtered) => {
     setGroups(filtered);
   };
 
-  const handleEdit = (group) => {
-    openReactWindow(
-      (popup) => (
-        <CreditCardGroupCreate
-          group={group}
-          onSave={() => {
-            popup.opener.postMessage("reload-cardgroups", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Editar Grupo"
-    );
-  };
+  const handleEdit = useCallback(
+    (group) => {
+      openReactWindow(
+        (popup) => (
+          <CreditCardGroupCreate
+            group={group}
+            onSave={() => {
+              popup.opener.postMessage("reload-cardgroups", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Grupo"
+      );
+    },
+    [refetch]
+  );
 
-  const handleDelete = async (id) => {
-    if (!confirm("¿Borrar grupo?")) return;
-    try {
-      await creditCardGroupOperations.deleteGroup(id);
-      loadGroups();
-    } catch (err) {
-      alert("Error al borrar grupo: " + err.message);
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar grupo?")) return;
+      try {
+        await creditCardGroupOperations.deleteGroup(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar grupo: " + err.message);
+      }
+    },
+    [refetch]
+  );
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data === "reload-cardgroups") {
+        refetch();
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (data?.allCreditcardgroups) {
+      setGroups(data.allCreditcardgroups);
     }
-  };
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "CreditCardGroupID",
+        className: "first w-3",
+      },
+      {
+        header: "Nombre",
+        accessorKey: "GroupName",
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "CreditCardGroupID",
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
 
   return (
     <div className="p-6">
@@ -91,61 +125,40 @@ export default function CreditCardGroups() {
           Grupos de Tarjetas
         </h1>
         <div className="flex space-x-2">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
-          <button
-            onClick={loadGroups}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary"
-          >
+          {data && data.allCreditcardgroups.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allCreditcardgroups}
+                onSearch={(rows) => setGroups(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <Button onClick={() => refetch()}>
+            <RefreshCcw />
             Recargar
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Nuevo Grupo
-          </button>
+          </Button>
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus /> Nuevo
+          </Button>
         </div>
       </div>
       {showFilters && (
         <div className="mb-6">
           <TableFilters
             modelName="creditcardgroups"
-            data={allGroups}
+            data={data.allCreditcardgroups}
             onFilterChange={handleFilterChange}
           />
         </div>
       )}
-      {error && <div className="text-destructive mb-4">{error}</div>}
-      {loading ? (
-        <div>Cargando...</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {groups.map((g) => (
-            <div key={g.CreditCardGroupID} className=" rounded shadow p-4">
-              <h3 className="text-lg font-semibold mb-2">{g.GroupName}</h3>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(g)}
-                  className="mt-2 px-3 py-1  text-sm rounded hover:"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(g.CreditCardGroupID)}
-                  className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {error && <ApiErrorMessage error={error} />}
+      {loading && <AlertLoading />}
+      {groups.length > 0 && <AdminTable columns={columns} data={groups} />}
+      {loading && <AdminTableLoading />}
     </div>
   );
 }

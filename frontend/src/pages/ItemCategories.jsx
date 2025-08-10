@@ -1,11 +1,4 @@
-import {
-  EllipsisVertical,
-  LoaderCircle,
-  Pencil,
-  Plus,
-  RefreshCcw,
-  Trash,
-} from "lucide-react";
+import { Plus, RefreshCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useGetAllItemCategoriesQuery } from "~/graphql/_generated/graphql";
@@ -16,16 +9,11 @@ import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { Button } from "~/components/ui/button";
 import TableFilters from "../components/TableFilters";
 
+import { AlertLoading } from "~/components/AlertLoading";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { TableActionButton } from "~/components/TableActionButtons";
 import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
-import { Alert, AlertDescription } from "~/components/ui/alert";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import ItemCategoryCreate from "./ItemCategoryCreate";
 
 export default function ItemCategories() {
@@ -113,34 +101,12 @@ export default function ItemCategories() {
         header: "",
         id: "actions",
         accessorKey: "ItemCategoryID",
-        cell: ({ row, getValue }) => {
-          return (
-            <div className="flex gap-2 justify-end">
-              <Button
-                onClick={() => handleEdit(row.original)}
-                className="hidden md:inline px-3 py-2 text-sm rounded"
-              >
-                <Pencil />
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button>
-                    <EllipsisVertical />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    onClick={() => handleDelete(getValue())}
-                  >
-                    <Trash />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          );
-        },
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
       },
     ],
     [handleDelete, handleEdit]
@@ -182,12 +148,7 @@ export default function ItemCategories() {
           />
         </div>
       )}
-      {loading && (
-        <Alert className="my-4">
-          <LoaderCircle className="animate-spin" />
-          <AlertDescription>Cargando...</AlertDescription>
-        </Alert>
-      )}
+      {loading && <AlertLoading />}
       {error && <ApiErrorMessage error={error} />}
       {categories.length > 0 && (
         <AdminTable columns={columns} data={categories || []} />

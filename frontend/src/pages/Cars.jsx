@@ -1,360 +1,218 @@
-﻿import { useCallback, useEffect, useState } from "react";
+﻿import { Plus, RefreshCcw } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AlertLoading } from "~/components/AlertLoading";
+import { ApiErrorMessage } from "~/components/ApiErrorMessage";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { TableActionButton } from "~/components/TableActionButtons";
+import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { Button } from "~/components/ui/button";
+import { useGetAllCarsQuery } from "~/graphql/_generated/graphql";
 import { carOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import CarCreate from "./CarCreate";
 
 export default function Cars() {
-  const [allCars, setAllCars] = useState([]);
+  const { data, error, loading, refetch } = useGetAllCarsQuery();
   const [cars, setCars] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-  const [isComponentMounted, setIsComponentMounted] = useState(true);
 
-  // Marcar cuando el componente está montado
-  useEffect(() => {
-    setIsComponentMounted(true);
-    return () => setIsComponentMounted(false);
-  }, []);
+  const handleFilterChange = (filtered) => {
+    setCars(filtered);
+  };
 
-  const loadCars = useCallback(async () => {
-    if (!isComponentMounted) return;
+  const handleCreate = useCallback(() => {
+    openReactWindow(
+      (popup) => (
+        <CarCreate
+          onSave={() => {
+            popup.opener.postMessage("reload-cars", "*");
+            popup.close();
+          }}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
+        />
+      ),
+      "Nuevo Auto"
+    );
+  }, [refetch]);
 
-    try {
-      setLoading(true);
-      const data = await carOperations.getAllCars();
+  const handleEdit = useCallback(
+    (c) => {
+      openReactWindow(
+        (popup) => (
+          <CarCreate
+            initialData={c}
+            onSave={() => {
+              popup.opener.postMessage("reload-cars", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Auto"
+      );
+    },
+    [refetch]
+  );
 
-      if (isComponentMounted) {
-        setAllCars(data);
-        setCars(data);
-        setError(null);
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar auto?")) return;
+      try {
+        await carOperations.deleteCar(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar auto: " + err.message);
       }
-    } catch (err) {
-      console.error("Error cargando autos:", err);
-      if (isComponentMounted) {
-        setError(err.message);
-        setCars([]);
-      }
-    } finally {
-      if (isComponentMounted) {
-        setLoading(false);
-      }
-    }
-  }, [isComponentMounted]);
+    },
+    [refetch]
+  );
 
-  // Cargar autos al montar el componente
-  useEffect(() => {
-    loadCars();
-  }, [loadCars]);
-
-  // Escuchar mensajes para recargar
   useEffect(() => {
     const handler = (e) => {
-      if (e.data === "reload-cars" && isComponentMounted) {
-        loadCars();
+      if (e.data === "reload-cars") {
+        refetch();
       }
     };
 
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, [loadCars, isComponentMounted]);
+  }, [refetch]);
 
-  const handleCreate = () => {
-    openReactWindow(
-      (popup) => (
-        <CarCreate
-          onSave={() => {
-            popup.opener.postMessage("reload-cars", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Nuevo Auto"
-    );
-  };
-
-  // Manejar cambio de filtros - CORREGIDO para evitar bucles
-  const handleFilterChange = useCallback(
-    (filtered) => {
-      if (isComponentMounted) {
-        setCars(filtered);
-      }
-    },
-    [isComponentMounted]
-  );
-
-  // Manejar toggle de filtros - CORREGIDO
-  const handleToggleFilters = useCallback(() => {
-    setShowFilters((prev) => {
-      const newValue = !prev;
-      console.log("Toggling filters:", newValue);
-
-      // Forzar re-render del componente padre para asegurar navegación correcta
-      setTimeout(() => {
-        if (isComponentMounted) {
-          // Trigger re-render para limpiar cualquier estado residual
-          setAllCars((current) => [...current]);
-        }
-      }, 100);
-
-      return newValue;
-    });
-  }, [isComponentMounted]);
-
-  const handleEdit = (c) => {
-    openReactWindow(
-      (popup) => (
-        <CarCreate
-          initialData={c}
-          onSave={() => {
-            popup.opener.postMessage("reload-cars", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Editar Auto"
-    );
-  };
-
-  const handleDelete = async (id) => {
-    if (!confirm("¿Borrar auto?")) return;
-    try {
-      await carOperations.deleteCar(id);
-      loadCars();
-    } catch (err) {
-      alert("Error al borrar auto: " + err.message);
-    }
-  };
-
-  // Cleanup de filtros al desmontar
   useEffect(() => {
-    return () => {
-      if (!isComponentMounted) {
-        console.log("Cars component unmounted, cleaning up filters");
-      }
-    };
-  }, [isComponentMounted]);
+    if (data?.allCars) {
+      setCars(data.allCars);
+    }
+  }, [data]);
 
-  if (loading) {
-    return (
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-foreground">Autos</h1>
-          <div className="flex items-center space-x-2">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-            <span className="text-primary">Cargando...</span>
-          </div>
-        </div>
-        <div className="animate-pulse">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className=" h-32 rounded"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "CarID",
+        className: "first w-3",
+      },
+      {
+        header: "Patente",
+        accessorKey: "LicensePlate",
+      },
+      {
+        header: "Cliente",
+        accessorKey: "ClientName",
+      },
+      {
+        header: "Año",
+        accessorKey: "Year",
+      },
+      {
+        header: "Marca",
+        accessorKey: "CarBrandName",
+      },
+      {
+        header: "Modelo",
+        accessorKey: "CarModelName",
+      },
+      {
+        header: "Último servicio",
+        accessorKey: "LastServiceMileage",
+        cell: ({ getValue }) => `${getValue()} km`,
+      },
+      {
+        header: "Estado",
+        accessorKey: "IsDebtor",
+        cell: ({ getValue }) => {
+          return (
+            <span
+              className={`px-2 py-1 text-xs font-medium rounded-full ${
+                getValue()
+                  ? "bg-red-100 text-destructive"
+                  : "bg-green-100 text-green-800"
+              }`}
+            >
+              {getValue() ? "Deudor" : "Al día"}
+            </span>
+          );
+        },
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "CarID",
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-foreground">Autos</h1>
         <div className="flex space-x-2">
-          <button
-            onClick={handleToggleFilters}
-            className={`px-4 py-2 text-white rounded transition-colors duration-200 ${
-              showFilters
-                ? "bg-purple-700 hover:bg-purple-800"
-                : "bg-purple-600 hover:bg-purple-700"
-            }`}
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
-          <button
-            onClick={loadCars}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary transition-colors"
-          >
+          {data && data.allCars.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allCars}
+                onSearch={(rows) => setCars(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <Button onClick={() => refetch()}>
+            <RefreshCcw />
             Recargar
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-          >
-            Nuevo Auto
-          </button>
+          </Button>
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus /> Nuevo
+          </Button>
         </div>
       </div>
 
-      {/* Filtros - Solo renderizar cuando está visible y hay datos */}
-      {showFilters && allCars.length > 0 && (
+      {showFilters && (
         <div className="mb-6">
           <TableFilters
-            key={`cars-filters-${showFilters}-${allCars.length}`}
             modelName="cars"
-            data={allCars}
+            data={data.allCars}
             onFilterChange={handleFilterChange}
           />
         </div>
       )}
 
       {/* Error */}
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <div className="flex items-start">
-            <svg
-              className="w-5 h-5 text-destructive mr-2 mt-0.5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <div>
-              <h4 className="text-destructive font-semibold mb-1">
-                Error cargando autos
-              </h4>
-              <p className="text-destructive text-sm">{error}</p>
-            </div>
-          </div>
-        </div>
-      )}
+      {error && <ApiErrorMessage error={error} />}
 
+      {loading && <AlertLoading />}
+
+      {cars.length > 0 && <AdminTable columns={columns} data={cars} />}
       {/* Lista de autos */}
       {!error && cars.length > 0 && (
         <div>
           <div className="mb-4 flex items-center justify-between">
             <p className="text-muted-foreground">
               Mostrando {cars.length} auto{cars.length !== 1 ? "s" : ""} de{" "}
-              {allCars.length} total{allCars.length !== 1 ? "es" : ""}
+              {data.allCars.length} total{data.allCars.length !== 1 ? "es" : ""}
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cars.map((c) => (
-              <div
-                key={c.CarID}
-                className=" rounded-lg shadow-md border  p-6 hover:shadow-lg transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      {c.LicensePlate}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      ID: {c.CarID}
-                    </p>
-                  </div>
-                  <span
-                    className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      c.IsDebtor
-                        ? "bg-red-100 text-destructive"
-                        : "bg-green-100 text-green-800"
-                    }`}
-                  >
-                    {c.IsDebtor ? "Deudor" : "Al día"}
-                  </span>
-                </div>
-
-                <div className="space-y-2 text-sm">
-                  {/* AGREGADO: Información del cliente */}
-                  <div className="flex items-center">
-                    <svg
-                      className="w-4 h-4 text-muted-foreground mr-2"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span className="text-foreground/80 font-medium">
-                      Cliente: {c.ClientName || "—"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center">
-                    <svg
-                      className="w-4 h-4 text-muted-foreground mr-2"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span className="text-foreground/80">
-                      Año: {c.Year || "—"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center">
-                    <svg
-                      className="w-4 h-4 text-muted-foreground mr-2"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span className="text-foreground/80">
-                      Marca: {c.CarBrandName || "—"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center">
-                    <svg
-                      className="w-4 h-4 text-muted-foreground mr-2"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span className="text-foreground/80">
-                      Modelo: {c.CarModelName || "—"}
-                    </span>
-                  </div>
-
-                  {c.LastServiceMileage && (
-                    <div className="flex items-center">
-                      <svg
-                        className="w-4 h-4 text-muted-foreground mr-2"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span className="text-foreground/80">
-                        Último servicio: {c.LastServiceMileage} km
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-4 pt-4 border-t  flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(c)}
-                    className="flex-1 px-3 py-2 bg-primary text-white text-sm rounded hover:bg-primary transition-colors"
-                  >
-                    Editar Auto
-                  </button>
-                  <button
-                    onClick={() => handleDelete(c.CarID)}
-                    className="px-3 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       )}
+
+      {loading && <AdminTableLoading />}
 
       {/* Estado vacío */}
       {!error && !loading && cars.length === 0 && (
@@ -383,7 +241,7 @@ export default function Cars() {
           <div className="mt-6">
             {showFilters ? (
               <button
-                onClick={handleToggleFilters}
+                onClick={() => alert("Ups")}
                 className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
               >
                 Limpiar Filtros

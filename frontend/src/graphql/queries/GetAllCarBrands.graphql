@@ -2,5 +2,6 @@ query GetAllCarBrands {
   allCarbrands {
     CarBrandID
     Name
+    CompanyID
   }
 }

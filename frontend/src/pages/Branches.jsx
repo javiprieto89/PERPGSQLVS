@@ -1,25 +1,13 @@
 // frontend/src/pages/Branches.jsx
-import {
-  EllipsisVertical,
-  LoaderCircle,
-  Pencil,
-  Plus,
-  RefreshCcw,
-  Trash,
-} from "lucide-react";
+import { Plus, RefreshCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { AlertLoading } from "~/components/AlertLoading";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { TableActionButton } from "~/components/TableActionButtons";
 import { AdminTable } from "~/components/TanstackTable";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import { useGetAllBranchesQuery } from "~/graphql/_generated/graphql";
 import { branchOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
@@ -125,40 +113,16 @@ export default function Branches() {
         header: "",
         id: "actions",
         accessorKey: "ItemCategoryID",
-        cell: ({ row }) => {
-          return (
-            <div className="flex gap-2 justify-end">
-              <Button
-                onClick={() => handleEdit(row)}
-                className="hidden md:inline px-3 py-2 text-sm rounded"
-              >
-                <Pencil />
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button>
-                    <EllipsisVertical />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    onClick={() => handleDelete(row.BranchID, row.CompanyID)}
-                  >
-                    <Trash />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          );
-        },
+        cell: ({ row }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(row.BranchID, row.CompanyID)}
+            onEdit={() => handleEdit(row)}
+          />
+        ),
       },
     ],
     [handleDelete, handleEdit]
   );
-
-  console.log("branches", branches);
 
   return (
     <div className="p-6">
@@ -197,12 +161,7 @@ export default function Branches() {
         </div>
       )}
       {error && <ApiErrorMessage error={error} />}
-      {loading && (
-        <Alert className="my-4">
-          <LoaderCircle className="animate-spin" />
-          <AlertDescription>Cargando...</AlertDescription>
-        </Alert>
-      )}
+      {loading && <AlertLoading />}
       {branches.length > 0 && (
         <AdminTable
           getRowCanExpand={() => true}

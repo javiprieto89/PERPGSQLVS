@@ -1,4 +1,13 @@
-import { useEffect, useState } from "react";
+import { Plus, RefreshCcw } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AlertLoading } from "~/components/AlertLoading";
+import { ApiErrorMessage } from "~/components/ApiErrorMessage";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { TableActionButton } from "~/components/TableActionButtons";
+import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { Button } from "~/components/ui/button";
+import { useGetAllSaleConditionsQuery } from "~/graphql/_generated/graphql";
 import {
   creditCardGroupOperations,
   creditCardOperations,
@@ -9,97 +18,148 @@ import { openReactWindow } from "../utils/openReactWindow";
 import SaleConditionCreate from "./SaleConditionCreate";
 
 export default function SaleConditions() {
-  const [allSaleConditions, setAllSaleConditions] = useState([]);
+  const { data, error, loading, refetch } = useGetAllSaleConditionsQuery();
   const [saleConditions, setSaleConditions] = useState([]);
   const [cards, setCards] = useState([]);
   const [groups, setGroups] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-
-  useEffect(() => {
-    loadSCs();
-  }, []);
 
   useEffect(() => {
     const handler = (e) => {
       if (e.data === "reload-saleconditions") {
-        loadSCs();
+        refetch();
       }
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, []);
-
-  const loadSCs = async () => {
-    try {
-      setLoading(true);
-      const [scData, cardData, groupData] = await Promise.all([
-        saleConditionOperations.getAllSaleConditions(),
-        creditCardOperations.getAllCards(),
-        creditCardGroupOperations.getAllGroups(),
-      ]);
-      setAllSaleConditions(scData);
-      setSaleConditions(scData);
-      setCards(cardData);
-      setGroups(groupData);
-    } catch (err) {
-      console.error("Error cargando condiciones:", err);
-      setError(err.message);
-      setSaleConditions([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCreate = () => {
-    openReactWindow(
-      (popup) => (
-        <SaleConditionCreate
-          cards={cards}
-          groups={groups}
-          onSave={() => {
-            popup.opener.postMessage("reload-saleconditions", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Nueva Condición"
-    );
-  };
+  }, [refetch]);
 
   const handleFilterChange = (filtered) => {
     setSaleConditions(filtered);
   };
 
-  const handleEdit = (sc) => {
+  const handleCreate = useCallback(() => {
     openReactWindow(
       (popup) => (
         <SaleConditionCreate
-          saleCondition={sc}
           cards={cards}
           groups={groups}
           onSave={() => {
             popup.opener.postMessage("reload-saleconditions", "*");
             popup.close();
           }}
-          onClose={() => popup.close()}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
         />
       ),
-      "Editar Condición"
+      "Nueva Condición"
     );
-  };
+  }, [refetch, cards, groups]);
 
-  const handleDelete = async (id) => {
-    if (!confirm("¿Borrar condición?")) return;
-    try {
-      await saleConditionOperations.deleteSaleCondition(id);
-      loadSCs();
-    } catch (err) {
-      alert("Error al borrar condición: " + err.message);
+  const handleEdit = useCallback(
+    (sc) => {
+      openReactWindow(
+        (popup) => (
+          <SaleConditionCreate
+            saleCondition={sc}
+            cards={cards}
+            groups={groups}
+            onSave={() => {
+              popup.opener.postMessage("reload-saleconditions", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Condición"
+      );
+    },
+    [refetch, cards, groups]
+  );
+
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar condición?")) return;
+      try {
+        await saleConditionOperations.deleteSaleCondition(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar condición: " + err.message);
+      }
+    },
+    [refetch]
+  );
+
+  useEffect(() => {
+    // TODO: remove this and improve useGetAllSaleConditionsQuery
+    async function load() {
+      const [cardData, groupData] = await Promise.all([
+        creditCardOperations.getAllCards(),
+        creditCardGroupOperations.getAllGroups(),
+      ]);
+      setSaleConditions(data.allSaleconditions);
+      setCards(cardData);
+      setGroups(groupData);
     }
-  };
+
+    if (data?.allSaleconditions) {
+      setSaleConditions(data.allSaleconditions);
+      load();
+    }
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "SaleConditionID",
+        className: "first w-3",
+      },
+      {
+        header: "Condición",
+        accessorKey: "Name",
+      },
+      {
+        header: "Vencimiento",
+        accessorKey: "DueDate",
+      },
+      {
+        header: "Estado",
+        accessorKey: "IsActive",
+        cell: (props) => {
+          return (
+            <span
+              className={`px-2 py-1 text-xs font-medium rounded-full ${
+                props.getValue("IsActive")
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-destructive"
+              }`}
+            >
+              {props.getValue("IsActive") ? "Activo" : "Inactivo"}
+            </span>
+          );
+        },
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "SaleConditionID",
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
 
   return (
     <div className="p-6">
@@ -108,39 +168,40 @@ export default function SaleConditions() {
           Condiciones de Venta
         </h1>
         <div className="flex space-x-2">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
-          <button
-            onClick={loadSCs}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary"
-          >
+          {data && data.allSaleconditions.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allSaleconditions}
+                onSearch={(rows) => setSaleConditions(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <Button onClick={() => refetch()}>
+            <RefreshCcw />
             Recargar
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Nueva Condición
-          </button>
+          </Button>
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus />
+            Nuevo
+          </Button>
         </div>
       </div>
       {showFilters && (
         <div className="mb-6">
           <TableFilters
             modelName="saleconditions"
-            data={allSaleConditions}
+            data={data.allSaleconditions}
             onFilterChange={handleFilterChange}
           />
         </div>
       )}
-      {error && <div className="text-destructive mb-4">{error}</div>}
-      {loading ? (
-        <div>Cargando...</div>
-      ) : (
+      {error && <ApiErrorMessage error={error} />}
+      {loading && <AlertLoading />}
+      {!loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {saleConditions.map((sc) => {
             const card = cards.find((c) => c.CreditCardID === sc.CreditCardID);
@@ -179,6 +240,8 @@ export default function SaleConditions() {
           })}
         </div>
       )}
+      <AdminTable columns={columns} data={saleConditions} />
+      {loading && <AdminTableLoading />}
     </div>
   );
 }

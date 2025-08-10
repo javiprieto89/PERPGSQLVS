@@ -1,14 +1,4 @@
-import { atom, useAtom } from "jotai";
-import {
-  EllipsisVertical,
-  Eye,
-  LoaderCircle,
-  Pencil,
-  RefreshCcw,
-  Trash,
-  UserRoundPlus,
-  Users,
-} from "lucide-react";
+import { Eye, Pencil, RefreshCcw, UserRoundPlus, Users } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useGetAllClientsQuery } from "~/graphql/_generated/graphql";
@@ -20,30 +10,23 @@ import { ClientDetails } from "~/components/client/ClientDetails";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import TableFilters from "~/components/TableFilters";
 import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
-import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 
+import { AlertLoading } from "~/components/AlertLoading";
 import {
   DiagnosticButton,
   DiagnosticInfo,
 } from "~/components/diagnostic/Diagnostic";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { TableActionDropdown } from "~/components/TableActionButtons";
 import ClientCreate from "./ClientCreate";
-
-const clientsAtom = atom([]);
 
 export default function Clients() {
   const { data, error, loading, refetch } = useGetAllClientsQuery();
-  const [clients, setClients] = useAtom(clientsAtom);
+  const [clients, setClients] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     openReactWindow(
       (popup) => (
         <ClientCreate
@@ -51,12 +34,15 @@ export default function Clients() {
             popup.opener.postMessage("reload-clients", "*");
             popup.close();
           }}
-          onClose={() => popup.close()}
+          onClose={async () => {
+            popup.close();
+            refetch();
+          }}
         />
       ),
       "Nuevo Cliente"
     );
-  };
+  }, [refetch]);
 
   const handleEdit = useCallback(
     (client) => {
@@ -70,15 +56,14 @@ export default function Clients() {
             }}
             onClose={async () => {
               popup.close();
-              const a = await refetch();
-              setClients(a.data.allClients);
+              refetch();
             }}
           />
         ),
         "Editar Cliente"
       );
     },
-    [refetch, setClients]
+    [refetch]
   );
 
   const handleDelete = useCallback(
@@ -93,10 +78,6 @@ export default function Clients() {
     },
     [refetch]
   );
-
-  const handleRefetch = async () => {
-    refetch();
-  };
 
   // El filtro ahora opera sobre allClients
   const handleFilterChange = (filteredClients) => {
@@ -118,7 +99,7 @@ export default function Clients() {
     if (data) {
       setClients(data.allClients);
     }
-  }, [data, setClients]);
+  }, [data]);
 
   const columns = useMemo(
     () => [
@@ -185,22 +166,7 @@ export default function Clients() {
               >
                 <Pencil />
               </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button>
-                    <EllipsisVertical />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    onClick={() => handleDelete(getValue())}
-                  >
-                    <Trash />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <TableActionDropdown onDelete={() => handleDelete(getValue())} />
             </div>
           );
         },
@@ -227,7 +193,7 @@ export default function Clients() {
             </>
           )}
           <DiagnosticButton />
-          <Button onClick={handleRefetch}>
+          <Button onClick={() => refetch()}>
             <RefreshCcw />
             Recargar
           </Button>
@@ -255,16 +221,11 @@ export default function Clients() {
       {/* Error */}
       {error && <ApiErrorMessage error={error} />}
 
-      {loading && (
-        <Alert className="my-4">
-          <LoaderCircle className="animate-spin" />
-          <AlertDescription>Cargando...</AlertDescription>
-        </Alert>
-      )}
+      {loading && <AlertLoading />}
 
       {/* Estado vacío */}
       {!error && !loading && clients.length === 0 && (
-        <div className="card border rounded-2xl text-center py-12">
+        <div className="bg-card border rounded-2xl text-center py-12">
           <Users size="48" className="m-auto" />
           <h3 className="mt-2 text-sm font-medium">No hay clientes</h3>
           <p className="mt-1 text-sm ">Comienza creando tu primer cliente.</p>

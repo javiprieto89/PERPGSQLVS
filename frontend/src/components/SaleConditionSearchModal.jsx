@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { AlertLoading } from "./AlertLoading";
 
 export default function SaleConditionSearchModal({ onClose, onSelect }) {
   const { data, loading, error } = useGetAllSaleConditionsQuery();
@@ -73,12 +74,7 @@ export default function SaleConditionSearchModal({ onClose, onSelect }) {
           />
         )}
 
-        {loading && (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8"></div>
-            <span className="ml-2 ">Cargando...</span>
-          </div>
-        )}
+        {loading && <AlertLoading />}
 
         {!loading && (
           <div className="max-h-80 overflow-y-auto my-4">

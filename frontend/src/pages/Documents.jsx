@@ -1,4 +1,5 @@
 // frontend/src/pages/Documents.jsx
+// TODO: recreate Graphql query to reduce the amount of queries
 import { useEffect, useState } from "react";
 import {
   branchOperations,

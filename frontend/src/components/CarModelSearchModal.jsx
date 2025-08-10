@@ -223,7 +223,7 @@ export default function CarModelSearchModal({
         <div className="pt-3 border-t flex justify-end">
           <button
             onClick={onClose}
-            className=" hover: text-gray-800 font-semibold py-2 px-4 rounded-md shadow-sm text-sm"
+            className=" hover: text-foreground font-semibold py-2 px-4 rounded-md shadow-sm text-sm"
           >
             Cerrar
           </button>

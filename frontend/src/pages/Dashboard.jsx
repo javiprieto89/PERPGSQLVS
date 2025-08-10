@@ -20,6 +20,7 @@ import { useAuthSelectedAccess } from "~/hooks/useAuthSelectedAccess";
 import { dashboardHelpers } from "~/utils/dashboard";
 
 import { NavLink } from "react-router-dom";
+import { AlertLoading } from "~/components/AlertLoading";
 import {
   DiagnosticButton,
   DiagnosticInfo,
@@ -72,23 +73,18 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {loading && <AlertLoading />}
       {loading && (
-        <>
-          <Alert className="mb-8">
-            <LoaderCircle className="animate-spin" />
-            <AlertDescription>Cargando...</AlertDescription>
-          </Alert>
-          <div className="animate-pulse">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="bg-accent h-32 p-6 rounded-lg border border-l-4"
-                />
-              ))}
-            </div>
+        <div className="animate-pulse">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="bg-accent h-32 p-6 rounded-lg border border-l-4"
+              />
+            ))}
           </div>
-        </>
+        </div>
       )}
 
       {loadingSelectedAccess && (
@@ -270,13 +266,13 @@ export default function Dashboard() {
             <div className="flex justify-between gap-4">
               <NavLink
                 to="/orders?status=pending"
-                className="w-full card flex flex-col items-center gap-2 p-4 rounded-sm text-center bg-secondary text-secondary-foreground"
+                className="w-full bg-card flex flex-col items-center gap-2 p-4 rounded-sm text-center text-secondary-foreground"
               >
                 <span className="text-5xl">{dashboardStats.pendingOrders}</span>
                 <span className="text-md">pendientes</span>
               </NavLink>
               <NavLink
-                className="w-full card flex flex-col items-center gap-2 p-4 rounded-sm text-center bg-secondary text-secondary-foreground"
+                className="w-full bg-card flex flex-col items-center gap-2 p-4 rounded-sm text-center text-secondary-foreground"
                 to="/orders?status=complete"
               >
                 <span className="text-5xl">
@@ -285,7 +281,7 @@ export default function Dashboard() {
                 <span className="text-md">completadas</span>
               </NavLink>
               <NavLink
-                className="w-full card flex flex-col items-center gap-2 p-4 rounded-sm text-center bg-secondary text-secondary-foreground"
+                className="w-full bg-card flex flex-col items-center gap-2 p-4 rounded-sm text-center text-secondary-foreground"
                 to="/orders?status=monthly"
               >
                 <span className="text-5xl">

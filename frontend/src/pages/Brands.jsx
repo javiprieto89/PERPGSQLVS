@@ -1,10 +1,10 @@
-import { LoaderCircle, Plus, RefreshCcw } from "lucide-react";
+import { Plus, RefreshCcw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { AlertLoading } from "~/components/AlertLoading";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
 import { AdminTableLoading } from "~/components/TanstackTable";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import { useGetAllBrandsQuery } from "~/graphql/_generated/graphql";
 import { brandOperations } from "~/graphql/operations.js";
@@ -124,12 +124,7 @@ export default function Brands() {
         </div>
       )}
       {error && <ApiErrorMessage error={error} />}
-      {loading && (
-        <Alert className="my-4">
-          <LoaderCircle className="animate-spin" />
-          <AlertDescription>Cargando...</AlertDescription>
-        </Alert>
-      )}
+      {loading && <AlertLoading />}
       {loading && <AdminTableLoading />}
       {!loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -113,7 +113,7 @@ export default function ItemConfirmationModal({
           <div className="mt-4 space-y-4">
             {/* Información del ítem */}
             <div className=" p-4 rounded-md">
-              <h4 className="font-medium text-gray-800 mb-2">
+              <h4 className="font-medium text-foreground mb-2">
                 Ítem Seleccionado
               </h4>
               <div className="text-sm text-gray-600 space-y-1">

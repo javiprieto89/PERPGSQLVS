@@ -1,7 +1,6 @@
 import {
   EllipsisVertical,
   Eye,
-  Info,
   Pencil,
   RefreshCcw,
   Trash,
@@ -12,6 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { supplierOperations } from "~/graphql/operations.js";
 
+import { AlertLoading } from "~/components/AlertLoading";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import {
   DiagnosticButton,
@@ -20,7 +20,6 @@ import {
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
 import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
-import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -238,13 +237,13 @@ export default function Suppliers() {
           )}
           <DiagnosticButton />
           {/* refetch */}
-          <Button onClick={refetch}>
+          <Button onClick={() => refetch()}>
             <RefreshCcw />
             Recargar
           </Button>
           <Button variant="primary" onClick={handleCreate}>
             <UserRoundPlus />
-            Nuevo Proveedor
+            Nuevo
           </Button>
         </div>
       </div>
@@ -263,12 +262,7 @@ export default function Suppliers() {
 
       {error && <ApiErrorMessage error={error} />}
 
-      {loading && (
-        <Alert className="my-4">
-          <Info />
-          <AlertDescription>Cargando...</AlertDescription>
-        </Alert>
-      )}
+      {loading && <AlertLoading />}
 
       {!error && !loading && suppliers.length === 0 && (
         <div className="text-center py-12">

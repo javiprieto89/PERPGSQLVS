@@ -1,25 +1,13 @@
 // frontend/src/pages/Warehouses.jsx
-import {
-  EllipsisVertical,
-  LoaderCircle,
-  Pencil,
-  Plus,
-  RefreshCcw,
-  Trash,
-} from "lucide-react";
+import { Plus, RefreshCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { AlertLoading } from "~/components/AlertLoading";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { TableActionButton } from "~/components/TableActionButtons";
 import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import { useGetWarehousesQuery } from "~/graphql/_generated/graphql";
 import { warehouseOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
@@ -124,34 +112,12 @@ export default function Warehouses() {
         header: "",
         id: "actions",
         accessorKey: "WarehouseID",
-        cell: ({ row, getValue }) => {
-          return (
-            <div className="flex gap-2 justify-end">
-              <Button
-                onClick={() => handleEdit(row.original)}
-                className="hidden md:inline px-3 py-2 text-sm rounded"
-              >
-                <Pencil />
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button>
-                    <EllipsisVertical />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    onClick={() => handleDelete(getValue())}
-                  >
-                    <Trash />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          );
-        },
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
       },
     ],
     [handleDelete, handleEdit]
@@ -194,12 +160,7 @@ export default function Warehouses() {
         </div>
       )}
       {error && <ApiErrorMessage error={error} />}
-      {loading && (
-        <Alert className="my-4">
-          <LoaderCircle className="animate-spin" />
-          <AlertDescription>Cargando...</AlertDescription>
-        </Alert>
-      )}
+      {loading && <AlertLoading />}
       <AdminTable columns={columns} data={warehouses || []} />
       {loading && <AdminTableLoading />}
     </div>

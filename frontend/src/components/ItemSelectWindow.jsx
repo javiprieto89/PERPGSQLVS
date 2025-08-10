@@ -99,7 +99,7 @@ export default function ItemSelectWindow({ onSelect, onClose }) {
       <div className="text-right">
         <button
           onClick={onClose}
-          className="mt-4  hover: text-gray-800 px-4 py-2 rounded"
+          className="mt-4  hover: text-foreground px-4 py-2 rounded"
         >
           Cerrar
         </button>
