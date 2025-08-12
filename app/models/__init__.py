@@ -39,6 +39,8 @@ from .tempstockhistorydetails import *
 from .cashboxes import *
 from .cashboxmovements import *
 from .transactions import *
+from .taxes import *
+from .itemtaxes import *
 from .systransactiontypes import *
 from .useraccess import *
 from .sysuseractions import *
@@ -87,6 +89,8 @@ __all__ = [
     "cashboxes",
     "cashboxmovements",
     "transactions",
+    "taxes",
+    "itemtaxes",
     "systransactiontypes",
     "useraccess",
     "sysuseractions",
