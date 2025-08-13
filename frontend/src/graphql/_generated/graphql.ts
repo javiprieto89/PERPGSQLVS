@@ -591,6 +591,29 @@ export type ItemSubcategoriesUpdate = {
   SubcategoryName?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type ItemTaxesCreate = {
+  BranchID: Scalars['Int']['input'];
+  CompanyID: Scalars['Int']['input'];
+  ItemID: Scalars['Int']['input'];
+  TaxID: Scalars['Int']['input'];
+};
+
+export type ItemTaxesInDb = {
+  __typename?: 'ItemTaxesInDB';
+  BranchID: Scalars['Int']['output'];
+  CompanyID: Scalars['Int']['output'];
+  ItemID: Scalars['Int']['output'];
+  ItemTaxID: Scalars['Int']['output'];
+  TaxID: Scalars['Int']['output'];
+};
+
+export type ItemTaxesUpdate = {
+  BranchID?: InputMaybe<Scalars['Int']['input']>;
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
+  ItemID?: InputMaybe<Scalars['Int']['input']>;
+  TaxID?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type ItemsCreate = {
   BranchID: Scalars['Int']['input'];
   BrandID: Scalars['Int']['input'];
@@ -634,16 +657,6 @@ export type ItemsInDb = {
   SupplierID: Scalars['Int']['output'];
   WarehouseData?: Maybe<WarehousesInDb>;
   WarehouseID: Scalars['Int']['output'];
-};
-
-export type ItemsResponse = {
-  __typename?: 'ItemsResponse';
-  hasNext: Scalars['Boolean']['output'];
-  hasPrev: Scalars['Boolean']['output'];
-  items: Array<ItemSearchResult>;
-  limit: Scalars['Int']['output'];
-  page: Scalars['Int']['output'];
-  total: Scalars['Int']['output'];
 };
 
 export type ItemsUpdate = {
@@ -701,6 +714,7 @@ export type Mutation = {
   createItem: ItemsInDb;
   createItemcategory: ItemCategoriesInDb;
   createItemsubcategory: ItemSubcategoriesInDb;
+  createItemtax: ItemTaxesInDb;
   createOrder: OrderResponse;
   createPricelist: PriceListsInDb;
   createPricelistitem: PriceListItemsInDb;
@@ -712,6 +726,7 @@ export type Mutation = {
   createSysdoctype: SysDocTypesInDb;
   createSysdocumenttype: SysDocumentTypesInDb;
   createSysuseraction: SysUserActionsInDb;
+  createTax: TaxesInDb;
   createTemporderdetail: TempOrderDetailsInDb;
   createTempstockhistorydetail: TempStockHistoryDetailsInDb;
   createUser: AuthResponse;
@@ -735,6 +750,7 @@ export type Mutation = {
   deleteItem: Scalars['Boolean']['output'];
   deleteItemcategory: Scalars['Boolean']['output'];
   deleteItemsubcategory: Scalars['Boolean']['output'];
+  deleteItemtax: Scalars['Boolean']['output'];
   deleteOrder: Scalars['Boolean']['output'];
   deletePricelist: Scalars['Boolean']['output'];
   deletePricelistitem: Scalars['Boolean']['output'];
@@ -746,6 +762,7 @@ export type Mutation = {
   deleteSysdoctype: DeleteResponse;
   deleteSysdocumenttype: DeleteResponse;
   deleteSysuseraction: DeleteResponse;
+  deleteTax: Scalars['Boolean']['output'];
   deleteTempItemByDetailId: Scalars['Boolean']['output'];
   deleteTemporderdetail: Scalars['Boolean']['output'];
   deleteTempstockhistorydetail: Scalars['Boolean']['output'];
@@ -779,6 +796,7 @@ export type Mutation = {
   updateItem?: Maybe<ItemsInDb>;
   updateItemcategory?: Maybe<ItemCategoriesInDb>;
   updateItemsubcategory?: Maybe<ItemSubcategoriesInDb>;
+  updateItemtax?: Maybe<ItemTaxesInDb>;
   updateOrder?: Maybe<OrderResponse>;
   updatePricelist?: Maybe<PriceListsInDb>;
   updatePricelistitem?: Maybe<PriceListItemsInDb>;
@@ -790,6 +808,7 @@ export type Mutation = {
   updateSysdoctype?: Maybe<SysDocTypesInDb>;
   updateSysdocumenttype?: Maybe<SysDocumentTypesInDb>;
   updateSysuseraction?: Maybe<SysUserActionsInDb>;
+  updateTax?: Maybe<TaxesInDb>;
   updateTempItemByDetailId?: Maybe<TempOrderDetailsInDb>;
   updateTemporderdetail?: Maybe<TempOrderDetailsInDb>;
   updateTempstockhistorydetail?: Maybe<TempStockHistoryDetailsInDb>;
@@ -911,6 +930,11 @@ export type MutationCreateItemsubcategoryArgs = {
 };
 
 
+export type MutationCreateItemtaxArgs = {
+  data: ItemTaxesCreate;
+};
+
+
 export type MutationCreateOrderArgs = {
   data: OrdersCreate;
 };
@@ -963,6 +987,11 @@ export type MutationCreateSysdocumenttypeArgs = {
 
 export type MutationCreateSysuseractionArgs = {
   data: SysUserActionsCreate;
+};
+
+
+export type MutationCreateTaxArgs = {
+  data: TaxesCreate;
 };
 
 
@@ -1082,6 +1111,11 @@ export type MutationDeleteItemsubcategoryArgs = {
 };
 
 
+export type MutationDeleteItemtaxArgs = {
+  itemTaxID: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteOrderArgs = {
   orderID: Scalars['Int']['input'];
 };
@@ -1135,6 +1169,11 @@ export type MutationDeleteSysdocumenttypeArgs = {
 
 export type MutationDeleteSysuseractionArgs = {
   userActionID: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteTaxArgs = {
+  taxID: Scalars['Int']['input'];
 };
 
 
@@ -1333,6 +1372,12 @@ export type MutationUpdateItemsubcategoryArgs = {
 };
 
 
+export type MutationUpdateItemtaxArgs = {
+  data: ItemTaxesUpdate;
+  itemTaxID: Scalars['Int']['input'];
+};
+
+
 export type MutationUpdateOrderArgs = {
   data: OrdersUpdate;
   orderID: Scalars['Int']['input'];
@@ -1397,6 +1442,12 @@ export type MutationUpdateSysdocumenttypeArgs = {
 export type MutationUpdateSysuseractionArgs = {
   data: SysUserActionsUpdate;
   userActionID: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateTaxArgs = {
+  data: TaxesUpdate;
+  taxID: Scalars['Int']['input'];
 };
 
 
@@ -1683,6 +1734,7 @@ export type Query = {
   allItems: Array<ItemsInDb>;
   allItemstock: Array<ItemStockInDb>;
   allItemsubcategories: Array<ItemSubcategoriesInDb>;
+  allItemtaxes: Array<ItemTaxesInDb>;
   allOrderdetails: Array<OrderDetailsInDb>;
   allOrderhistory: Array<OrderHistoryInDb>;
   allOrderhistorydetails: Array<OrderHistoryDetailsInDb>;
@@ -1700,6 +1752,7 @@ export type Query = {
   allSysorderstatus: Array<SysOrderStatusInDb>;
   allSystransactiontypes: Array<SysTransactionTypesInDb>;
   allSysuseractions: Array<SysUserActionsInDb>;
+  allTaxes: Array<TaxesInDb>;
   allTemporderdetails: Array<TempOrderDetailsInDb>;
   allTempstockhistorydetails: Array<TempStockHistoryDetailsInDb>;
   allTransactions: Array<TransactionsInDb>;
@@ -1745,6 +1798,7 @@ export type Query = {
   itemstockById?: Maybe<ItemStockInDb>;
   itemsubcategoriesByCategory: Array<ItemSubcategoriesInDb>;
   itemsubcategoriesById?: Maybe<ItemSubcategoriesInDb>;
+  itemtaxesById?: Maybe<ItemTaxesInDb>;
   orderdetailsById?: Maybe<OrderDetailsInDb>;
   orderhistoryById?: Maybe<OrderHistoryInDb>;
   orderhistorydetailsById?: Maybe<OrderHistoryDetailsInDb>;
@@ -1757,7 +1811,7 @@ export type Query = {
   rolesById?: Maybe<RolesInDb>;
   saleconditionsById?: Maybe<SaleConditionsInDb>;
   searchGlobal: GlobalSearchResult;
-  searchItems: ItemsResponse;
+  searchItems: Array<ItemSearchResult>;
   serverInfo: ServerInfo;
   servicetypesById?: Maybe<ServiceTypeInDb>;
   stockhistoryById?: Maybe<StockHistoryInDb>;
@@ -1770,6 +1824,7 @@ export type Query = {
   systransactiontypesById?: Maybe<SysTransactionTypesInDb>;
   sysuseractionsById?: Maybe<SysUserActionsInDb>;
   sysuseractionsByName: Array<SysUserActionsInDb>;
+  taxesById?: Maybe<TaxesInDb>;
   temporderdetailBySession?: Maybe<TempOrderDetailsInDb>;
   temporderdetailsByOrder: Array<TempOrderDetailsInDb>;
   temporderdetailsBySession: Array<TempOrderDetailsInDb>;
@@ -1965,6 +2020,11 @@ export type QueryItemsubcategoriesByIdArgs = {
 };
 
 
+export type QueryItemtaxesByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type QueryOrderdetailsByIdArgs = {
   id: Scalars['Int']['input'];
 };
@@ -2089,6 +2149,11 @@ export type QuerySysuseractionsByIdArgs = {
 
 export type QuerySysuseractionsByNameArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type QueryTaxesByIdArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -2375,6 +2440,35 @@ export type SysUserActionsInDb = {
 
 export type SysUserActionsUpdate = {
   ActionName?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type TaxesCreate = {
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
+  CountryID?: InputMaybe<Scalars['Int']['input']>;
+  IsActive?: InputMaybe<Scalars['Boolean']['input']>;
+  ProvinceID?: InputMaybe<Scalars['Int']['input']>;
+  TaxName: Scalars['String']['input'];
+  TaxPercent: Scalars['Float']['input'];
+};
+
+export type TaxesInDb = {
+  __typename?: 'TaxesInDB';
+  CompanyID?: Maybe<Scalars['Int']['output']>;
+  CountryID?: Maybe<Scalars['Int']['output']>;
+  IsActive: Scalars['Boolean']['output'];
+  ProvinceID?: Maybe<Scalars['Int']['output']>;
+  TaxID: Scalars['Int']['output'];
+  TaxName: Scalars['String']['output'];
+  TaxPercent: Scalars['Float']['output'];
+};
+
+export type TaxesUpdate = {
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
+  CountryID?: InputMaybe<Scalars['Int']['input']>;
+  IsActive?: InputMaybe<Scalars['Boolean']['input']>;
+  ProvinceID?: InputMaybe<Scalars['Int']['input']>;
+  TaxName?: InputMaybe<Scalars['String']['input']>;
+  TaxPercent?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type TempOrderDetailsCreate = {
@@ -2741,7 +2835,7 @@ export type GetAllBranchesQuery = { __typename?: 'Query', allBranches: Array<{ _
 export type GetAllBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllBrandsQuery = { __typename?: 'Query', allBrands: Array<{ __typename?: 'BrandsInDB', BrandID: number, Name: string, IsActive?: boolean | null }> };
+export type GetAllBrandsQuery = { __typename?: 'Query', allBrands: Array<{ __typename?: 'BrandsInDB', BrandID: number, Name: string, IsActive?: boolean | null, CompanyData?: { __typename?: 'CompanyDataInDB', Name?: string | null } | null }> };
 
 export type GetAllCarBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3123,7 +3217,7 @@ export type SearchItemsQueryVariables = Exact<{
 }>;
 
 
-export type SearchItemsQuery = { __typename?: 'Query', searchItems: { __typename?: 'ItemsResponse', total: number, items: Array<{ __typename?: 'ItemSearchResult', ItemID: number, Code: string, Description: string, Price?: number | null }> } };
+export type SearchItemsQuery = { __typename?: 'Query', searchItems: Array<{ __typename?: 'ItemSearchResult', Description: string, Code: string, ItemID: number, Price?: number | null, StockQuantity?: number | null }> };
 
 export type GetOrderMassiveQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3745,6 +3839,9 @@ export const GetAllBrandsDocument = gql`
     BrandID
     Name
     IsActive
+    CompanyData {
+      Name
+    }
   }
 }
     `;
@@ -6674,13 +6771,11 @@ export type SearchClientsQueryResult = Apollo.QueryResult<SearchClientsQuery, Se
 export const SearchItemsDocument = gql`
     query SearchItems($filters: ItemFilters, $pagination: ItemPagination) {
   searchItems(filters: $filters, pagination: $pagination) {
-    items {
-      ItemID
-      Code
-      Description
-      Price
-    }
-    total
+    Description
+    Code
+    ItemID
+    Price
+    StockQuantity
   }
 }
     `;
