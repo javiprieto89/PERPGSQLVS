@@ -3,5 +3,8 @@ query GetAllBrands {
     BrandID
     Name
     IsActive
+    CompanyData {
+      Name
+    }
   }
 }

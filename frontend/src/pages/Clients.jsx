@@ -13,10 +13,6 @@ import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
 import { Button } from "~/components/ui/button";
 
 import { AlertLoading } from "~/components/AlertLoading";
-import {
-  DiagnosticButton,
-  DiagnosticInfo,
-} from "~/components/diagnostic/Diagnostic";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
 import { TableActionDropdown } from "~/components/TableActionButtons";
 import ClientCreate from "./ClientCreate";
@@ -135,12 +131,12 @@ export default function Clients() {
           return (
             <span
               className={`px-2 py-1 text-xs font-medium rounded-full ${
-                props.getValue("IsActive")
+                props.getValue()
                   ? "bg-green-100 text-green-800"
                   : "bg-red-100 text-destructive"
               }`}
             >
-              {props.getValue("IsActive") ? "Activo" : "Inactivo"}
+              {props.getValue() ? "Activo" : "Inactivo"}
             </span>
           );
         },
@@ -192,7 +188,6 @@ export default function Clients() {
               />
             </>
           )}
-          <DiagnosticButton />
           <Button onClick={() => refetch()}>
             <RefreshCcw />
             Recargar
@@ -214,9 +209,6 @@ export default function Clients() {
           />
         </div>
       )}
-
-      {/* Información de debug */}
-      <DiagnosticInfo />
 
       {/* Error */}
       {error && <ApiErrorMessage error={error} />}
