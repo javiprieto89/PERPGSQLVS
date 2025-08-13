@@ -12,6 +12,7 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     cors: true,
+    allowedHosts: ["computron.selfip.com"],
     // Eliminamos proxy porque ahora llamamos directo a rutas como /login
   },
   resolve: {
