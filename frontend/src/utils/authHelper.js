@@ -1,6 +1,6 @@
 ﻿// utils/authHelper.js
-import { graphqlClient } from './graphqlClient';
 import React from 'react';
+import { graphqlClient } from '~/graphql/graphqlClient.js';
 
 // Consultas de autenticación
 export const AUTH_QUERIES = {

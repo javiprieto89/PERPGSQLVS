@@ -1,0 +1,10 @@
+query GetCarModelsByBrand($brandID: Int!) {
+  carmodelsByBrand(carBrandID: $brandID) {
+    CarModelID
+    CarBrandID
+    Model
+    CarBrandData {
+      Name
+    }
+  }
+}

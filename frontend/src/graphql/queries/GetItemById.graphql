@@ -1,0 +1,20 @@
+query GetItemById($id: Int!) {
+  itemsById(id: $id) {
+    ItemID
+    CompanyID
+    BranchID
+    BrandID
+    Code
+    Description
+    ItemCategoryID
+    ItemSubcategoryID
+    SupplierID
+    ControlStock
+    ReplenishmentStock
+    IsOffer
+    OEM
+    LastModified
+    WarehouseID
+    IsActive
+  }
+}

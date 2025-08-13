@@ -1,0 +1,6 @@
+query GetAllServicetypes {
+  allServicetypes {
+    ServiceTypeID
+    Type
+  }
+}

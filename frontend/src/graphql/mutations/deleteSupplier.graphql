@@ -1,0 +1,3 @@
+mutation DeleteSupplier($supplierID: Int!) {
+  deleteSupplier(supplierID: $supplierID)
+}

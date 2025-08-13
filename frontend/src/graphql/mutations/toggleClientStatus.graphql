@@ -1,0 +1,6 @@
+mutation ToggleClientStatus($clientID: Int!, $isActive: Boolean!) {
+  updateClient(clientID: $clientID, data: { IsActive: $isActive }) {
+    ClientID
+    IsActive
+  }
+}

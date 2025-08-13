@@ -1,136 +1,167 @@
-import { useEffect, useState } from "react";
-import { itemOperations } from "../utils/graphqlClient";
-import ItemCreate from "./ItemCreate";
+import { Plus, RefreshCcw } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AlertLoading } from "~/components/AlertLoading";
+import { ApiErrorMessage } from "~/components/ApiErrorMessage";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { TableActionButton } from "~/components/TableActionButtons";
+import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { Button } from "~/components/ui/button";
+import { useGetAllItemsQuery } from "~/graphql/_generated/graphql";
+import { itemOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
+import ItemCreate from "./ItemCreate";
 
 export default function Items() {
-    const [allItems, setAllItems] = useState([]);
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [showFilters, setShowFilters] = useState(false);
+  const { data, error, loading, refetch } = useGetAllItemsQuery();
+  const [items, setItems] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
 
-    useEffect(() => { loadItems(); }, []);
-
-    useEffect(() => {
-        const handler = (e) => {
-            if (e.data === 'reload-items') {
-                loadItems();
-            }
-        };
-        window.addEventListener('message', handler);
-        return () => window.removeEventListener('message', handler);
-    }, []);
-
-    const loadItems = async () => {
-        try {
-            setLoading(true);
-            const data = await itemOperations.getAllItems();
-            setAllItems(data);
-            setItems(data);
-        } catch (err) {
-            console.error("Error cargando ítems:", err);
-            setError(err.message);
-            setItems([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleCreate = () => {
-        openReactWindow(
-            (popup) => (
-                <ItemCreate
-                    onSave={() => {
-                        popup.opener.postMessage('reload-items', '*');
-                        popup.close();
-                    }}
-                    onClose={() => popup.close()}
-                />
-            ),
-            'Nuevo Ítem'
-        );
-    };
-
-    const handleFilterChange = (filtered) => {
-        setItems(filtered);
-    };
-
-    const handleEdit = (item) => {
-        openReactWindow(
-            (popup) => (
-                <ItemCreate
-                    item={item}
-                    onSave={() => {
-                        popup.opener.postMessage('reload-items', '*');
-                        popup.close();
-                    }}
-                    onClose={() => popup.close()}
-                />
-            ),
-            'Editar Ítem'
-        );
-    };
-
-    const handleDelete = async (id) => {
-        if (!confirm('¿Borrar ítem?')) return;
-        try {
-            await itemOperations.deleteItem(id);
-            loadItems();
-        } catch (err) {
-            alert('Error al borrar ítem: ' + err.message);
-        }
-    };
-
-    return (
-        <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Ítems</h1>
-                <div className="flex space-x-2">
-                    <button
-                        onClick={() => setShowFilters(!showFilters)}
-                        className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-                    >
-                        {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
-                    </button>
-                    <button
-                        onClick={loadItems}
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    >
-                        Recargar
-                    </button>
-                    <button onClick={handleCreate} className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                        Nuevo Ítem
-                    </button>
-                </div>
-            </div>
-            {showFilters && (
-                <div className="mb-6">
-                    <TableFilters
-                        modelName="items"
-                        data={allItems}
-                        onFilterChange={handleFilterChange}
-                    />
-                </div>
-            )}
-            {error && <div className="text-red-600 mb-4">{error}</div>}
-            {loading ? (
-                <div>Cargando...</div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {items.map(it => (
-                        <div key={it.ItemID} className="bg-white rounded shadow p-4">
-                            <h3 className="text-lg font-semibold mb-2">{it.Description}</h3>
-                            <p className="text-sm mb-2">Código: {it.Code}</p>
-                            <div className="flex space-x-2">
-                                <button onClick={() => handleEdit(it)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
-                                <button onClick={() => handleDelete(it.ItemID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </div>
+  const handleCreate = useCallback(() => {
+    openReactWindow(
+      (popup) => (
+        <ItemCreate
+          onSave={() => {
+            popup.opener.postMessage("reload-items", "*");
+            popup.close();
+          }}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
+        />
+      ),
+      "Nuevo Ítem"
     );
+  }, [refetch]);
+
+  const handleFilterChange = (filtered) => {
+    setItems(filtered);
+  };
+
+  const handleEdit = useCallback(
+    (item) => {
+      openReactWindow(
+        (popup) => (
+          <ItemCreate
+            item={item}
+            onSave={() => {
+              popup.opener.postMessage("reload-items", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Ítem"
+      );
+    },
+    [refetch]
+  );
+
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar ítem?")) return;
+      try {
+        await itemOperations.deleteItem(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar ítem: " + err.message);
+      }
+    },
+    [refetch]
+  );
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data === "reload-items") {
+        refetch();
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (data?.allItems) {
+      setItems(data.allItems);
+    }
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "ItemID",
+        className: "first w-3",
+      },
+      {
+        header: "Description",
+        accessorKey: "Description",
+      },
+      {
+        header: "Code",
+        accessorKey: "Code",
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "ItemID",
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
+
+  return (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-foreground">Ítems</h1>
+        <div className="flex space-x-2">
+          {data && data.allItems.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allItems}
+                onSearch={(rows) => setItems(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <Button onClick={() => refetch()}>
+            <RefreshCcw />
+            Recargar
+          </Button>
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus />
+            Nuevo
+          </Button>
+        </div>
+      </div>
+      {showFilters && (
+        <div className="mb-6">
+          <TableFilters
+            modelName="items"
+            data={data?.allItems || []}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
+      )}
+      {error && <ApiErrorMessage error={error} />}
+      {loading && <AlertLoading />}
+      {items.length > 0 && <AdminTable columns={columns} data={items} />}
+      {loading && <AdminTableLoading />}
+    </div>
+  );
 }

@@ -1,0 +1,7 @@
+query GetProvincesByCountry($countryID: Int!) {
+  provincesByCountry(countryID: $countryID) {
+    ProvinceID
+    Name
+    CountryID
+  }
+}

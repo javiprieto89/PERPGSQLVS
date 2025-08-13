@@ -1,0 +1,9 @@
+query SearchItems($filters: ItemFilters, $pagination: ItemPagination) {
+  searchItems(filters: $filters, pagination: $pagination) {
+    Description
+    Code
+    ItemID
+    Price
+    StockQuantity
+  }
+}

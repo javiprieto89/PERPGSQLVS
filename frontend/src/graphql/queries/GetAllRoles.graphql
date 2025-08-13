@@ -1,0 +1,6 @@
+query GetAllRoles {
+  allRoles {
+    RoleID
+    RoleName
+  }
+}

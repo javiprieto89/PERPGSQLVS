@@ -1,6 +1,6 @@
 // frontend/src/components/ItemSelectWindow.jsx
 import { useEffect, useState } from "react";
-import { itemOperations } from "../utils/graphqlClient";
+import { itemOperations } from "~/graphql/operations.js";
 
 export default function ItemSelectWindow({ onSelect, onClose }) {
   const [items, setItems] = useState([]);
@@ -51,7 +51,7 @@ export default function ItemSelectWindow({ onSelect, onClose }) {
       />
       <div className="max-h-96 overflow-y-auto border rounded">
         <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-100">
+          <thead className="">
             <tr>
               <th className="px-2 py-1 text-left">Código</th>
               <th className="px-2 py-1 text-left">Descripción</th>
@@ -61,10 +61,14 @@ export default function ItemSelectWindow({ onSelect, onClose }) {
           </thead>
           <tbody>
             {filtered.map((item) => (
-              <tr key={item.itemID} className="hover:bg-gray-50">
+              <tr key={item.itemID} className="hover:">
                 <td className="px-2 py-1 whitespace-nowrap">{item.Code}</td>
-                <td className="px-2 py-1 whitespace-nowrap">{item.description}</td>
-                <td className="px-2 py-1 text-right">{item.price?.toFixed(2) ?? "-"}</td>
+                <td className="px-2 py-1 whitespace-nowrap">
+                  {item.description}
+                </td>
+                <td className="px-2 py-1 text-right">
+                  {item.price?.toFixed(2) ?? "-"}
+                </td>
                 <td className="px-2 py-1 text-center">
                   <input
                     type="number"
@@ -82,7 +86,7 @@ export default function ItemSelectWindow({ onSelect, onClose }) {
                 <td className="px-2 py-1 text-right">
                   <button
                     onClick={() => handleSelect(item)}
-                    className="text-blue-600 hover:underline"
+                    className="text-primary hover:underline"
                   >
                     Agregar
                   </button>
@@ -95,7 +99,7 @@ export default function ItemSelectWindow({ onSelect, onClose }) {
       <div className="text-right">
         <button
           onClick={onClose}
-          className="mt-4 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded"
+          className="mt-4  hover: text-foreground px-4 py-2 rounded"
         >
           Cerrar
         </button>

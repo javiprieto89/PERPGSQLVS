@@ -1,138 +1,186 @@
 // frontend/src/pages/PriceLists.jsx
-import { useEffect, useState } from "react";
-import { pricelistOperations } from "../utils/graphqlClient";
-import PriceListCreate from "./PriceListCreate";
+import { Plus, RefreshCcw } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AlertLoading } from "~/components/AlertLoading";
+import { ApiErrorMessage } from "~/components/ApiErrorMessage";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { TableActionButton } from "~/components/TableActionButtons";
+import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { Button } from "~/components/ui/button";
+import { useGetPriceListsQuery } from "~/graphql/_generated/graphql";
+import { pricelistOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
+import PriceListCreate from "./PriceListCreate";
 
 export default function PriceLists() {
-    const [allLists, setAllLists] = useState([]);
-    const [lists, setLists] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [showFilters, setShowFilters] = useState(false);
+  const { data, error, loading, refetch } = useGetPriceListsQuery();
+  const [lists, setLists] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
 
-    useEffect(() => { loadLists(); }, []);
+  const handleFilterChange = (filtered) => {
+    setLists(filtered);
+  };
 
-    useEffect(() => {
-        const handler = (e) => {
-            if (e.data === 'reload-pricelists') {
-                loadLists();
-            }
-        };
-        window.addEventListener('message', handler);
-        return () => window.removeEventListener('message', handler);
-    }, []);
-
-    const loadLists = async () => {
-        try {
-            setLoading(true);
-            const data = await pricelistOperations.getAllPricelists();
-            setAllLists(data);
-            setLists(data);
-        } catch (err) {
-            console.error("Error cargando listas:", err);
-            setError(err.message);
-            setLists([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleCreate = () => {
-        openReactWindow(
-            (popup) => (
-                <PriceListCreate
-                    onSave={() => {
-                        popup.opener.postMessage('reload-pricelists', '*');
-                        popup.close();
-                    }}
-                    onClose={() => popup.close()}
-                />
-            ),
-            'Nueva Lista'
-        );
-    };
-
-    const handleFilterChange = (filtered) => {
-        setLists(filtered);
-    };
-
-    const handleEdit = (pl) => {
-        openReactWindow(
-            (popup) => (
-                <PriceListCreate
-                    pricelist={pl}
-                    onSave={() => {
-                        popup.opener.postMessage('reload-pricelists', '*');
-                        popup.close();
-                    }}
-                    onClose={() => popup.close()}
-                />
-            ),
-            'Editar Lista'
-        );
-    };
-
-    const handleDelete = async (id) => {
-        if (!confirm('¿Borrar lista de precios?')) return;
-        try {
-            await pricelistOperations.deletePricelist(id);
-            loadLists();
-        } catch (err) {
-            alert('Error al borrar lista de precios: ' + err.message);
-        }
-    };
-
-    return (
-        <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Listas de precios</h1>
-                <div className="flex space-x-2">
-                    <button
-                        onClick={() => setShowFilters(!showFilters)}
-                        className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-                    >
-                        {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
-                    </button>
-                    <button
-                        onClick={loadLists}
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    >
-                        Recargar
-                    </button>
-                    <button onClick={handleCreate} className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                        Nueva Lista
-                    </button>
-                </div>
-            </div>
-            {showFilters && (
-                <div className="mb-6">
-                    <TableFilters
-                        modelName="pricelists"
-                        data={allLists}
-                        onFilterChange={handleFilterChange}
-                    />
-                </div>
-            )}
-            {error && <div className="text-red-600 mb-4">{error}</div>}
-            {loading ? (
-                <div>Cargando...</div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {lists.map(pl => (
-                        <div key={pl.PriceListID} className="bg-white rounded shadow p-4">
-                            <h3 className="text-lg font-semibold mb-2">{pl.Name}</h3>
-                            <p className="text-sm mb-2">{pl.Description}</p>
-                            <p className="text-sm mb-2">Activo: {pl.IsActive ? 'Sí' : 'No'}</p>
-                            <div className="flex space-x-2">
-                                <button onClick={() => handleEdit(pl)} className="mt-2 px-3 py-1 bg-gray-100 text-sm rounded hover:bg-gray-200">Editar</button>
-                                <button onClick={() => handleDelete(pl.PriceListID)} className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">Eliminar</button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </div>
+  const handleCreate = useCallback(() => {
+    openReactWindow(
+      (popup) => (
+        <PriceListCreate
+          onSave={() => {
+            popup.opener.postMessage("reload-pricelists", "*");
+            popup.close();
+          }}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
+        />
+      ),
+      "Nueva Lista"
     );
+  }, [refetch]);
+
+  const handleEdit = useCallback(
+    (pl) => {
+      openReactWindow(
+        (popup) => (
+          <PriceListCreate
+            pricelist={pl}
+            onSave={() => {
+              popup.opener.postMessage("reload-pricelists", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Lista"
+      );
+    },
+    [refetch]
+  );
+
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar lista de precios?")) return;
+      try {
+        await pricelistOperations.deletePricelist(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar lista de precios: " + err.message);
+      }
+    },
+    [refetch]
+  );
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data === "reload-pricelists") {
+        refetch();
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (data?.allPricelists) {
+      setLists(data.allPricelists);
+    }
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "PriceListID",
+        className: "first w-3",
+      },
+      {
+        header: "Nombre",
+        accessorKey: "Name",
+      },
+      {
+        header: "Descripción",
+        accessorKey: "Description",
+      },
+      {
+        header: "Estado",
+        accessorKey: "IsActive",
+        cell: (props) => {
+          return (
+            <span
+              className={`px-2 py-1 text-xs font-medium rounded-full ${
+                props.getValue("IsActive")
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-destructive"
+              }`}
+            >
+              {props.getValue("IsActive") ? "Activo" : "Inactivo"}
+            </span>
+          );
+        },
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "PriceListID",
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
+
+  return (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-foreground">
+          Listas de precios
+        </h1>
+        <div className="flex space-x-2">
+          {data && data.allPricelists.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allPricelists}
+                onSearch={(rows) => setLists(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <Button onClick={() => refetch()}>
+            <RefreshCcw />
+            Recargar
+          </Button>
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus /> Nuevo
+          </Button>
+        </div>
+      </div>
+      {showFilters && (
+        <div className="mb-6">
+          <TableFilters
+            modelName="pricelists"
+            data={data.allPricelists}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
+      )}
+      {error && <ApiErrorMessage error={error} />}
+      {loading && <AlertLoading />}
+      {lists.length > 0 && <AdminTable columns={columns} data={lists} />}
+      {loading && <AdminTableLoading />}
+    </div>
+  );
 }

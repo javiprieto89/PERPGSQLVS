@@ -1,0 +1,7 @@
+query GetBrandById($id: Int!) {
+  brandsById(id: $id) {
+    BrandID
+    Name
+    IsActive
+  }
+}

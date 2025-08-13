@@ -1,0 +1,17 @@
+mutation UpdateSupplier($supplierID: Int!, $input: SuppliersUpdate!) {
+  updateSupplier(supplierID: $supplierID, data: $input) {
+    SupplierID
+    DocTypeID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    Address
+    IsActive
+    CountryID
+    ProvinceID
+    City
+    PostalCode
+  }
+}

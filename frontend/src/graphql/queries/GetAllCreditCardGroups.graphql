@@ -1,0 +1,6 @@
+query GetAllCreditCardGroups {
+  allCreditcardgroups {
+    CreditCardGroupID
+    GroupName
+  }
+}

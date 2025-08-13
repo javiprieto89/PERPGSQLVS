@@ -1,132 +1,117 @@
 // frontend/src/components/SaleConditionSearchModal.jsx
-import { useEffect, useState } from "react";
-import { saleConditionOperations } from "../utils/graphqlClient";
-import TableFilters from "./TableFilters";
+import { Funnel, FunnelX, X } from "lucide-react";
+import { useState } from "react";
+import { useGetAllSaleConditionsQuery } from "~/graphql/_generated/graphql";
 
-export default function SaleConditionSearchModal({ isOpen, onClose, onSelect }) {
-  const [saleConditions, setSaleConditions] = useState([]);
-  const [filtered, setFiltered] = useState([]);
+import TableFilters from "~/components/TableFilters";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "~/components/ui/table";
+import { AlertLoading } from "./AlertLoading";
+
+export default function SaleConditionSearchModal({ onClose, onSelect }) {
+  const { data, loading, error } = useGetAllSaleConditionsQuery();
+  const saleConditions = data?.allSaleconditions ? data.allSaleconditions : [];
   const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  // const [filtered, setFiltered] = useState([]);
 
-  useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      try {
-        const data = await saleConditionOperations.getAllSaleConditions();
-        setSaleConditions(data);
-        setFiltered(data);
-      } catch (err) {
-        console.error("Error fetching sale conditions:", err);
-        setSaleConditions([]);
-        setFiltered([]);
-      }
-      setLoading(false);
-    }
-    if (isOpen) {
-      setQuery("");
-      setShowFilters(false);
-      loadData();
-    }
-  }, [isOpen]);
-
-  const list = filtered.filter((sc) =>
-    (sc.name || "").toLowerCase().includes(query.toLowerCase())
+  const filtered = saleConditions.filter((sc) =>
+    (sc.Name || "").toLowerCase().includes(query.toLowerCase())
   );
 
-  if (!isOpen) return null;
+  console.log({ saleConditions, filtered, error });
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-start pt-10">
-      <div className="relative mx-auto p-5 border w-full max-w-xl shadow-lg rounded-md bg-white space-y-4">
-        <div className="flex justify-between items-center pb-3 border-b">
-          <h3 className="text-xl font-semibold text-gray-700">Buscar Condición</h3>
-          <button
+    <div className="bg-background/90 fixed inset-0 h-full w-full z-50 flex justify-center pt-10">
+      <div className="bg-card overflow-y-auto absolute p-5 border w-full max-w-xl max-h-[90dvh] shadow-lg rounded-md top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+        <div className="flex justify-between items-center pb-3">
+          <h3 className="text-xl font-semibold ">Buscar Condición</h3>
+          <Button
             onClick={onClose}
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+            className="hover:rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+            <X />
+          </Button>
         </div>
 
-        <div className="flex space-x-2">
-          <input
+        <div className="flex gap-4 mb-4">
+          <Input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Buscar por nombre..."
           />
-          <button
-            type="button"
-            onClick={() => setShowFilters(!showFilters)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${showFilters ? "bg-purple-700 text-white hover:bg-purple-800" : "bg-purple-600 text-white hover:bg-purple-700"}`}
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
+          <Button type="button" onClick={() => setShowFilters(!showFilters)}>
+            {showFilters ? (
+              <>
+                <FunnelX />
+                Ocultar Filtros
+              </>
+            ) : (
+              <>
+                <Funnel />
+                Mostrar Filtros
+              </>
+            )}
+          </Button>
         </div>
 
         {showFilters && (
-          <div className="border border-gray-200 rounded-md p-4 bg-gray-50">
-            <TableFilters
-              modelName="saleconditions"
-              data={saleConditions}
-              onFilterChange={setFiltered}
-            />
-          </div>
+          <TableFilters
+            modelName="saleconditions"
+            data={saleConditions}
+            onFilterChange={(value) => {
+              console.log("TableFilters onFilterChange", value);
+            }}
+          />
         )}
 
-        {loading && (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-2 text-gray-600">Cargando...</span>
-          </div>
-        )}
+        {loading && <AlertLoading />}
 
         {!loading && (
-          <div className="max-h-80 overflow-y-auto border border-gray-200 rounded-md">
-            <table className="min-w-full divide-y divide-gray-200 text-sm">
-              <thead className="bg-gray-50 sticky top-0">
-                <tr>
-                  <th className="px-4 py-2 text-left">ID</th>
-                  <th className="px-4 py-2 text-left">Nombre</th>
-                  <th className="px-4 py-2"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {list.length > 0 ? (
-                  list.map((sc) => (
-                    <tr key={sc.saleConditionID} className="hover:bg-gray-50">
-                      <td className="px-4 py-2">{sc.saleConditionID}</td>
-                      <td className="px-4 py-2">{sc.name}</td>
-                      <td className="px-4 py-2">
-                        <button
-                          onClick={() => onSelect(sc)}
-                          className="text-blue-600 hover:underline"
-                        >
+          <div className="max-h-80 overflow-y-auto my-4">
+            <Table>
+              <TableHeader className="sticky">
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead className="px-4 text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filtered.length > 0 ? (
+                  filtered.map((sc) => (
+                    <TableRow key={sc.SaleConditionID}>
+                      <TableCell className="px-4 py-2">
+                        {sc.SaleConditionID}
+                      </TableCell>
+                      <TableCell className="px-4 py-2">{sc.Name}</TableCell>
+                      <TableCell className="px-4 py-2 text-right">
+                        <Button onClick={() => onSelect(sc)}>
                           Seleccionar
-                        </button>
-                      </td>
-                    </tr>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
                   ))
                 ) : (
-                  <tr>
-                    <td colSpan="3" className="px-4 py-8 text-center text-gray-500">
-                      {query || showFilters ? "No se encontraron coincidencias" : "No hay datos disponibles"}
-                    </td>
-                  </tr>
+                  <TableRow>
+                    <TableCell colSpan="3" className="px-4 py-8 text-center ">
+                      {query || showFilters
+                        ? "No se encontraron coincidencias"
+                        : "No hay datos disponibles"}
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </div>
