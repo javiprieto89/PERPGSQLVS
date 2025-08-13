@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { Label } from "~/components/ui/label";
 import { useGetFilterFieldsQuery } from "~/graphql/_generated/graphql";
-import { getNameField, getQueryName } from "./utils";
+import { NameFieldMap } from "./constants";
+import { getNameField, getQueryName, prepareRelationalModelQuery } from "./utils";
 
 function FilterFields({ model = "saleconditions" }: { model: string }) {
   // 1. Obtener los datos para crear los inputs de cada filtro
@@ -28,15 +29,10 @@ function FilterFields({ model = "saleconditions" }: { model: string }) {
               newOptions[field.field] = [];
             } else {
               const queryName = getQueryName(field.relationModel);
-              const nameField = getNameField(field.relationModel as any);
+              const nameField = getNameField(field.relationModel as NameFieldMap);
 
               // Construir la query dinámicamente basada en el modelo
-              let query;
-              if (field.relationModel === "Client") {
-                query = `{ ${queryName} { ${field.relationModel}ID FirstName LastName } }`;
-              } else {
-                query = `{ ${queryName} { ${field.relationModel}ID ${nameField} } }`;
-              }
+              const query = prepareRelationalModelQuery(queryName, field.relationModel as NameFieldMap);
 
               console.log("---------------query--------", query)
 

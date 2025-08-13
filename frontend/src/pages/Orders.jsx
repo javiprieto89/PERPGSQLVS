@@ -17,6 +17,8 @@ import { NavLink } from "react-router-dom";
 import { AlertLoading } from "~/components/AlertLoading";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
+import TableFilters from "~/components/TableFilters";
+import AdvancedFilter from "~/components/filter/AdvancedFilter";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { Button } from "~/components/ui/button";
 import {
@@ -47,15 +49,10 @@ export default function Orders() {
   const users = data?.allUsers || [];
   const vendors = data?.allVendors || [];
 
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.data === "reload-orders") {
-        refetch();
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, [refetch]);
+  // El filtro ahora opera sobre allClients
+  const handleFilterChange = (filteredClients) => {
+    setOrders(filteredClients);
+  };
 
   const handleCreate = useCallback(() => {
     openReactWindow(
@@ -98,18 +95,36 @@ export default function Orders() {
     [refetch]
   );
 
-  const handleDelete = async (id) => {
-    if (!confirm("¿Borrar pedido?")) return;
-    try {
-      await orderOperations.deleteOrder(id);
-      refetch();
-    } catch (err) {
-      alert("Error al borrar pedido: " + err.message);
-    }
-  };
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar pedido?")) return;
+      try {
+        await orderOperations.deleteOrder(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar pedido: " + err.message);
+      }
+    },
+    [refetch]
+  );
 
   useEffect(() => {
+    console.log("useEffect reload orders");
+    const handler = (e) => {
+      if (e.data === "reload-orders") {
+        console.log("--- ORDERS MESSAGE REFETCH");
+        refetch();
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [refetch]);
+
+  useEffect(() => {
+    console.log("useEffect data");
     if (data?.allOrders) {
+      console.log("Y CLAAARO");
+
       setOrders(data.allOrders);
     }
   }, [data]);
@@ -149,6 +164,23 @@ export default function Orders() {
             </Button>
           </div>
         </div>
+
+        {/* Filtros */}
+        {showFilters && (
+          <div className="mb-6">
+            <TableFilters
+              modelName="clients"
+              data={data ? data.allClients : []} // ← lista original sin filtrar
+              onFilterChange={handleFilterChange}
+            />
+            <AdvancedFilter
+              modelName="clients"
+              data={data ? data.allClients : []} // ← lista original sin filtrar
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+        )}
+
         {/* Error */}
         {error && <ApiErrorMessage error={error} />}
 
@@ -168,7 +200,7 @@ export default function Orders() {
           </TableHeader>
           <TableBody>
             {orders.length > 0 &&
-              orders.map((o) => {
+              orders.map((o, index) => {
                 const client = clients.find((c) => c.ClientID === o.ClientID);
                 const saleCond = saleConditions.find(
                   (sc) => sc.SaleConditionID === o.SaleConditionID
@@ -177,8 +209,12 @@ export default function Orders() {
                 const vendor = client
                   ? vendors.find((v) => v.VendorID === client.VendorID)
                   : null;
+                console.log({ o });
                 return (
-                  <TableRow key={o.OrderID} className="border-t">
+                  <TableRow
+                    key={`row-${o.OrderID || index}`}
+                    className="border-t"
+                  >
                     <TableCell className="px-2">{o.OrderID}</TableCell>
                     <TableCell className="px-2">
                       {client

@@ -1,7 +1,5 @@
-import { BrushCleaning, CircleX, X } from "lucide-react";
-import { useEffect } from "react";
+import { BrushCleaning, X } from "lucide-react";
 // import { useGetFilterFieldsQuery } from "~/graphql/_generated/graphql";
-import { data as filterData } from "~/graphql/mockups/getFilterFields.json";
 
 import { TEXT_OPERATORS } from "./constants";
 import { FilterField } from "./types";
@@ -12,7 +10,9 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 
-import { Alert, AlertDescription } from "../ui/alert";
+import { useGetFilterFieldsQuery } from "~/graphql/_generated/graphql";
+import { AlertLoading } from "../AlertLoading";
+import { ApiErrorMessage } from "../ApiErrorMessage";
 import RenderInputs from "./RenderInputs";
 
 const filterValues = (filters: Record<string, string>) => (Object.keys(filters).filter((key) => !key.endsWith('_op') && filters[key] !== '' && filters[key] !== null));
@@ -25,32 +25,19 @@ type AdvancedFilterProps = {
 }
 
 export default function AdvancedFilter({ modelName, data, onFilterChange }: AdvancedFilterProps) {
-  console.log({ modelName, data, onFilterChange })
-
   // 1. Cargar definición de filtros del backend
-  // const {
-  //   data: filterData,
-  //   loading,
-  //   error,
-  // } = useGetFilterFieldsQuery({
-  //   variables: {
-  //     model: modelName,
-  //   },
-  // });
-
-  const loading = false;
-  const error: Error | null = null;
-
+  const {
+    data: filterData,
+    loading,
+    error,
+  } = useGetFilterFieldsQuery({
+    variables: {
+      model: modelName,
+    },
+  });
 
   // TODO cuando graphql vuelva a funcionar utilizamos este hook
   // const { queryModel } = useModelLoader();
-
-  // 2. Cargar opciones para campos de tipo select
-  useEffect(() => {
-    if (filterData?.filterFields) {
-      return;
-    }
-  }, [filterData?.filterFields])
 
   const { filters, setFilter, removeFilter, clearFilters } = useFilterState<string>()
 
@@ -67,25 +54,13 @@ export default function AdvancedFilter({ modelName, data, onFilterChange }: Adva
           </Button>
         </div>
       </div>
+
+      {/* Error */}
+      {error && <ApiErrorMessage error={error} />}
+      {loading && <AlertLoading message="Cargando filtros..." />}
+
       <div className="p-4">
-        {error && (
-          <Alert variant="default">
-            <CircleX />
-            <AlertDescription>{error.message}</AlertDescription>
-          </Alert>
-        )}
-      </div>
-      <div className="p-4">
-        {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2"></div>
-            <span className="ml-2 ">Cargando filtros...</span>
-          </div>
-        ) : error || filterData?.filterFields.length === 0 ? (
-          <div className="text-center py-8 ">
-            No hay filtros disponibles para este modelo
-          </div>
-        ) : (
+        {filterData && filterData?.filterFields.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {filterData?.filterFields.map((field, index) => (
               <div key={`${field.field}-${index}`}>
@@ -105,7 +80,6 @@ export default function AdvancedFilter({ modelName, data, onFilterChange }: Adva
                 <RenderInputs
                   id={field.field}
                   name={field.field}
-                  value={filters[field.field] || ""}
                   operator={filters[`${field.field}_op`] || "contains"}
                   onChange={setFilter}
                   disabled={field.dependsOn ? !filters[field.dependsOn] : false}
@@ -113,6 +87,11 @@ export default function AdvancedFilter({ modelName, data, onFilterChange }: Adva
                 />
               </div>
             ))}
+          </div>
+        )}
+        {!error && filterData?.filterFields.length === 0 && (
+          <div className="text-center py-8 ">
+            No hay filtros disponibles para este modelo
           </div>
         )}
       </div>

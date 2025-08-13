@@ -2746,7 +2746,7 @@ export type GetAllBrandsQuery = { __typename?: 'Query', allBrands: Array<{ __typ
 export type GetAllCarBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllCarBrandsQuery = { __typename?: 'Query', allCarbrands: Array<{ __typename?: 'CarBrandsInDB', CarBrandID: number, Name: string }> };
+export type GetAllCarBrandsQuery = { __typename?: 'Query', allCarbrands: Array<{ __typename?: 'CarBrandsInDB', CarBrandID: number, Name: string, CompanyID?: number | null }> };
 
 export type GetAllCarModelsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3785,6 +3785,7 @@ export const GetAllCarBrandsDocument = gql`
   allCarbrands {
     CarBrandID
     Name
+    CompanyID
   }
 }
     `;

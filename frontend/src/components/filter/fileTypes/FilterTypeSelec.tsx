@@ -2,18 +2,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 
 import { Label } from "~/components/ui/label";
 import { cn } from "~/lib/utils";
-import { NameFieldMap, nameFieldMap } from "../constants";
 import { useFilterOptionsLoader } from "../hooks/useFilterOptionsLoader";
 import { RenderInputsBaseProps } from "../types";
-import { formatClientName } from "../utils";
+import { getNameField } from "../utils";
 
 export default function FilterTypeSelect({ name, value, label, placeholder, onChange, disabled, className, filterField }: RenderInputsBaseProps) {
-
-  console.log("FilterTypeSelect", { name, value, placeholder, onChange, disabled, className, filterField });
-  // TODO hardcode options
-  // options: Record<string, any[]>
-  // const options: Record<string, any>[] = [{}];
-  const { options } = useFilterOptionsLoader(filterField);
+  const { options, loading } = useFilterOptionsLoader(filterField);
   return (
     <>
       {label && <Label>{label}</Label>}
@@ -24,25 +18,28 @@ export default function FilterTypeSelect({ name, value, label, placeholder, onCh
         disabled={disabled}
       >
         <SelectTrigger className={cn("w-[180px]", className)}>
-          <SelectValue placeholder={placeholder || "Todo"} />
+          <SelectValue placeholder={loading ? "Cargando..." : placeholder || "Todo"} />
         </SelectTrigger>
         <SelectContent>
-          {options.length > 0 && options.map((opt) => {
+          {options.map((option) => {
+            console.log("FilterTypeSelect option", option)
             // Manejar diferentes tipos de modelos
-            const id = opt[`${filterField?.relationModel}ID`];
-            let displayName;
 
-            if (filterField?.relationModel === "Client") {
-              displayName = formatClientName(opt);
-            } else {
-              const nameField = filterField?.relationModel ? nameFieldMap[filterField?.relationModel as NameFieldMap] : "Name";
-              displayName =
-                opt[nameField] || `${filterField?.relationModel} ${id}`;
-            }
+            // let displayName;
+            // if (filterField?.relationModel === "Client") {
+            //   displayName = formatClientName(option);
+            // } else {
+            //   const nameField = filterField?.relationModel ? nameFieldMap[filterField?.relationModel as NameFieldMap] : "Name";
+            //   displayName =
+            //     filterField.Name || `${filterField?.relationModel} ${id}`;
+            // }
 
+            const nameField = getNameField(filterField?.relationModel);
+            console.log({ option, nameField });
+            const label = option[nameField];
             return (
-              <SelectItem key={id} value={id}>
-                {displayName}
+              <SelectItem key={label} value={label}>
+                {label}
               </SelectItem>
             );
           })}

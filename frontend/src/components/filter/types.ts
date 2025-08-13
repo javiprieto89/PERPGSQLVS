@@ -2,7 +2,11 @@ import { GetFilterFieldsQuery } from "~/graphql/_generated/graphql";
 import { NameFieldMap } from "./constants";
 
 // type Field = {"allCountries":[{"CountryID":51,"Name":"Peru"},{"CountryID":54,"Name":"Argentina"}]};
-export type FilterField = GetFilterFieldsQuery["filterFields"][0] & {
+export type FilterField = Omit<
+  GetFilterFieldsQuery["filterFields"][0],
+  "__typename"
+> & {
+  __typename?: string;
   relationModel?: NameFieldMap;
 };
 

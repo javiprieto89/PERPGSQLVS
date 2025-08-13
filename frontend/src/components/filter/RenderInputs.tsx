@@ -6,13 +6,13 @@ import FilterTypeText from "./fileTypes/FilterTypeText";
 import { Input } from "~/components/ui/input";
 import { RenderInputsBaseProps } from "./types";
 
-export default function RenderInputs(props: RenderInputsBaseProps) {
+export default function RenderInputs({ filterField, ...props }: RenderInputsBaseProps) {
 
-  switch (props?.filterField?.type) {
+  switch (filterField?.type) {
     case "number":
       return (
         <Input {...props}
-          defaultValue={props.value}
+          // defaultValue={props.value}
           placeholder={`Buscar por ${(props?.label || props.name).toLowerCase()}...`}
           type="number"
           onChange={(e) => props.onChange(props.name, e.target.value)}
@@ -23,7 +23,7 @@ export default function RenderInputs(props: RenderInputsBaseProps) {
       return <FileTypeBoolean {...props} />;
 
     case "select":
-      return <FilterTypeSelect {...props} />;
+      return <FilterTypeSelect filterField={filterField} {...props} />;
 
     default: // text
       return <FilterTypeText {...props} />

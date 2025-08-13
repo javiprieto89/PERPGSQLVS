@@ -1,14 +1,19 @@
 import { atom, useAtom } from "jotai";
 
+import useDebounce from "~/hooks/useDebounce";
+
 // Átomo global de filtros basado en Map
 const filterAtom = atom({});
 
 export default function useFilterState<T>() {
   const [filters, setFilters] = useAtom<Record<string, T>>(filterAtom);
+  const { setDebounce } = useDebounce();
 
   // Agrega o actualiza un filtro
   function setFilter(key: string, value: T) {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    setDebounce(() => {
+      setFilters((prev) => ({ ...prev, [key]: value }));
+    }, 500);
   }
 
   // Elimina un filtro por clave

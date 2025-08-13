@@ -61,8 +61,8 @@ export function AdminTable<TData>({ columns, data, caption, columnClassName, col
           ))}
         </TableHeader>
         <TableBody >
-          {table.getRowModel().rows.map(row => (
-            <Fragment key={`table-row-${row.id}`}>
+          {table.getRowModel().rows.map((row, index) => (
+            <Fragment key={`table-row-${row.id || index}`}>
               <TableRow>
                 {row.getVisibleCells().map(cell => (
                   <TableCell key={cell.id} className={getColumnClassName(columnClassName, cell.column.id)}>

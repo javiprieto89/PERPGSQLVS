@@ -26,6 +26,11 @@ export default function Clients() {
   const [clients, setClients] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
+  // El filtro ahora opera sobre allClients
+  const handleFilterChange = (filteredClients) => {
+    setClients(filteredClients);
+  };
+
   const handleCreate = useCallback(() => {
     openReactWindow(
       (popup) => (
@@ -78,11 +83,6 @@ export default function Clients() {
     },
     [refetch]
   );
-
-  // El filtro ahora opera sobre allClients
-  const handleFilterChange = (filteredClients) => {
-    setClients(filteredClients);
-  };
 
   useEffect(() => {
     const handler = (e) => {

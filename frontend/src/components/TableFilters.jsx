@@ -86,7 +86,9 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
 
   // 1. Cargar definición de filtros del backend
   useEffect(() => {
+    console.log("EFFECT 2");
     async function loadFilterFields() {
+      console.log("EFFECT 2 dentro");
       if (!memoizedModelName) return;
 
       setLoading(true);
@@ -107,7 +109,9 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
 
   // 2. Cargar opciones para campos de tipo select
   useEffect(() => {
+    console.log("EFFECT 1");
     async function loadOptions() {
+      console.log("EFFECT 1 dentro");
       const selectFields = filterFields.filter((f) => f.type === "select");
       if (selectFields.length === 0) return;
 
@@ -227,15 +231,6 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
     // Notificar siempre el resultado de filtrado
     onFilterChange(filtered);
   }, [filters, memoizedData, filterFields, onFilterChange]);
-
-  // Aplicar filtros cuando cambian los filtros
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      applyFilters();
-    }, 300); // Debounce de 300ms
-
-    return () => clearTimeout(timeoutId);
-  }, [applyFilters]);
 
   // Función para cargar provincias por país
   const loadProvincesByCountry = async (countryID, fieldName) => {
@@ -361,8 +356,10 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
           }));
         }
       }
+
+      applyFilters();
     },
-    [filterFields]
+    [filterFields, applyFilters]
   );
 
   const handleOperatorChange = useCallback((field, value) => {
@@ -528,7 +525,10 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filterFields.map((field) => (
-              <div key={`${field.field}-${componentKey}`} className="space-y-1">
+              <div
+                key={`filter-fields-${field.field}-${componentKey}`}
+                className="space-y-1"
+              >
                 <label className="block text-sm font-medium text-foreground/80">
                   {field.label}
                   {field.dependsOn && (
@@ -580,7 +580,7 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
 
               return (
                 <span
-                  key={field.field}
+                  key={`span-wrapper-of-button-${field.field}`}
                   className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary text-primary-foreground"
                 >
                   {field.label}: {displayValue}
