@@ -18,6 +18,7 @@ def get_carmodels_by_id(db: Session, carmodelid: int):
         .first()
     )
 
+
 def get_carmodels_by_brand(db: Session, carbrand_id: int):
     return (
         db.query(CarModels)
@@ -49,7 +50,8 @@ def update_carmodels(db: Session, carmodelid: int, data: CarModelsUpdate):
 def delete_carmodels(db: Session, carmodelid: int):
     obj = get_carmodels_by_id(db, carmodelid)
     if obj:
-        linked_cars = db.query(Cars).filter(Cars.CarModelID == carmodelid).first() is not None
+        linked_cars = db.query(Cars).filter(
+            Cars.CarModelID == carmodelid).first() is not None
         if linked_cars:
             raise ValueError(
                 "Cannot delete car model because it is referenced by existing cars"

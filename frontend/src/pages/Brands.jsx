@@ -92,7 +92,7 @@ export default function Brands() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-foreground">Marcas</h1>
         <div className="flex space-x-2">
-          {data && data.allItemsubcategories.length > 0 && (
+          {data && data.allBrands.length > 0 && (
             <>
               <InputQuickSearch
                 rows={data.allBrands}

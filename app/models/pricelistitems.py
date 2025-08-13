@@ -3,7 +3,7 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-if TYPE_CHECKING:    
+if TYPE_CHECKING:
     from .items import Items
     from .pricelists import PriceLists
 
@@ -16,8 +16,10 @@ from app.db import Base
 class PriceListItems(Base):
     __tablename__ = 'PriceListItems'
     __table_args__ = (
-        ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK__PriceList__ItemI__76969D2E'),
-        ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK__PriceList__Price__75A278F5'),
+        ForeignKeyConstraint(['ItemID'], ['Items.ItemID'],
+                             name='FK__PriceList__ItemI__76969D2E'),
+        ForeignKeyConstraint(['PriceListID'], [
+                             'PriceLists.PriceListID'], name='FK__PriceList__Price__75A278F5'),
         PrimaryKeyConstraint('PriceListID', 'ItemID', name='PK_PriceListItems')
     )
 
@@ -27,5 +29,7 @@ class PriceListItems(Base):
     EffectiveDate = Column(DateTime, server_default=text('(getdate())'))
 
     # Relaciones
-    items_: Mapped['Items'] = relationship('Items', back_populates='priceListItems')
-    priceLists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='priceListItems')
+    items_: Mapped['Items'] = relationship(
+        'Items', back_populates='priceListItems_')
+    priceLists_: Mapped['PriceLists'] = relationship(
+        'PriceLists', back_populates='priceListItems')

@@ -1,14 +1,19 @@
-# app/graphql/schemas/items.py
 import strawberry
 from typing import Optional
-from datetime import date
-from app.graphql.schemas.brands import BrandsInDB
-from app.graphql.schemas.itemcategories import ItemCategoriesInDB
-from app.graphql.schemas.itemsubcategories import ItemSubcategoriesInDB
-from app.graphql.schemas.suppliers import SuppliersInDB
-from app.graphql.schemas.branches import BranchesInDB
-from app.graphql.schemas.companydata import CompanyDataInDB
 from app.graphql.schemas.warehouses import WarehousesInDB
+from app.graphql.schemas.companydata import CompanyDataInDB
+from app.graphql.schemas.branches import BranchesInDB
+from app.graphql.schemas.suppliers import SuppliersInDB
+from app.graphql.schemas.itemsubcategories import ItemSubcategoriesInDB
+from app.graphql.schemas.itemcategories import ItemCategoriesInDB
+from app.graphql.schemas.brands import BrandsInDB
+from datetime import date
+
+
+# ...existing code...
+
+
+# ...existing code...
 
 
 @strawberry.input
@@ -60,11 +65,13 @@ class ItemsInDB:
     ItemCategoryID: int  # Corregido nombre del campo
     ItemSubcategoryID: int  # Corregido nombre del campo
     SupplierID: int
-    ControlStock: bool  # Corregido nombre del campo (era CcontrolStock en el modelo)
+    # Corregido nombre del campo (era CcontrolStock en el modelo)
+    ControlStock: bool
     ReplenishmentStock: int
     IsOffer: bool
     OEM: Optional[str]
-    LastModified: Optional[date]  # Corregido nombre del campo (era lastModified)
+    # Corregido nombre del campo (era lastModified)
+    LastModified: Optional[date]
     WarehouseID: int
     IsActive: bool
     CompanyData: Optional[CompanyDataInDB] = None
@@ -74,7 +81,6 @@ class ItemsInDB:
     SubcategoryData: Optional[ItemSubcategoriesInDB] = None
     SupplierData: Optional[SuppliersInDB] = None
     WarehouseData: Optional[WarehousesInDB] = None
-
 
 
 @strawberry.type
