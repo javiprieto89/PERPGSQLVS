@@ -1,13 +1,14 @@
 // src/components/Header.jsx
-import { ChevronDown, House, LogOut } from "lucide-react";
+import { ChevronDown, LogOut } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { NavLink } from "react-router-dom";
 
 import { AuthHelper } from "../utils/authHelper";
 
 import { Badge } from "~/components/ui/badge";
+import { useClickOutside } from "~/hooks/useClickOutside";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
+import { TriggerSidebar } from "./ui/sidebar/SidebarCollapsable";
 
 export default function Header({
   userInfo,
@@ -15,38 +16,24 @@ export default function Header({
   onChange,
   onLogout,
 }) {
-  const [showAccessDropdown, setShowAccessDropdown] = useState(false);
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [userAccesses, setUserAccesses] = useState([]);
-
   const accessDropdownRef = useRef(null);
   const userDropdownRef = useRef(null);
+
+  // Cerrar dropdowns cuando se hace click fuera
+  const [showAccessDropdown, setShowAccessDropdown] = useClickOutside({
+    defaultState: false,
+    ref: accessDropdownRef,
+  });
+  const [showUserDropdown, setShowUserDropdown] = useClickOutside({
+    defaultState: false,
+    ref: userDropdownRef,
+  });
+  const [userAccesses, setUserAccesses] = useState([]);
 
   // Cargar accesos del usuario
   useEffect(() => {
     const accesses = AuthHelper.getUserAccess();
     setUserAccesses(accesses);
-  }, []);
-
-  // Cerrar dropdowns cuando se hace click fuera
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        accessDropdownRef.current &&
-        !accessDropdownRef.current.contains(event.target)
-      ) {
-        setShowAccessDropdown(false);
-      }
-      if (
-        userDropdownRef.current &&
-        !userDropdownRef.current.contains(event.target)
-      ) {
-        setShowUserDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Cambiar acceso seleccionado
@@ -74,19 +61,12 @@ export default function Header({
   const displayRole = currentAccess.Role || currentAccess.roleName;
 
   return (
-    <header className="card shadow-sm border-b">
+    <header className="bg-background/90 items-center gap-2 border-b h-(--header-height) shrink-0">
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-3">
+        <div className="flex justify-between items-center py-1">
+          <TriggerSidebar />
           {/* Lado izquierdo: Home + Selector de Acceso */}
           <div className="flex items-center space-x-4">
-            {/* Botón Home */}
-            <Button asChild title="Ir al Dashboard Principal">
-              <NavLink to="dashboard">
-                <House />
-                Dashboard
-              </NavLink>
-            </Button>
-
             {/* Selector de Empresa/Sucursal/Rol */}
             <div
               className="inline-flex items-center relative"
@@ -153,7 +133,7 @@ export default function Header({
                                       d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                       clipRule="evenodd"
                                     />
-                                    <span class="sr-only">Activo</span>
+                                    <span className="sr-only">Activo</span>
                                   </svg>
                                 </div>
                               ) : (

@@ -1,11 +1,17 @@
-import { Plus, RefreshCcw } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AlertLoading } from "~/components/AlertLoading";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { TableActionButton } from "~/components/TableActionButtons";
-import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { RefreshButton } from "~/components/RefreshButton";
+import {
+  AdminTableLoading,
+  TableActionButton,
+  TableIsActiveCell,
+} from "~/components/TableExtraComponents";
+import { AdminTable } from "~/components/TanstackTable";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { useGetAllSaleConditionsQuery } from "~/graphql/_generated/graphql";
 import {
@@ -18,6 +24,7 @@ import { openReactWindow } from "../utils/openReactWindow";
 import SaleConditionCreate from "./SaleConditionCreate";
 
 export default function SaleConditions() {
+  // TODO: Sale conditions debería traer en 1 sola query AllConditions + Cards + Groups asociados
   const { data, error, loading, refetch } = useGetAllSaleConditionsQuery();
   const [saleConditions, setSaleConditions] = useState([]);
   const [cards, setCards] = useState([]);
@@ -96,7 +103,7 @@ export default function SaleConditions() {
   );
 
   useEffect(() => {
-    // TODO: remove this and improve useGetAllSaleConditionsQuery
+    // TODO: cardData needs to come with useGetAllSaleConditionsQuery
     async function load() {
       const [cardData, groupData] = await Promise.all([
         creditCardOperations.getAllCards(),
@@ -126,25 +133,36 @@ export default function SaleConditions() {
         accessorKey: "Name",
       },
       {
+        header: "Tarjeta",
+        accessorKey: "CreditCardID",
+        cell: ({ getValue }) => {
+          const card = cards.find((c) => c.CreditCardID === getValue());
+          const group = card
+            ? groups.find((g) => g.CreditCardGroupID === card.CreditCardGroupID)
+            : null;
+          return (
+            <>
+              {card ? card.CardName : getValue()}{" "}
+              {group?.GroupName && (
+                <Badge
+                  variant="outline"
+                  className="text-muted-foreground px-1.5"
+                >
+                  {group?.GroupName}
+                </Badge>
+              )}
+            </>
+          );
+        },
+      },
+      {
         header: "Vencimiento",
         accessorKey: "DueDate",
       },
       {
         header: "Estado",
         accessorKey: "IsActive",
-        cell: (props) => {
-          return (
-            <span
-              className={`px-2 py-1 text-xs font-medium rounded-full ${
-                props.getValue("IsActive")
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-destructive"
-              }`}
-            >
-              {props.getValue("IsActive") ? "Activo" : "Inactivo"}
-            </span>
-          );
-        },
+        cell: (props) => <TableIsActiveCell {...props} />,
       },
       {
         header: "",
@@ -180,12 +198,9 @@ export default function SaleConditions() {
               />
             </>
           )}
-          <Button onClick={() => refetch()}>
-            <RefreshCcw />
-            Recargar
-          </Button>
+          <RefreshButton onClick={() => refetch()} loading={loading} />
           <Button variant="primary" onClick={handleCreate}>
-            <Plus />
+            <Plus strokeWidth={3} />
             Nuevo
           </Button>
         </div>
@@ -201,45 +216,6 @@ export default function SaleConditions() {
       )}
       {error && <ApiErrorMessage error={error} />}
       {loading && <AlertLoading />}
-      {!loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {saleConditions.map((sc) => {
-            const card = cards.find((c) => c.CreditCardID === sc.CreditCardID);
-            const group = card
-              ? groups.find(
-                  (g) => g.CreditCardGroupID === card.CreditCardGroupID
-                )
-              : null;
-            return (
-              <div key={sc.SaleConditionID} className=" rounded shadow p-4">
-                <h3 className="text-lg font-semibold mb-2">{sc.Name}</h3>
-                <p className="text-sm">
-                  Tarjeta: {card ? card.CardName : sc.CreditCardID}
-                  {group ? ` (${group.GroupName})` : ""}
-                </p>
-                <p className="text-sm mb-1">Vencimiento: {sc.DueDate}</p>
-                <p className="text-sm mb-2">
-                  Activo: {sc.IsActive ? "Sí" : "No"}
-                </p>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(sc)}
-                    className="mt-2 px-3 py-1  text-sm rounded hover:"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(sc.SaleConditionID)}
-                    className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
       <AdminTable columns={columns} data={saleConditions} />
       {loading && <AdminTableLoading />}
     </div>

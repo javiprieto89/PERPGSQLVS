@@ -7,12 +7,12 @@ export function ShowFilterButton({ showFilters, ...props }: ButtonProps & { show
       {showFilters ? (
         <>
           <FunnelX />
-          Ocultar Filtros
+          <span className="hidden lg:inline">Ocultar</span>
         </>
       ) : (
         <>
           <Funnel />
-          Mostrar Filtros
+          <span className="hidden lg:inline">Mostrar</span>
         </>
       )}
     </Button>

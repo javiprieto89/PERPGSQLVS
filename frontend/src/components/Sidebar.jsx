@@ -1,13 +1,12 @@
 // src/components/Sidebar.jsx
 import {
-  ChevronDown,
   ChevronRight,
   ExternalLink,
   Folder,
   FolderOpen,
   House,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import clsx from "clsx";
@@ -17,6 +16,7 @@ import PriceListItemsPage from "../pages/PriceListItems";
 import StockEntry from "../pages/StockEntry";
 import { openReactWindow } from "../utils/openReactWindow";
 import { Button } from "./ui/button";
+import { DrawerContext } from "./ui/drawer/Drawer";
 
 const openPopup = (Component, title, width = 1000, height = 700) => {
   openReactWindow(
@@ -123,6 +123,8 @@ const sections = [
 ];
 
 function Item({ label, to, action }) {
+  const { close } = useContext(DrawerContext);
+
   return (
     <li key={label}>
       {to ? (
@@ -132,10 +134,12 @@ function Item({ label, to, action }) {
             clsx(
               "flex justify-start py-2 px-3 w-full text-nowrap border-l-1 text-sm hover:bg-input/20 rounded-r-md",
               {
-                "bg-primary/10 border-l-primary border-l-2": isActive,
+                "bg-primary/20 hover:bg-primary/30 border-l-primary border-l-2":
+                  isActive,
               }
             )
           }
+          onClick={close}
         >
           <span className="truncate">{label}</span>
         </NavLink>
@@ -188,93 +192,113 @@ export default function Sidebar() {
     setOpenSubmenus((prev) => ({ ...prev, [key]: !prev[key] }));
 
   return (
-    <>
-      <aside className="card w-64 border-r overflow-y-auto">
-        <nav className="py-4 px-2 flex flex-col">
-          <Button
-            asChild
-            title="Ir al Dashboard Principal"
-            variant="ghost"
-            className="w-full justify-start"
-          >
-            <NavLink to="dashboard">
-              <House />
-              Dashboard
-            </NavLink>
-          </Button>
-          {sections.map((section) => {
-            const isOpen = openSections[section.title];
-            return (
-              <ul
-                key={section.title}
-                className={cn("p-1 transition-[background, color,box-shadow]")}
-              >
-                <li className="mt-2 w-full">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="w-full justify-between"
-                    onClick={() => toggleSection(section.title)}
-                  >
-                    <div className="flex items-center gap-2 uppercase text-nowrap">
-                      {isOpen ? <FolderOpen size={18} /> : <Folder size={18} />}
-                      {section.title}
-                    </div>
-                    {isOpen ? (
-                      <ChevronDown size={16} />
-                    ) : (
-                      <ChevronRight size={16} />
-                    )}
-                  </Button>
+    <aside className="flex flex-col h-dvh">
+      <div className="p-2 h-(--header-height) border-b">
+        <Button
+          size="sm"
+          asChild
+          title="Ir al Dashboard Principal"
+          variant="ghost"
+          className="w-full justify-start"
+        >
+          <NavLink to="dashboard">
+            <House />
+            Dashboard
+          </NavLink>
+        </Button>
+      </div>
+      <nav className="py-2 flex flex-col mx-1 overflow-y-auto h-full position:relative;">
+        {sections.map((section) => {
+          const isOpen = openSections[section.title];
+          return (
+            <ul
+              key={section.title}
+              className={cn("p-1 transition-[background, color,box-shadow]")}
+            >
+              <li className="mt-1 w-full">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="w-full justify-between"
+                  onClick={() => toggleSection(section.title)}
+                >
+                  <div className="flex items-center gap-2 uppercase text-nowrap">
+                    {isOpen ? <FolderOpen size={16} /> : <Folder size={16} />}
+                    {section.title}
+                  </div>
+                  <ChevronRight
+                    size={16}
+                    className={cn("transition-[rotate,transform] ease-linear", {
+                      "rotate-90": isOpen,
+                    })}
+                  />
+                </Button>
 
-                  {isOpen && (
-                    <ul className="flex flex-col">
-                      {section.items.map((item) => {
-                        const key = `${section.title}-${item.label}`;
-                        if (item.submenu) {
-                          const subOpen = openSubmenus[key];
-                          return (
-                            <li key={item.label} className="mt-2">
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="w-full justify-between"
-                                onClick={() => toggleSubmenu(key)}
-                              >
-                                <span className="flex flex-row gap-2 uppercase truncate">
-                                  {subOpen ? (
-                                    <FolderOpen size={18} />
-                                  ) : (
-                                    <Folder size={18} />
-                                  )}
-                                  {item.label}
-                                </span>
+                {isOpen && (
+                  <ul className="flex flex-col px-3 mb-2">
+                    {section.items.map((item) => {
+                      const key = `${section.title}-${item.label}`;
+                      if (item.submenu) {
+                        const subOpen = openSubmenus[key];
+                        return (
+                          <li key={item.label} className="pl-2 border-l-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="w-full justify-between"
+                              onClick={() => toggleSubmenu(key)}
+                            >
+                              <span className="flex flex-row gap-2 uppercase truncate">
                                 {subOpen ? (
-                                  <ChevronDown size={16} />
+                                  <FolderOpen size={16} />
                                 ) : (
-                                  <ChevronRight size={16} />
+                                  <Folder size={16} />
                                 )}
-                              </Button>
-                              {subOpen && (
-                                <ul className="flex flex-col m-2">
-                                  {item.submenu.map((sub) => (
-                                    <Item key={sub.label} {...sub} />
-                                  ))}
-                                </ul>
-                              )}
-                            </li>
-                          );
-                        }
-                        return <Item key={item.label} {...item} />;
-                      })}
-                    </ul>
-                  )}
-                </li>
-              </ul>
-            );
-          })}
-        </nav>
-      </aside>
-    </>
+                                {item.label}
+                              </span>
+                              <ChevronRight
+                                size={16}
+                                className={cn(
+                                  "transition-[translate,transform] ease-linear",
+                                  {
+                                    "rotate-90": isOpen,
+                                  }
+                                )}
+                              />
+                            </Button>
+                            {subOpen && (
+                              <ul className="flex flex-col px-3 mb-2">
+                                {item.submenu.map((sub) => (
+                                  <Item key={sub.label} {...sub} />
+                                ))}
+                              </ul>
+                            )}
+                          </li>
+                        );
+                      }
+                      return <Item key={item.label} {...item} />;
+                    })}
+                  </ul>
+                )}
+              </li>
+            </ul>
+          );
+        })}
+      </nav>
+      <div className="p-2 h-(--header-height) border-b mt-auto">
+        <Button
+          size="sm"
+          asChild
+          title="Ir al Dashboard Principal"
+          variant="ghost"
+          className="w-full justify-start"
+        >
+          <NavLink to="dashboard">
+            <House />
+            Dashboard
+          </NavLink>
+        </Button>
+      </div>
+    </aside>
   );
 }

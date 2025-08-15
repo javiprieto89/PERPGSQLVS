@@ -4,7 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AlertLoading } from "~/components/AlertLoading";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { TableActionButton } from "~/components/TableActionButtons";
+import {
+  AdminTableLoading,
+  TableActionButton,
+} from "~/components/TableExtraComponents";
 import { AdminTable } from "~/components/TanstackTable";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { Button } from "~/components/ui/button";
@@ -146,7 +149,7 @@ export default function Branches() {
             Recargar
           </Button>
           <Button variant="primary" onClick={handleCreate}>
-            <Plus />
+            <Plus strokeWidth={3} />
             Nueva Sucursal
           </Button>
         </div>
@@ -172,6 +175,7 @@ export default function Branches() {
           data={branches || []}
         />
       )}
+      {loading && <AdminTableLoading />}
     </div>
   );
 }

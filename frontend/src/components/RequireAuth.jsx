@@ -6,8 +6,7 @@ const RequireAuth = ({ children }) => {
   const token = sessionStorage.getItem("token");
 
   if (!token) {
-    //YO localStorage.setItem("redirectAfterLogin", window.location.pathname);
-    sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
+    // sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
     return <Navigate to="/login" replace />;
   }
 

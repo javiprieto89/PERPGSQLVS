@@ -1,12 +1,17 @@
 // frontend/src/pages/PriceListCreate.jsx
 import { useEffect, useState } from "react";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { Textarea } from "~/components/ui/textarea";
 import { pricelistOperations } from "~/graphql/operations.js";
 
 export default function PriceListCreate({
   onClose,
   onSave,
-  pricelist: initialPL = null,
+  pricelist: data = null,
 }) {
+  console.log("data", JSON.stringify(data));
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isActive, setIsActive] = useState(true);
@@ -15,13 +20,13 @@ export default function PriceListCreate({
   const [isEdit, setIsEdit] = useState(false);
 
   useEffect(() => {
-    if (initialPL) {
+    if (data) {
       setIsEdit(true);
-      setName(initialPL.Name || "");
-      setDescription(initialPL.Description || "");
-      setIsActive(initialPL.IsActive !== false);
+      setName(data.PriceListData.Name || "");
+      setDescription(data.PriceListData.Description || "");
+      setIsActive(data.IsActive !== false);
     }
-  }, [initialPL]);
+  }, [data]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +41,7 @@ export default function PriceListCreate({
       let result;
       if (isEdit) {
         result = await pricelistOperations.updatePricelist(
-          initialPL.PriceListID,
+          data.PriceListID,
           payload
         );
       } else {
@@ -60,50 +65,48 @@ export default function PriceListCreate({
       {error && <div className="text-destructive mb-2">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Nombre</label>
-          <input
+          <Label className="block text-sm font-medium mb-1">Nombre</Label>
+          <Input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border p-2 rounded"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Descripción</label>
-          <textarea
+          <Label className="block text-sm font-medium mb-1">Descripción</Label>
+          <Textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full border p-2 rounded"
           />
         </div>
         <div>
-          <label className="inline-flex items-center">
-            <input
+          <Label className="inline-flex items-center">
+            <Input
               type="checkbox"
               className="mr-2"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
             />
             <span>Activo</span>
-          </label>
+          </Label>
         </div>
-        <div className="flex justify-end space-x-4 pt-4 border-t">
-          <button
+        <div className="flex justify-between space-x-4 pt-4 border-t">
+          <Button
+            variant="link"
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-4 py-2 border  rounded hover: disabled:opacity-50"
           >
             Cancelar
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="primary"
             type="submit"
             disabled={loading || !name.trim()}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary disabled:opacity-50"
           >
             {loading ? "Guardando..." : "Guardar"}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

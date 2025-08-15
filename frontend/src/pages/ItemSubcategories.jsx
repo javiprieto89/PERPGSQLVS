@@ -1,10 +1,14 @@
-import { Plus, RefreshCcw } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AlertLoading } from "~/components/AlertLoading";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { TableActionButton } from "~/components/TableActionButtons";
-import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { RefreshButton } from "~/components/RefreshButton";
+import {
+  AdminTableLoading,
+  TableActionButton,
+} from "~/components/TableExtraComponents";
+import { AdminTable } from "~/components/TanstackTable";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { Button } from "~/components/ui/button";
 import { useGetAllItemSubcategoriesQuery } from "~/graphql/_generated/graphql";
@@ -140,12 +144,9 @@ export default function ItemSubcategories() {
               />
             </>
           )}
-          <Button onClick={() => refetch()}>
-            <RefreshCcw />
-            Recargar
-          </Button>
+          <RefreshButton onClick={() => refetch()} loading={loading} />
           <Button variant="primary" onClick={handleCreate}>
-            <Plus />
+            <Plus strokeWidth={3} />
             Nuevo
           </Button>
         </div>

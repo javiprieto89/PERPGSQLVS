@@ -1,8 +1,8 @@
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { useUser } from "../hooks/useUser";
@@ -69,22 +69,28 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Card className="p-8 rounded-xl shadow-xl w-full max-w-md">
+    <div className="flex">
+      <div className="hidden md:flex items-center border-r-1 bg-card h-dvh w-1/2">
+        <img src="./Site Stats-amico.svg" alt="illustration of dashboard" />
+      </div>
+      <div className="p-8 rounded-xl w-full md:w-1/2 h-dvh flex flex-col items-center justify-center">
         <div className="text-center mb-8">
           <h1 className="text-xl font-bold mb-2">ERP System</h1>
           <h2 className="text-muted-foreground">Iniciar sesión</h2>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-destructive text-sm">{error}</p>
-          </div>
+          <Alert variant="destructive">
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              <p>{error}</p>
+            </AlertDescription>
+          </Alert>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-1/2">
           <div>
-            <Label className="block mb-2">Usuario</Label>
+            <Label className="block mt-2 mb-1">Usuario</Label>
             <Input
               type="text"
               placeholder="Ingrese su usuario"
@@ -97,7 +103,7 @@ export default function Login() {
           </div>
 
           <div>
-            <Label className="block mb-2">Contraseña</Label>
+            <Label className="block mt-2 mb-1">Contraseña</Label>
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
@@ -159,7 +165,7 @@ export default function Login() {
             </button>
           </p>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

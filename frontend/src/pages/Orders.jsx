@@ -1,14 +1,8 @@
 ﻿// src/pages/Orders.jsx
 // TODO:: useGetOrderMassiveQuery needs to be refined
-import {
-  EllipsisVertical,
-  Pencil,
-  Plus,
-  RefreshCcw,
-  Trash,
-} from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { useGetOrderMassiveQuery } from "~/graphql/_generated/graphql";
+import { Plus } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useGetAllOrdersQuery } from "~/graphql/_generated/graphql";
 
 import { orderOperations } from "~/graphql/operations";
 import { openReactWindow } from "../utils/openReactWindow";
@@ -17,37 +11,29 @@ import { NavLink } from "react-router-dom";
 import { AlertLoading } from "~/components/AlertLoading";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { RefreshButton } from "~/components/RefreshButton";
+import {
+  AdminTableLoading,
+  TableActionButton,
+} from "~/components/TableExtraComponents";
 import TableFilters from "~/components/TableFilters";
+import { AdminTable } from "~/components/TanstackTable";
 import AdvancedFilter from "~/components/filter/AdvancedFilter";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { Button } from "~/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
 import OrderCreate from "./OrderCreate";
 
 export default function Orders() {
-  const { data, loading, error, refetch } = useGetOrderMassiveQuery();
+  console.warn(
+    "TODO: useGetAllOrdersQuery needs to be refined: Vendor needs to be displayed in Vendedor cell"
+  );
+  const { data, loading, error, refetch } = useGetAllOrdersQuery();
   const [orders, setOrders] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const clients = data?.allClients || [];
-  const saleConditions = data?.allSaleconditions || [];
-  const users = data?.allUsers || [];
-  const vendors = data?.allVendors || [];
+  const vendors = useMemo(() => data?.allVendors || [], [data?.allVendors]);
+
+  console.log("vendors", vendors);
 
   // El filtro ahora opera sobre allClients
   const handleFilterChange = (filteredClients) => {
@@ -129,14 +115,72 @@ export default function Orders() {
     }
   }, [data]);
 
-  console.warn("TODO: useGetOrderMassiveQuery needs to be refined");
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "OrderID",
+        className: "first w-3",
+      },
+      {
+        header: "Cliente",
+        accessorKey: "ClientData.FirstName",
+        cell: ({ getValue, row }) => {
+          return `${getValue()} ${row.original.ClientData.LastName || ""}`;
+        },
+      },
+      {
+        header: "Total",
+        accessorKey: "Total",
+        cell: ({ getValue }) => (getValue() || 0).toFixed(2),
+      },
+      {
+        header: "Condición",
+        accessorKey: "SaleConditionData.Name",
+      },
+      {
+        header: "Usuario",
+        accessorKey: "UserData.FullName",
+        cell: ({ getValue, row }) => {
+          return getValue() || row.original.UserData.Nickname || "";
+        },
+      },
+      {
+        header: "Fecha",
+        accessorKey: "Date_",
+        cell: ({ getValue }) => getValue()?.slice(0, 10),
+      },
+      {
+        header: "Vendedor",
+        accessorKey: "ClientData.VendorID",
+        cell: ({ getValue }) => {
+          // TODO: VendorID o VendorName debería venir en orders query
+          const vendor = vendors.find((v) => v.VendorID === getValue());
+          return vendor?.VendorName || "";
+        },
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "OrderID",
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit, vendors]
+  );
 
   return (
     <>
       <div className="p-4">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold mb-4">Pedidos</h1>
-          <div className="flex space-x-2">
+          <div className="flex gap-2">
             {data && data.allOrders.length > 0 && (
               <>
                 <InputQuickSearch
@@ -149,17 +193,15 @@ export default function Orders() {
                 />
               </>
             )}
-            <Button onClick={() => refetch()}>
-              <RefreshCcw />
-              Recargar
-            </Button>
+            <RefreshButton onClick={() => refetch()} loading={loading} />
             <Button asChild>
               <NavLink to={`/orders/form`} target="_blank">
+                <Plus strokeWidth={3} />
                 Nuevo
               </NavLink>
             </Button>
             <Button variant="primary" onClick={handleCreate}>
-              <Plus />
+              <Plus strokeWidth={3} />
               Nuevo Pedido
             </Button>
           </div>
@@ -167,7 +209,7 @@ export default function Orders() {
 
         {/* Filtros */}
         {showFilters && (
-          <div className="mb-6">
+          <div className="my-6 gap-2">
             <TableFilters
               modelName="clients"
               data={data ? data.allClients : []} // ← lista original sin filtrar
@@ -181,107 +223,13 @@ export default function Orders() {
           </div>
         )}
 
-        {/* Error */}
-        {error && <ApiErrorMessage error={error} />}
-
-        {loading && <AlertLoading />}
-        <Table className="w-full mt-4">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="px-2">ID</TableHead>
-              <TableHead className="px-2">Cliente</TableHead>
-              <TableHead className="px-2">Total</TableHead>
-              <TableHead className="px-2">Condición</TableHead>
-              <TableHead className="px-2">Usuario</TableHead>
-              <TableHead className="px-2">Fecha</TableHead>
-              <TableHead className="px-2">Vendedor</TableHead>
-              <TableHead className="px-2">Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orders.length > 0 &&
-              orders.map((o, index) => {
-                const client = clients.find((c) => c.ClientID === o.ClientID);
-                const saleCond = saleConditions.find(
-                  (sc) => sc.SaleConditionID === o.SaleConditionID
-                );
-                const user = users.find((u) => u.UserID === o.UserID);
-                const vendor = client
-                  ? vendors.find((v) => v.VendorID === client.VendorID)
-                  : null;
-                console.log({ o });
-                return (
-                  <TableRow
-                    key={`row-${o.OrderID || index}`}
-                    className="border-t"
-                  >
-                    <TableCell className="px-2">{o.OrderID}</TableCell>
-                    <TableCell className="px-2">
-                      {client
-                        ? `${client.FirstName} ${client.LastName || ""}`
-                        : o.ClientID}
-                    </TableCell>
-                    <TableCell className="px-2 text-right">
-                      {o.Total?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="px-2">
-                      {saleCond?.Name || ""}
-                    </TableCell>
-                    <TableCell className="px-2">
-                      {user?.FullName || user?.Nickname || ""}
-                    </TableCell>
-                    <TableCell className="px-2">
-                      {o.Date_?.slice(0, 10)}
-                    </TableCell>
-                    <TableCell className="px-2">
-                      {vendor?.VendorName || ""}
-                    </TableCell>
-                    <TableCell className="px-2 text-center whitespace-nowrap">
-                      <div className="flex gap-2">
-                        <Button asChild>
-                          <NavLink
-                            to={`/orders/form/${o.OrderID}`}
-                            target="_blank"
-                          >
-                            <Pencil />
-                          </NavLink>
-                        </Button>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger variant="ghost">
-                            <EllipsisVertical />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onSelect={() => handleEdit(o)}>
-                              <Pencil />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <NavLink
-                                to={`/orders/form/${o.OrderID}`}
-                                target="_blank"
-                              >
-                                <Pencil />
-                                Edit
-                              </NavLink>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              variant="destructive"
-                              onSelect={() => handleDelete(o.OrderID)}
-                            >
-                              <Trash />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
+        <div className="flex flex-col gap-2 my-6">
+          {/* Error */}
+          {error && <ApiErrorMessage error={error} />}
+          {loading && <AlertLoading />}
+          {loading && <AdminTableLoading />}
+          {orders.length > 0 && <AdminTable columns={columns} data={orders} />}
+        </div>
       </div>
     </>
   );

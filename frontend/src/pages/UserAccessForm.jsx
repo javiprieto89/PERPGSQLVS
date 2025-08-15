@@ -13,6 +13,7 @@ export default function UserAccessForm({
   onSave,
   record: initialRecord = null,
 }) {
+  // TODO: UserAccessForm needs to be refactored, create only one query
   const [userID, setUserID] = useState("");
   const [companyID, setCompanyID] = useState("");
   const [branchID, setBranchID] = useState("");
