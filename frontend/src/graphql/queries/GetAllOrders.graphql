@@ -21,5 +21,36 @@ query GetAllOrders {
     PriceListID
     OrderStatusID
     WarehouseID
+    SaleConditionData {
+      SaleConditionID
+      Name
+    }
+    ClientData {
+      ClientID
+      FirstName
+      LastName
+      VendorID
+    }
+    UserData {
+      UserID
+      Nickname
+      FullName
+    }
+    DiscountData {
+      DiscountID
+      DiscountName
+      Percentage
+    }
+  }
+  allVendors {
+    VendorID
+    VendorName
+    Commission
+    IsActive
+  }
+  allClients {
+    FirstName
+    LastName
+    ClientID
   }
 }

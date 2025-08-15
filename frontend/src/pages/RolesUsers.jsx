@@ -1,50 +1,33 @@
 // frontend/src/pages/RolesUsers.jsx
-import { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AlertLoading } from "~/components/AlertLoading";
+import { ApiErrorMessage } from "~/components/ApiErrorMessage";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { RefreshButton } from "~/components/RefreshButton";
+import {
+  AdminTableLoading,
+  TableActionButton,
+} from "~/components/TableExtraComponents";
+import { AdminTable } from "~/components/TanstackTable";
+import { Button } from "~/components/ui/button";
+import { useGetAllUseraccessQuery } from "~/graphql/_generated/graphql";
 import { userAccessOperations } from "~/graphql/operations";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import UserAccessForm from "./UserAccessForm";
 
 export default function RolesUsers() {
-  const [allRecords, setAllRecords] = useState([]);
+  const { data, error, loading, refetch } = useGetAllUseraccessQuery();
   const [records, setRecords] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const data = await userAccessOperations.getAllUserAccess();
-      setAllRecords(data);
-      setRecords(data);
-    } catch (err) {
-      console.error("Error cargando asignaciones:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.data === "reload-useraccess") {
-        loadData();
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, []);
 
   const handleFilterChange = (filtered) => {
     setRecords(filtered);
   };
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     openReactWindow(
       (popup) => (
         <UserAccessForm
@@ -52,113 +35,156 @@ export default function RolesUsers() {
             popup.opener.postMessage("reload-useraccess", "*");
             popup.close();
           }}
-          onClose={() => popup.close()}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
         />
       ),
       "Nueva Asignación"
     );
-  };
+  }, [refetch]);
 
-  const handleEdit = (record) => {
-    openReactWindow(
-      (popup) => (
-        <UserAccessForm
-          record={record}
-          onSave={() => {
-            popup.opener.postMessage("reload-useraccess", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Editar Asignación"
-    );
-  };
+  const handleEdit = useCallback(
+    (record) => {
+      console.log("record", record);
+      openReactWindow(
+        (popup) => (
+          <UserAccessForm
+            record={record}
+            onSave={() => {
+              popup.opener.postMessage("reload-useraccess", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Asignación"
+      );
+    },
+    [refetch]
+  );
 
-  const handleDelete = async (record) => {
-    if (!confirm("¿Borrar asignación?")) return;
-    try {
-      await userAccessOperations.delete({
-        userID: record.UserID,
-        companyID: record.CompanyID,
-        branchID: record.BranchID,
-        roleID: record.RoleID,
-      });
-      loadData();
-    } catch (err) {
-      alert("Error al borrar asignación: " + err.message);
+  const handleDelete = useCallback(
+    async (record) => {
+      if (!confirm("¿Borrar asignación?")) return;
+      try {
+        await userAccessOperations.delete({
+          userID: record.UserID,
+          companyID: record.CompanyID,
+          branchID: record.BranchID,
+          roleID: record.RoleID,
+        });
+        refetch();
+      } catch (err) {
+        alert("Error al borrar asignación: " + err.message);
+      }
+    },
+    [refetch]
+  );
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data === "reload-useraccess") {
+        refetch();
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (data?.allUseraccess) {
+      setRecords(data.allUseraccess);
     }
-  };
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "UserID",
+        className: "first w-3",
+      },
+      {
+        header: "Usuario",
+        accessorKey: "UserData.FullName",
+        cell: ({ row, getValue }) => getValue() || row.original.UserID,
+      },
+      {
+        header: "Compañía",
+        accessorKey: "CompanyID",
+        cell: ({ row, getValue }) =>
+          row.original.CompanyData?.Name || getValue(),
+      },
+      {
+        header: "Sucursal",
+        accessorKey: "BranchID",
+        cell: ({ row, getValue }) =>
+          row.original.BranchData?.Name || getValue(),
+      },
+      {
+        header: "Rol",
+        accessorKey: "RoleID",
+        cell: ({ row, getValue }) =>
+          row.original.RoleData?.RoleName || getValue(),
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "UserID",
+        cell: ({ row }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(row.original)}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold">Roles y Usuarios</h1>
         <div className="flex space-x-2">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 bg-purple-600 text-white rounded"
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
-          <button
-            onClick={loadData}
-            className="px-4 py-2 bg-primary text-white rounded"
-          >
-            Recargar
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded"
-          >
-            Nueva Asignación
-          </button>
+          {data && data.allUseraccess.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allUseraccess}
+                onSearch={(rows) => setRecords(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <RefreshButton onClick={() => refetch()} loading={loading} />
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus strokeWidth={3} />
+            Nuevo
+          </Button>
         </div>
       </div>
       {showFilters && (
         <div className="mb-6">
           <TableFilters
             modelName="useraccess"
-            data={allRecords}
+            data={data.allUseraccess}
             onFilterChange={handleFilterChange}
           />
         </div>
       )}
-      {loading ? (
-        <p>Cargando...</p>
-      ) : error ? (
-        <p className="text-destructive">{error}</p>
-      ) : (
-        <ul className="space-y-2">
-          {records.map((r, idx) => (
-            <li
-              key={idx}
-              className="border p-2 rounded flex justify-between items-center"
-            >
-              <span>
-                Usuario: {r.UserData?.FullName || r.UserID} - Compañía:{" "}
-                {r.CompanyData?.Name || r.CompanyID} - Sucursal:{" "}
-                {r.BranchData?.Name || r.BranchID} - Rol:{" "}
-                {r.RoleData?.RoleName || r.RoleID}
-              </span>
-              <span className="space-x-2">
-                <button
-                  onClick={() => handleEdit(r)}
-                  className="px-2 py-1 text-sm  rounded hover:"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(r)}
-                  className="px-2 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                >
-                  Eliminar
-                </button>
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+      {error && <ApiErrorMessage error={error} />}
+      {loading && <AlertLoading />}
+      {loading && <AdminTableLoading />}
+      {records.length > 0 && <AdminTable columns={columns} data={records} />}
     </div>
   );
 }

@@ -10,9 +10,9 @@ export function ApiErrorMessage({ error }: { error?: Error | ApolloError | { mes
         <h4>Error cargando datos</h4>
       </AlertTitle>
       <AlertDescription>
-        {error && <p className="text-destructive">{error.message}</p>}
-        <p className="my-3">
-          Posibles soluciones:
+        {error && <p className="text-destructive">{error.message || JSON.stringify(error)}</p>}
+        <div className="my-3">
+          <h6>Posibles soluciones:</h6>
           <ul className="list-disc list-inside my-1 space-y-1">
             <li>
               Verifica que el servidor GraphQL esté ejecutándose:{" "}
@@ -22,7 +22,7 @@ export function ApiErrorMessage({ error }: { error?: Error | ApolloError | { mes
             <li>Revisa la consola del navegador para más detalles</li>
             <li>Usa el botón "Diagnóstico" para más información</li>
           </ul>
-        </p>
+        </div>
       </AlertDescription>
     </Alert>
   )
