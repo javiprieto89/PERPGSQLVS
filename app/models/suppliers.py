@@ -28,10 +28,14 @@ class Suppliers(Base):
         ForeignKeyConstraint(
             ['DocTypeID'], ['SysDocTypes.DocTypeID'], name='FK_Suppliers_SysDocTypes'),
         ForeignKeyConstraint(
+            ['CountryID'], ['Countries.CountryID'], name='FK_Suppliers_Countries'),
+        ForeignKeyConstraint(
             ['CountryID', 'ProvinceID'],
             ['Provinces.CountryID', 'Provinces.ProvinceID'],
             name='FK__Suppliers__Provi__44FF419A',
         ),
+        ForeignKeyConstraint(
+            ['CompanyID'], ['CompanyData.CompanyID'], name='FK_Suppliers_CompanyData'),
         ForeignKeyConstraint(
             ['CompanyID', 'BranchID'],
             ['Branches.CompanyID', 'Branches.BranchID'],

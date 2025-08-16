@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from app.models.warehouses import Warehouses
 
 from sqlalchemy import Column, Integer, Unicode, Date, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, Index, text
-from sqlalchemy.orm import Mapped, relationship, foreign
+from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 
 
@@ -29,6 +29,8 @@ class Itemstock(Base):
             ['SupplierID'], ['Suppliers.SupplierID'], name='FK_Itemstock_Suppliers'),
         ForeignKeyConstraint(
             ['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_Itemstock_Warehouses'),
+        ForeignKeyConstraint(
+            ['CompanyID'], ['CompanyData.CompanyID'], name='FK_Itemstock_CompanyData'),
         PrimaryKeyConstraint('ItemID', 'WarehouseID',
                              name='PK__Itemstoc__F01E09161DA94055'),
         Index('idx_branchID', 'CompanyID'),
@@ -52,11 +54,6 @@ class Itemstock(Base):
     BatchNumber = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
     ExpiryDate = Column(Date)
 
-    branches_: Mapped[Branches] = relationship(
-        'Branches',
-        back_populates='itemstock',
-        overlaps='itemstock'
-    )
     # Relaciones
     branches_: Mapped[Branches] = relationship(
         'Branches',
@@ -66,8 +63,6 @@ class Itemstock(Base):
     companyData_: Mapped[CompanyData] = relationship(
         'CompanyData',
         back_populates='itemstock',
-        primaryjoin='foreign(Itemstock.CompanyID) == CompanyData.CompanyID',
-        foreign_keys='Itemstock.CompanyID',
         overlaps='branches_,itemstock'
     )
     items: Mapped[Items] = relationship('Items', back_populates='itemstock')
