@@ -139,7 +139,7 @@ export default function Dashboard() {
 
       {!loading && dashboardStats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-card p-6 rounded-lg border border-l-4 border-l-primary">
+          <div className=" p-6 rounded-lg border border-l-4 border-l-primary">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold  mb-2">Clientes</h3>
@@ -158,7 +158,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-card p-6 rounded-lg border border-l-4 border-l-primary">
+          <div className=" p-6 rounded-lg border border-l-4 border-l-primary">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold mb-2">Items</h3>
@@ -177,7 +177,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-card p-6 rounded-lg border border-l-4 border-l-primary">
+          <div className=" p-6 rounded-lg border border-l-4 border-l-primary">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold  mb-2">Órdenes</h3>
@@ -196,7 +196,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-card p-6 rounded-lg border border-l-4 border-l-primary">
+          <div className=" p-6 rounded-lg border border-l-4 border-l-primary">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold  mb-2">Ventas del Mes</h3>
