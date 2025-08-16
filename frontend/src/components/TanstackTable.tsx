@@ -1,17 +1,14 @@
-import { flexRender, getCoreRowModel, getExpandedRowModel, getSortedRowModel, Row, useReactTable, type TableOptions } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getExpandedRowModel, getPaginationRowModel, getSortedRowModel, Row, useReactTable, VisibilityState, type TableOptions } from '@tanstack/react-table';
+import { atom, useAtom } from 'jotai';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Fragment } from 'react/jsx-runtime';
 import { cn } from '~/lib/utils';
-import { TablePagination } from './TableExtraComponents';
+import { TableColumnVisibility, TablePagination } from './TableExtraComponents';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 
 export type ColumnMap = { [key: string]: object };
 
-const defaultColumn = {
-  size: 90, //starting column size
-  minSize: 50, //enforced during column resizing
-  maxSize: 200, //enforced during column resizing
-} as const;
+const columnVisibilityAtom = atom<VisibilityState>({});
 
 const getColumnClassName = (columnClassName?: ColumnMap, columnId?: string) => cn(
   columnClassName && columnId && columnClassName[columnId], {
@@ -31,18 +28,44 @@ interface AdminTable<TData> extends Omit<TableOptions<TData>, 'getCoreRowModel'>
 }
 
 export function AdminTable<TData>({ columns, data, caption, columnClassName, columnStyles, getRowCanExpand, renderSubComponent }: AdminTable<TData>) {
+  const [columnVisibility, setColumnVisibility] = useAtom(columnVisibilityAtom)
   const table = useReactTable({
-    columns, data,
+    columns,
+    data,
+    defaultColumn: {
+      size: 90, //starting column size
+      minSize: 50, //enforced during column resizing
+      maxSize: 200, //enforced during column resizing
+    },
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    defaultColumn,
+
+    // expand
     getRowCanExpand,
+    getExpandedRowModel: getExpandedRowModel(),
+
+    // sort
+    getSortedRowModel: getSortedRowModel(),
+    // pagination
+
+    getPaginationRowModel: getPaginationRowModel(),
+
+    // debug
     debugTable: true,
+    debugHeaders: true,
+    debugColumns: true,
+
+    // column visibility
+    state: {
+      columnVisibility,
+    },
+    onColumnVisibilityChange: setColumnVisibility,
   })
 
   return (
     <div className='flex flex-col gap-4'>
+
+      <TableColumnVisibility table={table} />
+
       <div className="overflow-hidden rounded-lg border">
         <Table>
           {caption && <TableCaption>{caption}</TableCaption>}
@@ -100,6 +123,8 @@ export function AdminTable<TData>({ columns, data, caption, columnClassName, col
         </Table>
       </div>
       <TablePagination table={table} />
+      {/* <div className="h-4" />
+      <pre>{JSON.stringify(table.getState().columnVisibility, null, 2)}</pre> */}
     </div>
   )
 }

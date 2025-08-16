@@ -137,6 +137,7 @@ export default function Clients() {
         header: "",
         id: "actions",
         accessorKey: "ClientID",
+        enableHiding: false,
         cell: ({ row, getValue }) => {
           return (
             <div className="flex gap-2">
@@ -154,7 +155,10 @@ export default function Clients() {
               >
                 <Pencil />
               </Button>
-              <TableActionDropdown onDelete={() => handleDelete(getValue())} />
+              <TableActionDropdown
+                onEdit={() => handleEdit(row.original)}
+                onDelete={() => handleDelete(getValue())}
+              />
             </div>
           );
         },
@@ -232,12 +236,6 @@ export default function Clients() {
               <div>{row.id}</div>;
             }}
           />
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-muted-foreground text-sm">
-              Mostrando {clients.length} cliente
-              {clients.length !== 1 ? "s" : ""}
-            </p>
-          </div>
         </>
       )}
       {loading && <AdminTableLoading />}

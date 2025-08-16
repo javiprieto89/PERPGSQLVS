@@ -1,11 +1,11 @@
 import { type Table } from '@tanstack/react-table';
-import { CheckCircle, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, EllipsisVertical, Loader, Pencil, Save, Trash, X } from "lucide-react";
+import { CheckCircle, ChevronDown, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, Columns2, EllipsisVertical, Loader, Pencil, Save, Trash, X } from "lucide-react";
 
 import { useRef, useState } from 'react';
 import { cn } from '~/lib/utils';
 import { Badge } from './ui/badge';
 import { Button } from "./ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
@@ -69,13 +69,14 @@ export function TablePagination<TData>({ table }: { table: Table<TData> }) {
   return (
     <div className="flex items-center justify-between px-4">
       <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+        {table.getFilteredSelectedRowModel().rows.length} de{" "}
+        {table.getFilteredRowModel().rows.length} filas seleccionadas
       </div>
       <div className="flex w-full items-center gap-8 lg:w-fit">
         <div className="hidden items-center gap-2 lg:flex">
           <Label htmlFor="rows-per-page" className="text-sm font-medium">
-            Rows per page
+            {/* Rows per page */}
+            Mostrar
           </Label>
           <Select
             value={`${table.getState().pagination.pageSize}`}
@@ -108,7 +109,8 @@ export function TablePagination<TData>({ table }: { table: Table<TData> }) {
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
-            <span className="sr-only">Go to first page</span>
+            {/* Go to first page */}
+            <span className="sr-only">Primera</span>
             <ChevronFirst />
           </Button>
           <Button
@@ -118,7 +120,8 @@ export function TablePagination<TData>({ table }: { table: Table<TData> }) {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <span className="sr-only">Go to previous page</span>
+            {/* Go to previous page */}
+            <span className="sr-only">Anterior</span>
             <ChevronLeft />
           </Button>
           <Button
@@ -128,7 +131,8 @@ export function TablePagination<TData>({ table }: { table: Table<TData> }) {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            <span className="sr-only">Go to next page</span>
+            {/* Go to next page */}
+            <span className="sr-only">Siguiente</span>
             <ChevronRight />
           </Button>
           <Button
@@ -138,7 +142,8 @@ export function TablePagination<TData>({ table }: { table: Table<TData> }) {
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
-            <span className="sr-only">Go to last page</span>
+            {/* Go to last page */}
+            <span className="sr-only">Última</span>
             <ChevronLast />
           </Button>
         </div>
@@ -198,4 +203,37 @@ export const EditableInput = ({ defaultValue, onSave, ...props }: React.Componen
       </div>
     </form>
   );
+}
+
+
+export function TableColumnVisibility<TData>({ table }: { table: Table<TData> }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size="sm" variant="outline" className="ml-auto">
+          <Columns2 size="16" /> <span className='hidden lg:inline'>Columnas</span> <ChevronDown />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {table
+          .getAllColumns()
+          .filter((column) => column.getCanHide())
+          .map((column) => {
+            return (
+              <DropdownMenuCheckboxItem
+                onSelect={event => event.preventDefault()}
+                key={column.id}
+                className="capitalize"
+                checked={column.getIsVisible()}
+                onCheckedChange={(value) =>
+                  column.toggleVisibility(!!value)
+                }
+              >
+                {column.id}
+              </DropdownMenuCheckboxItem>
+            )
+          })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
