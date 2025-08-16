@@ -1,4 +1,4 @@
-import { Eye, Pencil, UserRoundPlus, Users } from "lucide-react";
+import { Eye, UserRoundPlus, Users } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useGetAllClientsQuery } from "~/graphql/_generated/graphql";
@@ -10,6 +10,7 @@ import { ClientDetails } from "~/components/client/ClientDetails";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import {
   AdminTableLoading,
+  TableActionButton,
   TableIsActiveCell,
 } from "~/components/TableExtraComponents";
 import TableFilters from "~/components/TableFilters";
@@ -19,7 +20,6 @@ import { Button } from "~/components/ui/button";
 import { AlertLoading } from "~/components/AlertLoading";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
 import { RefreshButton } from "~/components/RefreshButton";
-import { TableActionDropdown } from "~/components/TableExtraComponents";
 import ClientCreate from "./ClientCreate";
 
 export default function Clients() {
@@ -149,13 +149,7 @@ export default function Clients() {
                   <Eye />
                 </Button>
               )}
-              <Button
-                onClick={() => handleEdit(row.original)}
-                className="hidden md:inline px-3 py-2 text-sm rounded"
-              >
-                <Pencil />
-              </Button>
-              <TableActionDropdown
+              <TableActionButton
                 onEdit={() => handleEdit(row.original)}
                 onDelete={() => handleDelete(getValue())}
               />
