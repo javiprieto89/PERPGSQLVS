@@ -29,6 +29,8 @@ class Clients(Base):
         ForeignKeyConstraint(
             ['PriceListID'], ['PriceLists.PriceListID'], name='FK_Clients_PriceLists'),
         ForeignKeyConstraint(
+            ['CountryID'], ['Countries.CountryID'], name='FK_Clients_Countries'),
+        ForeignKeyConstraint(
             ['CountryID', 'ProvinceID'],
             ['Provinces.CountryID', 'Provinces.ProvinceID'],
             name='FK_Clients_Provinces',
