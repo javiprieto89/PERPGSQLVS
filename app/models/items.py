@@ -43,6 +43,8 @@ class Items(Base):
             ['SupplierID'], ['Suppliers.SupplierID'], name='FK_Items_Suppliers'),
         ForeignKeyConstraint(
             ['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_Items_Warehouses'),
+        ForeignKeyConstraint(
+            ['CompanyID'], ['CompanyData.CompanyID'], name='FK_Items_CompanyData'),
         PrimaryKeyConstraint('ItemID', name='PK__Items__727E83EB997DFA51'),
         Index('UQ__Items__A25C5AA7F6BA0424', 'Code', unique=True)
     )

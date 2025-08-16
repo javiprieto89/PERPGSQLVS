@@ -28,10 +28,14 @@ class Suppliers(Base):
         ForeignKeyConstraint(
             ['DocTypeID'], ['SysDocTypes.DocTypeID'], name='FK_Suppliers_SysDocTypes'),
         ForeignKeyConstraint(
+            ['CountryID'], ['Countries.CountryID'], name='FK_Suppliers_Countries'),
+        ForeignKeyConstraint(
             ['CountryID', 'ProvinceID'],
             ['Provinces.CountryID', 'Provinces.ProvinceID'],
             name='FK__Suppliers__Provi__44FF419A',
         ),
+        ForeignKeyConstraint(
+            ['CompanyID'], ['CompanyData.CompanyID'], name='FK_Suppliers_CompanyData'),
         ForeignKeyConstraint(
             ['CompanyID', 'BranchID'],
             ['Branches.CompanyID', 'Branches.BranchID'],
@@ -62,10 +66,10 @@ class Suppliers(Base):
     docTypes_: Mapped[Optional['SysDocTypes']] = relationship(
         'SysDocTypes', back_populates='suppliers')
     countries_: Mapped[Optional['Countries']] = relationship(
-        'Countries', back_populates='suppliers')
+        'Countries', back_populates='suppliers', overlaps='provinces_')
     provinces_: Mapped[Optional['Provinces']] = relationship(
-        'Provinces', back_populates='suppliers')
+        'Provinces', back_populates='suppliers', overlaps='countries_')
     branches_: Mapped[Optional['Branches']] = relationship(
         'Branches', back_populates='suppliers')
     companyData_: Mapped[Optional['CompanyData']] = relationship(
-        'CompanyData', back_populates='suppliers')
+        'CompanyData', back_populates='suppliers', overlaps='branches_,suppliers')

@@ -42,5 +42,5 @@ class Provinces(Base):
     suppliers: Mapped[List['Suppliers']] = relationship(
         'Suppliers',
         back_populates='provinces_',
-        overlaps='suppliers'
+        overlaps='suppliers,countries_'
     )
