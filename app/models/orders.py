@@ -87,4 +87,17 @@ class Orders(Base):
     Notes = Column(Unicode(500, 'Modern_Spanish_CI_AS'), nullable=True)
     VendorID = Column(Integer, nullable=False)
 
-    # Relaciones eliminadas: solo FK explícitos según SQL definitivo
+    # Relaciones
+    orderDetails_: Mapped[List['OrderDetails']] = relationship(
+        'OrderDetails', back_populates='orders_')
+    orderHistory_: Mapped[List['OrderHistory']] = relationship(
+        'OrderHistory', back_populates='orders_')
+    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship(
+        'TempOrderDetails', back_populates='orders_')
+    users_: Mapped['Users'] = relationship('Users', back_populates='orders')
+    sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship(
+        'SysDocumentTypes', back_populates='orders')
+    orderStatus_: Mapped['SysOrderStatus'] = relationship(
+        'SysOrderStatus', back_populates='orders', foreign_keys=[OrderStatusID])
+    saleConditions_: Mapped['SaleConditions'] = relationship(
+        'SaleConditions', back_populates='orders')

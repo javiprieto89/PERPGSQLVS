@@ -72,7 +72,7 @@ class Clients(Base):
     countries_: Mapped["Countries"] = relationship(
         "Countries", back_populates="clients")
     provinces_: Mapped["Provinces"] = relationship(
-        "Provinces", back_populates="clients")
+        "Provinces", back_populates="clients", overlaps="countries_")
     pricelists_: Mapped["PriceLists"] = relationship(
         "PriceLists", back_populates="clients")
     vendors_: Mapped["Vendors"] = relationship(
@@ -80,4 +80,4 @@ class Clients(Base):
     branches_: Mapped["Branches"] = relationship(
         "Branches", back_populates="clients")
     companyData_: Mapped["CompanyData"] = relationship(
-        "CompanyData", back_populates="clients")
+        "CompanyData", back_populates="clients", overlaps="branches_,clients")
