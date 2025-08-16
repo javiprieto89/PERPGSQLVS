@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 from typing import List
 
 from sqlalchemy import Column, Integer, Unicode, Date, LargeBinary, Identity, PrimaryKeyConstraint
-from sqlalchemy.orm import Mapped, relationship, foreign
+from sqlalchemy.orm import Mapped, relationship
 
 
 from app.db import Base
@@ -53,3 +53,9 @@ class CompanyData(Base):
         'Brands', back_populates='companyData_')
     suppliers: Mapped[List['Suppliers']] = relationship(
         'Suppliers', back_populates='companyData_')
+    items: Mapped[List['Items']] = relationship(
+        'Items', back_populates='companyData_')
+    itemstock: Mapped[List['Itemstock']] = relationship(
+        'Itemstock', back_populates='companyData_', overlaps='branches_,itemstock')
+    userAccess: Mapped[List['UserAccess']] = relationship(
+        'UserAccess', back_populates='companyData_', overlaps='branches_,userAccess')
