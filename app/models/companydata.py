@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from .temporderdetails import TempOrderDetails
     from .clients import Clients
     from .brands import Brands
+    from .suppliers import Suppliers
 
 from typing import List
 
@@ -42,3 +43,13 @@ class CompanyData(Base):
     GrossIncome = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
     StartDate = Column(Date)
     Logo = Column(LargeBinary)
+
+    # Relaciones
+    branches: Mapped[List['Branches']] = relationship(
+        'Branches', back_populates='companyData_')
+    clients: Mapped[List['Clients']] = relationship(
+        'Clients', back_populates='companyData_')
+    brands: Mapped[List['Brands']] = relationship(
+        'Brands', back_populates='companyData_')
+    suppliers: Mapped[List['Suppliers']] = relationship(
+        'Suppliers', back_populates='companyData_')

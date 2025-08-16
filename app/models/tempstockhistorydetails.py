@@ -72,14 +72,7 @@ class TempStockHistoryDetails(Base):
     # Relaciones
     branches_: Mapped["Branches"] = relationship(
         "Branches",
-        back_populates="tempStockHistoryDetails",
-        overlaps="tempStockHistoryDetails"
-    )
-    companyData_: Mapped["CompanyData"] = relationship(
-        "CompanyData",
-        back_populates="tempStockHistoryDetails",
-        overlaps="branches_,tempStockHistoryDetails"
-    )
+        back_populates="tempStockHistoryDetails")
     items_: Mapped["Items"] = relationship(
         "Items", back_populates="tempStockHistoryDetails_"
     )

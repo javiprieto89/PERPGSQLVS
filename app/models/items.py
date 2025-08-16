@@ -64,3 +64,18 @@ class Items(Base):
     WarehouseID = Column(Integer)
     IsActive = Column(Boolean, server_default=text('((1))'))
     OEM = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
+
+    # Relaciones
+    brands_: Mapped["Brands"] = relationship("Brands", back_populates="items")
+    itemCategories_: Mapped["ItemCategories"] = relationship(
+        "ItemCategories", back_populates="items")
+    itemSubcategories_: Mapped["ItemSubcategories"] = relationship(
+        "ItemSubcategories", back_populates="items")
+    suppliers_: Mapped["Suppliers"] = relationship(
+        "Suppliers", back_populates="items")
+    warehouses_: Mapped["Warehouses"] = relationship(
+        "Warehouses", back_populates="items")
+    branches_: Mapped["Branches"] = relationship(
+        "Branches", back_populates="items")
+    companyData_: Mapped["CompanyData"] = relationship(
+        "CompanyData", back_populates="items")

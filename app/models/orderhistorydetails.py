@@ -41,6 +41,6 @@ class OrderHistoryDetails(Base):
     items_: Mapped['Items'] = relationship(
         'Items', back_populates='orderHistoryDetails_')
     orderHistory_: Mapped['OrderHistory'] = relationship(
-        'OrderHistory', back_populates='orderHistoryDetails')
+        'OrderHistory', back_populates='orderHistoryDetails_')
     warehouses_: Mapped['Warehouses'] = relationship(
         'Warehouses', back_populates='orderHistoryDetails')

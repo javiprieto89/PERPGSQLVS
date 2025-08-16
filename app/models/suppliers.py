@@ -11,6 +11,8 @@ if TYPE_CHECKING:
     from .items import Items
     from .itemstock import Itemstock
     from .orderhistory import OrderHistory
+    from .branches import Branches
+    from .companydata import CompanyData
 
 from typing import List
 
@@ -56,4 +58,14 @@ class Suppliers(Base):
     City = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
     PostalCode = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
 
-    # Relaciones eliminadas: solo FK explícitos según SQL definitivo
+    # Relaciones
+    docTypes_: Mapped[Optional['SysDocTypes']] = relationship(
+        'SysDocTypes', back_populates='suppliers')
+    countries_: Mapped[Optional['Countries']] = relationship(
+        'Countries', back_populates='suppliers')
+    provinces_: Mapped[Optional['Provinces']] = relationship(
+        'Provinces', back_populates='suppliers')
+    branches_: Mapped[Optional['Branches']] = relationship(
+        'Branches', back_populates='suppliers')
+    companyData_: Mapped[Optional['CompanyData']] = relationship(
+        'CompanyData', back_populates='suppliers')

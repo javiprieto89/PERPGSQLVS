@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from .transactions import Transactions
     from .cashboxes import CashBoxes
     from .clients import Clients
+    from .suppliers import Suppliers
 
 
 class Branches(Base):
@@ -39,3 +40,25 @@ class Branches(Base):
     Address = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
     Phone = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
     Logo = Column(LargeBinary)
+
+    # Relaciones
+    companyData_: Mapped[Optional['CompanyData']] = relationship(
+        'CompanyData', back_populates='branches')
+    documents: Mapped[List["Documents"]] = relationship(
+        "Documents",
+        back_populates="branches_"
+    )
+    clients: Mapped[List['Clients']] = relationship(
+        'Clients', back_populates='branches_')
+    suppliers: Mapped[List['Suppliers']] = relationship(
+        'Suppliers', back_populates='branches_')
+    transactions: Mapped[List['Transactions']] = relationship(
+        'Transactions', back_populates='branches_')
+    orderHistory_: Mapped[List['OrderHistory']] = relationship(
+        'OrderHistory', back_populates='branches_')
+    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship(
+        'TempOrderDetails', back_populates='branches_')
+    tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship(
+        'TempStockHistoryDetails', back_populates='branches_')
+    cashBoxes: Mapped[List['CashBoxes']] = relationship(
+        'CashBoxes', back_populates='branches_')

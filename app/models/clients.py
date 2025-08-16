@@ -61,3 +61,19 @@ class Clients(Base):
     Address = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
     City = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
     PostalCode = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
+
+    # Relaciones
+    docTypes_: Mapped["SysDocTypes"] = relationship(
+        "SysDocTypes", back_populates="clients")
+    countries_: Mapped["Countries"] = relationship(
+        "Countries", back_populates="clients")
+    provinces_: Mapped["Provinces"] = relationship(
+        "Provinces", back_populates="clients")
+    pricelists_: Mapped["PriceLists"] = relationship(
+        "PriceLists", back_populates="clients")
+    vendors_: Mapped["Vendors"] = relationship(
+        "Vendors", back_populates="clients")
+    branches_: Mapped["Branches"] = relationship(
+        "Branches", back_populates="clients")
+    companyData_: Mapped["CompanyData"] = relationship(
+        "CompanyData", back_populates="clients")

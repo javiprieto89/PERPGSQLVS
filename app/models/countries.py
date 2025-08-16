@@ -26,5 +26,12 @@ class Countries(Base):
     CountryID = Column(Integer, primary_key=True)
     Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
-    country: Mapped["Countries"] = relationship(
-        "Countries", back_populates="provinces")
+    # Relaciones
+    provinces: Mapped[list["Provinces"]] = relationship(
+        "Provinces",
+        back_populates="country"
+    )
+    clients: Mapped[List['Clients']] = relationship(
+        'Clients', back_populates='countries_')
+    suppliers: Mapped[List['Suppliers']] = relationship(
+        'Suppliers', back_populates='countries_')

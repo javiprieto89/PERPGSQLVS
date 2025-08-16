@@ -65,14 +65,7 @@ class TempOrderDetails(Base):
     # Relaciones
     branches_: Mapped['Branches'] = relationship(
         'Branches',
-        back_populates='tempOrderDetails',
-        overlaps='tempOrderDetails'
-    )
-    companyData_: Mapped['CompanyData'] = relationship(
-        'CompanyData',
-        back_populates='tempOrderDetails',
-        overlaps='branches_,tempOrderDetails'
-    )
+        back_populates='tempOrderDetails')
     items_: Mapped['Items'] = relationship(
         'Items', back_populates='tempOrderDetails_')
     orders_: Mapped[Optional['Orders']] = relationship(

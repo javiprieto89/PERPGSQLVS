@@ -22,8 +22,6 @@ from app.db import Base
 
 
 class OrderHistory(Base):
-    orderHistoryDetails: Mapped[List['OrderHistoryDetails']] = relationship(
-        'OrderHistoryDetails', back_populates='orderHistory_')
     __tablename__ = 'OrderHistory'
     __table_args__ = (
         ForeignKeyConstraint(
@@ -74,11 +72,6 @@ class OrderHistory(Base):
         'Cars', back_populates='orderHistory_')
     suppliers_: Mapped['Suppliers'] = relationship(
         'Suppliers', back_populates='orderHistory_')
-    companyData_: Mapped['CompanyData'] = relationship(
-        'CompanyData',
-        back_populates='orderHistory_',
-        overlaps='branches_,orderHistory_'
-    )
     orders_: Mapped['Orders'] = relationship(
         'Orders', back_populates='orderHistory_')
     serviceType_: Mapped[Optional['ServiceType']] = relationship(
@@ -86,4 +79,4 @@ class OrderHistory(Base):
     users_: Mapped['Users'] = relationship(
         'Users', back_populates='orderHistory_')
     orderHistoryDetails_: Mapped[List['OrderHistoryDetails']] = relationship(
-        'OrderHistoryDetails', back_populates='orderHistory_', overlaps='orderHistoryDetails')
+        'OrderHistoryDetails', back_populates='orderHistory_')

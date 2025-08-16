@@ -26,13 +26,17 @@ from app.db import Base
 class CashBoxMovements(Base):
     __tablename__ = "CashBoxMovements"
     __table_args__ = (
-        ForeignKeyConstraint(["CashBoxID"], ["CashBoxes.CashBoxID"], name="FK_CashBoxMovements_CashBox"),
-        ForeignKeyConstraint(["CompanyID", "BranchID"], ["Branches.CompanyID", "Branches.BranchID"], name="FK_CashBoxMovements_CompanyBranch"),
-        ForeignKeyConstraint(["UserID"], ["Users.UserID"], name="FK_CashBoxMovements_User"),
+        ForeignKeyConstraint(
+            ["CashBoxID"], ["CashBoxes.CashBoxID"], name="FK_CashBoxMovements_CashBox"),
+        ForeignKeyConstraint(["CompanyID", "BranchID"], [
+                             "Branches.CompanyID", "Branches.BranchID"], name="FK_CashBoxMovements_CompanyBranch"),
+        ForeignKeyConstraint(["UserID"], ["Users.UserID"],
+                             name="FK_CashBoxMovements_User"),
         PrimaryKeyConstraint("CashBoxMovementID", name="PK_CashBoxMovements"),
     )
 
-    CashBoxMovementID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    CashBoxMovementID = Column(Integer, Identity(
+        start=1, increment=1), primary_key=True)
     CashBoxID = Column(Integer)
     CompanyID = Column(Integer)
     BranchID = Column(Integer)
@@ -44,7 +48,7 @@ class CashBoxMovements(Base):
     Notes = Column(Unicode(255, "Modern_Spanish_CI_AS"))
 
     # Relaciones
-    cashBoxes_: Mapped[CashBoxes] = relationship("CashBoxes", back_populates="cashBoxMovements")
-    branches_: Mapped[Branches] = relationship("Branches")
-    users_: Mapped[Optional[Users]] = relationship("Users", back_populates="cashBoxMovements")
-
+    cashBoxes_: Mapped['CashBoxes'] = relationship(
+        "CashBoxes", back_populates="cashBoxMovements")
+    users_: Mapped[Optional['Users']] = relationship(
+        "Users", back_populates="cashBoxMovements")

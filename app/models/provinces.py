@@ -27,11 +27,13 @@ class Provinces(Base):
     )
 
     CountryID = Column(Integer, primary_key=True)
-    ProvinceID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    ProvinceID = Column(Integer, Identity(
+        start=1, increment=1), primary_key=True)
     Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    countries_: Mapped['Countries'] = relationship('Countries', back_populates='provinces')
+    country: Mapped['Countries'] = relationship(
+        'Countries', back_populates='provinces')
     clients: Mapped[List['Clients']] = relationship(
         'Clients',
         back_populates='provinces_',

@@ -12,9 +12,9 @@ from typing import List
 
 from sqlalchemy import Column, Integer, Unicode, Boolean, LargeBinary, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
 from sqlalchemy.orm import Mapped, relationship, foreign
-#from .branches import Branches
-#from .companydata import CompanyData    
-#from .documenttypes import DocumentTypes    
+# from .branches import Branches
+# from .companydata import CompanyData
+# from .documenttypes import DocumentTypes
 from app.db import Base
 
 
@@ -26,11 +26,14 @@ class Documents(Base):
             ["Branches.CompanyID", "Branches.BranchID"],
             name="FK_Documents_Branches",
         ),
-        ForeignKeyConstraint(['DocumentTypeID'], ['SysDocumentTypes.DocumentTypeID'], name='FK_Documents_SysDocumentTypes'),
-        PrimaryKeyConstraint('DocumentID', name='PK__Document__1ABEEF6F4A2B1589')
+        ForeignKeyConstraint(['DocumentTypeID'], [
+                             'SysDocumentTypes.DocumentTypeID'], name='FK_Documents_SysDocumentTypes'),
+        PrimaryKeyConstraint(
+            'DocumentID', name='PK__Document__1ABEEF6F4A2B1589')
     )
 
-    DocumentID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    DocumentID = Column(Integer, Identity(
+        start=1, increment=1), primary_key=True)
     CompanyID = Column(Integer)
     BranchID = Column(Integer)
     DocumentTypeID = Column(Integer)
@@ -53,11 +56,5 @@ class Documents(Base):
         back_populates='documents',
         overlaps='documents'
     )
-    companyData_: Mapped['CompanyData'] = relationship(
-        'CompanyData',
-        back_populates='documents',
-        primaryjoin='foreign(Documents.CompanyID) == CompanyData.CompanyID',
-        foreign_keys='Documents.CompanyID',
-        overlaps='branches_,documents'
-    )
-    sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship('SysDocumentTypes', back_populates='documents')
+    sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship(
+        'SysDocumentTypes', back_populates='documents')

@@ -85,13 +85,5 @@ class ItemsInDB:
 
 @strawberry.type
 class ItemSearchResult:
-    ItemID: int
-    Code: str
-    Description: str
-    Brand: Optional[BrandsInDB] = None
-    Category: Optional[ItemCategoriesInDB] = None
-    Subcategory: Optional[ItemSubcategoriesInDB] = None
-    Supplier: Optional[SuppliersInDB] = None
-    Warehouse: Optional[WarehousesInDB] = None
-    Price: Optional[float] = None
-    StockQuantity: Optional[int] = None
+    items: list[ItemsInDB]
+    total: int

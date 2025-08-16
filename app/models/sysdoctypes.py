@@ -22,3 +22,9 @@ class SysDocTypes(Base):
         start=1, increment=1), primary_key=True)
     Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
     IsActive = Column(Boolean, server_default=text('((1))'))
+
+    # Relaciones
+    clients: Mapped[List['Clients']] = relationship(
+        'Clients', back_populates='docTypes_')
+    suppliers: Mapped[List['Suppliers']] = relationship(
+        'Suppliers', back_populates='docTypes_')
