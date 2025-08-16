@@ -18,7 +18,7 @@ def get_systransactiontypes_by_id(db: Session, id: int):
     )
 
 
-def create_systransactiontype(db: Session, record: SysTransactionTypesCreate):
+def create_systransactiontypes(db: Session, record: SysTransactionTypesCreate):
     db_record = SysTransactionTypes(**record.__dict__)
     db.add(db_record)
     db.commit()
@@ -26,7 +26,7 @@ def create_systransactiontype(db: Session, record: SysTransactionTypesCreate):
     return db_record
 
 
-def update_systransactiontype(db: Session, id: int, record: SysTransactionTypesUpdate):
+def update_systransactiontypes(db: Session, id: int, record: SysTransactionTypesUpdate):
     db_record = get_systransactiontypes_by_id(db, id)
     if db_record:
         for k, v in record.__dict__.items():
@@ -37,7 +37,7 @@ def update_systransactiontype(db: Session, id: int, record: SysTransactionTypesU
     return db_record
 
 
-def delete_systransactiontype(db: Session, id: int):
+def delete_systransactiontypes(db: Session, id: int):
     db_record = get_systransactiontypes_by_id(db, id)
     if db_record:
         db.delete(db_record)

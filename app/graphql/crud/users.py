@@ -1,7 +1,7 @@
 ﻿# app/graphql/crud/users.py
 from sqlalchemy.orm import Session
 from app.models.users import Users
-from app.graphql.schemas.users import UserCreate, UserUpdate
+from app.graphql.schemas.users import UsersCreate, UsersUpdate
 
 
 def get_users(db: Session):
@@ -17,7 +17,7 @@ def get_user_by_id(db: Session, userID: int):
     return db.query(Users).filter(Users.UserID == userID).first()
 
 
-def create_user(db: Session, data: UserCreate):
+def create_users(db: Session, data: UsersCreate):
     obj = Users(**vars(data))
     db.add(obj)
     db.commit()
@@ -25,7 +25,7 @@ def create_user(db: Session, data: UserCreate):
     return obj
 
 
-def update_user(db: Session, userID: int, data: UserUpdate):
+def update_users(db: Session, userID: int, data: UsersUpdate):
     obj = get_user_by_id(db, userID)
     if obj:
         for k, v in vars(data).items():
@@ -36,7 +36,7 @@ def update_user(db: Session, userID: int, data: UserUpdate):
     return obj
 
 
-def delete_user(db: Session, userID: int):
+def delete_users(db: Session, userID: int):
     obj = get_user_by_id(db, userID)
     if obj:
         db.delete(obj)

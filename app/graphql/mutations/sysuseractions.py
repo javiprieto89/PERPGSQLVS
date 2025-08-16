@@ -7,9 +7,9 @@ from app.graphql.schemas.sysuseractions import (
     SysUserActionsInDB,
 )
 from app.graphql.crud.sysuseractions import (
-    create,
-    update,
-    delete,
+    create_sysuseractions,
+    update_sysuseractions,
+    delete_sysuseractions,
 )
 from app.utils import obj_to_schema
 from app.db import get_db
@@ -24,7 +24,7 @@ class SysUserActionsMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            obj = create(db, data)
+            obj = create_sysuseractions(db, data)
             return obj_to_schema(SysUserActionsInDB, obj)
         finally:
             db_gen.close()
@@ -36,7 +36,7 @@ class SysUserActionsMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update(db, userActionID, data)
+            updated = update_sysuseractions(db, userActionID, data)
             return obj_to_schema(SysUserActionsInDB, updated) if updated else None
         finally:
             db_gen.close()
@@ -46,7 +46,7 @@ class SysUserActionsMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete(db, userActionID)
+            deleted = delete_sysuseractions(db, userActionID)
             success = deleted is not None
             message = "User action deleted" if success else "User action not found"
             return DeleteResponse(success=success, message=message)

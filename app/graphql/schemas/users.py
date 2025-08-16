@@ -4,20 +4,19 @@ from typing import Optional
 
 
 @strawberry.input
-class UserCreate:
+class UsersCreate:
     Nickname: Optional[str] = None
     FullName: Optional[str] = None
     Password: Optional[str] = None
-    IsActive: Optional[bool] = None    
+    IsActive: Optional[bool] = None
 
 
 @strawberry.input
-class UserUpdate:
-    UserID: int
+class UsersUpdate:
     Nickname: Optional[str] = None
     FullName: Optional[str] = None
     Password: Optional[str] = None
-    IsActive: Optional[bool] = None    
+    IsActive: Optional[bool] = None
 
 @strawberry.type
 class UsersInDB:

@@ -6,9 +6,9 @@ from app.graphql.schemas.creditcards import (
     CreditCardsInDB,
 )
 from app.graphql.crud.creditcards import (
-    create_creditcard,
-    update_creditcard,
-    delete_creditcard,
+    create_creditcards,
+    update_creditcards,
+    delete_creditcards,
 )
 from app.utils import obj_to_schema
 from app.db import get_db
@@ -22,7 +22,7 @@ class CreditCardsMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            obj = create_creditcard(db, data)
+            obj = create_creditcards(db, data)
             return obj_to_schema(CreditCardsInDB, obj)
         finally:
             db_gen.close()
@@ -32,7 +32,7 @@ class CreditCardsMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update_creditcard(db, id, data)
+            updated = update_creditcards(db, id, data)
             return obj_to_schema(CreditCardsInDB, updated) if updated else None
         finally:
             db_gen.close()
@@ -42,7 +42,7 @@ class CreditCardsMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete_creditcard(db, id)
+            deleted = delete_creditcards(db, id)
             return deleted is not None
         finally:
             db_gen.close()

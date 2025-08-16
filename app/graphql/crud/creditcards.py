@@ -5,7 +5,10 @@ from sqlalchemy.orm import Session, joinedload
 from app.models.saleconditions import SaleConditions
 from app.models.creditcards import CreditCards
 from app.models.creditcardgroups import CreditCardGroups
-from app.graphql.schemas.creditcards import CreditCardsCreate, CreditCardsUpdate
+from app.graphql.schemas.creditcards import (
+    CreditCardsCreate,
+    CreditCardsUpdate,
+)
 
 
 def get_creditcards(db: Session):
@@ -29,7 +32,7 @@ def get_creditcard_by_name(db: Session, name: str):
     )
 
 
-def create_creditcard(db: Session, data: CreditCardsCreate):
+def create_creditcards(db: Session, data: CreditCardsCreate):
     obj = CreditCards(**vars(data))
     db.add(obj)
     db.commit()
@@ -37,7 +40,7 @@ def create_creditcard(db: Session, data: CreditCardsCreate):
     return obj
 
 
-def update_creditcard(db: Session, id: int, data: CreditCardsUpdate):
+def update_creditcards(db: Session, id: int, data: CreditCardsUpdate):
     obj = get_creditcard_by_id(db, id)
     if obj:
         for k, v in vars(data).items():
@@ -48,7 +51,7 @@ def update_creditcard(db: Session, id: int, data: CreditCardsUpdate):
     return obj
 
 
-def delete_creditcard(db: Session, id: int):
+def delete_creditcards(db: Session, id: int):
     obj = get_creditcard_by_id(db, id)
     if obj:
         linked_conditions = db.query(SaleConditions).filter(
