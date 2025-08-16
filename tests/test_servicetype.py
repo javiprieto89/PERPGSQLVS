@@ -5,18 +5,28 @@ from app.graphql.schemas.servicetype import ServiceTypeCreate, ServiceTypeUpdate
 
 def test_create_get_update_delete_servicetype(db_session):
     # Crear
-    data = ServiceTypeCreate(ServiceName="Servicio Test")
+    data = ServiceTypeCreate(Type="Servicio Test")
     obj = create_servicetype(db_session, data)
-    assert obj.ServiceName == "Servicio Test"
+    assert obj is not None
+    obj_dict = vars(obj)
+    assert obj_dict["Type"] == "Servicio Test"
     # Obtener
     all_objs = get_servicetype(db_session)
-    assert any(o.ServiceTypeID == obj.ServiceTypeID for o in all_objs)
+    obj_id = obj_dict.get("ServiceTypeID") or obj_dict.get("id")
+    if obj_id is None:
+        raise AssertionError("ServiceTypeID no encontrado en el objeto creado")
+    obj_id = int(obj_id)
+    assert any(vars(o)["ServiceTypeID"] == obj_id for o in all_objs)
     # Actualizar
-    update = ServiceTypeUpdate(ServiceName="Servicio Modificado")
-    updated = update_servicetype(db_session, obj.ServiceTypeID, update)
-    assert updated.ServiceName == "Servicio Modificado"
+    update = ServiceTypeUpdate(Type="Servicio Modificado")
+    updated = update_servicetype(db_session, obj_id, update)
+    assert updated is not None
+    updated_dict = vars(updated)
+    assert updated_dict["Type"] == "Servicio Modificado"
     # Eliminar
-    deleted = delete_servicetype(db_session, obj.ServiceTypeID)
-    assert deleted.ServiceTypeID == obj.ServiceTypeID
-    assert all(o.ServiceTypeID !=
-               obj.ServiceTypeID for o in get_servicetype(db_session))
+    deleted = delete_servicetype(db_session, obj_id)
+    assert deleted is not None
+    deleted_dict = vars(deleted)
+    assert deleted_dict["ServiceTypeID"] == obj_id
+    assert all(vars(o)["ServiceTypeID"] !=
+               obj_id for o in get_servicetype(db_session))

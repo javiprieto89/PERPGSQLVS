@@ -47,8 +47,7 @@ class Users(Base):
         'UserAccess', back_populates='users_')
     orders: Mapped[List['Orders']] = relationship(
         'Orders', back_populates='users_')
-    stockHistory: Mapped[List['StockHistory']] = relationship(
-        'StockHistory', back_populates='users_')
+    # stockHistory relación eliminada para evitar conflicto de mapeo
     tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship(
         'TempStockHistoryDetails', back_populates='users_')
     orderHistory_: Mapped[List['OrderHistory']] = relationship(

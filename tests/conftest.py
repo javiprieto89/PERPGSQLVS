@@ -6,7 +6,11 @@ from app.db import Base
 
 @pytest.fixture(scope="session")
 def engine():
-    engine = create_engine("sqlite:///:memory:")
+    # Conexión a SQL Server de pruebas
+    TEST_DB_URL = (
+        "mssql+pyodbc://sa:Ladeda78@127.0.0.1/LubricentroDB2-Test?driver=ODBC+Driver+17+for+SQL+Server&TrustServerCertificate=yes&Encrypt=no"
+    )
+    engine = create_engine(TEST_DB_URL)
     Base.metadata.create_all(engine)
     return engine
 

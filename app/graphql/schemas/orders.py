@@ -12,6 +12,9 @@ from app.graphql.schemas.pricelists import PriceListsInDB
 from app.graphql.schemas.sysorderstatus import SysOrderStatusInDB
 from app.graphql.schemas.cars import CarsInDB
 from app.graphql.schemas.servicetype import ServiceTypeInDB
+from app.graphql.schemas.users import UsersInDB
+from app.graphql.schemas.vendors import VendorsInDB
+from app.graphql.schemas.users import UsersInDB
 from datetime import datetime
 from dataclasses import field
 from app.graphql.schemas.orderdetails import (
@@ -27,6 +30,12 @@ class OrdersCreate:
     BranchID: int
     Date_: datetime  # Mapea al campo Date_ del modelo SQLAlchemy
     ClientID: int
+    CarID: Optional[int] = None
+    IsService: Optional[bool] = None
+    ServiceTypeID: Optional[int] = None
+    Mileage: Optional[int] = None
+    NextServiceMileage: Optional[int] = None
+    Notes: Optional[str] = None
     SaleConditionID: int
     DiscountID: int
     Subtotal: float
@@ -37,12 +46,7 @@ class OrdersCreate:
     PriceListID: int
     OrderStatusID: int
     WarehouseID: int
-    CarID: Optional[int] = None
-    IsService: Optional[bool] = None
-    ServiceTypeID: Optional[int] = None
-    Mileage: Optional[int] = None
-    NextServiceMileage: Optional[int] = None
-    Notes: Optional[str] = None
+    VendorID: int
     Items: List[OrderDetailsCreate] = field(default_factory=list)
 
 
@@ -68,6 +72,7 @@ class OrdersUpdate:
     OrderStatusID: Optional[int] = None
     PriceListID: Optional[int] = None
     WarehouseID: Optional[int] = None
+    VendorID: Optional[int] = None
     Items: Optional[List[OrderDetailsUpdate]] = None
 
 
@@ -78,22 +83,23 @@ class OrdersInDB:
     BranchID: int
     Date_: datetime  # Mapea al campo Date_ del modelo SQLAlchemy
     ClientID: int
-    SaleConditionID: int
-    DiscountID: int
-    Subtotal: float
-    Total: float
-    VAT: float
-    UserID: int
-    DocumentID: int    
-    PriceListID: int
-    OrderStatusID: int
-    WarehouseID: int
     CarID: Optional[int] = None
     IsService: Optional[bool] = None
     ServiceTypeID: Optional[int] = None
     Mileage: Optional[int] = None
     NextServiceMileage: Optional[int] = None
     Notes: Optional[str] = None
+    SaleConditionID: int
+    DiscountID: int
+    Subtotal: float
+    Total: float
+    VAT: float
+    UserID: int
+    DocumentID: int
+    PriceListID: int
+    OrderStatusID: int
+    WarehouseID: int
+    VendorID: int
     Items: Optional[List[OrderDetailsInDB]] = None
     CompanyData: Optional[CompanyDataInDB] = None
     BranchData: Optional[BranchesInDB] = None
@@ -106,3 +112,5 @@ class OrdersInDB:
     OrderStatusData: Optional[SysOrderStatusInDB] = None
     ServiceTypeData: Optional[ServiceTypeInDB] = None
     CarData: Optional[CarsInDB] = None
+    VendorData: Optional['VendorsInDB'] = None
+    UserData: Optional[UsersInDB] = None
