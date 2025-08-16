@@ -3,8 +3,8 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-if TYPE_CHECKING:    
-    from .branches  import Branches
+if TYPE_CHECKING:
+    from .branches import Branches
     from .cars import Cars
     from .suppliers import Suppliers
     from .companydata import CompanyData
@@ -22,6 +22,8 @@ from app.db import Base
 
 
 class OrderHistory(Base):
+    orderHistoryDetails: Mapped[List['OrderHistoryDetails']] = relationship(
+        'OrderHistoryDetails', back_populates='orderHistory_')
     __tablename__ = 'OrderHistory'
     __table_args__ = (
         ForeignKeyConstraint(
@@ -29,16 +31,24 @@ class OrderHistory(Base):
             ["Branches.CompanyID", "Branches.BranchID"],
             name='FK__OrderHist__Branc__1DB06A4F'
         ),
-        ForeignKeyConstraint(['CarID'], ['Cars.CarID'], name='FK__OrderHist__carID__2180FB33'),
-        ForeignKeyConstraint(['ClientID'], ['Suppliers.SupplierID'], name='FK__OrderHist__Clien__208CD6FA'),
-        ForeignKeyConstraint(['CompanyID'], ['CompanyData.CompanyID'], name='FK__OrderHist__Compa__1EA48E88'),
-        ForeignKeyConstraint(['OrderID'], ['Orders.OrderID'], name='FK__OrderHist__Order__1F98B2C1'),
-        ForeignKeyConstraint(['ServiceTypeID'], ['ServiceType.ServiceTypeID'], name='FK_OrderHistory_ServiceType'),
-        ForeignKeyConstraint(['UserID'], ['Users.UserID'], name='FK_OrderHistory_Users'),
-        PrimaryKeyConstraint('OrderHistoryID', name='PK__OrderHis__4D7B4ADD5AAE57F2')
+        ForeignKeyConstraint(['CarID'], ['Cars.CarID'],
+                             name='FK__OrderHist__carID__2180FB33'),
+        ForeignKeyConstraint(
+            ['ClientID'], ['Suppliers.SupplierID'], name='FK__OrderHist__Clien__208CD6FA'),
+        ForeignKeyConstraint(['CompanyID'], [
+                             'CompanyData.CompanyID'], name='FK__OrderHist__Compa__1EA48E88'),
+        ForeignKeyConstraint(['OrderID'], ['Orders.OrderID'],
+                             name='FK__OrderHist__Order__1F98B2C1'),
+        ForeignKeyConstraint(['ServiceTypeID'], [
+                             'ServiceType.ServiceTypeID'], name='FK_OrderHistory_ServiceType'),
+        ForeignKeyConstraint(['UserID'], ['Users.UserID'],
+                             name='FK_OrderHistory_Users'),
+        PrimaryKeyConstraint(
+            'OrderHistoryID', name='PK__OrderHis__4D7B4ADD5AAE57F2')
     )
 
-    OrderHistoryID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    OrderHistoryID = Column(Integer, Identity(
+        start=1, increment=1), primary_key=True)
     CompanyID = Column(Integer)
     BranchID = Column(Integer)
     OrderID = Column(Integer)
@@ -57,17 +67,23 @@ class OrderHistory(Base):
     # Relaciones
     branches_: Mapped['Branches'] = relationship(
         'Branches',
-        back_populates='orderHistory',
-        overlaps='orderHistory'
+        back_populates='orderHistory_',
+        overlaps='orderHistory_'
     )
-    cars_: Mapped[Optional['Cars']] = relationship('Cars', back_populates='orderHistory')
-    suppliers_: Mapped['Suppliers'] = relationship('Suppliers', back_populates='orderHistory')
+    cars_: Mapped[Optional['Cars']] = relationship(
+        'Cars', back_populates='orderHistory_')
+    suppliers_: Mapped['Suppliers'] = relationship(
+        'Suppliers', back_populates='orderHistory_')
     companyData_: Mapped['CompanyData'] = relationship(
         'CompanyData',
-        back_populates='orderHistory',
-        overlaps='branches_,orderHistory'
+        back_populates='orderHistory_',
+        overlaps='branches_,orderHistory_'
     )
-    orders_: Mapped['Orders'] = relationship('Orders', back_populates='orderHistory')
-    serviceType_: Mapped[Optional['ServiceType']] = relationship('ServiceType', back_populates='orderHistory')
-    users_: Mapped['Users'] = relationship('Users', back_populates='orderHistory')
-    orderHistoryDetails: Mapped[List['OrderHistoryDetails']] = relationship('OrderHistoryDetails', back_populates='orderHistory_')
+    orders_: Mapped['Orders'] = relationship(
+        'Orders', back_populates='orderHistory_')
+    serviceType_: Mapped[Optional['ServiceType']] = relationship(
+        'ServiceType', back_populates='orderHistory_')
+    users_: Mapped['Users'] = relationship(
+        'Users', back_populates='orderHistory_')
+    orderHistoryDetails_: Mapped[List['OrderHistoryDetails']] = relationship(
+        'OrderHistoryDetails', back_populates='orderHistory_', overlaps='orderHistoryDetails')

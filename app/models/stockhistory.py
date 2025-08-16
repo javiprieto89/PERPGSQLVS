@@ -47,10 +47,12 @@ class StockHistory(Base):
         ForeignKeyConstraint(
             ["UserID"], ["Users.UserID"], name="FK_StockHistory_Users"
         ),
-        PrimaryKeyConstraint("StockHistoryID", name="PK__StockHis__A6CE86DBEB46B995"),
+        PrimaryKeyConstraint(
+            "StockHistoryID", name="PK__StockHis__A6CE86DBEB46B995"),
     )
 
-    StockHistoryID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    StockHistoryID = Column(Integer, Identity(
+        start=1, increment=1), primary_key=True)
     ItemID = Column(Integer)
     CompanyID = Column(Integer)
     BranchID = Column(Integer)
@@ -63,7 +65,8 @@ class StockHistory(Base):
     UserID = Column(Integer)
 
     # Relaciones
-    items_: Mapped["Items"] = relationship("Items", back_populates="stockHistory")
+    items_: Mapped["Items"] = relationship(
+        "Items", back_populates="stockHistory_")
     warehouses_: Mapped["Warehouses"] = relationship(
         "Warehouses", back_populates="stockHistory"
     )
@@ -77,4 +80,5 @@ class StockHistory(Base):
         back_populates="stockHistory",
         overlaps="branches_,stockHistory"
     )
-    users_: Mapped["Users"] = relationship("Users", back_populates="stockHistory")
+    users_: Mapped["Users"] = relationship(
+        "Users", back_populates="stockHistory")

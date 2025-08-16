@@ -10,12 +10,13 @@ if TYPE_CHECKING:
     from .useraccess import UserAccess
     from .items import Items
     from .itemstock import Itemstock
-    from .orders import Orders  
+    from .orders import Orders
     from .stockhistory import StockHistory
     from .tempstockhistorydetails import TempStockHistoryDetails
     from .orderhistory import OrderHistory
     from .temporderdetails import TempOrderDetails
     from .clients import Clients
+    from .brands import Brands
 
 from typing import List
 
@@ -29,10 +30,15 @@ from app.db import Base
 class CompanyData(Base):
     __tablename__ = 'CompanyData'
     __table_args__ = (
-        PrimaryKeyConstraint('CompanyID', name='PK__CompanyD__2D971C4CF963B1F3'),
+        PrimaryKeyConstraint(
+            'CompanyID', name='PK__CompanyD__2D971C4CF963B1F3'),
     )
 
-    CompanyID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    brands: Mapped[List['Brands']] = relationship(
+        'Brands', back_populates='companyData_')
+
+    CompanyID = Column(Integer, Identity(
+        start=1, increment=1), primary_key=True)
     Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
     Address = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
     CUIT = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
@@ -41,7 +47,8 @@ class CompanyData(Base):
     Logo = Column(LargeBinary)
 
     # Relaciones
-    branches: Mapped[List['Branches']] = relationship('Branches', back_populates='companyData_')
+    branches: Mapped[List['Branches']] = relationship(
+        'Branches', back_populates='companyData_')
     documents: Mapped[List['Documents']] = relationship(
         'Documents',
         back_populates='companyData_',
@@ -67,8 +74,8 @@ class CompanyData(Base):
         foreign_keys='Itemstock.CompanyID',
         overlaps='branches,itemstock'
     )
-    orders: Mapped[List['Orders']] = relationship(
-        'Orders', back_populates='companyData_', overlaps='orders'
+    orders_: Mapped[List['Orders']] = relationship(
+        'Orders', back_populates='companyData_', overlaps='orders,orders_'
     )
     stockHistory: Mapped[List['StockHistory']] = relationship(
         'StockHistory', back_populates='companyData_', overlaps='stockHistory'
@@ -76,12 +83,12 @@ class CompanyData(Base):
     tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship(
         'TempStockHistoryDetails', back_populates='companyData_', overlaps='tempStockHistoryDetails'
     )
-    orderHistory: Mapped[List['OrderHistory']] = relationship(
-        'OrderHistory', back_populates='companyData_', overlaps='orderHistory'
+    orderHistory_: Mapped[List['OrderHistory']] = relationship(
+        'OrderHistory', back_populates='companyData_', overlaps='orderHistory_'
     )
     tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship(
         'TempOrderDetails', back_populates='companyData_', overlaps='tempOrderDetails'
-    )    
+    )
     clients: Mapped[List['Clients']] = relationship(
         'Clients',
         back_populates='companyData_',
@@ -89,4 +96,3 @@ class CompanyData(Base):
         foreign_keys='[Clients.CompanyID]',
         overlaps='branches_,clients'
     )
-

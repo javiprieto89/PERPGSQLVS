@@ -5,6 +5,7 @@ from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.items import Items
+    from app.models.companydata import CompanyData
 
 from typing import List
 
@@ -25,7 +26,8 @@ from app.db import Base
 class Brands(Base):
     __tablename__ = 'Brands'
     __table_args__ = (
-        ForeignKeyConstraint(["CompanyID"], ["CompanyData.CompanyID"], name="FK_Brands_Company"),
+        ForeignKeyConstraint(
+            ["CompanyID"], ["CompanyData.CompanyID"], name="FK_Brands_Company"),
         PrimaryKeyConstraint("BrandID", name="PK__Brands__DAD4F3BEC807F89F"),
     )
 
@@ -35,4 +37,7 @@ class Brands(Base):
     CompanyID = Column(Integer)
 
     # Relaciones
-    items: Mapped[List['Items']] = relationship('Items', back_populates='brands_')
+    items: Mapped[List['Items']] = relationship(
+        'Items', back_populates='brands_')
+    companyData_: Mapped['CompanyData'] = relationship(
+        'CompanyData', back_populates='brands')
