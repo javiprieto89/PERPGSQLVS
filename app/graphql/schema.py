@@ -89,6 +89,7 @@ from app.graphql.mutations.roles import RolesMutations
 from app.graphql.mutations.users import UsersMutations
 from app.graphql.mutations.vendors import VendorsMutations
 from app.graphql.mutations.useraccess import UserAccessMutation
+from app.graphql.schemas.users import UsersInDB
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
 from app.graphql.resolvers.auth import AuthQuery
@@ -363,7 +364,8 @@ class Query(
     WarehousesQuery,
     VendorsQuery,
     AfipQuery,
-    AuthQuery,  # AGREGADO: Queries de autenticación
+    AuthQuery, 
+    # AGREGADO: Queries de autenticación
 ):
     """Query principal con todas las consultas disponibles"""
 

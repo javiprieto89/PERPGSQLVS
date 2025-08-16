@@ -56,26 +56,4 @@ class Suppliers(Base):
     City = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
     PostalCode = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
 
-    # Relaciones
-    countries_: Mapped['Countries'] = relationship(
-        'Countries',
-        back_populates='suppliers',
-        primaryjoin='Suppliers.CountryID == Countries.CountryID',
-        foreign_keys='Suppliers.CountryID',
-        overlaps='suppliers'
-    )
-    docTypes_: Mapped['SysDocTypes'] = relationship(
-        'SysDocTypes', back_populates='suppliers')
-    provinces_: Mapped['Provinces'] = relationship(
-        'Provinces',
-        back_populates='suppliers',
-        overlaps='countries_,suppliers'
-    )
-    accountBalances: Mapped[List['AccountBalances']] = relationship(
-        'AccountBalances', back_populates='suppliers_')
-    items: Mapped[List['Items']] = relationship(
-        'Items', back_populates='suppliers_')
-    itemstock: Mapped[List['Itemstock']] = relationship(
-        'Itemstock', back_populates='suppliers_')
-    orderHistory_: Mapped[List['OrderHistory']] = relationship(
-        'OrderHistory', back_populates='suppliers_')
+    # Relaciones eliminadas: solo FK explícitos según SQL definitivo

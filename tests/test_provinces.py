@@ -4,18 +4,27 @@ from app.graphql.schemas.provinces import ProvincesCreate, ProvincesUpdate
 
 
 def test_create_get_update_delete_provinces(db_session):
-    # Crear
-    data = ProvincesCreate(Name="Provincia Test")
+    # Crear con campos obligatorios y FK válida
+    data = ProvincesCreate(CountryID=54, Name="Provincia Test")
     obj = create_provinces(db_session, data)
-    assert obj.Name == "Provincia Test"
+    assert obj is not None
+    assert str(getattr(obj, 'Name', '')) == "Provincia Test" and int(
+        getattr(obj, 'CountryID', 0)) == 54
     # Obtener
     all_objs = get_provinces(db_session)
-    assert any(o.ProvinceID == obj.ProvinceID for o in all_objs)
+    assert any(int(getattr(o, 'ProvinceID', 0)) == int(getattr(obj, 'ProvinceID', 0)) and int(
+        getattr(o, 'CountryID', 0)) == int(getattr(obj, 'CountryID', 0)) for o in all_objs)
     # Actualizar
     update = ProvincesUpdate(Name="Provincia Modificada")
-    updated = update_provinces(db_session, obj.ProvinceID, update)
-    assert updated.Name == "Provincia Modificada"
+    updated = update_provinces(db_session, int(
+        getattr(obj, 'CountryID', 0)), int(getattr(obj, 'ProvinceID', 0)), update)
+    assert updated is not None
+    assert str(getattr(updated, 'Name', '')) == "Provincia Modificada"
     # Eliminar
-    deleted = delete_provinces(db_session, obj.ProvinceID)
-    assert deleted.ProvinceID == obj.ProvinceID
-    assert all(o.ProvinceID != obj.ProvinceID for o in get_provinces(db_session))
+    deleted = delete_provinces(db_session, int(
+        getattr(obj, 'CountryID', 0)), int(getattr(obj, 'ProvinceID', 0)))
+    assert deleted is not None
+    assert int(getattr(deleted, 'ProvinceID', 0)) == int(getattr(obj, 'ProvinceID', 0)) and int(
+        getattr(deleted, 'CountryID', 0)) == int(getattr(obj, 'CountryID', 0))
+    assert all(not (int(getattr(o, 'ProvinceID', 0)) == int(getattr(obj, 'ProvinceID', 0)) and int(
+        getattr(o, 'CountryID', 0)) == int(getattr(obj, 'CountryID', 0))) for o in get_provinces(db_session))

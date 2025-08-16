@@ -1,4 +1,5 @@
 ﻿# app/graphql/crud/orders.py - Versión type-safe
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import Session
 from dataclasses import asdict
 from uuid import uuid4, UUID
@@ -35,51 +36,16 @@ def _safe_get_int(obj: Any, field_name: str) -> int:
     try:
         return int(value)
     except (ValueError, TypeError) as e:
-        raise ValueError(f"No se puede convertir {field_name}={value} a int: {e}")
-
-
-from sqlalchemy.orm import joinedload
+        raise ValueError(
+            f"No se puede convertir {field_name}={value} a int: {e}")
 
 
 def get_orders(db: Session):
-    return (
-        db.query(Orders)
-        .options(
-            joinedload(Orders.companyData_),
-            joinedload(Orders.branches_),
-            joinedload(Orders.saleConditions_),
-            joinedload(Orders.sysDocumentTypes_),
-            joinedload(Orders.warehouses_),
-            joinedload(Orders.clients_),
-            joinedload(Orders.discounts_),
-            joinedload(Orders.priceLists_),
-            joinedload(Orders.orderStatus_),
-            joinedload(Orders.cars_),
-            joinedload(Orders.serviceType_),
-        )
-        .all()
-    )
+    return db.query(Orders).all()
 
 
 def get_orders_by_id(db: Session, orderid: int):
-    return (
-        db.query(Orders)
-        .options(
-            joinedload(Orders.companyData_),
-            joinedload(Orders.branches_),
-            joinedload(Orders.saleConditions_),
-            joinedload(Orders.sysDocumentTypes_),
-            joinedload(Orders.warehouses_),
-            joinedload(Orders.clients_),
-            joinedload(Orders.discounts_),
-            joinedload(Orders.priceLists_),
-            joinedload(Orders.orderStatus_),
-            joinedload(Orders.cars_),
-            joinedload(Orders.serviceType_),
-        )
-        .filter(Orders.OrderID == orderid)
-        .first()
-    )
+    return db.query(Orders).filter(Orders.OrderID == orderid).first()
 
 
 def create_orders(db: Session, data: OrdersCreate):
@@ -91,10 +57,10 @@ def create_orders(db: Session, data: OrdersCreate):
     items_data = data.Items if hasattr(data, "Items") else []
 
     # Crear orden sin los ítems
-    order_data = asdict(data)
+    order_data = vars(data).copy()
     order_data.pop("Items", None)  # Eliminar items del dict para el modelo
 
-    # Crear el objeto Orders
+    # Crear el objeto Orders (incluye VendorID y todos los campos nuevos)
     order = Orders(**order_data)
     db.add(order)
     db.flush()  # Necesario para obtener orderID antes de los detalles
@@ -146,7 +112,7 @@ def update_orders(db: Session, orderid: int, data: OrdersUpdate):
     if not obj:
         return None
 
-    update_data = asdict(data)
+    update_data = vars(data).copy()
     # ``Items`` puede venir para futuras funcionalidades, pero por ahora sólo se
     # extrae para evitar que intente asignarse directamente al modelo ``Orders``.
     update_data.pop("Items", None)

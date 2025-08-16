@@ -4,19 +4,28 @@ from app.graphql.schemas.pricelists import PriceListsCreate, PriceListsUpdate
 
 
 def test_create_get_update_delete_pricelists(db_session):
-    # Crear
-    data = PriceListsCreate(ListName="Lista Test")
+    # Crear con campos obligatorios
+    from datetime import datetime
+    data = PriceListsCreate(Name="Lista Test", Description="desc",
+                            IsActive=True, CreatedDate=datetime(2025, 8, 16, 0, 0, 0))
     obj = create_pricelists(db_session, data)
-    assert obj.ListName == "Lista Test"
+    assert obj is not None
+    assert str(getattr(obj, 'Name', '')) == "Lista Test"
     # Obtener
     all_objs = get_pricelists(db_session)
-    assert any(o.PriceListID == obj.PriceListID for o in all_objs)
+    assert any(int(getattr(o, 'PriceListID', 0)) == int(
+        getattr(obj, 'PriceListID', 0)) for o in all_objs)
     # Actualizar
-    update = PriceListsUpdate(ListName="Lista Modificada")
-    updated = update_pricelists(db_session, obj.PriceListID, update)
-    assert updated.ListName == "Lista Modificada"
+    update = PriceListsUpdate(Name="Lista Modificada")
+    updated = update_pricelists(db_session, int(
+        getattr(obj, 'PriceListID', 0)), update)
+    assert updated is not None
+    assert str(getattr(updated, 'Name', '')) == "Lista Modificada"
     # Eliminar
-    deleted = delete_pricelists(db_session, obj.PriceListID)
-    assert deleted.PriceListID == obj.PriceListID
-    assert all(o.PriceListID !=
-               obj.PriceListID for o in get_pricelists(db_session))
+    deleted = delete_pricelists(
+        db_session, int(getattr(obj, 'PriceListID', 0)))
+    assert deleted is not None
+    assert int(getattr(deleted, 'PriceListID', 0)) == int(
+        getattr(obj, 'PriceListID', 0))
+    assert all(int(getattr(o, 'PriceListID', 0)) != int(
+        getattr(obj, 'PriceListID', 0)) for o in get_pricelists(db_session))

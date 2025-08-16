@@ -5,19 +5,23 @@ from app.graphql.schemas.itemsubcategories import ItemSubcategoriesCreate, ItemS
 
 def test_create_get_update_delete_itemsubcategories(db_session):
     # Crear
-    data = ItemSubcategoriesCreate(SubcategoryName="Subcat Test")
+    data = ItemSubcategoriesCreate(
+        ItemCategoryID=1, SubcategoryName="Subcat Test")
     obj = create_itemsubcategories(db_session, data)
-    assert obj.SubcategoryName == "Subcat Test"
+    assert getattr(obj, "SubcategoryName", None) == "Subcat Test"
     # Obtener
     all_objs = get_itemsubcategories(db_session)
     assert any(o.ItemSubcategoryID == obj.ItemSubcategoryID for o in all_objs)
     # Actualizar
     update = ItemSubcategoriesUpdate(SubcategoryName="Subcat Modificado")
     updated = update_itemsubcategories(
-        db_session, obj.ItemSubcategoryID, update)
-    assert updated.SubcategoryName == "Subcat Modificado"
+        db_session, getattr(obj, "ItemSubcategoryID", 1), update)
+    assert updated and getattr(
+        updated, "SubcategoryName", None) == "Subcat Modificado"
     # Eliminar
-    deleted = delete_itemsubcategories(db_session, obj.ItemSubcategoryID)
-    assert deleted.ItemSubcategoryID == obj.ItemSubcategoryID
-    assert all(o.ItemSubcategoryID !=
-               obj.ItemSubcategoryID for o in get_itemsubcategories(db_session))
+    deleted = delete_itemsubcategories(
+        db_session, getattr(obj, "ItemSubcategoryID", 1))
+    assert deleted and getattr(deleted, "ItemSubcategoryID", None) == getattr(
+        obj, "ItemSubcategoryID", 1)
+    assert all(getattr(o, "ItemSubcategoryID", None) != getattr(
+        obj, "ItemSubcategoryID", 1) for o in get_itemsubcategories(db_session))

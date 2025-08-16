@@ -27,7 +27,6 @@ class ServiceType(Base):
     Type = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    orders: Mapped[List['Orders']] = relationship(
-        'Orders', back_populates='serviceType_')
+
     orderHistory_: Mapped[List['OrderHistory']] = relationship(
         'OrderHistory', back_populates='serviceType_')

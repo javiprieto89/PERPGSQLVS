@@ -79,51 +79,12 @@ class Orders(Base):
     PriceListID = Column(Integer)
     OrderStatusID = Column(Integer)
     WarehouseID = Column(Integer)
-    CarID = Column(Integer)
-    IsService = Column(Boolean)
-    ServiceTypeID = Column(Integer)
-    Mileage = Column(Integer)
-    NextServiceMileage = Column(Integer)
-    Notes = Column(Unicode(500, 'Modern_Spanish_CI_AS'))
+    CarID = Column(Integer, nullable=True)
+    IsService = Column(Boolean, nullable=True)
+    ServiceTypeID = Column(Integer, nullable=True)
+    Mileage = Column(Integer, nullable=True)
+    NextServiceMileage = Column(Integer, nullable=True)
+    Notes = Column(Unicode(500, 'Modern_Spanish_CI_AS'), nullable=True)
+    VendorID = Column(Integer, nullable=False)
 
-    # Relaciones
-    branches_: Mapped['Branches'] = relationship(
-        'Branches',
-        back_populates='orders',
-        overlaps='orders_,companyData_'
-    )
-    cars_: Mapped[Optional['Cars']] = relationship(
-        'Cars', back_populates='orders_')
-    clients_: Mapped['Clients'] = relationship(
-        'Clients', back_populates='orders_')
-    companyData_: Mapped['CompanyData'] = relationship(
-        'CompanyData',
-        back_populates='orders_',
-        overlaps='branches_,orders,orders_'
-    )
-    discounts_: Mapped['Discounts'] = relationship(
-        'Discounts', back_populates='orders')
-    sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship(
-        'SysDocumentTypes', back_populates='orders')
-    orderStatus_: Mapped['SysOrderStatus'] = relationship('SysOrderStatus', foreign_keys=[
-                                                          OrderStatusID], back_populates='orders')   # <--- corregido acá
-    priceLists_: Mapped['PriceLists'] = relationship(
-        'PriceLists', back_populates='orders')
-    saleConditions_: Mapped['SaleConditions'] = relationship(
-        'SaleConditions', back_populates='orders')
-    serviceType_: Mapped[Optional['ServiceType']] = relationship(
-        'ServiceType', back_populates='orders')
-    users_: Mapped['Users'] = relationship('Users', back_populates='orders')
-    warehouses_: Mapped['Warehouses'] = relationship(
-        'Warehouses', back_populates='orders')
-    orderDetails_: Mapped[List['OrderDetails']] = relationship(
-        'OrderDetails', back_populates='orders_')
-    orderHistory_: Mapped[List['OrderHistory']] = relationship(
-        'OrderHistory', back_populates='orders_')
-    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship(
-        'TempOrderDetails', back_populates='orders_')
-
-    @property
-    def Items(self) -> List['OrderDetails']:
-        """Alias de acceso para los detalles de la orden."""
-        return self.orderDetails
+    # Relaciones eliminadas: solo FK explícitos según SQL definitivo

@@ -3,28 +3,32 @@ import strawberry
 from typing import Optional
 from datetime import datetime
 
+
 @strawberry.input
 class OrderHistoryDetailsCreate:
-    HistoryID: int
+    OrderHistoryID: int  # Usar el nombre exacto del modelo
     ItemID: int
+    WarehouseID: int  # Obligatorio según la DB
     Quantity: int
     UnitPrice: float
     Description: Optional[str] = None
     LastModified: Optional[datetime] = None
 
+
 @strawberry.input
 class OrderHistoryDetailsUpdate:
-    HistoryID: Optional[int] = None
+    OrderHistoryID: Optional[int] = None
     ItemID: Optional[int] = None
     Quantity: Optional[int] = None
     UnitPrice: Optional[float] = None
     Description: Optional[str] = None
     LastModified: Optional[datetime] = None
 
+
 @strawberry.type
 class OrderHistoryDetailsInDB:
     OrderHistoryDetailID: int
-    HistoryID: int
+    OrderHistoryID: int
     ItemID: int
     Quantity: int
     UnitPrice: float
