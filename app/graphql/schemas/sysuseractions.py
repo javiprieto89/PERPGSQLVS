@@ -12,5 +12,5 @@ class SysUserActionsUpdate:
 
 @strawberry.type
 class SysUserActionsInDB:
-    ActionID: int
+    UserActionID: int
     ActionName: Optional[str] = None

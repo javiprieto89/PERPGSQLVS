@@ -3,7 +3,10 @@
 from sqlalchemy.orm import Session
 from app.models.creditcards import CreditCards
 from app.models.creditcardgroups import CreditCardGroups
-from app.graphql.schemas.creditcardgroups import CreditCardGroupsCreate, CreditCardGroupsUpdate
+from app.graphql.schemas.creditcardgroups import (
+    CreditCardGroupsCreate,
+    CreditCardGroupsUpdate,
+)
 
 
 def get_creditcardgroups(db: Session):
@@ -18,7 +21,7 @@ def get_creditcardgroup_by_name(db: Session, name: str):
     return db.query(CreditCardGroups).filter(CreditCardGroups.GroupName.ilike(f"%{name}%")).all()
 
 
-def create_creditcardgroup(db: Session, data: CreditCardGroupsCreate):
+def create_creditcardgroups(db: Session, data: CreditCardGroupsCreate):
     obj = CreditCardGroups(**vars(data))
     db.add(obj)
     db.commit()
@@ -26,7 +29,7 @@ def create_creditcardgroup(db: Session, data: CreditCardGroupsCreate):
     return obj
 
 
-def update_creditcardgroup(db: Session, id: int, data: CreditCardGroupsUpdate):
+def update_creditcardgroups(db: Session, id: int, data: CreditCardGroupsUpdate):
     obj = get_creditcardgroup_by_id(db, id)
     if obj:
         for k, v in vars(data).items():
@@ -37,7 +40,7 @@ def update_creditcardgroup(db: Session, id: int, data: CreditCardGroupsUpdate):
     return obj
 
 
-def delete_creditcardgroup(db: Session, id: int):
+def delete_creditcardgroups(db: Session, id: int):
     obj = get_creditcardgroup_by_id(db, id)
     if obj:
         linked_cards = db.query(CreditCards).filter(CreditCards.CreditCardGroupID == id).first() is not None

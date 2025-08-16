@@ -6,9 +6,9 @@ from app.graphql.schemas.creditcardgroups import (
     CreditCardGroupsInDB,
 )
 from app.graphql.crud.creditcardgroups import (
-    create_creditcardgroup,
-    update_creditcardgroup,
-    delete_creditcardgroup,
+    create_creditcardgroups,
+    update_creditcardgroups,
+    delete_creditcardgroups,
 )
 from app.utils import obj_to_schema
 from app.db import get_db
@@ -22,7 +22,7 @@ class CreditCardGroupsMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            obj = create_creditcardgroup(db, data)
+            obj = create_creditcardgroups(db, data)
             return obj_to_schema(CreditCardGroupsInDB, obj)
         finally:
             db_gen.close()
@@ -32,7 +32,7 @@ class CreditCardGroupsMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update_creditcardgroup(db, id, data)
+            updated = update_creditcardgroups(db, id, data)
             return obj_to_schema(CreditCardGroupsInDB, updated) if updated else None
         finally:
             db_gen.close()
@@ -42,7 +42,7 @@ class CreditCardGroupsMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete_creditcardgroup(db, id)
+            deleted = delete_creditcardgroups(db, id)
             return deleted is not None
         finally:
             db_gen.close()

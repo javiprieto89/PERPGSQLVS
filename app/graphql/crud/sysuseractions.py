@@ -15,10 +15,10 @@ def get_sysuseractions_by_id(db: Session, id: int):
 
 
 def get_sysuseractions_by_name(db: Session, name: str):
-    return db.query(SysUserActions).filter(SysUserActions.actionName.ilike(f"%{name}%")).all()
+    return db.query(SysUserActions).filter(SysUserActions.ActionName.ilike(f"%{name}%")).all()
 
 
-def create(db: Session, record: schema.SysUserActionsCreate):
+def create_sysuseractions(db: Session, record: schema.SysUserActionsCreate):
     db_record = SysUserActions(**asdict(record))
     db.add(db_record)
     db.commit()
@@ -26,7 +26,7 @@ def create(db: Session, record: schema.SysUserActionsCreate):
     return db_record
 
 
-def update(db: Session, id: int, record: schema.SysUserActionsUpdate):
+def update_sysuseractions(db: Session, id: int, record: schema.SysUserActionsUpdate):
     db_record = get_sysuseractions_by_id(db, id)
     if db_record:
         for k, v in asdict(record).items():
@@ -37,7 +37,7 @@ def update(db: Session, id: int, record: schema.SysUserActionsUpdate):
     return db_record
 
 
-def delete(db: Session, id: int):
+def delete_sysuseractions(db: Session, id: int):
     db_record = get_sysuseractions_by_id(db, id)
     if db_record:
         # Verify no activity logs depend on this action

@@ -58,6 +58,24 @@ def create_useraccess(db: Session, data: UserAccessCreate):
     return obj
 
 
+def update_useraccess(
+    db: Session,
+    userID: int,
+    companyID: int,
+    branchID: int,
+    roleID: int,
+    data: UserAccessUpdate,
+):
+    obj = get_useraccess_by_id(db, userID, companyID, branchID, roleID)
+    if obj:
+        for k, v in vars(data).items():
+            if v is not None:
+                setattr(obj, k, v)
+        db.commit()
+        db.refresh(obj)
+    return obj
+
+
 def delete_useraccess(db: Session, userID: int, companyID: int, branchID: int, roleID: int):
     obj = get_useraccess_by_id(db, userID, companyID, branchID, roleID)
     if obj:
