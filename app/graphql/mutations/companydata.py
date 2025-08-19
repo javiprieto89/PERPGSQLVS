@@ -9,6 +9,7 @@ from strawberry.types import Info
 
 @strawberry.type
 class CompanydataMutations:
+    """Mutaciones para CompanyData con campos GrossIncome y StartDate."""
     @strawberry.mutation
     def create_company(self, info: Info, data: CompanyDataCreate) -> CompanyDataInDB:
         db_gen = get_db()

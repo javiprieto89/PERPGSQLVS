@@ -9,8 +9,8 @@ class CompanyDataCreate:
     Name: Optional[str] = None
     Address: Optional[str] = None
     CUIT: Optional[str] = None
-    Grossincome: Optional[str] = None
-    Startdate: Optional[datetime] = None
+    GrossIncome: Optional[str] = None
+    StartDate: Optional[datetime] = None
     Logo: Optional[str] = None  # Cambiar de bytes a str (base64)
 
 
@@ -19,8 +19,8 @@ class CompanyDataUpdate:
     Name: Optional[str] = None
     Address: Optional[str] = None
     CUIT: Optional[str] = None
-    Grossincome: Optional[str] = None
-    Startdate: Optional[datetime] = None
+    GrossIncome: Optional[str] = None
+    StartDate: Optional[datetime] = None
     Logo: Optional[str] = None  # Cambiar de bytes a str (base64)
 
 
@@ -30,6 +30,6 @@ class CompanyDataInDB:
     Name: Optional[str] = None
     Address: Optional[str] = None
     CUIT: Optional[str] = None
-    Grossincome: Optional[str] = None
-    Startdate: Optional[datetime] = None
+    GrossIncome: Optional[str] = None
+    StartDate: Optional[datetime] = None
     Logo: Optional[str] = None  # Cambiar de bytes a str (base64)
