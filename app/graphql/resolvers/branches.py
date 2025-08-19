@@ -3,13 +3,14 @@ import base64
 import strawberry
 from typing import List, Optional
 from app.graphql.schemas.branches import BranchesInDB
+from app.graphql.schemas.companydata import CompanyDataInDB
 from app.graphql.crud.branches import (
     get_branches,
     get_branches_by_id,
     get_branches_by_company,
 )
 from app.db import get_db
-from app.utils import list_to_schema, obj_to_schema
+from app.utils import obj_to_schema
 from strawberry.types import Info
 
 
@@ -31,6 +32,12 @@ class BranchesQuery:
             for item in items:
                 obj = obj_to_schema(BranchesInDB, item)
                 obj.Logo = encode_logo(getattr(item, "Logo", None))
+                company_data = getattr(item, "companyData_", None)
+                obj.CompanyData = (
+                    obj_to_schema(CompanyDataInDB, company_data)
+                    if company_data
+                    else None
+                )
                 result.append(obj)
             return result
         finally:
@@ -46,6 +53,12 @@ class BranchesQuery:
                 return None
             obj = obj_to_schema(BranchesInDB, item)
             obj.Logo = encode_logo(getattr(item, "Logo", None))
+            company_data = getattr(item, "companyData_", None)
+            obj.CompanyData = (
+                obj_to_schema(CompanyDataInDB, company_data)
+                if company_data
+                else None
+            )
             return obj
         finally:
             db_gen.close()
@@ -61,6 +74,12 @@ class BranchesQuery:
             for item in branches:
                 obj = obj_to_schema(BranchesInDB, item)
                 obj.Logo = encode_logo(getattr(item, "Logo", None))
+                company_data = getattr(item, "companyData_", None)
+                obj.CompanyData = (
+                    obj_to_schema(CompanyDataInDB, company_data)
+                    if company_data
+                    else None
+                )
                 result.append(obj)
             return result
         finally:

@@ -1,4 +1,5 @@
-﻿import base64
+﻿# app/graphql/schemas/branches.py
+
 import strawberry
 from typing import Optional
 from app.graphql.schemas.companydata import CompanyDataInDB
