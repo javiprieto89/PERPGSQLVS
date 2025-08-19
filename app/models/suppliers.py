@@ -35,6 +35,8 @@ class Suppliers(Base):
             name='FK__Suppliers__Provi__44FF419A',
         ),
         ForeignKeyConstraint(
+            ['CompanyID'], ['CompanyData.CompanyID'], name='FK_Suppliers_CompanyData'),
+        ForeignKeyConstraint(
             ['CompanyID', 'BranchID'],
             ['Branches.CompanyID', 'Branches.BranchID'],
             name='FK_Suppliers_Branches',

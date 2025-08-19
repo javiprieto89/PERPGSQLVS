@@ -38,6 +38,8 @@ class Clients(Base):
         ForeignKeyConstraint(
             ['VendorID'], ['Vendors.VendorID'], name='FK_Clients_Vendors'),
         ForeignKeyConstraint(
+            ['CompanyID'], ['CompanyData.CompanyID'], name='FK_Clients_CompanyData'),
+        ForeignKeyConstraint(
             ['CompanyID', 'BranchID'],
             ['Branches.CompanyID', 'Branches.BranchID'],
             name='FK_Clients_Branches',
