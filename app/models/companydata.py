@@ -48,11 +48,11 @@ class CompanyData(Base):
     branches: Mapped[List['Branches']] = relationship(
         'Branches', back_populates='companyData_')
     clients: Mapped[List['Clients']] = relationship(
-        'Clients', back_populates='companyData_')
+        'Clients', back_populates='companyData_', overlaps='branches_,clients')
     brands: Mapped[List['Brands']] = relationship(
         'Brands', back_populates='companyData_')
     suppliers: Mapped[List['Suppliers']] = relationship(
-        'Suppliers', back_populates='companyData_')
+        'Suppliers', back_populates='companyData_', overlaps='suppliers')
     items: Mapped[List['Items']] = relationship(
         'Items', back_populates='companyData_')
     itemstock: Mapped[List['Itemstock']] = relationship(

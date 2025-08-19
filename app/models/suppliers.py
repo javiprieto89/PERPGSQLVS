@@ -66,10 +66,10 @@ class Suppliers(Base):
     docTypes_: Mapped[Optional['SysDocTypes']] = relationship(
         'SysDocTypes', back_populates='suppliers')
     countries_: Mapped[Optional['Countries']] = relationship(
-        'Countries', back_populates='suppliers')
+        'Countries', back_populates='suppliers', overlaps='provinces_')
     provinces_: Mapped[Optional['Provinces']] = relationship(
-        'Provinces', back_populates='suppliers')
+        'Provinces', back_populates='suppliers', overlaps='countries_')
     branches_: Mapped[Optional['Branches']] = relationship(
         'Branches', back_populates='suppliers')
     companyData_: Mapped[Optional['CompanyData']] = relationship(
-        'CompanyData', back_populates='suppliers')
+        'CompanyData', back_populates='suppliers', overlaps='branches_,suppliers')
