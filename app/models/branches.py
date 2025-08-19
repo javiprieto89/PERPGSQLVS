@@ -62,3 +62,11 @@ class Branches(Base):
         'TempStockHistoryDetails', back_populates='branches_')
     cashBoxes: Mapped[List['CashBoxes']] = relationship(
         'CashBoxes', back_populates='branches_')
+
+    @property
+    def CompanyData(self) -> Optional['CompanyData']:
+        return self.companyData_
+
+    @CompanyData.setter
+    def CompanyData(self, value: Optional['CompanyData']) -> None:
+        self.companyData_ = value
