@@ -52,7 +52,7 @@ class Clients(Base):
     CompanyID = Column(Integer)
     BranchID = Column(Integer)
     DocTypeID = Column(Integer)
-    FirstName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    FirstName = Column(Unicode(100, 'Modern_Spanish_CI_AS'), nullable=False)
     IsActive = Column(Boolean, server_default=text('((1))'))
     CountryID = Column(Integer)
     ProvinceID = Column(Integer)

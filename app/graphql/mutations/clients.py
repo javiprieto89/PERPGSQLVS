@@ -1,11 +1,12 @@
 # app/graphql/mutations/clients.py
 import strawberry
-from typing import Optional
+from typing import Optional, cast
 from app.graphql.schemas.clients import ClientsCreate, ClientsUpdate, ClientsInDB
 from app.graphql.crud.clients import (
     create_clients,
     update_clients,
     delete_clients,
+    get_clients_by_id,
 )
 from app.utils import obj_to_schema
 from app.db import get_db
@@ -61,10 +62,12 @@ class ClientsMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            update_data = ClientsUpdate(IsActive=isActive)
-            updated_client = update_clients(db, clientID, update_data)
-            if not updated_client:
+            client = get_clients_by_id(db, clientID)
+            if not client:
                 return None
+            first_name = cast(str, client.FirstName)
+            update_data = ClientsUpdate(FirstName=first_name, IsActive=isActive)
+            updated_client = update_clients(db, clientID, update_data)
             return obj_to_schema(ClientsInDB, updated_client)
         finally:
             db_gen.close()

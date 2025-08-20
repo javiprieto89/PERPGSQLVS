@@ -31,7 +31,7 @@ class ClientsUpdate:
     CompanyID: Optional[int] = None
     BranchID: Optional[int] = None
     DocNumber: Optional[str] = None
-    FirstName: Optional[str] = None
+    FirstName: str
     LastName: Optional[str] = None
     Phone: Optional[str] = None
     Email: Optional[str] = None
