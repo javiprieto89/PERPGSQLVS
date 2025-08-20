@@ -1,7 +1,7 @@
-﻿# app/graphql/resolvers/sysorderstatus.py
+# app/graphql/resolvers/sys/orderstatus.py
 import strawberry
 from typing import List, Optional
-from app.graphql.schemas.sysorderstatus import SysOrderStatusInDB
+from app.graphql.schemas.sys.orderstatus import SysOrderStatusInDB
 from app.graphql.crud.sysorderstatus import (
     get_sysorderstatus,
     get_sysorderstatus_by_id,
@@ -13,6 +13,8 @@ from strawberry.types import Info
 
 @strawberry.type
 class SysorderstatusQuery:
+    """Consultas para catálogo inmutable de estados de órdenes."""
+
     @strawberry.field
     def all_sysorderstatus(self, info: Info) -> List[SysOrderStatusInDB]:
         db_gen = get_db()
@@ -24,7 +26,9 @@ class SysorderstatusQuery:
             db_gen.close()
 
     @strawberry.field
-    def sysorderstatus_by_id(self, info: Info, id: int) -> Optional[SysOrderStatusInDB]:
+    def sysorderstatus_by_id(
+        self, info: Info, id: int
+    ) -> Optional[SysOrderStatusInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:

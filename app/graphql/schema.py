@@ -19,9 +19,9 @@ from app.graphql.resolvers.countries import CountriesQuery
 from app.graphql.resolvers.creditcardgroups import CreditcardgroupsQuery
 from app.graphql.resolvers.creditcards import CreditcardsQuery
 from app.graphql.resolvers.discounts import DiscountsQuery
-from app.graphql.resolvers.sysdoctypes import SysdoctypesQuery
+from app.graphql.resolvers.sys.doctypes import SysdoctypesQuery
 from app.graphql.resolvers.documents import DocumentsQuery
-from app.graphql.resolvers.sysdocumenttypes import SysdocumenttypesQuery
+from app.graphql.resolvers.sys.documenttypes import SysdocumenttypesQuery
 from app.graphql.resolvers.cashboxes import CashboxesQuery
 from app.graphql.resolvers.cashboxmovements import CashboxmovementsQuery
 from app.graphql.resolvers.itemcategories import ItemcategoriesQuery
@@ -33,7 +33,7 @@ from app.graphql.resolvers.orderdetails import OrderdetailsQuery
 from app.graphql.resolvers.orderhistory import OrderhistoryQuery
 from app.graphql.resolvers.orderhistorydetails import OrderhistorydetailsQuery
 from app.graphql.resolvers.orders import OrdersQuery
-from app.graphql.resolvers.sysorderstatus import SysorderstatusQuery
+from app.graphql.resolvers.sys.orderstatus import SysorderstatusQuery
 from app.graphql.resolvers.pricelistitems import PricelistitemsQuery
 from app.graphql.resolvers.pricelists import PricelistsQuery
 from app.graphql.resolvers.provinces import ProvincesQuery
@@ -47,9 +47,9 @@ from app.graphql.resolvers.tempstockhistorydetails import Tempstockhistorydetail
 from app.graphql.resolvers.transactions import TransactionsQuery
 from app.graphql.resolvers.taxes import TaxesQuery
 from app.graphql.resolvers.itemtaxes import ItemtaxesQuery
-from app.graphql.resolvers.systransactiontypes import SystransactiontypesQuery
+from app.graphql.resolvers.sys.transactiontypes import SystransactiontypesQuery
 from app.graphql.resolvers.useraccess import UseraccessQuery
-from app.graphql.resolvers.sysuseractions import SysuseractionsQuery
+from app.graphql.resolvers.sys.useractions import SysuseractionsQuery
 from app.graphql.resolvers.users import UsersQuery
 from app.graphql.resolvers.warehouses import WarehousesQuery
 from app.graphql.resolvers.vendors import VendorsQuery
@@ -81,10 +81,7 @@ from app.graphql.mutations.stockhistory import StockHistoryMutations
 from app.graphql.mutations.taxes import TaxesMutations
 from app.graphql.mutations.itemtaxes import ItemtaxesMutations
 from app.graphql.mutations.servicetype import ServiceTypeMutations
-from app.graphql.mutations.sysdoctypes import SysDocTypesMutations
-from app.graphql.mutations.sysdocumenttypes import SysDocumentTypesMutations
 from app.graphql.mutations.documents import DocumentsMutations
-from app.graphql.mutations.sysuseractions import SysUserActionsMutations
 from app.graphql.mutations.roles import RolesMutations
 from app.graphql.mutations.users import UsersMutations
 from app.graphql.mutations.vendors import VendorsMutations
@@ -431,7 +428,6 @@ class Mutation(
     CreditCardGroupsMutations,
     CreditCardsMutations,
     DiscountsMutations,
-    SysDocTypesMutations,
     VendorsMutations,
     BranchesMutations,
     CompanydataMutations,
@@ -448,8 +444,6 @@ class Mutation(
     OrdersMutations,
     ServiceTypeMutations,
     DocumentsMutations,
-    SysDocumentTypesMutations,
-    SysUserActionsMutations,
     RolesMutations,
     UsersMutations,
     UserAccessMutation,

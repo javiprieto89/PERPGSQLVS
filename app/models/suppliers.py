@@ -5,7 +5,7 @@ from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .countries import Countries
-    from .sysdoctypes import SysDocTypes
+    from .sys.doctypes import SysDocTypes
     from .provinces import Provinces
     from .accountbalances import AccountBalances
     from .items import Items

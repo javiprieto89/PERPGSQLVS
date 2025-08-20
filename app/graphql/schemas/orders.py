@@ -4,12 +4,12 @@ from typing import List, Optional
 from app.graphql.schemas.companydata import CompanyDataInDB
 from app.graphql.schemas.branches import BranchesInDB
 from app.graphql.schemas.saleconditions import SaleConditionsInDB
-from app.graphql.schemas.sysdocumenttypes import SysDocumentTypesInDB
+from app.graphql.schemas.sys.documenttypes import SysDocumentTypesInDB
 from app.graphql.schemas.warehouses import WarehousesInDB
 from app.graphql.schemas.clients import ClientsInDB
 from app.graphql.schemas.discounts import DiscountsInDB
 from app.graphql.schemas.pricelists import PriceListsInDB
-from app.graphql.schemas.sysorderstatus import SysOrderStatusInDB
+from app.graphql.schemas.sys.orderstatus import SysOrderStatusInDB
 from app.graphql.schemas.cars import CarsInDB
 from app.graphql.schemas.servicetype import ServiceTypeInDB
 from app.graphql.schemas.users import UsersInDB
