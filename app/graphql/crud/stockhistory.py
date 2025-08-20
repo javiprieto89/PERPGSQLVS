@@ -15,7 +15,20 @@ def get_stockhistory_by_id(db: Session, history_id: int):
 
 
 def create_stockhistory(db: Session, data: StockHistoryCreate):
-    obj = StockHistory(**vars(data))
+    obj = StockHistory(
+        CompanyID=data.CompanyID,
+        BranchID=data.BranchID,
+        UserID=data.UserID,
+        ItemID=data.ItemID,
+        WarehouseID=data.WarehouseID,
+        QuantityUpdate=data.QuantityUpdate,
+        QuantityBefore=data.QuantityBefore,
+        QuantityAfter=data.QuantityAfter,
+        TransactionDate=data.TransactionDate,
+        Reason=data.Reason,
+        TransactionType=data.TransactionType,
+        Notes=data.Notes,
+    )
     db.add(obj)
     db.commit()
     db.refresh(obj)

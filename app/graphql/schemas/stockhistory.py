@@ -14,6 +14,7 @@ class StockHistoryCreate:
     QuantityUpdate: int
     QuantityBefore: int
     QuantityAfter: int
+    TransactionDate: datetime
     Reason: Optional[str] = None
     TransactionType: Optional[str] = None
     Notes: Optional[str] = None
@@ -29,6 +30,7 @@ class StockHistoryUpdate:
     QuantityUpdate: Optional[int] = None
     QuantityBefore: Optional[int] = None
     QuantityAfter: Optional[int] = None
+    TransactionDate: Optional[datetime] = None
     Reason: Optional[str] = None
     TransactionType: Optional[str] = None
     Notes: Optional[str] = None
