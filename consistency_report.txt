@@ -1,4 +1,4 @@
-2025-08-20 02:07:34 | INFO     | ▶ Iniciando auditoría. Detalle en app/tools/consistency_report.txt
+2025-08-20 02:16:24 | INFO     | ▶ Iniciando auditoría. Detalle en app/tools/consistency_report.txt
 2025-08-16 16:37:48 | INFO     | Conectando a SQL Server (ODBC 17, timeout=5s)…
 2025-08-16 16:37:48 | INFO     | Conexión OK. SELECT 1 OK.
 2025-08-16 16:37:48 | INFO     | Reflejando esquema real de la DB…
@@ -7,7 +7,6 @@
 2025-08-16 16:37:48 | INFO     | Configurando mapeos ORM (safe)…
 2025-08-16 16:37:49 | WARNING  | [MAPPERS] Mapper 'Mapper[ItemSubcategories(ItemSubcategories)]' has no property 'items'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
 2025-08-16 16:37:49 | INFO     | ➡️  1/4 DB ↔ Modelos
-2025-08-16 16:37:49 | WARNING  | [MODELS→DB] Tabla en modelos y NO en DB: SysDocumentTypes
 2025-08-16 16:37:49 | WARNING  | [MODELS→DB] Tabla en modelos y NO en DB: SysOrderStatus
 2025-08-16 16:37:49 | WARNING  | [DB→MODELS] Tabla en DB y NO en modelos: LastUserLogin
 2025-08-16 16:37:49 | WARNING  | [DB→MODELS] Tabla en DB y NO en modelos: PurchaseInvoiceDetailTaxes
@@ -15,7 +14,6 @@
 2025-08-16 16:37:49 | WARNING  | [DB→MODELS] Tabla en DB y NO en modelos: PurchaseInvoices
 2025-08-16 16:37:49 | WARNING  | [DB→MODELS] Tabla en DB y NO en modelos: StockHistoryDetail
 2025-08-16 16:37:49 | WARNING  | [DB→MODELS] Tabla en DB y NO en modelos: TempPurchaseInvoiceDetails
-2025-08-16 16:37:49 | WARNING  | [DB→MODELS] Tabla en DB y NO en modelos: sysDocumentTypes
 2025-08-16 16:37:49 | WARNING  | [DB→MODELS] Tabla en DB y NO en modelos: sysOrderStatus
 2025-08-16 16:37:49 | WARNING  | [DB→MODELS] Tabla en DB y NO en modelos: sysdiagrams
 2025-08-16 16:37:49 | WARNING  | [AccountBalances] Columna en DB y NO en modelos: BranchID
@@ -182,8 +180,6 @@
 2025-08-16 16:37:49 | WARNING  | [Documents.ShouldAccount] Nullability distinto (models=True vs db=False)
 2025-08-16 16:37:49 | WARNING  | [Documents.Testing] Tipo distinto (models=Boolean vs db=BIT)
 2025-08-16 16:37:49 | WARNING  | [Documents.Testing] Nullability distinto (models=True vs db=False)
-2025-08-16 16:37:49 | WARNING  | [Documents] FK en modelos y NO en DB: (('DocumentTypeID',), 'SysDocumentTypes', ('DocumentTypeID',))
-2025-08-16 16:37:49 | WARNING  | [Documents] FK en DB y NO en modelos: (('DocumentTypeID',), 'sysDocumentTypes', ('DocumentTypeID',))
 2025-08-16 16:37:49 | WARNING  | [ItemCategories] Columna en DB y NO en modelos: CompanyID
 2025-08-16 16:37:49 | WARNING  | [ItemCategories.CategoryName] Tipo distinto (models=String vs db=VARCHAR)
 2025-08-16 16:37:49 | WARNING  | [ItemCategories.CategoryName] Nullability distinto (models=True vs db=False)
@@ -351,7 +347,6 @@
 2025-08-16 16:37:49 | WARNING  | [Orders] FK en modelos y NO en DB: (('ClientID',), 'Clients', ('ClientID',))
 2025-08-16 16:37:49 | WARNING  | [Orders] FK en modelos y NO en DB: (('CompanyID',), 'CompanyData', ('CompanyID',))
 2025-08-16 16:37:49 | WARNING  | [Orders] FK en modelos y NO en DB: (('DiscountID',), 'Discounts', ('DiscountID',))
-2025-08-16 16:37:49 | WARNING  | [Orders] FK en modelos y NO en DB: (('DocumentID',), 'SysDocumentTypes', ('DocumentTypeID',))
 2025-08-16 16:37:49 | WARNING  | [Orders] FK en modelos y NO en DB: (('OrderStatusID',), 'SysOrderStatus', ('OrderStatusID',))
 2025-08-16 16:37:49 | WARNING  | [Orders] FK en modelos y NO en DB: (('PriceListID',), 'PriceLists', ('PriceListID',))
 2025-08-16 16:37:49 | WARNING  | [Orders] FK en modelos y NO en DB: (('SaleConditionID',), 'SaleConditions', ('SaleConditionID',))
@@ -536,7 +531,6 @@
 2025-08-16 16:37:49 | WARNING  | [Discounts] No se pudieron listar relationships: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[Items(Items)]'. Original exception was: Mapper 'Mapper[ItemSubcategories(ItemSubcategories)]' has no property 'items'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
 2025-08-16 16:37:49 | WARNING  | [UserActivityLog] No se pudieron listar relationships: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[Items(Items)]'. Original exception was: Mapper 'Mapper[ItemSubcategories(ItemSubcategories)]' has no property 'items'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
 2025-08-16 16:37:49 | WARNING  | [Items] No se pudieron listar relationships: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[Items(Items)]'. Original exception was: Mapper 'Mapper[ItemSubcategories(ItemSubcategories)]' has no property 'items'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
-2025-08-16 16:37:49 | WARNING  | [SysDocumentTypes] No se pudieron listar relationships: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[Items(Items)]'. Original exception was: Mapper 'Mapper[ItemSubcategories(ItemSubcategories)]' has no property 'items'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
 2025-08-16 16:37:49 | WARNING  | [Cars] No se pudieron listar relationships: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[Items(Items)]'. Original exception was: Mapper 'Mapper[ItemSubcategories(ItemSubcategories)]' has no property 'items'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
 2025-08-16 16:37:49 | WARNING  | [ItemPriceHistory] No se pudieron listar relationships: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[Items(Items)]'. Original exception was: Mapper 'Mapper[ItemSubcategories(ItemSubcategories)]' has no property 'items'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
 2025-08-16 16:37:49 | WARNING  | [Warehouses] No se pudieron listar relationships: One or more mappers failed to initialize - can't proceed with initialization of other mappers. Triggering mapper: 'Mapper[Items(Items)]'. Original exception was: Mapper 'Mapper[ItemSubcategories(ItemSubcategories)]' has no property 'items'.  If this property was indicated from other mappers or configure events, ensure registry.configure() has been called.
@@ -652,7 +646,6 @@
 2025-08-16 16:37:49 | INFO     | [SUGERENCIA 1–N] Documents → Branches
   En Documents: branche = relationship('Branches', back_populates='documentses')
   En Branches: documentses = relationship('Documents', back_populates='branche')
-2025-08-16 16:37:49 | INFO     | [SUGERENCIA 1–N] Tabla padre 'sysDocumentTypes' no mapeada; en Documents agregá atributo 'sysdocumenttype'.
 2025-08-16 16:37:49 | INFO     | [SUGERENCIA 1–N] ItemCategories → CompanyData
   En ItemCategories: companydata = relationship('CompanyData', back_populates='itemcategorieses')
   En CompanyData: itemcategorieses = relationship('ItemCategories', back_populates='companydata')
