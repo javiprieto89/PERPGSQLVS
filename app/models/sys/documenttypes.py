@@ -8,19 +8,19 @@ if TYPE_CHECKING:
     from ..orders import Orders
 
 from typing import List
-from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
+from sqlalchemy import Column, Integer, Unicode, PrimaryKeyConstraint
 from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 
 
 class SysDocumentTypes(Base):
-    __tablename__ = 'SysDocumentTypes'
+    __tablename__ = 'sysDocumentTypes'
     __table_args__ = (
         PrimaryKeyConstraint('DocumentTypeID', name='PK__Document__DBA390C10019FEFA'),
     )
 
-    DocumentTypeID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    Name = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
+    DocumentTypeID = Column(Integer, primary_key=True)
+    Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'), nullable=False)
 
     # Relaciones (solo lectura)
     documents: Mapped[List['Documents']] = relationship('Documents', back_populates='sysDocumentTypes_')
