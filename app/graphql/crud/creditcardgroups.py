@@ -9,8 +9,12 @@ from app.graphql.schemas.creditcardgroups import (
 )
 
 
-def get_creditcardgroups(db: Session):
-    return db.query(CreditCardGroups).all()
+def get_creditcardgroups(db: Session, company_id: int | None = None):
+    """Retrieve all credit card groups, optionally filtered by CompanyID"""
+    query = db.query(CreditCardGroups)
+    if company_id is not None:
+        query = query.filter(CreditCardGroups.CompanyID == company_id)
+    return query.all()
 
 
 def get_creditcardgroup_by_id(db: Session, id: int):
