@@ -7,7 +7,7 @@ from app.graphql.crud.orders import (
     update_orders,
     delete_orders,
     finalize_order,
-    get_order_items_in_progress,
+    get_order_details_in_progress,
     _safe_get_int,
 )
 from app.utils import obj_to_schema
@@ -28,7 +28,7 @@ class OrdersMutations:
     @strawberry.mutation
     def create_order(self, info: Info, data: OrdersCreate) -> OrderResponse:
         """
-        Crear nueva orden. Los items se guardan en TempOrderDetails hasta finalizar.
+        Crear nueva orden. Los detalles se guardan en TempOrderDetails hasta finalizar.
         """
         db_gen = get_db()
         db = next(db_gen)
@@ -39,7 +39,7 @@ class OrdersMutations:
             return OrderResponse(
                 order=obj_to_schema(OrdersInDB, obj),
                 sessionID=session_id,
-                message="Orden creada. Items guardados temporalmente."
+                message="Orden creada. Detalles guardados temporalmente."
             )
         finally:
             db_gen.close()
@@ -49,7 +49,7 @@ class OrdersMutations:
         self, info: Info, orderID: int, data: OrdersUpdate
     ) -> Optional[OrderResponse]:
         """
-        Actualizar orden. Si tiene items, se cargan a TempOrderDetails para edición.
+        Actualizar orden. Si tiene detalles, se cargan a TempOrderDetails para edición.
         """
         db_gen = get_db()
         db = next(db_gen)
@@ -61,7 +61,7 @@ class OrdersMutations:
             session_id = getattr(updated, '_temp_session_id', None)
             message = "Orden actualizada."
             if session_id:
-                message += " Items cargados para edición."
+                message += " Detalles cargados para edición."
                 
             return OrderResponse(
                 order=obj_to_schema(OrdersInDB, updated),
@@ -87,7 +87,7 @@ class OrdersMutations:
         self, info: Info, orderID: int, sessionID: str
     ) -> Optional[OrderResponse]:
         """
-        Finalizar orden: mover items de TempOrderDetails a OrderDetails.
+        Finalizar orden: mover detalles de TempOrderDetails a OrderDetails.
         Llamar cuando el usuario confirma definitivamente la orden.
         """
         db_gen = get_db()
@@ -100,7 +100,7 @@ class OrdersMutations:
             return OrderResponse(
                 order=obj_to_schema(OrdersInDB, finalized),
                 sessionID=None,
-                message="Orden finalizada exitosamente. Items guardados definitivamente."
+                message="Orden finalizada exitosamente. Detalles guardados definitivamente."
             )
         finally:
             db_gen.close()
@@ -111,7 +111,7 @@ class OrdersMutations:
     ) -> Optional[OrderResponse]:
         """
         Guardar borrador de orden sin finalizar.
-        Los items permanecen en TempOrderDetails para continuar editando después.
+        Los detalles permanecen en TempOrderDetails para continuar editando después.
         """
         db_gen = get_db()
         db = next(db_gen)
@@ -121,13 +121,13 @@ class OrdersMutations:
             if not order:
                 return None
                 
-            # Verificar que existan items temporales
-            items_in_progress = get_order_items_in_progress(db, sessionID)
-            
+            # Verificar que existan detalles temporales
+            details_in_progress = get_order_details_in_progress(db, sessionID)
+
             return OrderResponse(
                 order=obj_to_schema(OrdersInDB, order),
                 sessionID=sessionID,
-                message=f"Borrador guardado con {len(items_in_progress)} items temporales."
+                message=f"Borrador guardado con {len(details_in_progress)} detalles temporales."
             )
         finally:
             db_gen.close()
@@ -137,7 +137,7 @@ class OrdersMutations:
         self, info: Info, orderID: int, sessionID: str
     ) -> bool:
         """
-        Cancelar edición de orden: eliminar items temporales sin guardar cambios.
+        Cancelar edición de orden: eliminar detalles temporales sin guardar cambios.
         """
         db_gen = get_db()
         db = next(db_gen)

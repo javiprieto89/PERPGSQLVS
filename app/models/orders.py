@@ -101,3 +101,12 @@ class Orders(Base):
         'SysOrderStatus', back_populates='orders', foreign_keys=[OrderStatusID])
     saleConditions_: Mapped['SaleConditions'] = relationship(
         'SaleConditions', back_populates='orders')
+
+    # Alias para acceder a los detalles de la orden con un nombre coherente
+    @property
+    def OrderDetails(self) -> List['OrderDetails']:
+        return self.orderDetails_
+
+    @OrderDetails.setter
+    def OrderDetails(self, value: List['OrderDetails']):
+        self.orderDetails_ = value

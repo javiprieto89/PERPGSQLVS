@@ -84,12 +84,12 @@ class OrdersQuery:
                     db, int(car_id))) if car_id is not None else None
                 data['VendorData'] = obj_to_schema(VendorsInDB, get_vendors_by_id(
                     db, int(vendor_id))) if vendor_id is not None else None
-                # Items anidados
+                # Detalles anidados
                 order_id = data.get('OrderID', None)
-                items = [d for d in get_orderdetails(db) if hasattr(
+                details = [d for d in get_orderdetails(db) if hasattr(
                     d, 'OrderID') and order_id is not None and getattr(d, 'OrderID', None) == order_id]
-                data['Items'] = [obj_to_schema(
-                    OrderDetailsInDB, d) for d in items] if items else None
+                data['OrderDetails'] = [obj_to_schema(
+                    OrderDetailsInDB, d) for d in details] if details else None
                 result.append(OrdersInDB(**data))
             return result
         finally:
@@ -116,7 +116,9 @@ class OrdersQuery:
             if not o:
                 return None
             data = vars(o).copy()
-            # Items anidados
+            # Detalles anidados
+            details = [d for d in get_orderdetails(db) if getattr(d, 'OrderID', None) == id]
+            data['OrderDetails'] = [obj_to_schema(OrderDetailsInDB, d) for d in details] if details else None
             return OrdersInDB(**data)
         finally:
             db_gen.close()

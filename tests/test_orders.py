@@ -28,7 +28,7 @@ def test_create_get_update_delete_orders(db_session):
         OrderStatusID=1,
         WarehouseID=1,
         VendorID=1,
-        Items=[]
+        OrderDetails=[]
     )
     obj = create_orders(db_session, data)
     assert getattr(obj, "CompanyID", None) == 1
