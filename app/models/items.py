@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from app.models.suppliers import Suppliers
     from app.models.warehouses import Warehouses
     from app.models.itempricehistory import ItemPriceHistory
-    from app.models.itemstock import Itemstock
+    from app.models.itemstock import ItemStock
     from app.models.pricelistitems import PriceListItems
     from app.models.stockhistory import StockHistory
     from app.models.tempstockhistorydetails import TempStockHistoryDetails

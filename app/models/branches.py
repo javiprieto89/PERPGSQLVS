@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from .documents import Documents
     from .useraccess import UserAccess
     from .items import Items
-    from .itemstock import Itemstock
+    from .itemstock import ItemStock
     from .orders import Orders
     from .stockhistory import StockHistory
     from .tempstockhistorydetails import TempStockHistoryDetails

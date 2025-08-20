@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .documents import Documents
     from .useraccess import UserAccess
     from .items import Items
-    from .itemstock import Itemstock
+    from .itemstock import ItemStock
     from .orders import Orders
     from .stockhistory import StockHistory
     from .tempstockhistorydetails import TempStockHistoryDetails
@@ -55,7 +55,7 @@ class CompanyData(Base):
         'Suppliers', back_populates='companyData_', overlaps='suppliers')
     items: Mapped[List['Items']] = relationship(
         'Items', back_populates='companyData_')
-    itemstock: Mapped[List['Itemstock']] = relationship(
-        'Itemstock', back_populates='companyData_', overlaps='branches_,itemstock')
+    itemstock: Mapped[List['ItemStock']] = relationship(
+        'ItemStock', back_populates='companyData_', overlaps='branches_,itemstock')
     userAccess: Mapped[List['UserAccess']] = relationship(
         'UserAccess', back_populates='companyData_', overlaps='branches_,userAccess')

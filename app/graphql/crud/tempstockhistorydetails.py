@@ -68,7 +68,7 @@ def delete_tempstockhistorydetails(db: Session, entry_id: int):
 
 def process_stock_session(db: Session, session_id: str):
     """Procesar todas las entradas de una sesión y actualizar stock."""
-    from app.models.itemstock import Itemstock
+    from app.models.itemstock import ItemStock
     from app.models.stockhistory import StockHistory
 
     entries = (
@@ -82,10 +82,10 @@ def process_stock_session(db: Session, session_id: str):
     for entry in entries:
         # Buscar registro de stock
         item_stock = (
-            db.query(Itemstock)
+            db.query(ItemStock)
             .filter(
-                Itemstock.ItemID == entry.ItemID,
-                Itemstock.WarehouseID == entry.WarehouseID,
+                ItemStock.ItemID == entry.ItemID,
+                ItemStock.WarehouseID == entry.WarehouseID,
             )
             .first()
         )
@@ -99,7 +99,7 @@ def process_stock_session(db: Session, session_id: str):
             )
         else:
             quantity_before = 0
-            item_stock = Itemstock(
+            item_stock = ItemStock(
                 ItemID=entry.ItemID,
                 WarehouseID=entry.WarehouseID,
                 CompanyID=entry.CompanyID,

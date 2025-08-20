@@ -1,18 +1,19 @@
+# app/graphql/crud/itemstock.py
 from sqlalchemy.orm import Session
-from app.models.itemstock import Itemstock
+from app.models.itemstock import ItemStock
 from app.graphql.schemas.itemstock import ItemStockCreate, ItemStockUpdate
 
 
 def get_itemstock(db: Session):
-    return db.query(Itemstock).all()
+    return db.query(ItemStock).all()
 
 
 def get_itemstock_by_id(db: Session, itemid: int):
-    return db.query(Itemstock).filter(Itemstock.ItemID == itemid).first()
+    return db.query(ItemStock).filter(ItemStock.ItemID == itemid).first()
 
 
 def create_itemstock(db: Session, data: ItemStockCreate):
-    obj = Itemstock(**vars(data))
+    obj = ItemStock(**vars(data))
     db.add(obj)
     db.commit()
     db.refresh(obj)
@@ -36,3 +37,4 @@ def delete_itemstock(db: Session, itemid: int):
         db.delete(obj)
         db.commit()
     return obj
+

@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .provinces import Provinces
     from .accountbalances import AccountBalances
     from .items import Items
-    from .itemstock import Itemstock
+    from .itemstock import ItemStock
     from .orderhistory import OrderHistory
     from .branches import Branches
     from .companydata import CompanyData
