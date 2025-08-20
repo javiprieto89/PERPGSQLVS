@@ -1,11 +1,3 @@
-2025-08-20 02:23:07 | INFO | Reporte de consistencia generado
-2025-08-20 02:23:07 | WARNING | [MODELS→DB] Tabla en modelos y NO en DB: ItemTaxes
-2025-08-20 02:23:07 | WARNING | [MODELS→DB] Tabla en modelos y NO en DB: Taxes
-2025-08-20 02:23:07 | WARNING | [MODELS→DB] Tabla en modelos y NO en DB: sysDocTypes
-2025-08-20 02:23:07 | WARNING | [MODELS→DB] Tabla en modelos y NO en DB: sysDocumentTypes
-2025-08-20 02:23:07 | WARNING | [DB→MODELS] Tabla en DB y NO en modelos: DocTypes
-2025-08-20 02:23:07 | WARNING | [DB→MODELS] Tabla en DB y NO en modelos: DocumentTypes
-2025-08-20 02:23:07 | WARNING | [DB→MODELS] Tabla en DB y NO en modelos: LastUserLogin
-2025-08-20 02:23:07 | WARNING | [DB→MODELS] Tabla en DB y NO en modelos: StockHistory
-2025-08-20 02:23:07 | WARNING | [DB→MODELS] Tabla en DB y NO en modelos: TempStockEntries
-2025-08-20 02:23:07 | INFO | Fin del reporte
+2025-08-20 02:27:46 | INFO | Reporte de consistencia generado
+2025-08-20 02:27:46 | INFO | No se encontraron advertencias de nulabilidad
+2025-08-20 02:27:46 | INFO | Fin del reporte

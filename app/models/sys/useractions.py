@@ -18,7 +18,7 @@ class SysUserActions(Base):
     )
 
     UserActionID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    ActionName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    ActionName = Column(Unicode(100, 'Modern_Spanish_CI_AS'), nullable=False)
 
     # Relaciones (solo lectura)
     userActivityLog: Mapped[List['UserActivityLog']] = relationship('UserActivityLog', back_populates='sysUserActions_')
