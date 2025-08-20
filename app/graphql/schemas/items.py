@@ -1,3 +1,4 @@
+# app/graphql/schemas/items.py
 import strawberry
 from typing import Optional
 from app.graphql.schemas.warehouses import WarehousesInDB
@@ -85,5 +86,15 @@ class ItemsInDB:
 
 @strawberry.type
 class ItemSearchResult:
-    items: list[ItemsInDB]
-    total: int
+    ItemID: int
+    Code: str
+    Description: str
+    CompanyData: Optional[CompanyDataInDB] = None
+    BranchData: Optional[BranchesInDB] = None
+    BrandData: Optional[BrandsInDB] = None
+    CategoryData: Optional[ItemCategoriesInDB] = None
+    SubcategoryData: Optional[ItemSubcategoriesInDB] = None
+    SupplierData: Optional[SuppliersInDB] = None
+    WarehouseData: Optional[WarehousesInDB] = None
+    Price: Optional[float] = None
+    StockQuantity: Optional[int] = None

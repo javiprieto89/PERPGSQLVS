@@ -9,6 +9,8 @@ from app.graphql.schemas.itemcategories import ItemCategoriesInDB
 from app.graphql.schemas.itemsubcategories import ItemSubcategoriesInDB
 from app.graphql.schemas.suppliers import SuppliersInDB
 from app.graphql.schemas.warehouses import WarehousesInDB
+from app.graphql.schemas.companydata import CompanyDataInDB
+from app.graphql.schemas.branches import BranchesInDB
 from app.models.items import Items
 from app.models.itemstock import ItemStock
 from app.db import get_db
@@ -121,6 +123,9 @@ class ItemsQuery:
                 joinedload(Items.itemCategories_),
                 joinedload(Items.itemSubcategories_),
                 joinedload(Items.suppliers_),
+                joinedload(Items.warehouses_),
+                joinedload(Items.branches_),
+                joinedload(Items.companyData_),
                 selectinload(Items.priceListItems_),
                 selectinload(Items.itemstock_)
             )
@@ -210,6 +215,16 @@ class ItemsQuery:
                         total_stock = 0
 
                 # Obtener datos relacionados de forma segura
+                company_data = None
+                if hasattr(item, 'companyData_') and item.companyData_:
+                    company_data = obj_to_schema(
+                        CompanyDataInDB, item.companyData_)
+
+                branch_data = None
+                if hasattr(item, 'branches_') and item.branches_:
+                    branch_data = obj_to_schema(
+                        BranchesInDB, item.branches_)
+
                 brand_data = None
                 if hasattr(item, 'brands_') and item.brands_:
                     brand_data = obj_to_schema(BrandsInDB, item.brands_)
@@ -238,11 +253,13 @@ class ItemsQuery:
                     'ItemID': safe_int(getattr(item, 'ItemID', 0)),
                     'Code': safe_str(getattr(item, 'Code', '')),
                     'Description': safe_str(getattr(item, 'Description', '')),
-                    'Brand': brand_data,
-                    'Category': category_data,
-                    'Subcategory': subcategory_data,
-                    'Supplier': supplier_data,
-                    'Warehouse': warehouse_data,
+                    'CompanyData': company_data,
+                    'BranchData': branch_data,
+                    'BrandData': brand_data,
+                    'CategoryData': category_data,
+                    'SubcategoryData': subcategory_data,
+                    'SupplierData': supplier_data,
+                    'WarehouseData': warehouse_data,
                     'Price': latest_price,
                     'StockQuantity': total_stock
                 }
@@ -270,6 +287,9 @@ class ItemsQuery:
             query = db.query(Items).join(ItemStock).options(
                 joinedload(Items.brands_),
                 joinedload(Items.itemCategories_),
+                joinedload(Items.warehouses_),
+                joinedload(Items.branches_),
+                joinedload(Items.companyData_),
                 selectinload(Items.itemstock)
             ).filter(
                 Items.CompanyID == company_id,
@@ -307,15 +327,32 @@ class ItemsQuery:
                     category_data = obj_to_schema(
                         ItemCategoriesInDB, item.itemCategories_)
 
+                company_data = None
+                if hasattr(item, 'companyData_') and item.companyData_:
+                    company_data = obj_to_schema(
+                        CompanyDataInDB, item.companyData_)
+
+                branch_data = None
+                if hasattr(item, 'branches_') and item.branches_:
+                    branch_data = obj_to_schema(
+                        BranchesInDB, item.branches_)
+
+                warehouse_data = None
+                if hasattr(item, 'warehouses_') and item.warehouses_:
+                    warehouse_data = obj_to_schema(
+                        WarehousesInDB, item.warehouses_)
+
                 item_dict = {
                     'ItemID': safe_int(getattr(item, 'ItemID', 0)),
                     'Code': safe_str(getattr(item, 'Code', '')),
                     'Description': safe_str(getattr(item, 'Description', '')),
-                    'Brand': brand_data,
-                    'Category': category_data,
-                    'Subcategory': None,
-                    'Supplier': None,
-                    'Warehouse': None,
+                    'CompanyData': company_data,
+                    'BranchData': branch_data,
+                    'BrandData': brand_data,
+                    'CategoryData': category_data,
+                    'SubcategoryData': None,
+                    'SupplierData': None,
+                    'WarehouseData': warehouse_data,
                     'Price': None,
                     'StockQuantity': stock_quantity
                 }
