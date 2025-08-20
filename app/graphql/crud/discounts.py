@@ -1,14 +1,30 @@
-from sqlalchemy.orm import Session
+# app/graphql/crud/discounts.py
+from sqlalchemy.orm import Session, joinedload
 from app.models.discounts import Discounts
 from app.graphql.schemas.discounts import DiscountsCreate, DiscountsUpdate
 
 
 def get_discounts(db: Session):
-    return db.query(Discounts).all()
+    return db.query(Discounts).options(joinedload(Discounts.companyData_)).all()
+
+
+def get_discounts_by_company(db: Session, company_id: int):
+    """Retrieve discounts filtered by CompanyID"""
+    return (
+        db.query(Discounts)
+        .options(joinedload(Discounts.companyData_))
+        .filter(Discounts.CompanyID == company_id)
+        .all()
+    )
 
 
 def get_discounts_by_id(db: Session, discountid: int):
-    return db.query(Discounts).filter(Discounts.DiscountID == discountid).first()
+    return (
+        db.query(Discounts)
+        .options(joinedload(Discounts.companyData_))
+        .filter(Discounts.DiscountID == discountid)
+        .first()
+    )
 
 
 def create_discounts(db: Session, data: DiscountsCreate):
