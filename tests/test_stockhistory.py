@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime
 from app.graphql.crud.stockhistory import create_stockhistory, get_stockhistory, update_stockhistory, delete_stockhistory
 from app.graphql.schemas.stockhistory import StockHistoryCreate, StockHistoryUpdate
 
@@ -26,6 +27,7 @@ def test_create_get_update_delete_stockhistory(db_session):
         QuantityUpdate=10,
         QuantityBefore=0,
         QuantityAfter=10,
+        TransactionDate=datetime.now(),
         Reason="Alta",
         TransactionType="Ingreso",
         Notes="Test"

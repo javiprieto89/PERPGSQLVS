@@ -22,6 +22,11 @@ class StockHistoryMutations:
     def create_stockhistory(
         self, info: Info, data: StockHistoryCreate
     ) -> StockHistoryInDB:
+        """Crea un registro de historial de stock.
+
+        TransactionDate es un campo requerido y debe ser proporcionado
+        en los datos de entrada para asegurar la persistencia.
+        """
         db_gen = get_db()
         db = next(db_gen)
         try:
