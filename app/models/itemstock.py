@@ -1,4 +1,4 @@
-# ========== Itemstock ===========
+# ========== ItemStock ===========
 # app/models/itemstock.py
 from __future__ import annotations
 from typing import List, TYPE_CHECKING
@@ -15,7 +15,7 @@ from sqlalchemy.orm import Mapped, relationship
 from app.db import Base
 
 
-class Itemstock(Base):
+class ItemStock(Base):
     __tablename__ = 'Itemstock'
     __table_args__ = (
         ForeignKeyConstraint(

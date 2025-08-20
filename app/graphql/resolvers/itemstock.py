@@ -9,7 +9,7 @@ from strawberry.types import Info
 
 
 @strawberry.type
-class ItemstockQuery:
+class ItemStockQuery:
     @strawberry.field
     def all_itemstock(self, info: Info) -> List[ItemStockInDB]:
         db_gen = get_db()
@@ -31,4 +31,4 @@ class ItemstockQuery:
             db_gen.close()
 
 
-itemstockQuery = ItemstockQuery()
+itemStockQuery = ItemStockQuery()

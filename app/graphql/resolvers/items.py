@@ -10,7 +10,7 @@ from app.graphql.schemas.itemsubcategories import ItemSubcategoriesInDB
 from app.graphql.schemas.suppliers import SuppliersInDB
 from app.graphql.schemas.warehouses import WarehousesInDB
 from app.models.items import Items
-from app.models.itemstock import Itemstock
+from app.models.itemstock import ItemStock
 from app.db import get_db
 from app.graphql.crud.items import get_items, get_items_by_id
 from app.utils import list_to_schema, obj_to_schema
@@ -267,7 +267,7 @@ class ItemsQuery:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            query = db.query(Items).join(Itemstock).options(
+            query = db.query(Items).join(ItemStock).options(
                 joinedload(Items.brands_),
                 joinedload(Items.itemCategories_),
                 selectinload(Items.itemstock)
@@ -275,12 +275,12 @@ class ItemsQuery:
                 Items.CompanyID == company_id,
                 Items.IsActive == True,
                 Items.ControlStock == True,
-                Itemstock.Quantity <= Items.ReplenishmentStock,
-                Itemstock.Quantity > 0
+                ItemStock.Quantity <= Items.ReplenishmentStock,
+                ItemStock.Quantity > 0
             )
 
             if warehouse_id:
-                query = query.filter(Itemstock.WarehouseID == warehouse_id)
+                query = query.filter(ItemStock.WarehouseID == warehouse_id)
 
             items = query.limit(limit).all()
 

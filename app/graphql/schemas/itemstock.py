@@ -5,7 +5,7 @@ from datetime import datetime
 
 @strawberry.input
 class ItemStockCreate:
-    IemID: int
+    ItemID: int
     WarehouseID: int
     CompanyID: Optional[int] = None
     Quantity: Optional[int] = None
@@ -41,7 +41,7 @@ class ItemStockInDB:
     WarehouseID: int
     CompanyID: Optional[int]
     Quantity: Optional[int]
-    rRservedQuantity: Optional[int]
+    ReservedQuantity: Optional[int]
     LastModified: Optional[datetime]
     StockStatus: Optional[str]
     MinStockLevel: Optional[int]

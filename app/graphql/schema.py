@@ -27,7 +27,7 @@ from app.graphql.resolvers.cashboxmovements import CashboxmovementsQuery
 from app.graphql.resolvers.itemcategories import ItemcategoriesQuery
 from app.graphql.resolvers.itempricehistory import ItempricehistoryQuery
 from app.graphql.resolvers.items import ItemsQuery
-from app.graphql.resolvers.itemstock import ItemstockQuery
+from app.graphql.resolvers.itemstock import ItemStockQuery
 from app.graphql.resolvers.itemsubcategories import ItemsubcategoriesQuery
 from app.graphql.resolvers.orderdetails import OrderdetailsQuery
 from app.graphql.resolvers.orderhistory import OrderhistoryQuery
@@ -185,7 +185,7 @@ class AdvancedResolver:
         from app.models.items import Items
         from app.models.clients import Clients
         from app.models.orders import Orders
-        from app.models.itemstock import Itemstock
+        from app.models.itemstock import ItemStock
 
         db_gen = get_db()
         db = next(db_gen)
@@ -200,12 +200,12 @@ class AdvancedResolver:
 
             low_stock_items = (
                 db.query(Items)
-                .join(Itemstock)
+                .join(ItemStock)
                 .filter(
                     company_filter,
                     Items.IsActive == True,
                     Items.ControlStock == True,
-                    Itemstock.Quantity <= Items.ReplenishmentStock,
+                    ItemStock.Quantity <= Items.ReplenishmentStock,
                 )
                 .count()
             )
@@ -335,7 +335,7 @@ class Query(
     ItemcategoriesQuery,
     ItempricehistoryQuery,
     ItemsQuery,
-    ItemstockQuery,
+    ItemStockQuery,
     ItemsubcategoriesQuery,
     OrderdetailsQuery,
     OrderhistoryQuery,

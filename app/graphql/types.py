@@ -93,7 +93,7 @@ class CategorySubcategoryItems:
 
 
 @strawberry.type
-class Itemstock:
+class ItemStock:
     pass  # TODO: completar campos manualmente
 
 

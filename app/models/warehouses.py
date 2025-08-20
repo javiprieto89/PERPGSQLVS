@@ -5,7 +5,7 @@ from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .items import Items
-    from .itemstock import Itemstock
+    from .itemstock import ItemStock
     from .orders import Orders
     from .stockhistory import StockHistory
     from .tempstockhistorydetails import TempStockHistoryDetails
@@ -18,7 +18,7 @@ from typing import List
 from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
 from sqlalchemy.orm import Mapped, relationship
 # from .items import Items
-# from .itemstock import Itemstock
+# from .itemstock import ItemStock
 # from .orders import Orders
 # from .stockhistory import StockHistory
 # from .tempstockentries import TempStockEntries
@@ -43,8 +43,8 @@ class Warehouses(Base):
     # Relaciones
     items: Mapped[List['Items']] = relationship(
         'Items', back_populates='warehouses_')
-    itemstock: Mapped[List['Itemstock']] = relationship(
-        'Itemstock', back_populates='warehouses_')
+    itemstock: Mapped[List['ItemStock']] = relationship(
+        'ItemStock', back_populates='warehouses_')
 
     # stockHistory relación eliminada para evitar conflicto de mapeo
     tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship(
