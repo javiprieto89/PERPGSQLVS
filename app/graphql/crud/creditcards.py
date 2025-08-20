@@ -14,6 +14,16 @@ from app.graphql.schemas.creditcards import (
 def get_creditcards(db: Session):
     return db.query(CreditCards).options(joinedload(CreditCards.creditCardGroups_)).all()
 
+
+def get_creditcards_by_company(db: Session, company_id: int):
+    """Retrieve credit cards filtered by CompanyID"""
+    return (
+        db.query(CreditCards)
+        .options(joinedload(CreditCards.creditCardGroups_))
+        .filter(CreditCards.CompanyID == company_id)
+        .all()
+    )
+
 def get_creditcard_by_id(db: Session, id: int):
     return (
         db.query(CreditCards)
