@@ -50,15 +50,15 @@ def get_orders_by_id(db: Session, orderid: int):
 
 def create_orders(db: Session, data: OrdersCreate):
     """
-    Crear nueva orden y guardar items en TempOrderDetails.
-    Los items se moverán a OrderDetails cuando se finalice la orden.
+    Crear nueva orden y guardar detalles en ``TempOrderDetails``.
+    Los detalles se moverán a ``OrderDetails`` cuando se finalice la orden.
     """
-    # Extraer los ítems de la orden
-    items_data = data.Items if hasattr(data, "Items") else []
+    # Extraer los detalles de la orden
+    details_data = data.OrderDetails if hasattr(data, "OrderDetails") else []
 
-    # Crear orden sin los ítems
+    # Crear orden sin los detalles
     order_data = vars(data).copy()
-    order_data.pop("Items", None)  # Eliminar items del dict para el modelo
+    order_data.pop("OrderDetails", None)  # Eliminar detalles del dict para el modelo
 
     # Crear el objeto Orders (incluye VendorID y todos los campos nuevos)
     order = Orders(**order_data)
@@ -68,12 +68,12 @@ def create_orders(db: Session, data: OrdersCreate):
     # Generar session ID único para esta orden
     session_id = uuid4()
 
-    # Guardar items en TempOrderDetails
-    for item in items_data:
+    # Guardar detalles en TempOrderDetails
+    for detail in details_data:
         # Obtener WarehouseID de forma segura
         warehouse_id = (
-            getattr(item, "WarehouseID", None)
-            if hasattr(item, "WarehouseID") and item.WarehouseID
+            getattr(detail, "WarehouseID", None)
+            if hasattr(detail, "WarehouseID") and detail.WarehouseID
             else _safe_get_int(order, "WarehouseID")
         )
 
@@ -83,12 +83,12 @@ def create_orders(db: Session, data: OrdersCreate):
             UserID=_safe_get_int(order, "UserID"),
             OrderID=_safe_get_int(order, "OrderID"),
             OrderSessionID=session_id,
-            ItemID=item.ItemID,
-            Quantity=item.Quantity,
+            ItemID=detail.ItemID,
+            Quantity=detail.Quantity,
             WarehouseID=warehouse_id,
             PriceListID=_safe_get_int(order, "PriceListID"),
-            UnitPrice=item.UnitPrice,
-            Description=item.Description,
+            UnitPrice=detail.UnitPrice,
+            Description=detail.Description,
         )
         db.add(temp_detail)
 
@@ -102,22 +102,22 @@ def create_orders(db: Session, data: OrdersCreate):
 
 
 def update_orders(db: Session, orderid: int, data: OrdersUpdate):
-    """Actualizar orden y preparar los items para edición.
+    """Actualizar orden y preparar los detalles para edición.
 
     Siempre carga los ``OrderDetails`` existentes a ``TempOrderDetails`` para
     que puedan modificarse desde el frontend, independientemente de si el
-    payload incluye items nuevos o no.
+    payload incluye detalles nuevos o no.
     """
     obj = get_orders_by_id(db, orderid)
     if not obj:
         return None
 
     update_data = vars(data).copy()
-    # ``Items`` puede venir para futuras funcionalidades, pero por ahora sólo se
-    # extrae para evitar que intente asignarse directamente al modelo ``Orders``.
-    update_data.pop("Items", None)
+    # ``OrderDetails`` puede venir para futuras funcionalidades, pero por ahora
+    # sólo se extrae para evitar que intente asignarse directamente al modelo ``Orders``.
+    update_data.pop("OrderDetails", None)
 
-    # Actualizar campos de la orden (excluyendo items)
+    # Actualizar campos de la orden (excluyendo detalles)
     for k, v in update_data.items():
         if v is not None and hasattr(obj, k):
             setattr(obj, k, v)
@@ -166,7 +166,7 @@ def delete_orders(db: Session, orderid: int):
 
 def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Orders]:
     """
-    Finalizar orden: mover items de TempOrderDetails a OrderDetails y limpiar temporales.
+    Finalizar orden: mover detalles de ``TempOrderDetails`` a ``OrderDetails`` y limpiar temporales.
     ``session_id`` se mantiene por compatibilidad pero se ignorará y se usará ``orderid``
     para obtener todos los registros temporales de la orden.
     """
@@ -174,11 +174,11 @@ def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Order
     if not order:
         return None
 
-    # Obtener items temporales de la orden (ignorar session_id)
-    temp_items = get_temporderdetails_by_order(db, orderid)
+    # Obtener detalles temporales de la orden (ignorar session_id)
+    temp_details = get_temporderdetails_by_order(db, orderid)
 
-    if not temp_items:
-        # Si no hay items temporales, la orden ya está finalizada o no tiene items
+    if not temp_details:
+        # Si no hay detalles temporales, la orden ya está finalizada o no tiene detalles
         return order
 
     # Eliminar OrderDetails existentes para reemplazarlos
@@ -187,14 +187,14 @@ def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Order
     )
 
     # Crear nuevos OrderDetails desde TempOrderDetails
-    for temp_item in temp_items:
+    for temp_detail in temp_details:
         order_detail = OrderDetails(
             OrderID=orderid,
-            ItemID=_safe_get_int(temp_item, "ItemID"),
-            WarehouseID=_safe_get_int(temp_item, "WarehouseID"),
-            Quantity=_safe_get_int(temp_item, "Quantity"),
-            UnitPrice=temp_item.UnitPrice,
-            Description=temp_item.Description,
+            ItemID=_safe_get_int(temp_detail, "ItemID"),
+            WarehouseID=_safe_get_int(temp_detail, "WarehouseID"),
+            Quantity=_safe_get_int(temp_detail, "Quantity"),
+            UnitPrice=temp_detail.UnitPrice,
+            Description=temp_detail.Description,
         )
         db.add(order_detail)
 
@@ -274,8 +274,6 @@ def remove_item_from_order(db: Session, session_id: str, item_id: int) -> bool:
     return True
 
 
-def get_order_items_in_progress(db: Session, session_id: str) -> list:
-    """
-    Obtener todos los items de una orden en proceso (desde TempOrderDetails).
-    """
+def get_order_details_in_progress(db: Session, session_id: str) -> list:
+    """Obtener todos los detalles de una orden en proceso (desde ``TempOrderDetails``)."""
     return get_temporderdetails_by_session(db, session_id)

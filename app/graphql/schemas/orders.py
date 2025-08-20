@@ -47,7 +47,7 @@ class OrdersCreate:
     OrderStatusID: int
     WarehouseID: int
     VendorID: int
-    Items: List[OrderDetailsCreate] = field(default_factory=list)
+    OrderDetails: List[OrderDetailsCreate] = field(default_factory=list)
 
 
 @strawberry.input
@@ -73,7 +73,7 @@ class OrdersUpdate:
     PriceListID: Optional[int] = None
     WarehouseID: Optional[int] = None
     VendorID: Optional[int] = None
-    Items: Optional[List[OrderDetailsUpdate]] = None
+    OrderDetails: Optional[List[OrderDetailsUpdate]] = None
 
 
 @strawberry.type
@@ -100,7 +100,7 @@ class OrdersInDB:
     OrderStatusID: int
     WarehouseID: int
     VendorID: int
-    Items: Optional[List[OrderDetailsInDB]] = None
+    OrderDetails: Optional[List[OrderDetailsInDB]] = None
     CompanyData: Optional[CompanyDataInDB] = None
     BranchData: Optional[BranchesInDB] = None
     SaleConditionData: Optional[SaleConditionsInDB] = None
