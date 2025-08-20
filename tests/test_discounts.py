@@ -1,11 +1,22 @@
 import pytest
-from app.graphql.crud.discounts import create_discounts, get_discounts, update_discounts, delete_discounts
+from app.graphql.crud.discounts import (
+    create_discounts,
+    get_discounts,
+    update_discounts,
+    delete_discounts,
+)
 from app.graphql.schemas.discounts import DiscountsCreate, DiscountsUpdate
+from app.models.companydata import CompanyData
 
 
 def test_create_get_update_delete_discounts(db_session):
+    # Crear dependencia CompanyData
+    company = CompanyData(Name="Test Company")
+    db_session.add(company)
+    db_session.commit()
+    db_session.refresh(company)
     # Crear
-    data = DiscountsCreate(DiscountName="Descuento Test", Percentage=10.0)
+    data = DiscountsCreate(DiscountName="Descuento Test", Percentage=10.0, CompanyID=company.CompanyID)
     obj = create_discounts(db_session, data)
     assert obj.DiscountName == "Descuento Test"
     # Obtener
