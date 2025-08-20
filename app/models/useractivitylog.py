@@ -4,14 +4,14 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .sysuseractions import SysUserActions
+    from .sys.useractions import SysUserActions
     from .users import Users
 
 from typing import List
 
 from sqlalchemy import Column, Integer, DateTime, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
 from sqlalchemy.orm import Mapped, relationship
-#from .sysuseractions import SysUserActions
+#from .sys.useractions import SysUserActions
 #from .users import Users
 from app.db import Base
 

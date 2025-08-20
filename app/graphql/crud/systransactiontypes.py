@@ -1,10 +1,6 @@
 # app/graphql/crud/systransactiontypes.py
 from sqlalchemy.orm import Session
-from app.models.systransactiontypes import SysTransactionTypes
-from app.graphql.schemas.systransactiontypes import (
-    SysTransactionTypesCreate,
-    SysTransactionTypesUpdate,
-)
+from app.models.sys.transactiontypes import SysTransactionTypes
 
 
 def get_systransactiontypes(db: Session):
@@ -13,33 +9,19 @@ def get_systransactiontypes(db: Session):
 
 def get_systransactiontypes_by_id(db: Session, id: int):
     return (
-        db.query(SysTransactionTypes).filter(
-            SysTransactionTypes.TransactTypeID == id).first()
+        db.query(SysTransactionTypes)
+        .filter(SysTransactionTypes.TransactTypeID == id)
+        .first()
     )
 
 
-def create_systransactiontypes(db: Session, record: SysTransactionTypesCreate):
-    db_record = SysTransactionTypes(**record.__dict__)
-    db.add(db_record)
-    db.commit()
-    db.refresh(db_record)
-    return db_record
+def create_systransactiontypes(db: Session, record):
+    raise NotImplementedError("SysTransactionTypes is read-only")
 
 
-def update_systransactiontypes(db: Session, id: int, record: SysTransactionTypesUpdate):
-    db_record = get_systransactiontypes_by_id(db, id)
-    if db_record:
-        for k, v in record.__dict__.items():
-            if v is not None:
-                setattr(db_record, k, v)
-        db.commit()
-        db.refresh(db_record)
-    return db_record
+def update_systransactiontypes(db: Session, id: int, record):
+    raise NotImplementedError("SysTransactionTypes is read-only")
 
 
 def delete_systransactiontypes(db: Session, id: int):
-    db_record = get_systransactiontypes_by_id(db, id)
-    if db_record:
-        db.delete(db_record)
-        db.commit()
-    return db_record
+    raise NotImplementedError("SysTransactionTypes is read-only")

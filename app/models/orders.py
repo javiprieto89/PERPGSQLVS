@@ -9,8 +9,8 @@ if TYPE_CHECKING:
     from .clients import Clients
     from .companydata import CompanyData
     from .discounts import Discounts
-    from .sysdocumenttypes import SysDocumentTypes
-    from .sysorderstatus import SysOrderStatus  # <--- corregido acá
+    from .sys.documenttypes import SysDocumentTypes
+    from .sys.orderstatus import SysOrderStatus
     from .pricelists import PriceLists
     from .saleconditions import SaleConditions
     from .servicetype import ServiceType

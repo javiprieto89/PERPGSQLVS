@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from app.models.cars import Cars
     from app.models.orders import Orders
     from app.models.countries import Countries
-    from app.models.sysdoctypes import SysDocTypes
+    from app.models.sys.doctypes import SysDocTypes
     from app.models.pricelists import PriceLists
     from app.models.provinces import Provinces
     from app.models.vendors import Vendors

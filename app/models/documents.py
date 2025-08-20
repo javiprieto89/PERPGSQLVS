@@ -6,7 +6,7 @@ from typing import Optional, TYPE_CHECKING
 if TYPE_CHECKING:
     from .branches import Branches
     from .companydata import CompanyData
-    from .sysdocumenttypes import SysDocumentTypes
+    from .sys.documenttypes import SysDocumentTypes
 
 from typing import List
 

@@ -1,7 +1,7 @@
-# app/graphql/resolvers/sysuseractions.py
+# app/graphql/resolvers/sys/useractions.py
 import strawberry
 from typing import List, Optional
-from app.graphql.schemas.sysuseractions import SysUserActionsInDB
+from app.graphql.schemas.sys.useractions import SysUserActionsInDB
 from app.graphql.crud.sysuseractions import (
     get_sysuseractions,
     get_sysuseractions_by_id,
@@ -14,6 +14,8 @@ from strawberry.types import Info
 
 @strawberry.type
 class SysuseractionsQuery:
+    """Consultas para catálogo inmutable de acciones de usuario."""
+
     @strawberry.field
     def all_sysuseractions(self, info: Info) -> List[SysUserActionsInDB]:
         db_gen = get_db()
@@ -25,7 +27,9 @@ class SysuseractionsQuery:
             db_gen.close()
 
     @strawberry.field
-    def sysuseractions_by_id(self, info: Info, id: int) -> Optional[SysUserActionsInDB]:
+    def sysuseractions_by_id(
+        self, info: Info, id: int
+    ) -> Optional[SysUserActionsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
@@ -35,7 +39,9 @@ class SysuseractionsQuery:
             db_gen.close()
 
     @strawberry.field
-    def sysuseractions_by_name(self, info: Info, name: str) -> List[SysUserActionsInDB]:
+    def sysuseractions_by_name(
+        self, info: Info, name: str
+    ) -> List[SysUserActionsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:

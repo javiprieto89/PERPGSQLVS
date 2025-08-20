@@ -1,14 +1,17 @@
-﻿# app/graphql/resolvers/sysdoctypes.py
+# app/graphql/resolvers/sys/doctypes.py
 import strawberry
 from typing import List, Optional
-from app.graphql.schemas.sysdoctypes import SysDocTypesInDB
+from app.graphql.schemas.sys.doctypes import SysDocTypesInDB
 from app.graphql.crud.sysdoctypes import get_sysdoctypes, get_sysdoctypes_by_id
 from app.db import get_db
 from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
+
 @strawberry.type
 class SysdoctypesQuery:
+    """Consultas para catálogo inmutable de tipos de documentos personales."""
+
     @strawberry.field
     def all_sysdoctypes(self, info: Info) -> List[SysDocTypesInDB]:
         db_gen = get_db()
@@ -45,5 +48,6 @@ class SysdoctypesQuery:
             return None
         finally:
             db_gen.close()
+
 
 sysdoctypesQuery = SysdoctypesQuery()

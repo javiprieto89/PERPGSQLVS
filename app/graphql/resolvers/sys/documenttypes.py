@@ -1,8 +1,11 @@
-﻿# app/graphql/resolvers/sysdocumenttypes.py
+# app/graphql/resolvers/sys/documenttypes.py
 import strawberry
 from typing import List, Optional
-from app.graphql.schemas.sysdocumenttypes import SysDocumentTypesInDB
-from app.graphql.crud.sysdocumenttypes import get_sysdocumenttypes, get_sysdocumenttypes_by_id
+from app.graphql.schemas.sys.documenttypes import SysDocumentTypesInDB
+from app.graphql.crud.sysdocumenttypes import (
+    get_sysdocumenttypes,
+    get_sysdocumenttypes_by_id,
+)
 from app.db import get_db
 from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
@@ -10,6 +13,8 @@ from strawberry.types import Info
 
 @strawberry.type
 class SysdocumenttypesQuery:
+    """Consultas para catálogo inmutable de tipos de comprobantes."""
+
     @strawberry.field
     def all_sysdocumenttypes(self, info: Info) -> List[SysDocumentTypesInDB]:
         db_gen = get_db()
@@ -21,12 +26,18 @@ class SysdocumenttypesQuery:
             db_gen.close()
 
     @strawberry.field
-    def sysdocumenttypes_by_id(self, info: Info, id: int) -> Optional[SysDocumentTypesInDB]:
+    def sysdocumenttypes_by_id(
+        self, info: Info, id: int
+    ) -> Optional[SysDocumentTypesInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
             documenttype = get_sysdocumenttypes_by_id(db, id)
-            return obj_to_schema(SysDocumentTypesInDB, documenttype) if documenttype else None
+            return (
+                obj_to_schema(SysDocumentTypesInDB, documenttype)
+                if documenttype
+                else None
+            )
         finally:
             db_gen.close()
 

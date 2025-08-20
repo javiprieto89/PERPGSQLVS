@@ -13,9 +13,9 @@ from .countries import *
 from .creditcardgroups import *
 from .creditcards import *
 from .discounts import *
-from .sysdoctypes import *
+from .sys.doctypes import *
 from .documents import *
-from .sysdocumenttypes import *
+from .sys.documenttypes import *
 from .itemcategories import *
 from .itempricehistory import *
 from .items import *
@@ -25,7 +25,7 @@ from .orderdetails import *
 from .orderhistory import *
 from .orderhistorydetails import *
 from .orders import *
-from .sysorderstatus import *
+from .sys.orderstatus import *
 from .pricelistitems import *
 from .pricelists import *
 from .provinces import *
@@ -41,9 +41,9 @@ from .cashboxmovements import *
 from .transactions import *
 from .taxes import *
 from .itemtaxes import *
-from .systransactiontypes import *
+from .sys.transactiontypes import *
 from .useraccess import *
-from .sysuseractions import *
+from .sys.useractions import *
 from .useractivitylog import *
 from .users import *
 from .vendors import *
@@ -63,9 +63,9 @@ __all__ = [
     "creditcardgroups",
     "creditcards",
     "discounts",
-    "sysdoctypes",
     "documents",
-    "sysdocumenttypes",
+    "documenttypes",
+    "doctypes",
     "itemcategories",
     "itempricehistory",
     "items",
@@ -75,7 +75,7 @@ __all__ = [
     "orderhistory",
     "orderhistorydetails",
     "orders",
-    "sysorderstatus",
+    "orderstatus",
     "pricelistitems",
     "pricelists",
     "provinces",
@@ -89,11 +89,11 @@ __all__ = [
     "cashboxes",
     "cashboxmovements",
     "transactions",
+    "transactiontypes",
     "taxes",
     "itemtaxes",
-    "systransactiontypes",
     "useraccess",
-    "sysuseractions",
+    "useractions",
     "useractivitylog",
     "users",
     "vendors",

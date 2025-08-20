@@ -1,7 +1,6 @@
 # app/graphql/crud/sysdoctypes.py
 from sqlalchemy.orm import Session
-from app.models.sysdoctypes import SysDocTypes
-from app.graphql.schemas.sysdoctypes import SysDocTypesCreate, SysDocTypesUpdate
+from app.models.sys.doctypes import SysDocTypes
 
 
 def get_sysdoctypes(db: Session):
@@ -12,28 +11,13 @@ def get_sysdoctypes_by_id(db: Session, doctypeid: int):
     return db.query(SysDocTypes).filter(SysDocTypes.DocTypeID == doctypeid).first()
 
 
-def create_sysdoctypes(db: Session, data: SysDocTypesCreate):
-    obj = SysDocTypes(**vars(data))
-    db.add(obj)
-    db.commit()
-    db.refresh(obj)
-    return obj
+def create_sysdoctypes(db: Session, data):
+    raise NotImplementedError("SysDocTypes is read-only")
 
 
-def update_sysdoctypes(db: Session, doctypeid: int, data: SysDocTypesUpdate):
-    obj = get_sysdoctypes_by_id(db, doctypeid)
-    if obj:
-        for k, v in vars(data).items():
-            if v is not None:
-                setattr(obj, k, v)
-        db.commit()
-        db.refresh(obj)
-    return obj
+def update_sysdoctypes(db: Session, doctypeid: int, data):
+    raise NotImplementedError("SysDocTypes is read-only")
 
 
 def delete_sysdoctypes(db: Session, doctypeid: int):
-    obj = get_sysdoctypes_by_id(db, doctypeid)
-    if obj:
-        db.delete(obj)
-        db.commit()
-    return obj
+    raise NotImplementedError("SysDocTypes is read-only")

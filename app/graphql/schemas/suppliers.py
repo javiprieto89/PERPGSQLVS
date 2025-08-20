@@ -3,7 +3,7 @@ import strawberry
 from typing import Optional
 from app.graphql.schemas.companydata import CompanyDataInDB
 from app.graphql.schemas.branches import BranchesInDB
-from app.graphql.schemas.sysdoctypes import SysDocTypesInDB
+from app.graphql.schemas.sys.doctypes import SysDocTypesInDB
 from app.graphql.schemas.countries import CountriesInDB
 from app.graphql.schemas.provinces import ProvincesInDB
 
