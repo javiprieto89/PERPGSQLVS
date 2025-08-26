@@ -9,12 +9,10 @@
     "**/.vercel/**": true,
     "**/.cache/**": true,
     "**/.git/**": true,
-    "*-lock.*": true,
-    "*.bkp.*": true,
-    "*.patch": true,
-    "package-lock.json": true,
-    "yarn-lock.json": true,
-    "pnpm-lock.json": true
+    "**/*-lock.*": true,
+    "**/*.bkp.*": true,
+    "**/*.patch": true,
+    "*.pyproj": true
   },
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {

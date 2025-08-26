@@ -5,7 +5,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import apolloClient from "~/lib/apollo";
 
-import Layout from "./components/Layout";
+import Layout from "./layout/Layout";
 
 import RequireAuth from "./components/RequireAuth";
 import { UserProvider } from "./context/UserContext";
@@ -41,7 +41,10 @@ import Suppliers from "./pages/Suppliers";
 import Users from "./pages/Users";
 import Vendors from "./pages/Vendors";
 import Warehouses from "./pages/Warehouses";
-import UiPage from "./pages/ui";
+
+import PriceListCreateLab from "./pages/lab/PriceListCreateLab";
+import UiPage from "./pages/lab/ui";
+
 import { AuthHelper } from "./utils/authHelper";
 
 // Redirecciona la raíz "/" según si hay token
@@ -179,7 +182,6 @@ export default function App() {
         <Route path="/login" element={<Login onLogin={handleLoginSuccess} />} />
         <Route path="/logout" element={<LogoutSuccess />} />
         <Route path="/" element={<RedirectRoot />} />
-        <Route path="ui" element={<UiPage />} />
 
         {/* Rutas protegidas */}
         <Route
@@ -230,6 +232,9 @@ export default function App() {
           <Route path="fe-less-info" element={<FeLessInfo />} />
 
           <Route path="*" element={<div>404 Page Not found</div>} />
+
+          <Route path="lab/ui" element={<UiPage />} />
+          <Route path="lab/price-list-form" element={<PriceListCreateLab />} />
         </Route>
       </Routes>
     </UserProvider>

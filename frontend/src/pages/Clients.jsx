@@ -1,4 +1,4 @@
-import { Eye, Pencil, RefreshCcw, UserRoundPlus, Users } from "lucide-react";
+import { Eye, UserRoundPlus, Users } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useGetAllClientsQuery } from "~/graphql/_generated/graphql";
@@ -8,13 +8,18 @@ import { openReactWindow } from "../utils/openReactWindow";
 import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { ClientDetails } from "~/components/client/ClientDetails";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import {
+  AdminTableLoading,
+  TableActionButton,
+  TableIsActiveCell,
+} from "~/components/TableExtraComponents";
 import TableFilters from "~/components/TableFilters";
-import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+import { AdminTable } from "~/components/TanstackTable";
 import { Button } from "~/components/ui/button";
 
 import { AlertLoading } from "~/components/AlertLoading";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { TableActionDropdown } from "~/components/TableActionButtons";
+import { RefreshButton } from "~/components/RefreshButton";
 import ClientCreate from "./ClientCreate";
 
 export default function Clients() {
@@ -83,7 +88,6 @@ export default function Clients() {
   useEffect(() => {
     const handler = (e) => {
       if (e.data === "reload-clients") {
-        console.log("--- MESSAGE REFETCH");
         refetch();
       }
     };
@@ -92,7 +96,7 @@ export default function Clients() {
   }, [refetch]);
 
   useEffect(() => {
-    if (data) {
+    if (data?.allClients) {
       setClients(data.allClients);
     }
   }, [data]);
@@ -125,26 +129,15 @@ export default function Clients() {
         accessorKey: "DocNumber",
       },
       {
-        header: "IsActive",
+        header: "Estado",
         accessorKey: "IsActive",
-        cell: (props) => {
-          return (
-            <span
-              className={`px-2 py-1 text-xs font-medium rounded-full ${
-                props.getValue()
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-destructive"
-              }`}
-            >
-              {props.getValue() ? "Activo" : "Inactivo"}
-            </span>
-          );
-        },
+        cell: (props) => <TableIsActiveCell {...props} />,
       },
       {
         header: "",
         id: "actions",
         accessorKey: "ClientID",
+        enableHiding: false,
         cell: ({ row, getValue }) => {
           return (
             <div className="flex gap-2">
@@ -156,13 +149,10 @@ export default function Clients() {
                   <Eye />
                 </Button>
               )}
-              <Button
-                onClick={() => handleEdit(row.original)}
-                className="hidden md:inline px-3 py-2 text-sm rounded"
-              >
-                <Pencil />
-              </Button>
-              <TableActionDropdown onDelete={() => handleDelete(getValue())} />
+              <TableActionButton
+                onEdit={() => handleEdit(row.original)}
+                onDelete={() => handleDelete(getValue())}
+              />
             </div>
           );
         },
@@ -188,10 +178,7 @@ export default function Clients() {
               />
             </>
           )}
-          <Button onClick={() => refetch()}>
-            <RefreshCcw />
-            Recargar
-          </Button>
+          <RefreshButton onClick={() => refetch()} loading={loading} />
           <Button variant="primary" onClick={handleCreate}>
             <UserRoundPlus />
             Nuevo Cliente
@@ -243,12 +230,6 @@ export default function Clients() {
               <div>{row.id}</div>;
             }}
           />
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-muted-foreground text-sm">
-              Mostrando {clients.length} cliente
-              {clients.length !== 1 ? "s" : ""}
-            </p>
-          </div>
         </>
       )}
       {loading && <AdminTableLoading />}
