@@ -39,3 +39,35 @@ class Branches(Base):
     Address = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
     Phone = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
     Logo = Column(LargeBinary)
+
+    # Relaciones
+    companyData_: Mapped[CompanyData] = relationship(
+        'CompanyData', back_populates='branches')
+    documents: Mapped[List[Documents]] = relationship(
+        'Documents', back_populates='branches_')
+    userAccess: Mapped[List[UserAccess]] = relationship(
+        'UserAccess', back_populates='branches_')
+    items: Mapped[List[Items]] = relationship(
+        'Items', back_populates='branches_')
+    itemstock: Mapped[List[Itemstock]] = relationship(
+        'Itemstock', back_populates='branches_')
+    orders: Mapped[List[Orders]] = relationship(
+        'Orders', back_populates='branches_')
+    stockHistory: Mapped[List[StockHistory]] = relationship(
+        'StockHistory', back_populates='branches_')
+    tempStockHistoryDetails: Mapped[List[TempStockHistoryDetails]] = relationship(
+        'TempStockHistoryDetails', back_populates='branches_')
+    orderHistory_: Mapped[List[OrderHistory]] = relationship(
+        'OrderHistory', back_populates='branches_')
+    tempOrderDetails: Mapped[List[TempOrderDetails]] = relationship(
+        'TempOrderDetails', back_populates='branches_')
+    transactions: Mapped[List[Transactions]] = relationship(
+        'Transactions', back_populates='branches_')
+    cashBoxes: Mapped[List[CashBoxes]] = relationship(
+        'CashBoxes', back_populates='branches_')
+    clients: Mapped[List['Clients']] = relationship(
+        'Clients',
+        back_populates='branches_',
+        primaryjoin='and_(Branches.CompanyID == foreign(Clients.CompanyID), Branches.BranchID == foreign(Clients.BranchID))',
+        foreign_keys='[Clients.CompanyID, Clients.BranchID]'
+    )

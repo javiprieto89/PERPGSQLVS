@@ -34,12 +34,8 @@ class PriceLists(Base):
         '(CONVERT([date],getdate()))'))
 
     # Relaciones
-    clients: Mapped[List['Clients']] = relationship(
-        'Clients', back_populates='pricelists_')
-    itemPriceHistory: Mapped[List['ItemPriceHistory']] = relationship(
-        'ItemPriceHistory', back_populates='priceLists_')
-
-    priceListItems: Mapped[List['PriceListItems']] = relationship(
-        'PriceListItems', back_populates='priceLists_')
-    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship(
-        'TempOrderDetails', back_populates='priceLists_')
+    clients: Mapped[List['Clients']] = relationship('Clients', back_populates='pricelists_')
+    itemPriceHistory: Mapped[List['ItemPriceHistory']] = relationship('ItemPriceHistory', back_populates='priceLists_')
+    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='priceLists_')
+    priceListItems: Mapped[List['PriceListItems']] = relationship('PriceListItems', back_populates='priceLists_')
+    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship('TempOrderDetails', back_populates='priceLists_')

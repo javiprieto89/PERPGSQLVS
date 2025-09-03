@@ -35,3 +35,9 @@ class Brands(Base):
     Name = Column(Unicode(100, "Modern_Spanish_CI_AS"))
     IsActive = Column(Boolean, nullable=False, server_default=text("((1))"))
     CompanyID = Column(Integer)
+
+    # Relaciones
+    items: Mapped[List['Items']] = relationship(
+        'Items', back_populates='brands_')
+    companyData_: Mapped['CompanyData'] = relationship(
+        'CompanyData', back_populates='brands')

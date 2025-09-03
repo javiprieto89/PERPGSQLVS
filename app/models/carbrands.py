@@ -32,3 +32,9 @@ class CarBrands(Base):
         start=1, increment=1), primary_key=True)
     Name = Column(Unicode(100, "Modern_Spanish_CI_AS"))
     CompanyID = Column(Integer)
+
+    # Relaciones
+    carModels: Mapped[List["CarModels"]] = relationship(
+        "CarModels", back_populates="carBrand"
+    )
+

@@ -28,3 +28,7 @@ class Discounts(Base):
     Percentage = Column(DECIMAL(5, 2))
 
     # Relaciones
+    cars_: Mapped[List['Cars']] = relationship(
+        'Cars', back_populates='discounts_')
+    orders: Mapped[List['Orders']] = relationship(
+        'Orders', back_populates='discounts_')

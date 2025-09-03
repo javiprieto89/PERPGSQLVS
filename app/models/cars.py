@@ -47,3 +47,14 @@ class Cars(Base):
     Year = Column(Integer)
     LastServiceMileage = Column(Integer)
     IsDebtor = Column(Boolean)
+
+    # Relaciones
+    carModels_: Mapped[CarModels] = relationship(
+        'CarModels', back_populates='cars')
+    clients_: Mapped[Clients] = relationship('Clients', back_populates='cars_')
+    discounts_: Mapped[Discounts] = relationship(
+        'Discounts', back_populates='cars_')
+    orders_: Mapped[List[Orders]] = relationship(
+        'Orders', back_populates='cars_')
+    orderHistory_: Mapped[List[OrderHistory]] = relationship(
+        'OrderHistory', back_populates='cars_')

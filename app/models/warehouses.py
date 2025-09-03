@@ -45,8 +45,10 @@ class Warehouses(Base):
         'Items', back_populates='warehouses_')
     itemstock: Mapped[List['Itemstock']] = relationship(
         'Itemstock', back_populates='warehouses_')
-
-    # stockHistory relación eliminada para evitar conflicto de mapeo
+    orders: Mapped[List['Orders']] = relationship(
+        'Orders', back_populates='warehouses_')
+    stockHistory: Mapped[List['StockHistory']] = relationship(
+        'StockHistory', back_populates='warehouses_')
     tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship(
         'TempStockHistoryDetails', back_populates='warehouses_')
     orderDetails_: Mapped[List['OrderDetails']] = relationship(

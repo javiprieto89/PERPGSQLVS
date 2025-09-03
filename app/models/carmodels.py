@@ -25,3 +25,7 @@ class CarModels(Base):
         start=1, increment=1), primary_key=True)
     CarBrandID = Column(Integer)
     Model = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+
+    # Relaciones
+    carBrand: Mapped['CarBrands'] = relationship('CarBrands', back_populates='carModels')
+    cars: Mapped[List[Cars]] = relationship('Cars', back_populates='carModels_')

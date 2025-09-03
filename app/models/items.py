@@ -26,6 +26,10 @@ from app.db import Base
 
 
 class Items(Base):
+    itemstock_: Mapped[List[Itemstock]] = relationship(
+        'Itemstock', back_populates='items')
+    priceListItems_: Mapped[List['PriceListItems']] = relationship(
+        'PriceListItems', back_populates='items_')
     __tablename__ = 'Items'
     __table_args__ = (
         ForeignKeyConstraint(
@@ -64,3 +68,42 @@ class Items(Base):
     WarehouseID = Column(Integer)
     IsActive = Column(Boolean, server_default=text('((1))'))
     OEM = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
+
+    # Relaciones
+    branches_: Mapped[Branches] = relationship(
+        'Branches',
+        back_populates='items',
+        overlaps='items'
+    )
+    brands_: Mapped[Brands] = relationship('Brands', back_populates='items')
+    companyData_: Mapped[CompanyData] = relationship(
+        'CompanyData',
+        back_populates='items',
+        primaryjoin='foreign(Items.CompanyID) == CompanyData.CompanyID',
+        foreign_keys='Items.CompanyID',
+        overlaps='branches_,items'
+    )
+    itemCategories_: Mapped[ItemCategories] = relationship(
+        'ItemCategories', back_populates='items')
+    itemSubcategories_: Mapped[List[ItemSubcategories]] = relationship(
+        'ItemSubcategories', back_populates='items_')
+    suppliers_: Mapped[Suppliers] = relationship(
+        'Suppliers', back_populates='items')
+    warehouses_: Mapped[Warehouses] = relationship(
+        'Warehouses', back_populates='items')
+    itemPriceHistory_: Mapped[List[ItemPriceHistory]] = relationship(
+        'ItemPriceHistory', back_populates='items_')
+    itemstock: Mapped[List[Itemstock]] = relationship(
+        'Itemstock', back_populates='items')
+    priceListItems_: Mapped[List[PriceListItems]] = relationship(
+        'PriceListItems', back_populates='items_')
+    stockHistory_: Mapped[List[StockHistory]] = relationship(
+        'StockHistory', back_populates='items_')
+    tempStockHistoryDetails_: Mapped[List[TempStockHistoryDetails]] = relationship(
+        'TempStockHistoryDetails', back_populates='items_')
+    orderDetails_: Mapped[List[OrderDetails]] = relationship(
+        'OrderDetails', back_populates='items_')
+    tempOrderDetails_: Mapped[List[TempOrderDetails]] = relationship(
+        'TempOrderDetails', back_populates='items_')
+    orderHistoryDetails_: Mapped[List[OrderHistoryDetails]] = relationship(
+        'OrderHistoryDetails', back_populates='items_')

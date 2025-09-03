@@ -28,3 +28,6 @@ class AccountBalances(Base):
     Balance = Column(DECIMAL(10, 2), server_default=text('((0))'))
     SupplierID = Column(Integer)
     ClientID = Column(Integer)
+    # Relaciones
+    clients_: Mapped[Optional['Clients']] = relationship('Clients', back_populates='accountBalances')
+    suppliers_: Mapped[Optional['Suppliers']] = relationship('Suppliers', back_populates='accountBalances')
