@@ -1,17 +1,17 @@
 // frontend/src/pages/PriceLists.jsx
 import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertLoading } from "~/components/AlertLoading";
-import { ApiErrorMessage } from "~/components/ApiErrorMessage";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
 import { RefreshButton } from "~/components/RefreshButton";
+import { AdminTable } from "~/components/table/AdminTable";
 import {
   AdminTableLoading,
   TableActionButton,
   TableIsActiveCell,
 } from "~/components/TableExtraComponents";
-import { AdminTable } from "~/components/TanstackTable";
-import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
 import { useGetPriceListsQuery } from "~/graphql/_generated/graphql";
 import { pricelistOperations } from "~/graphql/operations.js";

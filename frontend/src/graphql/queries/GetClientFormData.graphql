@@ -1,4 +1,4 @@
-query GetClientFormData {
+query GetClientFormData($id: Int!) {
   docTypes: allSysdoctypes {
     DocTypeID
     Name
@@ -22,5 +22,9 @@ query GetClientFormData {
     VendorID
     VendorName
     IsActive
+  }
+  companies: allCompanydata {
+    CompanyID
+    Name
   }
 }

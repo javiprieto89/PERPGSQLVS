@@ -10,8 +10,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { supplierOperations } from "~/graphql/operations.js";
 
-import { AlertLoading } from "~/components/AlertLoading";
-import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import {
   DiagnosticButton,
   DiagnosticInfo,
@@ -19,11 +17,13 @@ import {
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
 import { RefreshButton } from "~/components/RefreshButton";
+import { AdminTable } from "~/components/table/AdminTable";
 import {
   AdminTableLoading,
   TableIsActiveCell,
 } from "~/components/TableExtraComponents";
-import { AdminTable } from "~/components/TanstackTable";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,

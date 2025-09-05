@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
+import CompanySearchModal from "~/features/company/CompanySearchModal";
 import { supplierOperations } from "~/graphql/operations";
 import BranchSearchModal from "../components/BranchSearchModal";
-import CompanySearchModal from "../components/CompanySearchModal";
 
 export default function SupplierCreate({
   onClose,
@@ -186,9 +187,10 @@ export default function SupplierCreate({
         {isEdit ? "Editar Proveedor" : "Nuevo Proveedor"}
       </h2>
       {error && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-destructive">{error}</p>
-        </div>
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className=" p-4 rounded-lg">

@@ -1,16 +1,16 @@
 // frontend/src/pages/PriceListItemsBrowser.jsx
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertLoading } from "~/components/AlertLoading";
-import { ApiErrorMessage } from "~/components/ApiErrorMessage";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { AdminTable } from "~/components/table/AdminTable";
 import {
   AdminTableLoading,
   EditableInput,
   TableActionButton,
   TableIsActiveCell,
 } from "~/components/TableExtraComponents";
-import { AdminTable } from "~/components/TanstackTable";
-import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {

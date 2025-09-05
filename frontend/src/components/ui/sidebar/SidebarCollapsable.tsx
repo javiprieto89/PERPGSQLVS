@@ -3,17 +3,19 @@ import { PanelLeft } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { Button } from "../button";
 
-interface SidebarCollapsibleProps extends React.PropsWithChildren { }
+interface SidebarCollapsibleProps extends React.PropsWithChildren {
+  className: string;
+}
 
 export const isOpenSidebarAtom = atom<boolean>(false);
 
-export function SidebarCollapsible({ children }: SidebarCollapsibleProps) {
+export function SidebarCollapsible({ children, className }: SidebarCollapsibleProps) {
   const [isOpen, setOpen] = useAtom(isOpenSidebarAtom);
 
   console.log("isOpen", isOpen)
 
   return (
-    <div className="lg:w-64 shrink-0">
+    <div className={cn("lg:w-64 shrink-0", className)}>
       {isOpen && window.innerWidth < 1024 && <div className="bg-background/50 w-full h-dvh fixed top-0 left-0" onClick={() => setOpen(false)} />}
       <div className={cn(
         {

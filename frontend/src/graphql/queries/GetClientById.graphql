@@ -2,6 +2,8 @@ query GetClientById($id: Int!) {
   clientsById(id: $id) {
     ClientID
     DocTypeID
+    CompanyID
+    BranchID
     DocNumber
     FirstName
     LastName

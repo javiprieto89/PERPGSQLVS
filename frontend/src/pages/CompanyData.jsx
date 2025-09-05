@@ -1,17 +1,17 @@
 // frontend/src/pages/CompanyData.jsx
 import { Eye, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertLoading } from "~/components/AlertLoading";
-import { ApiErrorMessage } from "~/components/ApiErrorMessage";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
 import { RefreshButton } from "~/components/RefreshButton";
+import { AdminTable } from "~/components/table/AdminTable";
 import {
   AdminTableLoading,
   TableActionButton,
   TableIsActiveCell,
 } from "~/components/TableExtraComponents";
-import { AdminTable } from "~/components/TanstackTable";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
 import { useGetAllCompaniesQuery } from "~/graphql/_generated/graphql";
 import { companyOperations } from "~/graphql/operations.js";

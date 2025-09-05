@@ -1,6 +1,7 @@
 // frontend/src/pages/StockEntry.jsx
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
+import CompanySearchModal from "~/features/company/CompanySearchModal";
 import {
   branchOperations,
   companyOperations,
@@ -8,7 +9,6 @@ import {
   warehouseOperations,
 } from "~/graphql/operations";
 import BranchSearchModal from "../components/BranchSearchModal";
-import CompanySearchModal from "../components/CompanySearchModal";
 import ItemConfirmationModal from "../components/ItemConfirmationModal";
 import ItemSearchModal from "../components/ItemSearchModal";
 

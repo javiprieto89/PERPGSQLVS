@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { graphqlClient } from "~/graphql/graphqlClient.js";
 import { userAccessOperations } from "~/graphql/operations.js";
 
+import CompanySearchModal from "~/features/company/CompanySearchModal";
 import BranchSearchModal from "../components/BranchSearchModal";
-import CompanySearchModal from "../components/CompanySearchModal";
 import RoleSearchModal from "../components/RoleSearchModal";
 
 export default function UserAccessForm({

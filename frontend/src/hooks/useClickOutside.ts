@@ -1,26 +1,31 @@
 import { useEffect, useState } from "react";
 
-type UseClickOutsideProps = {
-  ref: React.RefObject<null>;
+type UseClickOutsideProps<T> = {
+  ref: React.RefObject<T>;
   defaultState: boolean;
 };
 
-export function useClickOutside({
+export function useClickOutside<T extends HTMLElement>({
+  defaultState,
   ref,
-  defaultState = false,
-}: UseClickOutsideProps) {
-  const [state, setState] = useState<boolean>(defaultState);
+}: {
+  defaultState: boolean;
+  ref: React.RefObject<T | null | undefined>;
+}): [boolean, React.Dispatch<React.SetStateAction<boolean>>] {
+  const [state, setState] = useState(defaultState);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !(ref.current as any).contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
         setState(false);
       }
-    };
+    }
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref]);
 
   return [state, setState];
 }
