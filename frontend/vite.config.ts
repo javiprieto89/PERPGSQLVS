@@ -4,9 +4,10 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import { defineConfig } from "vite";
 import graphqlLoader from "vite-plugin-graphql-loader";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [graphqlLoader(), tailwindcss(), react()],
+  plugins: [graphqlLoader(), tailwindcss(), react(), tsconfigPaths()],
   server: {
     host: "0.0.0.0",
     port: 5173,

@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 
 import RenderInWindow from "~/components/RenderInWindow";
 import AppSidebar from "~/components/sidebar/AppSidebar";
+import { SidebarHelper } from "~/components/sidebar/sidebarHelper";
 import { AdminHeader } from "~/components/ui-admin/AdminHeader";
 import { SidebarProvider } from "~/components/ui/sidebar";
 
@@ -17,14 +18,11 @@ export default function Layout() {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={SidebarHelper.isOpenSidebar()}>
       <AppSidebar />
-      <main className="w-full p-2">
+      <main className="grow">
         <AdminHeader title="Section Title" />
-        <div>
-          {/* Aquí se inyectan las rutas hijas */}
-          <Outlet />
-        </div>
+        <Outlet />
 
         {/* Ventanas emergentes */}
         {windows.map((window) => {

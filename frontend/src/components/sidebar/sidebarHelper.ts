@@ -1,12 +1,20 @@
 type NavMenuState = Record<string, boolean>;
 
-export class NavMenuSession {
+export class SidebarHelper {
   static NAV_MENU_SESSION_NAME = "navmenu";
+  static SIDEBAR_OPEN_STATE = "sidebar-open";
 
-  static getState() {
+  static getAll() {
     const navmenuState = sessionStorage.getItem(this.NAV_MENU_SESSION_NAME);
     if (navmenuState) {
       return JSON.parse(navmenuState) as NavMenuState;
+    }
+    return undefined;
+  }
+  static getState(key: string) {
+    const state = this.getAll();
+    if (state) {
+      return state[key];
     }
     return undefined;
   }
@@ -17,8 +25,8 @@ export class NavMenuSession {
     delete stored[key];
     sessionStorage.setItem(this.NAV_MENU_SESSION_NAME, JSON.stringify(stored));
   }
-  static saveState(key: string) {
-    let stored = this.getState() || {};
+  static setState(key: string) {
+    let stored = this.getAll() || {};
 
     sessionStorage.setItem(
       this.NAV_MENU_SESSION_NAME,
@@ -29,8 +37,15 @@ export class NavMenuSession {
     );
   }
   static updateState(key: string, isOpen: boolean) {
-    if (isOpen) this.saveState(key);
+    if (isOpen) this.setState(key);
     else this.removeState(key);
+  }
+
+  static isOpenSidebar() {
+    return !!this.getState(this.SIDEBAR_OPEN_STATE);
+  }
+  static setSidebarOpen(isOpen: boolean) {
+    this.updateState(this.SIDEBAR_OPEN_STATE, isOpen);
   }
 }
 

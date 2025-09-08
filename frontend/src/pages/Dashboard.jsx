@@ -74,19 +74,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {loading && (
-        <div className="animate-pulse">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="bg-accent h-32 p-6 rounded-lg border border-l-4"
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
       <DiagnosticInfo />
       {loading && (
         <div className="my-2">
@@ -104,6 +91,19 @@ export default function Dashboard() {
             <TriangleAlert />
             <AlertDescription>{errorStats}</AlertDescription>
           </Alert>
+        </div>
+      )}
+
+      {loading && (
+        <div className="animate-pulse">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="bg-accent h-32 p-6 rounded-lg border border-l-4"
+              />
+            ))}
+          </div>
         </div>
       )}
 
@@ -131,8 +131,8 @@ export default function Dashboard() {
       )}
 
       {!loading && dashboardStats && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          <div className=" p-6 rounded-lg border">
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="p-6 rounded-lg border">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold  mb-2">Clientes</h3>
@@ -340,7 +340,7 @@ export default function Dashboard() {
 
       <div className="mt-4">
         <h2 className="text-md font-semibold mb-4">Acciones Rápidas</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           <button
             onClick={() => window.open("/clients", "_blank")}
             className="p-4 bg-card hover:bg-primary/10 hover:shadow-sm border hover:border-primary/80 rounded-lg border-l-4 text-left"

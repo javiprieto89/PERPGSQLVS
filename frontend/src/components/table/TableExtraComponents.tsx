@@ -290,3 +290,17 @@ export function DropdownMenuItemLink(props: NavLinkProps) {
     </DropdownMenuItem>
   )
 }
+
+export function TableActionButton({ onEdit, onDelete }: { onEdit?: () => void, onDelete: () => void }) {
+  return (
+    <div className="flex gap-2 justify-end">
+      <Button
+        onClick={onEdit}
+        className="hidden md:inline px-3 py-2 text-sm rounded"
+      >
+        <Pencil />
+      </Button>
+      <TableActionDropdown onDelete={onDelete} onEdit={onEdit} />
+    </div>
+  )
+}

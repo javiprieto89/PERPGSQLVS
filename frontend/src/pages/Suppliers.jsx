@@ -21,7 +21,7 @@ import { AdminTable } from "~/components/table/AdminTable";
 import {
   AdminTableLoading,
   TableIsActiveCell,
-} from "~/components/TableExtraComponents";
+} from "~/components/table/TableExtraComponents";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";

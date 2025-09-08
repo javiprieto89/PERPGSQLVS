@@ -12,7 +12,7 @@ import {
   AdminTableLoading,
   TableActionButton,
   TableIsActiveCell,
-} from "~/components/TableExtraComponents";
+} from "~/components/table/TableExtraComponents";
 import TableFilters from "~/components/TableFilters";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
@@ -164,9 +164,9 @@ export function Clients() {
   );
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Clientes</h1>
+    <div className="max-w-full overflow-x-auto flex flex-col px-4">
+      <div className="flex items-center justify-between my-4">
+        <h1 className="text-2xl font-bold leading-4">Clientes</h1>
         <div className="flex space-x-2">
           {data && data.allClients.length > 0 && (
             <>

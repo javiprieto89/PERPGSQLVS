@@ -16,7 +16,7 @@ import { AdminTable } from "~/components/table/AdminTable";
 import {
   AdminTableLoading,
   TableActionButton,
-} from "~/components/TableExtraComponents";
+} from "~/components/table/TableExtraComponents";
 import TableFilters from "~/components/TableFilters";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";

@@ -1,15 +1,24 @@
 // src/components/Sidebar.jsx
-
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "~/components/ui/sidebar";
-import { NavUser } from "./NavUser";
-
 import { IconInnerShadowTop } from "@tabler/icons-react";
+import { useEffect } from "react";
+
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "~/components/ui/sidebar";
+
 import { BranchAccessDropdown } from "~/features/branch/BranchAccessDropdown";
 import { NavMenu } from "./NavMenu";
+import { NavUser } from "./NavUser";
+
+import { SidebarHelper } from "./sidebarHelper";
 
 export default function AppSidebar() {
+  const { open } = useSidebar();
+
+  useEffect(() => {
+    SidebarHelper.setSidebarOpen(open)
+  }, [open])
+
   return (
-    <Sidebar variant="floating">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -23,9 +32,6 @@ export default function AppSidebar() {
                   <span className="text-base font-semibold">ERP</span>
                 </div>
               </SidebarMenuButton>
-              <div className="p-1.5">
-                <SidebarTrigger className="relative top-0" />
-              </div>
             </div>
           </SidebarMenuItem>
         </SidebarMenu>

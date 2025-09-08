@@ -23,7 +23,7 @@ import { CollapsibleContent } from "@radix-ui/react-collapsible";
 import OrderCreate from "~/pages/OrderCreate";
 import PriceListItemsPage from "~/pages/PriceListItems";
 import { Collapsible, CollapsibleTrigger } from "../ui/collapsible";
-import { NavMenuSession } from "./navMenuSessionHelper";
+import { SidebarHelper } from "./sidebarHelper";
 
 const openPopup = (Component: React.ComponentType<any>, title: string, width = 1000, height = 700) => {
   openReactWindow(
@@ -185,7 +185,7 @@ function Item(item: SideNav) {
 function SidebarSubmenu({ items, parentKey }: { items: SideNav[] | undefined; parentKey: string; }) {
   if (!items || items.length === 0) return null;
 
-  const navState = NavMenuSession.getState();
+  const navState = SidebarHelper.getAll();
 
   return (
     <>
@@ -202,7 +202,7 @@ function SidebarSubmenu({ items, parentKey }: { items: SideNav[] | undefined; pa
 
         return (
           <Collapsible key={key} className="group/collapsible" defaultOpen={navState ? navState[key] : undefined} onOpenChange={(isOpen) => {
-            NavMenuSession.updateState(key, isOpen);;
+            SidebarHelper.updateState(key, isOpen);;
           }}>
             <SidebarMenuItem>
               <SidebarMenuButton

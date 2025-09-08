@@ -35,11 +35,9 @@ export function NavUser() {
   const navigate = useNavigate();
 
   const {
-    changeSelectedAccess,
     logout,
     userInfo,
     selectedAccess,
-    userAccesses,
   } = useUser();
 
   const user = {
