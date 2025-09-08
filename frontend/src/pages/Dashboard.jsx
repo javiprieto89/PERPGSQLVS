@@ -47,10 +47,10 @@ export default function Dashboard() {
   const [errorStats, setErrorStats] = useState(null);
 
   // Cargar acceso seleccionado del sessionStorage
-  const selectedAccess = AuthHelper.getSelectedAccess();
 
   useEffect(() => {
     try {
+      const selectedAccess = AuthHelper.getSelectedAccess();
       if (!data || !selectedAccess) return;
       const companyId = selectedAccess?.companyID || selectedAccess?.CompanyID;
       const stats = dashboardHelpers.processDashboardData(data, companyId);
@@ -63,7 +63,7 @@ export default function Dashboard() {
       // Mostrar error pero permitir que el dashboard se muestre
       setErrorStats(`Error cargando datos: ${err.message}`);
     }
-  }, [data, selectedAccess, setErrorStats]);
+  }, [data, setErrorStats]);
 
   return (
     <div className="container p-2">
