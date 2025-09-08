@@ -570,6 +570,7 @@ export default function OrderCreate({
     }));
   }, [items]);
 
+  // TODO: check if this logic should be here
   useEffect(() => {
     const cleanup = () => {
       if (sessionId) {

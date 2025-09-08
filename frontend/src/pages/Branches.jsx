@@ -1,12 +1,15 @@
 // frontend/src/pages/Branches.jsx
 import { Plus, RefreshCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertLoading } from "~/components/AlertLoading";
-import { ApiErrorMessage } from "~/components/ApiErrorMessage";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { TableActionButton } from "~/components/TableActionButtons";
-import { AdminTable } from "~/components/TanstackTable";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { AdminTable } from "~/components/table/AdminTable";
+import {
+  AdminTableLoading,
+  TableActionButton,
+} from "~/components/table/TableExtraComponents";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
 import { useGetAllBranchesQuery } from "~/graphql/_generated/graphql";
 import { branchOperations } from "~/graphql/operations.js";
@@ -146,7 +149,7 @@ export default function Branches() {
             Recargar
           </Button>
           <Button variant="primary" onClick={handleCreate}>
-            <Plus />
+            <Plus strokeWidth={3} />
             Nueva Sucursal
           </Button>
         </div>
@@ -172,6 +175,7 @@ export default function Branches() {
           data={branches || []}
         />
       )}
+      {loading && <AdminTableLoading />}
     </div>
   );
 }

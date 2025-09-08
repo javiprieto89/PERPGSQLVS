@@ -10,9 +10,9 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { useGetFilterFieldsQuery } from "~/graphql/_generated/graphql";
-import { AlertLoading } from "../AlertLoading";
-import { ApiErrorMessage } from "../ApiErrorMessage";
 import RenderInputs from "./RenderInputs";
 
 const filterValues = (filters: Record<string, string>) => (Object.keys(filters).filter((key) => !key.endsWith('_op') && filters[key] !== '' && filters[key] !== null));

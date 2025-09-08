@@ -1,16 +1,23 @@
 // frontend/src/pages/Vendors.jsx
-import { Plus, RefreshCcw } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertLoading } from "~/components/AlertLoading";
-import { ApiErrorMessage } from "~/components/ApiErrorMessage";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { TableActionButton } from "~/components/TableActionButtons";
-import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
+
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { AdminTable } from "~/components/table/AdminTable";
+import {
+  AdminTableLoading,
+  TableActionButton,
+  TableIsActiveCell,
+} from "~/components/table/TableExtraComponents";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
+import TableFilters from "../components/TableFilters";
+
+import { RefreshButton } from "~/components/RefreshButton";
 import { useGetAllVendorsQuery } from "~/graphql/_generated/graphql";
 import { vendorOperations } from "~/graphql/operations.js";
-import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import VendorCreate from "./VendorCreate";
 
@@ -112,17 +119,7 @@ export default function Vendors() {
       {
         header: "Estado",
         accessorKey: "IsActive",
-        cell: ({ getValue }) => (
-          <span
-            className={`px-2 py-1 text-xs font-medium rounded-full ${
-              getValue()
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-destructive"
-            }`}
-          >
-            {getValue("IsActive") ? "Activo" : "Inactivo"}
-          </span>
-        ),
+        cell: (props) => <TableIsActiveCell {...props} />,
       },
       {
         header: "",
@@ -156,12 +153,9 @@ export default function Vendors() {
               />
             </>
           )}
-          <Button onClick={() => refetch()}>
-            <RefreshCcw />
-            Recargar
-          </Button>
+          <RefreshButton onClick={() => refetch()} loading={loading} />
           <Button variant="primary" onClick={handleCreate}>
-            <Plus />
+            <Plus strokeWidth={3} />
             Nuevo
           </Button>
         </div>

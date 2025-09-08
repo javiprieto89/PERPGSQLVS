@@ -1,12 +1,17 @@
 // frontend/src/pages/PriceLists.jsx
-import { Plus, RefreshCcw } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertLoading } from "~/components/AlertLoading";
-import { ApiErrorMessage } from "~/components/ApiErrorMessage";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { TableActionButton } from "~/components/TableActionButtons";
-import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { RefreshButton } from "~/components/RefreshButton";
+import { AdminTable } from "~/components/table/AdminTable";
+import {
+  AdminTableLoading,
+  TableActionButton,
+  TableIsActiveCell,
+} from "~/components/table/TableExtraComponents";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
 import { useGetPriceListsQuery } from "~/graphql/_generated/graphql";
 import { pricelistOperations } from "~/graphql/operations.js";
@@ -111,19 +116,7 @@ export default function PriceLists() {
       {
         header: "Estado",
         accessorKey: "IsActive",
-        cell: (props) => {
-          return (
-            <span
-              className={`px-2 py-1 text-xs font-medium rounded-full ${
-                props.getValue("IsActive")
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-destructive"
-              }`}
-            >
-              {props.getValue("IsActive") ? "Activo" : "Inactivo"}
-            </span>
-          );
-        },
+        cell: (props) => <TableIsActiveCell {...props} />,
       },
       {
         header: "",
@@ -159,12 +152,9 @@ export default function PriceLists() {
               />
             </>
           )}
-          <Button onClick={() => refetch()}>
-            <RefreshCcw />
-            Recargar
-          </Button>
+          <RefreshButton onClick={() => refetch()} loading={loading} />
           <Button variant="primary" onClick={handleCreate}>
-            <Plus /> Nuevo
+            <Plus strokeWidth={3} /> Nuevo
           </Button>
         </div>
       </div>

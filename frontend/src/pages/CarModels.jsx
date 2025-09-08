@@ -1,46 +1,28 @@
-﻿import { useEffect, useState } from "react";
+﻿import { Plus } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { RefreshButton } from "~/components/RefreshButton";
+import { AdminTable } from "~/components/table/AdminTable";
+import {
+  AdminTableLoading,
+  TableActionButton,
+} from "~/components/table/TableExtraComponents";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { Button } from "~/components/ui/button";
+import { useGetAllCarModelsQuery } from "~/graphql/_generated/graphql";
 import { carModelOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import CarModelCreate from "./CarModelCreate";
 
 export default function CarModels() {
-  const [allModels, setAllModels] = useState([]);
+  const { data, error, loading, refetch } = useGetAllCarModelsQuery();
   const [models, setModels] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    loadModels();
-  }, []);
-
-  const loadModels = async () => {
-    try {
-      setLoading(true);
-      const data = await carModelOperations.getAllCarModels();
-      setAllModels(data);
-      setModels(data);
-    } catch (err) {
-      console.error("Error cargando modelos de auto:", err);
-      setError(err.message);
-      setModels([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.data === "reload-carmodels") {
-        loadModels();
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, []);
-
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     openReactWindow(
       (popup) => (
         <CarModelCreate
@@ -48,102 +30,137 @@ export default function CarModels() {
             popup.opener.postMessage("reload-carmodels", "*");
             popup.close();
           }}
-          onClose={() => popup.close()}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
         />
       ),
       "Nuevo Modelo de Auto"
     );
-  };
+  }, [refetch]);
 
   const handleFilterChange = (filtered) => setModels(filtered);
 
-  const handleEdit = (m) => {
-    openReactWindow(
-      (popup) => (
-        <CarModelCreate
-          carModel={m}
-          onSave={() => {
-            popup.opener.postMessage("reload-carmodels", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Editar Modelo de Auto"
-    );
-  };
+  const handleEdit = useCallback(
+    (m) => {
+      openReactWindow(
+        (popup) => (
+          <CarModelCreate
+            carModel={m}
+            onSave={() => {
+              popup.opener.postMessage("reload-carmodels", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Modelo de Auto"
+      );
+    },
+    [refetch]
+  );
 
-  const handleDelete = async (id) => {
-    if (!confirm("¿Borrar modelo de auto?")) return;
-    try {
-      await carModelOperations.deleteCarModel(id);
-      loadModels();
-    } catch (err) {
-      alert("Error al borrar modelo de auto: " + err.message);
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar modelo de auto?")) return;
+      try {
+        await carModelOperations.deleteCarModel(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar modelo de auto: " + err.message);
+      }
+    },
+    [refetch]
+  );
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data === "reload-carmodels") {
+        refetch();
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (data?.allCarmodels) {
+      setModels(data.allCarmodels);
     }
-  };
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "CarModelID",
+        className: "first w-3",
+      },
+      {
+        header: "Modelo",
+        accessorKey: "Model",
+      },
+      {
+        header: "Marca",
+        accessorKey: "CarBrandData.Name",
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "CarModelID",
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-foreground">Modelos de Auto</h1>
         <div className="flex space-x-2">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
-          <button
-            onClick={loadModels}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary"
-          >
-            Recargar
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          >
-            Nuevo Modelo
-          </button>
+          {data && data.allCarmodels.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allCarmodels}
+                onSearch={(rows) => setModels(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <RefreshButton onClick={() => refetch()} loading={loading} />
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus strokeWidth={3} />
+            Nuevo
+          </Button>
         </div>
       </div>
       {showFilters && (
         <div className="mb-6">
           <TableFilters
             modelName="carmodels"
-            data={allModels}
+            data={data.allCarmodels || []}
             onFilterChange={handleFilterChange}
           />
         </div>
       )}
-      {error && <div className="text-destructive mb-4">{error}</div>}
-      {loading ? (
-        <div>Cargando...</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {models.map((m) => (
-            <div key={m.CarModelID} className=" rounded shadow p-4">
-              <h3 className="text-lg font-semibold mb-2">{m.Model}</h3>
-              <p className="text-sm mb-2">Marca: {m.CarBrandName}</p>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(m)}
-                  className="mt-2 px-3 py-1  text-sm rounded hover:"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(m.CarModelID)}
-                  className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {error && <ApiErrorMessage error={error} />}
+      {loading && <AlertLoading />}
+      {models.length > 0 && <AdminTable columns={columns} data={models} />}
+      {loading && <AdminTableLoading />}
     </div>
   );
 }

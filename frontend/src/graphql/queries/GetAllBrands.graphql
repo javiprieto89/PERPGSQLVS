@@ -4,6 +4,7 @@ query GetAllBrands {
     Name
     IsActive
     CompanyData {
+      CompanyID
       Name
     }
   }

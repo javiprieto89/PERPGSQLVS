@@ -1,61 +1,75 @@
 // frontend/src/pages/PriceListItemsBrowser.jsx
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { AdminTable } from "~/components/table/AdminTable";
 import {
-  pricelistItemOperations,
-  pricelistOperations,
-} from "~/graphql/operations.js";
+  AdminTableLoading,
+  EditableInput,
+  TableActionButton,
+  TableIsActiveCell,
+} from "~/components/table/TableExtraComponents";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import {
+  useGetAllPricelistItemsQuery,
+  useGetPricelistItemsFilteredLazyQuery,
+} from "~/graphql/_generated/graphql";
+import { pricelistItemOperations } from "~/graphql/operations.js";
 import ItemSearchModal from "../components/ItemSearchModal";
 import { openReactWindow } from "../utils/openReactWindow";
+import PriceListCreate from "./PriceListCreate";
 import PriceListItems from "./PriceListItems";
 
 export default function PriceListItemsBrowser() {
+  const { data, loading, error } = useGetAllPricelistItemsQuery();
+  console.log({ data, loading, error });
+  const [
+    getFiltered,
+    {
+      data: filteredResult,
+      loading: loadingListFiltered,
+      error: errorListFiltered,
+      refetch,
+    },
+  ] = useGetPricelistItemsFilteredLazyQuery();
+
   const [priceLists, setPriceLists] = useState([]);
-  const [selectedList, setSelectedList] = useState("");
+  const [priceListID, setPriceListID] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
-  const [results, setResults] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [editing, setEditing] = useState(null);
-  const [editPrice, setEditPrice] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    pricelistOperations.getAllPricelists().then(setPriceLists);
-  }, []);
+  console.log({ priceListID, selectedItem });
 
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.data === "reload-pricelistitems") {
-        loadResults();
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, [selectedList, selectedItem, loadResults]);
-
-  const loadResults = useCallback(async () => {
-    if (!selectedList && !selectedItem) {
-      setResults([]);
-      return;
-    }
-    const data = await pricelistItemOperations.getFiltered(
-      selectedList || null,
-      selectedItem?.ItemID || null
-    );
-    setResults(data);
-  }, [selectedItem, selectedList]);
+  const fetchFiltered = useCallback(
+    (priceListID = null) => {
+      if (!priceListID && !selectedItem) return;
+      console.log("getFiltered", { priceListID, selectedItem });
+      getFiltered({
+        variables: {
+          priceListID,
+          itemID: selectedItem?.ItemID || null,
+        },
+      });
+    },
+    [selectedItem, getFiltered]
+  );
 
   const handleSelectItem = (item) => {
+    console.log("handleSelectItem", item);
     setSelectedItem({
       ItemID: item.itemID,
       Code: item.code,
       Description: item.description,
     });
-    setShowModal(false);
+    setShowFilters(false);
   };
 
   const clearFilters = () => {
-    setSelectedList("");
+    setPriceListID("");
     setSelectedItem(null);
-    setResults([]);
   };
 
   const handleAdd = () => {
@@ -66,141 +80,209 @@ export default function PriceListItemsBrowser() {
     );
   };
 
+  const handleEdit = useCallback(
+    (pricelist) => {
+      console.log({ pricelist });
+      openReactWindow(
+        (popup) => (
+          <PriceListCreate
+            isOpen={true}
+            onSave={() => {
+              popup.opener.postMessage("reload", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              setShowFilters(false);
+              popup.close();
+              refetch();
+            }}
+            onItemSelect={handleSelectItem}
+            pricelist={pricelist}
+            // setEditing({
+            //   PriceListID: pl.PriceListID,
+            //   ItemID: pl.ItemID,
+            // });
+            // setEditPrice(pl.Price);
+          />
+        ),
+        "Editar Precio"
+      );
+    },
+    [refetch]
+  );
+
+  const updatePrice = useCallback(
+    async (row, value) => {
+      console.log("updatePrice", { row, value });
+      await pricelistItemOperations.updatePricelistItem(
+        row.original.PriceListID,
+        row.original.ItemID,
+        { Price: parseFloat(value) }
+      );
+      refetch();
+    },
+    [refetch]
+  );
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.data === "reload") {
+        refetch();
+      }
+    };
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
+  }, [refetch]);
+
+  // set filtered list
+  useEffect(() => {
+    if (filteredResult?.pricelistitemsFiltered) {
+      setPriceLists(filteredResult.pricelistitemsFiltered);
+    }
+  }, [filteredResult]);
+
+  // set all list information
+  useEffect(() => {
+    if (data?.allPricelistitems) {
+      setPriceLists(data.allPricelistitems);
+    }
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "PriceListID",
+        className: "first w-3",
+      },
+      {
+        header: "Item ID",
+        accessorKey: "ItemID",
+        className: "w-3",
+      },
+      {
+        header: "Nombre",
+        accessorKey: "PriceListData.Name",
+      },
+      {
+        header: "Descripción",
+        accessorKey: "PriceListData.Description",
+      },
+      {
+        header: "Precio",
+        accessorKey: "Price",
+        className: "w-3",
+        cell: ({ getValue, row }) => {
+          return (
+            <EditableInput
+              defaultValue={getValue()}
+              onSave={(value) => updatePrice(row, value)}
+            />
+          );
+          // if (!editing) return getValue();
+          // return (
+          //   <Input
+          //     defaultValue={editPrice || getValue()}
+          //     type="number"
+          //     step="0.01"
+          //     onChange={(e) => setEditPrice(e.target.value)}
+          //     className="w-24 border rounded p-1"
+          //   />
+          // );
+        },
+      },
+      // {
+      //   header: "Código",
+      //   accessorKey: "Code",
+      // },
+      {
+        header: "Estado",
+        accessorKey: "PriceListData.IsActive",
+        cell: (props) => <TableIsActiveCell {...props} />,
+      },
+      {
+        header: "Última modificación",
+        accessorKey: "EffectiveDate",
+        cell: ({ getValue }) => getValue()?.slice(0, 10),
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "BrandID",
+        cell: ({ row }) => (
+          <TableActionButton onEdit={() => handleEdit(row.original)} />
+        ),
+      },
+    ],
+    [updatePrice, handleEdit]
+  );
+
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-3xl font-bold">Listas de precios - Items</h1>
       <div className="flex gap-2 items-center">
+        {data && data.allPricelistitems.length > 0 && (
+          <>
+            <InputQuickSearch
+              rows={data.allPricelistitems}
+              onSearch={(rows) => setPriceLists(rows)}
+            />
+            <ShowFilterButton
+              onClick={() => setShowFilters(!showFilters)}
+              showFilters={showFilters}
+            />
+          </>
+        )}
         <select
-          value={selectedList}
-          onChange={(e) => setSelectedList(e.target.value)}
+          value={priceListID}
+          onChange={(e) => setPriceListID(e.target.value)}
           className="border p-2 rounded"
         >
           <option value="">Todas las listas</option>
-          {priceLists.map((pl) => (
-            <option key={pl.PriceListID} value={pl.PriceListID}>
-              {pl.Name}
+          {priceLists?.map((pl) => (
+            <option
+              key={`select-${pl.PriceListID}-${pl.ItemID}`}
+              value={pl.PriceListID}
+            >
+              {pl.PriceListData.Name}
             </option>
           ))}
         </select>
-        <input
+        <Input
           type="text"
           readOnly
-          onClick={() => setShowModal(true)}
+          onClick={() => setShowFilters(true)}
           value={
             selectedItem
               ? `${selectedItem.Code} - ${selectedItem.Description}`
               : ""
           }
           placeholder="Buscar ítem"
-          className="border p-2 rounded w-72 cursor-pointer"
         />
-        <button
-          onClick={loadResults}
-          className="px-4 py-2 bg-primary text-white rounded"
-        >
+        <Button variant="primary" onClick={() => fetchFiltered()}>
           Filtrar
-        </button>
-        <button onClick={clearFilters} className="px-4 py-2 border rounded">
-          Limpiar
-        </button>
-        <button
-          onClick={handleAdd}
-          className="px-4 py-2 bg-green-600 text-white rounded"
-        >
-          Agregar
-        </button>
+        </Button>
+        <Button onClick={clearFilters}>Limpiar</Button>
+        <Button onClick={handleAdd}>Agregar</Button>
       </div>
-      {results.length > 0 && (
-        <table className="min-w-full text-sm">
-          <thead>
-            <tr>
-              <th className="px-2 text-left">Lista</th>
-              <th className="px-2 text-left">Código</th>
-              <th className="px-2 text-left">Descripción</th>
-              <th className="px-2 text-right">Precio</th>
-              <th className="px-2">Última modificación</th>
-              <th className="px-2">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {results.map((pl) => {
-              const isEditing =
-                editing &&
-                editing.PriceListID === pl.PriceListID &&
-                editing.ItemID === pl.ItemID;
-              return (
-                <tr key={`${pl.PriceListID}-${pl.ItemID}`}>
-                  <td className="border px-2">{pl.PriceListName}</td>
-                  <td className="border px-2">{pl.Code}</td>
-                  <td className="border px-2">{pl.Description}</td>
-                  <td className="border px-2 text-right">
-                    {isEditing ? (
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={editPrice}
-                        onChange={(e) => setEditPrice(e.target.value)}
-                        className="w-24 border rounded p-1"
-                      />
-                    ) : (
-                      pl.Price
-                    )}
-                  </td>
-                  <td className="border px-2">
-                    {pl.EffectiveDate?.slice(0, 10)}
-                  </td>
-                  <td className="border px-2 text-center">
-                    {isEditing ? (
-                      <>
-                        <button
-                          onClick={async () => {
-                            await pricelistItemOperations.updatePricelistItem(
-                              pl.PriceListID,
-                              pl.ItemID,
-                              { Price: parseFloat(editPrice) }
-                            );
-                            setEditing(null);
-                            loadResults();
-                          }}
-                          className="px-2 text-green-600"
-                        >
-                          Guardar
-                        </button>
-                        <button
-                          onClick={() => setEditing(null)}
-                          className="px-2 text-muted-foreground"
-                        >
-                          Cancelar
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          setEditing({
-                            PriceListID: pl.PriceListID,
-                            ItemID: pl.ItemID,
-                          });
-                          setEditPrice(pl.Price);
-                        }}
-                        className="px-2 text-primary"
-                      >
-                        Editar
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+
+      {error && <ApiErrorMessage error={error} />}
+      {errorListFiltered && <ApiErrorMessage error={errorListFiltered} />}
+      {loading && <AlertLoading />}
+      {loadingListFiltered && <AlertLoading message="Cargando filtros..." />}
+
+      {priceLists.length > 0 && (
+        <AdminTable columns={columns} data={priceLists} />
       )}
-      {showModal && (
+      {showFilters && (
         <ItemSearchModal
           isOpen={true}
-          onClose={() => setShowModal(false)}
+          onClose={() => setShowFilters(false)}
           onItemSelect={handleSelectItem}
         />
       )}
+      {loading && <AdminTableLoading />}
     </div>
   );
 }

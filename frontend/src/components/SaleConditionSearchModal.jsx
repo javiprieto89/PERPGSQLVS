@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useGetAllSaleConditionsQuery } from "~/graphql/_generated/graphql";
 
 import TableFilters from "~/components/TableFilters";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {
@@ -14,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { AlertLoading } from "./AlertLoading";
 
 export default function SaleConditionSearchModal({ onClose, onSelect }) {
   const { data, loading, error } = useGetAllSaleConditionsQuery();

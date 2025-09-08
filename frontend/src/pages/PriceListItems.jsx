@@ -15,15 +15,6 @@ export default function PriceListItems({ onClose, onSaved }) {
   const [filterItem, setFilterItem] = useState(null);
   const [existing, setExisting] = useState([]);
 
-  useEffect(() => {
-    pricelistOperations.getAllPricelists().then(setPriceLists);
-    loadExisting();
-  }, []);
-
-  useEffect(() => {
-    loadExisting(selectedList || null, filterItem?.ItemID || null);
-  }, [selectedList, filterItem]);
-
   const loadExisting = async (listId, itemId) => {
     const data = await pricelistItemOperations.getFiltered(
       listId || null,
@@ -67,6 +58,15 @@ export default function PriceListItems({ onClose, onSaved }) {
     window.opener?.postMessage("reload-pricelistitems", "*");
     onSaved && onSaved();
   };
+
+  useEffect(() => {
+    pricelistOperations.getAllPricelists().then(setPriceLists);
+    loadExisting();
+  }, []);
+
+  useEffect(() => {
+    loadExisting(selectedList || null, filterItem?.ItemID || null);
+  }, [selectedList, filterItem]);
 
   return (
     <div className="p-6 space-y-4">

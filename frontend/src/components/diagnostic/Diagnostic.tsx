@@ -1,9 +1,10 @@
+import { useAtom } from "jotai";
 import { Info, LoaderCircle, Stethoscope } from "lucide-react";
 
-import { useAtom } from "jotai";
 import { diagnosticInfoAtom, useDiagnostic } from "~/hooks/useDiagnostic";
-import { Alert } from "../ui/alert";
-import { Button } from "../ui/button";
+
+import { Alert } from "~/components/ui/alert";
+import { Button } from "~/components/ui/button";
 
 export function DiagnosticButton() {
   const { loadingDiagnostic, runDiagnostic } = useDiagnostic();

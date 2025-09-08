@@ -3,7 +3,6 @@ import {
   ChartColumnBig,
   ChevronRight,
   CircleAlert,
-  LoaderCircle,
   PackageCheck,
   PackagePlus,
   PiggyBank,
@@ -16,17 +15,18 @@ import {
 import { useEffect, useState } from "react";
 
 import { useGetDashboardDataQuery } from "~/graphql/_generated/graphql";
-import { useAuthSelectedAccess } from "~/hooks/useAuthSelectedAccess";
 import { dashboardHelpers } from "~/utils/dashboard";
 
 import { NavLink } from "react-router-dom";
-import { AlertLoading } from "~/components/AlertLoading";
 import {
   DiagnosticButton,
   DiagnosticInfo,
 } from "~/components/diagnostic/Diagnostic";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
+import { AuthHelper } from "~/utils/authHelper";
 
 const dashboardStatsInit = {
   totalClients: 0,
@@ -42,11 +42,12 @@ const dashboardStatsInit = {
 };
 
 export default function Dashboard() {
-  const { errorAcess, selectedAccess, loadingSelectedAccess } =
-    useAuthSelectedAccess();
   const { data, error, loading } = useGetDashboardDataQuery();
   const [dashboardStats, setDashboardStats] = useState(dashboardStatsInit);
   const [errorStats, setErrorStats] = useState(null);
+
+  // Cargar acceso seleccionado del sessionStorage
+  const selectedAccess = AuthHelper.getSelectedAccess();
 
   useEffect(() => {
     try {
@@ -65,18 +66,37 @@ export default function Dashboard() {
   }, [data, selectedAccess, setErrorStats]);
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between">
-        <h1 className="text-3xl font-bold  mb-6">Dashboard</h1>
+    <div className="container p-2">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold mb-2">Dashboard</h1>
         <div>
           <DiagnosticButton />
         </div>
       </div>
 
-      {loading && <AlertLoading />}
+      <DiagnosticInfo />
+      {loading && (
+        <div className="my-2">
+          <AlertLoading />
+        </div>
+      )}
+      {error && (
+        <div className="my-2">
+          <ApiErrorMessage message={error} />
+        </div>
+      )}
+      {errorStats && (
+        <div className="my-2">
+          <Alert variant="destructive">
+            <TriangleAlert />
+            <AlertDescription>{errorStats}</AlertDescription>
+          </Alert>
+        </div>
+      )}
+
       {loading && (
         <div className="animate-pulse">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
@@ -85,33 +105,6 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-      )}
-
-      {loadingSelectedAccess && (
-        <Alert className="my-4">
-          <LoaderCircle className="animate-spin" />
-          <AlertDescription>Cargando Acceso...</AlertDescription>
-        </Alert>
-      )}
-
-      <DiagnosticInfo />
-      {error && (
-        <Alert variant="destructive">
-          <TriangleAlert />
-          <AlertDescription>{error.message}</AlertDescription>
-        </Alert>
-      )}
-      {errorAcess && (
-        <Alert variant="destructive">
-          <TriangleAlert />
-          <AlertDescription>{errorAcess}</AlertDescription>
-        </Alert>
-      )}
-      {errorStats && (
-        <Alert variant="destructive">
-          <TriangleAlert />
-          <AlertDescription>{errorStats}</AlertDescription>
-        </Alert>
       )}
 
       {!loading && dashboardStats?.pendingOrders > 0 && (
@@ -138,8 +131,8 @@ export default function Dashboard() {
       )}
 
       {!loading && dashboardStats && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-card p-6 rounded-lg border border-l-4 border-l-primary">
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="p-6 rounded-lg border">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold  mb-2">Clientes</h3>
@@ -158,7 +151,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-card p-6 rounded-lg border border-l-4 border-l-primary">
+          <div className=" p-6 rounded-lg border">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold mb-2">Items</h3>
@@ -177,7 +170,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-card p-6 rounded-lg border border-l-4 border-l-primary">
+          <div className=" p-6 rounded-lg border">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold  mb-2">Órdenes</h3>
@@ -196,7 +189,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-card p-6 rounded-lg border border-l-4 border-l-primary">
+          <div className=" p-6 rounded-lg border">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold  mb-2">Ventas del Mes</h3>
@@ -223,8 +216,8 @@ export default function Dashboard() {
 
       {/* Resumen adicional */}
       {!loading && dashboardStats && (
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-card p-6 rounded-lg border">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="p-6 rounded-lg border">
             <h3 className="text-lg font-semibold  mb-4">
               Resumen de Inventario
             </h3>
@@ -261,18 +254,18 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-card p-6 rounded-lg border">
+          <div className=" p-6 rounded-lg border">
             <h3 className="text-lg font-semibold mb-4">Actividad de Órdenes</h3>
-            <div className="flex justify-between gap-4">
+            <div className="flex flex-col lg:flex-row justify-between gap-4">
               <NavLink
                 to="/orders?status=pending"
-                className="w-full bg-card flex flex-col items-center gap-2 p-4 rounded-sm text-center text-secondary-foreground"
+                className="w-full bg-card flex lg:flex-col items-center gap-2 p-4 rounded-sm text-center text-secondary-foreground"
               >
                 <span className="text-5xl">{dashboardStats.pendingOrders}</span>
                 <span className="text-md">pendientes</span>
               </NavLink>
               <NavLink
-                className="w-full bg-card flex flex-col items-center gap-2 p-4 rounded-sm text-center text-secondary-foreground"
+                className="w-full bg-card flex lg:flex-col items-center gap-2 p-4 rounded-sm text-center text-secondary-foreground"
                 to="/orders?status=complete"
               >
                 <span className="text-5xl">
@@ -281,7 +274,7 @@ export default function Dashboard() {
                 <span className="text-md">completadas</span>
               </NavLink>
               <NavLink
-                className="w-full bg-card flex flex-col items-center gap-2 p-4 rounded-sm text-center text-secondary-foreground"
+                className="w-full bg-card flex lg:flex-col items-center gap-2 p-4 rounded-sm text-center text-secondary-foreground"
                 to="/orders?status=monthly"
               >
                 <span className="text-5xl">
@@ -311,7 +304,7 @@ export default function Dashboard() {
 
       {/* Alertas y notificaciones */}
       {dashboardStats && (
-        <div className="mt-8">
+        <div className="mt-4">
           {dashboardStats.lowStockItems > 0 && (
             <div className="border border-red-200 rounded-lg p-4 mb-4">
               <div className="flex items-center">
@@ -345,12 +338,12 @@ export default function Dashboard() {
         </div>
       )}
 
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold  mb-4">Acciones Rápidas</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="mt-4">
+        <h2 className="text-md font-semibold mb-4">Acciones Rápidas</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
           <button
             onClick={() => window.open("/clients", "_blank")}
-            className="p-4 bg-card hover:bg-primary/10 hover:shadow-sm border hover:border-blue-500/80 rounded-lg border-l-4 text-left"
+            className="p-4 bg-card hover:bg-primary/10 hover:shadow-sm border hover:border-primary/80 rounded-lg border-l-4 text-left"
           >
             <div className="flex items-center mb-2 gap-1">
               <UserRoundCog />
@@ -363,7 +356,7 @@ export default function Dashboard() {
 
           <button
             onClick={() => window.open("/suppliers", "_blank")}
-            className="p-4 bg-card hover:bg-green-100/10 hover:shadow-sm border hover:border-green-500/80 rounded-lg border-l-4 text-left"
+            className="p-4 bg-card hover:bg-primary/10 hover:shadow-sm border hover:border-primary/80 rounded-lg border-l-4 text-left"
           >
             <div className="flex items-center mb-2 gap-1">
               <Ship />
@@ -376,7 +369,7 @@ export default function Dashboard() {
 
           <button
             onClick={() => window.open("/orders", "_blank")}
-            className="p-4 bg-card hover:bg-purple-100/10 hover:shadow-sm border hover:border-purple-500/80 rounded-lg border-l-4 text-left"
+            className="p-4 bg-card hover:bg-primary/10 hover:shadow-sm border hover:border-primary/80 rounded-lg border-l-4 text-left"
           >
             <div className="flex items-center mb-2 gap-1">
               <PackagePlus />
@@ -389,7 +382,7 @@ export default function Dashboard() {
 
           <button
             onClick={() => window.open("/items", "_blank")}
-            className="p-4 bg-card hover:bg-orange-100/10 hover:shadow-sm border hover:border-orange-500/80 rounded-lg border-l-4 text-left"
+            className="p-4 bg-card hover:bg-primary/10 hover:shadow-sm border hover:border-primary/80 rounded-lg border-l-4 text-left"
           >
             <div className="flex items-center mb-2 gap-1">
               <Boxes />
@@ -402,7 +395,7 @@ export default function Dashboard() {
 
           <button
             onClick={() => window.open("/reports", "_blank")}
-            className="p-4 bg-card hover:bg-indigo-100/10 hover:shadow-sm border hover:border-indigo-500/80 rounded-lg border-l-4 text-left"
+            className="p-4 bg-card hover:bg-primary/10 hover:shadow-sm border hover:border-primary/80 rounded-lg border-l-4 text-left"
           >
             <div className="flex items-center mb-2 gap-1">
               <ChartColumnBig />
@@ -415,7 +408,7 @@ export default function Dashboard() {
 
           <button
             onClick={() => window.open("/settings", "_blank")}
-            className="p-4 bg-card hover:bg-pink-100/10 hover:shadow-sm border hover:border-pink-500/80 rounded-lg border-l-4 text-left"
+            className="p-4 bg-card hover:bg-primary/10 hover:shadow-sm border hover:border-primary/80 rounded-lg border-l-4 text-left"
           >
             <div className="flex items-center mb-2 gap-1">
               <Settings />
@@ -429,7 +422,7 @@ export default function Dashboard() {
       </div>
 
       {/* Footer del dashboard */}
-      <div className="mt-8 pt-6 border-t ">
+      <div className="mt-4 pt-6 border-t ">
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <div>
             <p className="text-sm text-muted-foreground">

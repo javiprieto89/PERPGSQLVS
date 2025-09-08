@@ -591,29 +591,6 @@ export type ItemSubcategoriesUpdate = {
   SubcategoryName?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type ItemTaxesCreate = {
-  BranchID: Scalars['Int']['input'];
-  CompanyID: Scalars['Int']['input'];
-  ItemID: Scalars['Int']['input'];
-  TaxID: Scalars['Int']['input'];
-};
-
-export type ItemTaxesInDb = {
-  __typename?: 'ItemTaxesInDB';
-  BranchID: Scalars['Int']['output'];
-  CompanyID: Scalars['Int']['output'];
-  ItemID: Scalars['Int']['output'];
-  ItemTaxID: Scalars['Int']['output'];
-  TaxID: Scalars['Int']['output'];
-};
-
-export type ItemTaxesUpdate = {
-  BranchID?: InputMaybe<Scalars['Int']['input']>;
-  CompanyID?: InputMaybe<Scalars['Int']['input']>;
-  ItemID?: InputMaybe<Scalars['Int']['input']>;
-  TaxID?: InputMaybe<Scalars['Int']['input']>;
-};
-
 export type ItemsCreate = {
   BranchID: Scalars['Int']['input'];
   BrandID: Scalars['Int']['input'];
@@ -657,6 +634,16 @@ export type ItemsInDb = {
   SupplierID: Scalars['Int']['output'];
   WarehouseData?: Maybe<WarehousesInDb>;
   WarehouseID: Scalars['Int']['output'];
+};
+
+export type ItemsResponse = {
+  __typename?: 'ItemsResponse';
+  hasNext: Scalars['Boolean']['output'];
+  hasPrev: Scalars['Boolean']['output'];
+  items: Array<ItemSearchResult>;
+  limit: Scalars['Int']['output'];
+  page: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
 };
 
 export type ItemsUpdate = {
@@ -714,7 +701,6 @@ export type Mutation = {
   createItem: ItemsInDb;
   createItemcategory: ItemCategoriesInDb;
   createItemsubcategory: ItemSubcategoriesInDb;
-  createItemtax: ItemTaxesInDb;
   createOrder: OrderResponse;
   createPricelist: PriceListsInDb;
   createPricelistitem: PriceListItemsInDb;
@@ -726,7 +712,6 @@ export type Mutation = {
   createSysdoctype: SysDocTypesInDb;
   createSysdocumenttype: SysDocumentTypesInDb;
   createSysuseraction: SysUserActionsInDb;
-  createTax: TaxesInDb;
   createTemporderdetail: TempOrderDetailsInDb;
   createTempstockhistorydetail: TempStockHistoryDetailsInDb;
   createUser: AuthResponse;
@@ -750,7 +735,6 @@ export type Mutation = {
   deleteItem: Scalars['Boolean']['output'];
   deleteItemcategory: Scalars['Boolean']['output'];
   deleteItemsubcategory: Scalars['Boolean']['output'];
-  deleteItemtax: Scalars['Boolean']['output'];
   deleteOrder: Scalars['Boolean']['output'];
   deletePricelist: Scalars['Boolean']['output'];
   deletePricelistitem: Scalars['Boolean']['output'];
@@ -762,7 +746,6 @@ export type Mutation = {
   deleteSysdoctype: DeleteResponse;
   deleteSysdocumenttype: DeleteResponse;
   deleteSysuseraction: DeleteResponse;
-  deleteTax: Scalars['Boolean']['output'];
   deleteTempItemByDetailId: Scalars['Boolean']['output'];
   deleteTemporderdetail: Scalars['Boolean']['output'];
   deleteTempstockhistorydetail: Scalars['Boolean']['output'];
@@ -796,7 +779,6 @@ export type Mutation = {
   updateItem?: Maybe<ItemsInDb>;
   updateItemcategory?: Maybe<ItemCategoriesInDb>;
   updateItemsubcategory?: Maybe<ItemSubcategoriesInDb>;
-  updateItemtax?: Maybe<ItemTaxesInDb>;
   updateOrder?: Maybe<OrderResponse>;
   updatePricelist?: Maybe<PriceListsInDb>;
   updatePricelistitem?: Maybe<PriceListItemsInDb>;
@@ -808,7 +790,6 @@ export type Mutation = {
   updateSysdoctype?: Maybe<SysDocTypesInDb>;
   updateSysdocumenttype?: Maybe<SysDocumentTypesInDb>;
   updateSysuseraction?: Maybe<SysUserActionsInDb>;
-  updateTax?: Maybe<TaxesInDb>;
   updateTempItemByDetailId?: Maybe<TempOrderDetailsInDb>;
   updateTemporderdetail?: Maybe<TempOrderDetailsInDb>;
   updateTempstockhistorydetail?: Maybe<TempStockHistoryDetailsInDb>;
@@ -930,11 +911,6 @@ export type MutationCreateItemsubcategoryArgs = {
 };
 
 
-export type MutationCreateItemtaxArgs = {
-  data: ItemTaxesCreate;
-};
-
-
 export type MutationCreateOrderArgs = {
   data: OrdersCreate;
 };
@@ -987,11 +963,6 @@ export type MutationCreateSysdocumenttypeArgs = {
 
 export type MutationCreateSysuseractionArgs = {
   data: SysUserActionsCreate;
-};
-
-
-export type MutationCreateTaxArgs = {
-  data: TaxesCreate;
 };
 
 
@@ -1111,11 +1082,6 @@ export type MutationDeleteItemsubcategoryArgs = {
 };
 
 
-export type MutationDeleteItemtaxArgs = {
-  itemTaxID: Scalars['Int']['input'];
-};
-
-
 export type MutationDeleteOrderArgs = {
   orderID: Scalars['Int']['input'];
 };
@@ -1169,11 +1135,6 @@ export type MutationDeleteSysdocumenttypeArgs = {
 
 export type MutationDeleteSysuseractionArgs = {
   userActionID: Scalars['Int']['input'];
-};
-
-
-export type MutationDeleteTaxArgs = {
-  taxID: Scalars['Int']['input'];
 };
 
 
@@ -1372,12 +1333,6 @@ export type MutationUpdateItemsubcategoryArgs = {
 };
 
 
-export type MutationUpdateItemtaxArgs = {
-  data: ItemTaxesUpdate;
-  itemTaxID: Scalars['Int']['input'];
-};
-
-
 export type MutationUpdateOrderArgs = {
   data: OrdersUpdate;
   orderID: Scalars['Int']['input'];
@@ -1442,12 +1397,6 @@ export type MutationUpdateSysdocumenttypeArgs = {
 export type MutationUpdateSysuseractionArgs = {
   data: SysUserActionsUpdate;
   userActionID: Scalars['Int']['input'];
-};
-
-
-export type MutationUpdateTaxArgs = {
-  data: TaxesUpdate;
-  taxID: Scalars['Int']['input'];
 };
 
 
@@ -1734,7 +1683,6 @@ export type Query = {
   allItems: Array<ItemsInDb>;
   allItemstock: Array<ItemStockInDb>;
   allItemsubcategories: Array<ItemSubcategoriesInDb>;
-  allItemtaxes: Array<ItemTaxesInDb>;
   allOrderdetails: Array<OrderDetailsInDb>;
   allOrderhistory: Array<OrderHistoryInDb>;
   allOrderhistorydetails: Array<OrderHistoryDetailsInDb>;
@@ -1752,7 +1700,6 @@ export type Query = {
   allSysorderstatus: Array<SysOrderStatusInDb>;
   allSystransactiontypes: Array<SysTransactionTypesInDb>;
   allSysuseractions: Array<SysUserActionsInDb>;
-  allTaxes: Array<TaxesInDb>;
   allTemporderdetails: Array<TempOrderDetailsInDb>;
   allTempstockhistorydetails: Array<TempStockHistoryDetailsInDb>;
   allTransactions: Array<TransactionsInDb>;
@@ -1798,7 +1745,6 @@ export type Query = {
   itemstockById?: Maybe<ItemStockInDb>;
   itemsubcategoriesByCategory: Array<ItemSubcategoriesInDb>;
   itemsubcategoriesById?: Maybe<ItemSubcategoriesInDb>;
-  itemtaxesById?: Maybe<ItemTaxesInDb>;
   orderdetailsById?: Maybe<OrderDetailsInDb>;
   orderhistoryById?: Maybe<OrderHistoryInDb>;
   orderhistorydetailsById?: Maybe<OrderHistoryDetailsInDb>;
@@ -1811,7 +1757,7 @@ export type Query = {
   rolesById?: Maybe<RolesInDb>;
   saleconditionsById?: Maybe<SaleConditionsInDb>;
   searchGlobal: GlobalSearchResult;
-  searchItems: Array<ItemSearchResult>;
+  searchItems: ItemsResponse;
   serverInfo: ServerInfo;
   servicetypesById?: Maybe<ServiceTypeInDb>;
   stockhistoryById?: Maybe<StockHistoryInDb>;
@@ -1824,7 +1770,6 @@ export type Query = {
   systransactiontypesById?: Maybe<SysTransactionTypesInDb>;
   sysuseractionsById?: Maybe<SysUserActionsInDb>;
   sysuseractionsByName: Array<SysUserActionsInDb>;
-  taxesById?: Maybe<TaxesInDb>;
   temporderdetailBySession?: Maybe<TempOrderDetailsInDb>;
   temporderdetailsByOrder: Array<TempOrderDetailsInDb>;
   temporderdetailsBySession: Array<TempOrderDetailsInDb>;
@@ -2020,11 +1965,6 @@ export type QueryItemsubcategoriesByIdArgs = {
 };
 
 
-export type QueryItemtaxesByIdArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
 export type QueryOrderdetailsByIdArgs = {
   id: Scalars['Int']['input'];
 };
@@ -2149,11 +2089,6 @@ export type QuerySysuseractionsByIdArgs = {
 
 export type QuerySysuseractionsByNameArgs = {
   name: Scalars['String']['input'];
-};
-
-
-export type QueryTaxesByIdArgs = {
-  id: Scalars['Int']['input'];
 };
 
 
@@ -2440,35 +2375,6 @@ export type SysUserActionsInDb = {
 
 export type SysUserActionsUpdate = {
   ActionName?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type TaxesCreate = {
-  CompanyID?: InputMaybe<Scalars['Int']['input']>;
-  CountryID?: InputMaybe<Scalars['Int']['input']>;
-  IsActive?: InputMaybe<Scalars['Boolean']['input']>;
-  ProvinceID?: InputMaybe<Scalars['Int']['input']>;
-  TaxName: Scalars['String']['input'];
-  TaxPercent: Scalars['Float']['input'];
-};
-
-export type TaxesInDb = {
-  __typename?: 'TaxesInDB';
-  CompanyID?: Maybe<Scalars['Int']['output']>;
-  CountryID?: Maybe<Scalars['Int']['output']>;
-  IsActive: Scalars['Boolean']['output'];
-  ProvinceID?: Maybe<Scalars['Int']['output']>;
-  TaxID: Scalars['Int']['output'];
-  TaxName: Scalars['String']['output'];
-  TaxPercent: Scalars['Float']['output'];
-};
-
-export type TaxesUpdate = {
-  CompanyID?: InputMaybe<Scalars['Int']['input']>;
-  CountryID?: InputMaybe<Scalars['Int']['input']>;
-  IsActive?: InputMaybe<Scalars['Boolean']['input']>;
-  ProvinceID?: InputMaybe<Scalars['Int']['input']>;
-  TaxName?: InputMaybe<Scalars['String']['input']>;
-  TaxPercent?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type TempOrderDetailsCreate = {
@@ -2771,6 +2677,13 @@ export type DeleteVendorMutationVariables = Exact<{
 
 export type DeleteVendorMutation = { __typename?: 'Mutation', deleteVendor: boolean };
 
+export type LoginMutationVariables = Exact<{
+  input: LoginInput;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', success: boolean, message: string, token?: string | null, user?: { __typename?: 'UserInfo', UserID: number, Nickname: string, FullName?: string | null, IsActive: boolean, UserAccess: Array<{ __typename?: 'UserAccessInfo', UserID: number, CompanyID: number, Company: string, BranchID: number, Branch: string, RoleID: number, Role: string }> } | null } };
+
 export type ToggleClientStatusMutationVariables = Exact<{
   clientID: Scalars['Int']['input'];
   isActive: Scalars['Boolean']['input'];
@@ -2835,7 +2748,7 @@ export type GetAllBranchesQuery = { __typename?: 'Query', allBranches: Array<{ _
 export type GetAllBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllBrandsQuery = { __typename?: 'Query', allBrands: Array<{ __typename?: 'BrandsInDB', BrandID: number, Name: string, IsActive?: boolean | null, CompanyData?: { __typename?: 'CompanyDataInDB', Name?: string | null } | null }> };
+export type GetAllBrandsQuery = { __typename?: 'Query', allBrands: Array<{ __typename?: 'BrandsInDB', BrandID: number, Name: string, IsActive?: boolean | null, CompanyData?: { __typename?: 'CompanyDataInDB', CompanyID: number, Name?: string | null } | null }> };
 
 export type GetAllCarBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2900,7 +2813,7 @@ export type GetAllItemsQuery = { __typename?: 'Query', allItems: Array<{ __typen
 export type GetAllOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllOrdersQuery = { __typename?: 'Query', allOrders: Array<{ __typename?: 'OrdersInDB', OrderID: number, CompanyID: number, BranchID: number, Date_: any, ClientID: number, CarID?: number | null, IsService?: boolean | null, ServiceTypeID?: number | null, Mileage?: number | null, NextServiceMileage?: number | null, Notes?: string | null, SaleConditionID: number, DiscountID: number, Subtotal: number, Total: number, VAT: number, UserID: number, DocumentID: number, PriceListID: number, OrderStatusID: number, WarehouseID: number }> };
+export type GetAllOrdersQuery = { __typename?: 'Query', allOrders: Array<{ __typename?: 'OrdersInDB', OrderID: number, CompanyID: number, BranchID: number, Date_: any, ClientID: number, CarID?: number | null, IsService?: boolean | null, ServiceTypeID?: number | null, Mileage?: number | null, NextServiceMileage?: number | null, Notes?: string | null, SaleConditionID: number, DiscountID: number, Subtotal: number, Total: number, VAT: number, UserID: number, DocumentID: number, PriceListID: number, OrderStatusID: number, WarehouseID: number, SaleConditionData?: { __typename?: 'SaleConditionsInDB', SaleConditionID: number, Name: string } | null, ClientData?: { __typename?: 'ClientsInDB', ClientID: number, FirstName: string, LastName?: string | null, VendorID: number } | null, DiscountData?: { __typename?: 'DiscountsInDB', DiscountID: number, DiscountName: string, Percentage: number } | null }>, allClients: Array<{ __typename?: 'ClientsInDB', FirstName: string, LastName?: string | null, ClientID: number }> };
 
 export type GetAllOrderstatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3007,12 +2920,14 @@ export type GetClientByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetClientByIdQuery = { __typename?: 'Query', clientsById?: { __typename?: 'ClientsInDB', ClientID: number, DocTypeID: number, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, City?: string | null, PostalCode?: string | null, IsActive: boolean, CountryID: number, ProvinceID: number, PriceListID: number, VendorID: number } | null };
+export type GetClientByIdQuery = { __typename?: 'Query', clientsById?: { __typename?: 'ClientsInDB', ClientID: number, DocTypeID: number, CompanyID?: number | null, BranchID?: number | null, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, City?: string | null, PostalCode?: string | null, IsActive: boolean, CountryID: number, ProvinceID: number, PriceListID: number, VendorID: number } | null };
 
-export type GetClientFormDataQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetClientFormDataQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
 
 
-export type GetClientFormDataQuery = { __typename?: 'Query', docTypes: Array<{ __typename?: 'SysDocTypesInDB', DocTypeID: number, Name: string }>, countries: Array<{ __typename?: 'CountriesInDB', CountryID: number, Name: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, Name: string }>, priceLists: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, Name: string, Description?: string | null, IsActive?: boolean | null }>, vendors: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string, IsActive: boolean }> };
+export type GetClientFormDataQuery = { __typename?: 'Query', clientsById?: { __typename?: 'ClientsInDB', ClientID: number, DocTypeID: number, CompanyID?: number | null, BranchID?: number | null, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, City?: string | null, PostalCode?: string | null, IsActive: boolean, CountryID: number, ProvinceID: number, PriceListID: number, VendorID: number } | null, docTypes: Array<{ __typename?: 'SysDocTypesInDB', DocTypeID: number, Name: string }>, countries: Array<{ __typename?: 'CountriesInDB', CountryID: number, Name: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, Name: string }>, priceLists: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, Name: string, Description?: string | null, IsActive?: boolean | null }>, vendors: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string, IsActive: boolean }>, companies: Array<{ __typename?: 'CompanyDataInDB', CompanyID: number, Name?: string | null }> };
 
 export type GetCompanyByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -3217,12 +3132,7 @@ export type SearchItemsQueryVariables = Exact<{
 }>;
 
 
-export type SearchItemsQuery = { __typename?: 'Query', searchItems: Array<{ __typename?: 'ItemSearchResult', Description: string, Code: string, ItemID: number, Price?: number | null, StockQuantity?: number | null }> };
-
-export type GetOrderMassiveQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetOrderMassiveQuery = { __typename?: 'Query', allOrders: Array<{ __typename?: 'OrdersInDB', OrderID: number, CompanyID: number, BranchID: number, Date_: any, ClientID: number, CarID?: number | null, IsService?: boolean | null, ServiceTypeID?: number | null, Mileage?: number | null, NextServiceMileage?: number | null, Notes?: string | null, SaleConditionID: number, DiscountID: number, Subtotal: number, Total: number, VAT: number, UserID: number, DocumentID: number, PriceListID: number, OrderStatusID: number, WarehouseID: number }>, allClients: Array<{ __typename?: 'ClientsInDB', ClientID: number, DocTypeID: number, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, City?: string | null, PostalCode?: string | null, IsActive: boolean, CountryID: number, ProvinceID: number, PriceListID: number, VendorID: number }>, allSaleconditions: Array<{ __typename?: 'SaleConditionsInDB', SaleConditionID: number, CreditCardID: number, Name: string, DueDate: any, Surcharge: number, IsActive?: boolean | null }>, allUsers: Array<{ __typename?: 'UsersInDB', UserID: number, Nickname?: string | null, FullName?: string | null, IsActive?: boolean | null }>, allVendors: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string, Commission?: number | null, IsActive: boolean }> };
+export type SearchItemsQuery = { __typename?: 'Query', searchItems: { __typename?: 'ItemsResponse', items: Array<{ __typename?: 'ItemSearchResult', Description: string, Code: string, ItemID: number, Price?: number | null, StockQuantity?: number | null }> } };
 
 
 export const CreateBrand2Document = gql`
@@ -3515,6 +3425,56 @@ export function useDeleteVendorMutation(baseOptions?: Apollo.MutationHookOptions
 export type DeleteVendorMutationHookResult = ReturnType<typeof useDeleteVendorMutation>;
 export type DeleteVendorMutationResult = Apollo.MutationResult<DeleteVendorMutation>;
 export type DeleteVendorMutationOptions = Apollo.BaseMutationOptions<DeleteVendorMutation, DeleteVendorMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    success
+    message
+    token
+    user {
+      UserID
+      Nickname
+      FullName
+      IsActive
+      UserAccess {
+        UserID
+        CompanyID
+        Company
+        BranchID
+        Branch
+        RoleID
+        Role
+      }
+    }
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const ToggleClientStatusDocument = gql`
     mutation ToggleClientStatus($clientID: Int!, $isActive: Boolean!) {
   updateClient(clientID: $clientID, data: {IsActive: $isActive}) {
@@ -3840,6 +3800,7 @@ export const GetAllBrandsDocument = gql`
     Name
     IsActive
     CompanyData {
+      CompanyID
       Name
     }
   }
@@ -4460,6 +4421,26 @@ export const GetAllOrdersDocument = gql`
     PriceListID
     OrderStatusID
     WarehouseID
+    SaleConditionData {
+      SaleConditionID
+      Name
+    }
+    ClientData {
+      ClientID
+      FirstName
+      LastName
+      VendorID
+    }
+    DiscountData {
+      DiscountID
+      DiscountName
+      Percentage
+    }
+  }
+  allClients {
+    FirstName
+    LastName
+    ClientID
   }
 }
     `;
@@ -5270,6 +5251,8 @@ export const GetClientByIdDocument = gql`
   clientsById(id: $id) {
     ClientID
     DocTypeID
+    CompanyID
+    BranchID
     DocNumber
     FirstName
     LastName
@@ -5320,7 +5303,26 @@ export type GetClientByIdLazyQueryHookResult = ReturnType<typeof useGetClientByI
 export type GetClientByIdSuspenseQueryHookResult = ReturnType<typeof useGetClientByIdSuspenseQuery>;
 export type GetClientByIdQueryResult = Apollo.QueryResult<GetClientByIdQuery, GetClientByIdQueryVariables>;
 export const GetClientFormDataDocument = gql`
-    query GetClientFormData {
+    query GetClientFormData($id: Int!) {
+  clientsById(id: $id) {
+    ClientID
+    DocTypeID
+    CompanyID
+    BranchID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    Address
+    City
+    PostalCode
+    IsActive
+    CountryID
+    ProvinceID
+    PriceListID
+    VendorID
+  }
   docTypes: allSysdoctypes {
     DocTypeID
     Name
@@ -5345,6 +5347,10 @@ export const GetClientFormDataDocument = gql`
     VendorName
     IsActive
   }
+  companies: allCompanydata {
+    CompanyID
+    Name
+  }
 }
     `;
 
@@ -5360,10 +5366,11 @@ export const GetClientFormDataDocument = gql`
  * @example
  * const { data, loading, error } = useGetClientFormDataQuery({
  *   variables: {
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetClientFormDataQuery(baseOptions?: Apollo.QueryHookOptions<GetClientFormDataQuery, GetClientFormDataQueryVariables>) {
+export function useGetClientFormDataQuery(baseOptions: Apollo.QueryHookOptions<GetClientFormDataQuery, GetClientFormDataQueryVariables> & ({ variables: GetClientFormDataQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetClientFormDataQuery, GetClientFormDataQueryVariables>(GetClientFormDataDocument, options);
       }
@@ -6771,11 +6778,13 @@ export type SearchClientsQueryResult = Apollo.QueryResult<SearchClientsQuery, Se
 export const SearchItemsDocument = gql`
     query SearchItems($filters: ItemFilters, $pagination: ItemPagination) {
   searchItems(filters: $filters, pagination: $pagination) {
-    Description
-    Code
-    ItemID
-    Price
-    StockQuantity
+    items {
+      Description
+      Code
+      ItemID
+      Price
+      StockQuantity
+    }
   }
 }
     `;
@@ -6813,99 +6822,3 @@ export type SearchItemsQueryHookResult = ReturnType<typeof useSearchItemsQuery>;
 export type SearchItemsLazyQueryHookResult = ReturnType<typeof useSearchItemsLazyQuery>;
 export type SearchItemsSuspenseQueryHookResult = ReturnType<typeof useSearchItemsSuspenseQuery>;
 export type SearchItemsQueryResult = Apollo.QueryResult<SearchItemsQuery, SearchItemsQueryVariables>;
-export const GetOrderMassiveDocument = gql`
-    query getOrderMassive {
-  allOrders {
-    OrderID
-    CompanyID
-    BranchID
-    Date_
-    ClientID
-    CarID
-    IsService
-    ServiceTypeID
-    Mileage
-    NextServiceMileage
-    Notes
-    SaleConditionID
-    DiscountID
-    Subtotal
-    Total
-    VAT
-    UserID
-    DocumentID
-    PriceListID
-    OrderStatusID
-    WarehouseID
-  }
-  allClients {
-    ClientID
-    DocTypeID
-    DocNumber
-    FirstName
-    LastName
-    Phone
-    Email
-    Address
-    City
-    PostalCode
-    IsActive
-    CountryID
-    ProvinceID
-    PriceListID
-    VendorID
-  }
-  allSaleconditions {
-    SaleConditionID
-    CreditCardID
-    Name
-    DueDate
-    Surcharge
-    IsActive
-  }
-  allUsers {
-    UserID
-    Nickname
-    FullName
-    IsActive
-  }
-  allVendors {
-    VendorID
-    VendorName
-    Commission
-    IsActive
-  }
-}
-    `;
-
-/**
- * __useGetOrderMassiveQuery__
- *
- * To run a query within a React component, call `useGetOrderMassiveQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetOrderMassiveQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetOrderMassiveQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetOrderMassiveQuery(baseOptions?: Apollo.QueryHookOptions<GetOrderMassiveQuery, GetOrderMassiveQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetOrderMassiveQuery, GetOrderMassiveQueryVariables>(GetOrderMassiveDocument, options);
-      }
-export function useGetOrderMassiveLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrderMassiveQuery, GetOrderMassiveQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetOrderMassiveQuery, GetOrderMassiveQueryVariables>(GetOrderMassiveDocument, options);
-        }
-export function useGetOrderMassiveSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetOrderMassiveQuery, GetOrderMassiveQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetOrderMassiveQuery, GetOrderMassiveQueryVariables>(GetOrderMassiveDocument, options);
-        }
-export type GetOrderMassiveQueryHookResult = ReturnType<typeof useGetOrderMassiveQuery>;
-export type GetOrderMassiveLazyQueryHookResult = ReturnType<typeof useGetOrderMassiveLazyQuery>;
-export type GetOrderMassiveSuspenseQueryHookResult = ReturnType<typeof useGetOrderMassiveSuspenseQuery>;
-export type GetOrderMassiveQueryResult = Apollo.QueryResult<GetOrderMassiveQuery, GetOrderMassiveQueryVariables>;

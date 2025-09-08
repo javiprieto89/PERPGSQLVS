@@ -6,14 +6,16 @@ import { itemCategoryOperations } from "~/graphql/operations.js";
 import { openReactWindow } from "../utils/openReactWindow";
 
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { AdminTable } from "~/components/table/AdminTable";
+import {
+  AdminTableLoading,
+  TableActionButton,
+} from "~/components/table/TableExtraComponents";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
 import TableFilters from "../components/TableFilters";
-
-import { AlertLoading } from "~/components/AlertLoading";
-import { ApiErrorMessage } from "~/components/ApiErrorMessage";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { TableActionButton } from "~/components/TableActionButtons";
-import { AdminTable, AdminTableLoading } from "~/components/TanstackTable";
 import ItemCategoryCreate from "./ItemCategoryCreate";
 
 export default function ItemCategories() {
@@ -134,7 +136,7 @@ export default function ItemCategories() {
             Recargar
           </Button>
           <Button variant="primary" onClick={handleCreate}>
-            <Plus />
+            <Plus strokeWidth={3} />
             Nuevo
           </Button>
         </div>

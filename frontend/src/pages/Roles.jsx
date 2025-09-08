@@ -1,50 +1,43 @@
 // frontend/src/pages/Roles.jsx
-import { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { RefreshButton } from "~/components/RefreshButton";
+import { AdminTable } from "~/components/table/AdminTable";
+import {
+  AdminTableLoading,
+  TableActionButton,
+} from "~/components/table/TableExtraComponents";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { Button } from "~/components/ui/button";
+import { useGetAllRolesQuery } from "~/graphql/_generated/graphql";
 import { roleOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import RoleForm from "./RoleForm";
 
 export default function Roles() {
-  const [allRoles, setAllRoles] = useState([]);
+  const { data, error, loading, refetch } = useGetAllRolesQuery();
   const [roles, setRoles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-
-  const loadRoles = async () => {
-    try {
-      setLoading(true);
-      const data = await roleOperations.getAllRoles();
-      setAllRoles(data);
-      setRoles(data);
-    } catch (err) {
-      console.error("Error cargando roles:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadRoles();
-  }, []);
 
   useEffect(() => {
     const handler = (e) => {
       if (e.data === "reload-roles") {
-        loadRoles();
+        refetch();
       }
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, []);
+  }, [refetch]);
 
   const handleFilterChange = (filtered) => {
     setRoles(filtered);
   };
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     openReactWindow(
       (popup) => (
         <RoleForm
@@ -52,105 +45,121 @@ export default function Roles() {
             popup.opener.postMessage("reload-roles", "*");
             popup.close();
           }}
-          onClose={() => popup.close()}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
         />
       ),
       "Nuevo Rol"
     );
-  };
+  }, [refetch]);
 
-  const handleEdit = (role) => {
-    openReactWindow(
-      (popup) => (
-        <RoleForm
-          role={role}
-          onSave={() => {
-            popup.opener.postMessage("reload-roles", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Editar Rol"
-    );
-  };
+  const handleEdit = useCallback(
+    (role) => {
+      openReactWindow(
+        (popup) => (
+          <RoleForm
+            role={role}
+            onSave={() => {
+              popup.opener.postMessage("reload-roles", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Rol"
+      );
+    },
+    [refetch]
+  );
 
-  const handleDelete = async (id) => {
-    if (!confirm("¿Borrar rol?")) return;
-    try {
-      await roleOperations.deleteRole(id);
-      loadRoles();
-    } catch (err) {
-      alert("Error al borrar rol: " + err.message);
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar rol?")) return;
+      try {
+        await roleOperations.deleteRole(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar rol: " + err.message);
+      }
+    },
+    [refetch]
+  );
+
+  useEffect(() => {
+    if (data?.allRoles) {
+      setRoles(data.allRoles);
     }
-  };
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "RoleID",
+        className: "first w-3",
+      },
+      {
+        header: "Nombre",
+        accessorKey: "RoleName",
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "RoleID",
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold">Roles</h1>
         <div className="flex space-x-2">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 bg-purple-600 text-white rounded"
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
-          <button
-            onClick={loadRoles}
-            className="px-4 py-2 bg-primary text-white rounded"
-          >
-            Recargar
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded"
-          >
-            Nuevo Rol
-          </button>
+          {data && data.allRoles.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allRoles}
+                onSearch={(rows) => setRoles(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <RefreshButton onClick={() => refetch()} loading={loading} />
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus strokeWidth={3} />
+            Nuevo
+          </Button>
         </div>
       </div>
       {showFilters && (
         <div className="mb-6">
           <TableFilters
             modelName="roles"
-            data={allRoles}
+            data={data.allRoles}
             onFilterChange={handleFilterChange}
           />
         </div>
       )}
-      {loading ? (
-        <p>Cargando...</p>
-      ) : error ? (
-        <p className="text-destructive">{error}</p>
-      ) : (
-        <ul className="space-y-2">
-          {roles.map((r) => (
-            <li
-              key={r.RoleID}
-              className="border p-2 rounded flex justify-between items-center"
-            >
-              <span>
-                <strong>{r.RoleName}</strong> (ID: {r.RoleID})
-              </span>
-              <span className="space-x-2">
-                <button
-                  onClick={() => handleEdit(r)}
-                  className="px-2 py-1 text-sm  rounded hover:"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(r.RoleID)}
-                  className="px-2 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                >
-                  Eliminar
-                </button>
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+      {error && <ApiErrorMessage error={error} />}
+      {loading && <AlertLoading />}
+      {loading && <AdminTableLoading />}
+      {roles.length > 0 && <AdminTable columns={columns} data={roles} />}
     </div>
   );
 }

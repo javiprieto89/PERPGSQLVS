@@ -20,6 +20,31 @@ query GetAllOrders {
     DocumentID
     PriceListID
     OrderStatusID
-    WarehouseI
+    WarehouseID
+    SaleConditionData {
+      SaleConditionID
+      Name
+    }
+    ClientData {
+      ClientID
+      FirstName
+      LastName
+      VendorID
+    }
+    UserData {
+      UserID
+      Nickname
+      FullName
+    }
+    DiscountData {
+      DiscountID
+      DiscountName
+      Percentage
+    }
+  }
+  allClients {
+    FirstName
+    LastName
+    ClientID
   }
 }

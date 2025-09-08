@@ -1,90 +1,50 @@
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast, Toaster } from "sonner";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { useUser } from "../hooks/useUser";
-import { AuthHelper } from "../utils/authHelper";
+import { useUser } from "~/hooks/useUser";
+import { AuthHelper } from "~/utils/authHelper";
 
 export default function Login() {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { login } = useUser();
+  const { login, loading, error } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
+    await login(nickname.trim(), password.trim());
+    const nav = AuthHelper.getRedirectAfterLogin();
+    AuthHelper.removeRedirectAfterLogin();
+    await navigate(nav);
+  };
 
-    try {
-      // Usar AuthHelper para el login
-      const result = await AuthHelper.login(nickname, password);
-
-      if (!result.success) {
-        throw new Error(result.message || "Credenciales inválidas");
-      }
-
-      // Adaptar la respuesta al formato esperado por UserContext
-      const data = {
-        UserID: result.user.UserID,
-        Nickname: result.user.Nickname,
-        FullName: result.user.FullName,
-        IsActive: result.user.IsActive,
-        userAccesses: result.user.UserAccess.map((access) => ({
-          userID: access.UserID,
-          companyID: access.CompanyID,
-          companyName: access.Company,
-          branchID: access.BranchID,
-          branchName: access.Branch,
-          roleID: access.RoleID,
-          roleName: access.Role,
-        })),
-      };
-
-      // Actualizar contexto
-      login(data);
-
-      // Verificar si hay una redirección pendiente
-      const redirectPath = sessionStorage.getItem("redirectAfterLogin");
-      if (redirectPath) {
-        sessionStorage.removeItem("redirectAfterLogin");
-        navigate(redirectPath);
-      } else {
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      console.error("Error login:", err);
-      setError(
-        err.message || "Error al iniciar sesión. Verifique sus credenciales."
-      );
-    } finally {
-      setLoading(false);
-    }
+  const handleForgotPassword = () => {
+    toast.error("Contacte al administrador del sistema");
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Card className="p-8 rounded-xl shadow-xl w-full max-w-md">
-        <div className="text-center mb-8">
+    <div className="flex">
+      <Toaster />
+      <div className="hidden lg:flex items-center border-r-1 bg-card h-dvh w-1/2">
+        <img src="./Site Stats-amico.svg" alt="illustration of dashboard" />
+      </div>
+      <div className="p-8 rounded-xl w-full lg:w-1/2 h-dvh flex flex-col items-center justify-center">
+        <div className="text-center mb-8 mx-auto">
           <h1 className="text-xl font-bold mb-2">ERP System</h1>
           <h2 className="text-muted-foreground">Iniciar sesión</h2>
         </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-destructive text-sm">{error}</p>
-          </div>
-        )}
+        {error && <ApiErrorMessage error={error} />}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-1/2">
           <div>
-            <Label className="block mb-2">Usuario</Label>
+            <Label className="block mt-2 mb-1">Usuario</Label>
             <Input
               type="text"
               placeholder="Ingrese su usuario"
@@ -96,8 +56,8 @@ export default function Login() {
             />
           </div>
 
-          <div>
-            <Label className="block mb-2">Contraseña</Label>
+          <div className="mb-4">
+            <Label className="block mt-2 mb-1">Contraseña</Label>
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
@@ -153,13 +113,13 @@ export default function Login() {
             <button
               type="button"
               className="text-primary hover:text-foreground/80 font-medium"
-              onClick={() => setError("Contacte al administrador del sistema")}
+              onClick={handleForgotPassword}
             >
               Contactar soporte
             </button>
           </p>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

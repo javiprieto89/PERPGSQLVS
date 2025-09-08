@@ -1,10 +1,16 @@
-import { Plus, RefreshCcw } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { AlertLoading } from "~/components/AlertLoading";
-import { ApiErrorMessage } from "~/components/ApiErrorMessage";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { AdminTableLoading } from "~/components/TanstackTable";
+import { Plus } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { RefreshButton } from "~/components/RefreshButton";
+import { AdminTable } from "~/components/table/AdminTable";
+import {
+  AdminTableLoading,
+  TableActionButton,
+  TableIsActiveCell,
+} from "~/components/table/TableExtraComponents";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
 import { useGetAllBrandsQuery } from "~/graphql/_generated/graphql";
 import { brandOperations } from "~/graphql/operations.js";
@@ -87,6 +93,38 @@ export default function Brands() {
     }
   }, [data]);
 
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "BrandID",
+        className: "first w-3",
+      },
+      {
+        header: "Nombre",
+        accessorKey: "Name",
+      },
+      {
+        header: "Estado",
+        accessorKey: "IsActive",
+        cell: (props) => <TableIsActiveCell {...props} />,
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "BrandID",
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -104,12 +142,9 @@ export default function Brands() {
               />
             </>
           )}
-          <Button onClick={() => refetch()}>
-            <RefreshCcw />
-            Recargar
-          </Button>
+          <RefreshButton onClick={() => refetch()} loading={loading} />
           <Button variant="primary" onClick={handleCreate}>
-            <Plus />
+            <Plus strokeWidth={3} />
             Nuevo
           </Button>
         </div>
@@ -125,33 +160,8 @@ export default function Brands() {
       )}
       {error && <ApiErrorMessage error={error} />}
       {loading && <AlertLoading />}
+      {brands.length > 0 && <AdminTable columns={columns} data={brands} />}
       {loading && <AdminTableLoading />}
-      {!loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {brands.map((br) => (
-            <div key={br.BrandID} className=" rounded shadow p-4">
-              <h3 className="text-lg font-semibold mb-2">{br.Name}</h3>
-              <p className="text-sm mb-2">
-                Activo: {br.IsActive ? "Sí" : "No"}
-              </p>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(br)}
-                  className="mt-2 px-3 py-1  text-sm rounded hover:"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(br.BrandID)}
-                  className="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

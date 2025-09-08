@@ -1,50 +1,43 @@
 // frontend/src/pages/Users.jsx
-import { useEffect, useState } from "react";
+import { Plus } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
+import { InputQuickSearch } from "~/components/InputQuickSearch";
+import { RefreshButton } from "~/components/RefreshButton";
+import { AdminTable } from "~/components/table/AdminTable";
+import {
+  AdminTableLoading,
+  TableActionButton,
+} from "~/components/table/TableExtraComponents";
+import { AlertLoading } from "~/components/ui-admin/AlertLoading";
+import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { Button } from "~/components/ui/button";
+import { useGetAllUsersQuery } from "~/graphql/_generated/graphql";
 import { userOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
 import UserForm from "./UserForm";
 
 export default function Users() {
-  const [allUsers, setAllUsers] = useState([]);
+  const { data, error, loading, refetch } = useGetAllUsersQuery();
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
-
-  const loadUsers = async () => {
-    try {
-      setLoading(true);
-      const data = await userOperations.getAllUsers();
-      setAllUsers(data);
-      setUsers(data);
-    } catch (err) {
-      console.error("Error cargando usuarios:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadUsers();
-  }, []);
 
   useEffect(() => {
     const handler = (e) => {
       if (e.data === "reload-users") {
-        loadUsers();
+        refetch();
       }
     };
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, []);
+  }, [refetch]);
 
   const handleFilterChange = (filtered) => {
     setUsers(filtered);
   };
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     openReactWindow(
       (popup) => (
         <UserForm
@@ -52,105 +45,125 @@ export default function Users() {
             popup.opener.postMessage("reload-users", "*");
             popup.close();
           }}
-          onClose={() => popup.close()}
+          onClose={() => {
+            popup.close();
+            refetch();
+          }}
         />
       ),
       "Nuevo Usuario"
     );
-  };
+  }, [refetch]);
 
-  const handleEdit = (user) => {
-    openReactWindow(
-      (popup) => (
-        <UserForm
-          user={user}
-          onSave={() => {
-            popup.opener.postMessage("reload-users", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Editar Usuario"
-    );
-  };
+  const handleEdit = useCallback(
+    (user) => {
+      openReactWindow(
+        (popup) => (
+          <UserForm
+            user={user}
+            onSave={() => {
+              popup.opener.postMessage("reload-users", "*");
+              popup.close();
+            }}
+            onClose={() => {
+              popup.close();
+              refetch();
+            }}
+          />
+        ),
+        "Editar Usuario"
+      );
+    },
+    [refetch]
+  );
 
-  const handleDelete = async (id) => {
-    if (!confirm("¿Borrar usuario?")) return;
-    try {
-      await userOperations.deleteUser(id);
-      loadUsers();
-    } catch (err) {
-      alert("Error al borrar usuario: " + err.message);
+  const handleDelete = useCallback(
+    async (id) => {
+      if (!confirm("¿Borrar usuario?")) return;
+      try {
+        await userOperations.deleteUser(id);
+        refetch();
+      } catch (err) {
+        alert("Error al borrar usuario: " + err.message);
+      }
+    },
+    [refetch]
+  );
+
+  useEffect(() => {
+    if (data?.allUsers) {
+      setUsers(data.allUsers);
     }
-  };
+  }, [data]);
+
+  const columns = useMemo(
+    () => [
+      {
+        header: "ID",
+        id: "id",
+        accessorKey: "UserID",
+        className: "first w-3",
+      },
+      {
+        header: "Nombre",
+        accessorKey: "FullName",
+      },
+      {
+        header: "Nickname",
+        accessorKey: "Nickname",
+      },
+      {
+        header: "",
+        id: "actions",
+        accessorKey: "UserID",
+        cell: ({ row, getValue }) => (
+          <TableActionButton
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
+        ),
+      },
+    ],
+    [handleDelete, handleEdit]
+  );
 
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold">Usuarios</h1>
         <div className="flex space-x-2">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-4 py-2 bg-purple-600 text-white rounded"
-          >
-            {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
-          </button>
-          <button
-            onClick={loadUsers}
-            className="px-4 py-2 bg-primary text-white rounded"
-          >
-            Recargar
-          </button>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded"
-          >
-            Nuevo Usuario
-          </button>
+          {data && data.allUsers.length > 0 && (
+            <>
+              <InputQuickSearch
+                rows={data.allUsers}
+                onSearch={(rows) => setUsers(rows)}
+              />
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <RefreshButton onClick={() => refetch()} loading={loading} />
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus strokeWidth={3} />
+            Nuevo
+          </Button>
         </div>
       </div>
       {showFilters && (
         <div className="mb-6">
           <TableFilters
             modelName="users"
-            data={allUsers}
+            data={data?.allUsers || []}
             onFilterChange={handleFilterChange}
           />
         </div>
       )}
-      {loading ? (
-        <p>Cargando...</p>
-      ) : error ? (
-        <p className="text-destructive">{error}</p>
-      ) : (
-        <ul className="space-y-2">
-          {users.map((u) => (
-            <li
-              key={u.UserID}
-              className="border p-2 rounded flex justify-between items-center"
-            >
-              <span>
-                <strong>{u.FullName}</strong> ({u.Nickname}) - ID: {u.UserID}
-              </span>
-              <span className="space-x-2">
-                <button
-                  onClick={() => handleEdit(u)}
-                  className="px-2 py-1 text-sm  rounded hover:"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(u.UserID)}
-                  className="px-2 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-                >
-                  Eliminar
-                </button>
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+      {error && <ApiErrorMessage error={error} />}
+      {loading && <AlertLoading />}
+      {users.length > 0 && <AdminTable columns={columns} data={users} />}
+      {loading && <AdminTableLoading />}
     </div>
   );
 }
