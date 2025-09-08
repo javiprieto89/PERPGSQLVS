@@ -13,7 +13,6 @@ import Brands from "./pages/Brands";
 import CarBrands from "./pages/CarBrands";
 import CarModels from "./pages/CarModels";
 import Cars from "./pages/Cars";
-import { ClientsForm } from "./pages/clients/form-new";
 import { Clients } from "./pages/clients/list";
 import CompanyData from "./pages/CompanyData";
 import CreditCardGroups from "./pages/CreditCardGroups";
@@ -86,8 +85,6 @@ export default function App() {
             <Route index path="dashboard" element={<Dashboard />} />
             <Route path="clients">
               <Route index element={<Clients />} />
-              {/* <Route path=":city" element={<City />} /> */}
-              <Route path="form/:id?" element={<ClientsForm />} />
             </Route>
             <Route path="suppliers" element={<Suppliers />} />
             <Route path="brands" element={<Brands />} />
