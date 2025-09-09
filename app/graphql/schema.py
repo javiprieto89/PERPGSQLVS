@@ -45,8 +45,6 @@ from app.graphql.resolvers.suppliers import SuppliersQuery
 from app.graphql.resolvers.temporderdetails import TemporderdetailsQuery
 from app.graphql.resolvers.tempstockhistorydetails import TempstockhistorydetailsQuery
 from app.graphql.resolvers.transactions import TransactionsQuery
-from app.graphql.resolvers.taxes import TaxesQuery
-from app.graphql.resolvers.itemtaxes import ItemtaxesQuery
 from app.graphql.resolvers.systransactiontypes import SystransactiontypesQuery
 from app.graphql.resolvers.useraccess import UseraccessQuery
 from app.graphql.resolvers.sysuseractions import SysuseractionsQuery
@@ -78,8 +76,6 @@ from app.graphql.mutations.tempstockhistorydetails import TempStockHistoryDetail
 from app.graphql.mutations.cashboxes import CashBoxesMutations
 from app.graphql.mutations.cashboxmovements import CashBoxMovementsMutations
 from app.graphql.mutations.stockhistory import StockHistoryMutations
-from app.graphql.mutations.taxes import TaxesMutations
-from app.graphql.mutations.itemtaxes import ItemtaxesMutations
 from app.graphql.mutations.servicetype import ServiceTypeMutations
 from app.graphql.mutations.sysdoctypes import SysDocTypesMutations
 from app.graphql.mutations.sysdocumenttypes import SysDocumentTypesMutations
@@ -89,7 +85,6 @@ from app.graphql.mutations.roles import RolesMutations
 from app.graphql.mutations.users import UsersMutations
 from app.graphql.mutations.vendors import VendorsMutations
 from app.graphql.mutations.useraccess import UserAccessMutation
-from app.graphql.schemas.users import UsersInDB
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
 from app.graphql.resolvers.auth import AuthQuery
@@ -355,8 +350,6 @@ class Query(
     CashboxesQuery,
     CashboxmovementsQuery,
     TransactionsQuery,
-    TaxesQuery,
-    ItemtaxesQuery,
     SystransactiontypesQuery,
     UseraccessQuery,
     SysuseractionsQuery,
@@ -364,8 +357,7 @@ class Query(
     WarehousesQuery,
     VendorsQuery,
     AfipQuery,
-    AuthQuery, 
-    # AGREGADO: Queries de autenticación
+    AuthQuery,  # AGREGADO: Queries de autenticación
 ):
     """Query principal con todas las consultas disponibles"""
 
@@ -443,8 +435,6 @@ class Mutation(
     CashBoxesMutations,
     CashBoxMovementsMutations,
     StockHistoryMutations,
-    TaxesMutations,
-    ItemtaxesMutations,
     OrdersMutations,
     ServiceTypeMutations,
     DocumentsMutations,
