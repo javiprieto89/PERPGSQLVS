@@ -2,6 +2,8 @@
 import strawberry
 from typing import Optional
 from datetime import date, datetime
+from app.graphql.schemas.clients import ClientsInDB
+from app.graphql.schemas.suppliers import SuppliersInDB
 
 @strawberry.input
 class AccountBalancesCreate:
@@ -12,7 +14,7 @@ class AccountBalancesCreate:
 @strawberry.input
 class AccountBalancesUpdate:
     SupplierID: Optional[int] = None
-    BlientID: Optional[int] = None
+    ClientID: Optional[int] = None
     Balance: Optional[float] = None
 
 @strawberry.type
@@ -21,3 +23,5 @@ class AccountBalancesInDB:
     SupplierID: Optional[int] = None
     ClientID: Optional[int] = None
     Balance: float
+    ClientData: Optional[ClientsInDB] = None
+    SupplierData: Optional[SuppliersInDB] = None

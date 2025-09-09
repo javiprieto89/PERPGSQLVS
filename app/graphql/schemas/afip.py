@@ -40,3 +40,6 @@ class TestConnectionResult:
     success: bool  # Indica si la conexión fue exitosa
     message: str  # Mensaje descriptivo del resultado
     details: str  # Detalles adicionales en formato JSON
+    
+    
+    

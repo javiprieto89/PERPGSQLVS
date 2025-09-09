@@ -34,3 +34,4 @@ class CashboxesQuery:
             db_gen.close()
 
 cashboxesQuery = CashboxesQuery()
+

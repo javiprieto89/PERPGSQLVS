@@ -74,3 +74,4 @@ def delete_items(db: Session, item_id: int):
         db.delete(db_item)
         db.commit()
     return db_item
+

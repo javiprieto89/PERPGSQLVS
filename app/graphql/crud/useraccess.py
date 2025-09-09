@@ -64,3 +64,4 @@ def delete_useraccess(db: Session, userID: int, companyID: int, branchID: int, r
         db.delete(obj)
         db.commit()
     return obj
+

@@ -30,3 +30,4 @@ class DocumentsQuery:
             db_gen.close()
 
 documentsQuery = DocumentsQuery()
+

@@ -32,3 +32,4 @@ class WarehousesQuery:
 
 
 warehousesQuery = WarehousesQuery()
+

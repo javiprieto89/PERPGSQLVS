@@ -108,3 +108,5 @@ class ClientSummary:
     Email: Optional[str]
     City: Optional[str]
     IsActive: bool
+    
+    

@@ -30,7 +30,24 @@ def get_orderdetails_by_id(db: Session, orderdetailid: int):
 
 
 def create_orderdetails(db: Session, data: OrderDetailsCreate):
-    obj = OrderDetails(**vars(data))
+    # Crear el objeto OrderDetails solo con los campos válidos
+    obj_data = {}
+    
+    # Solo incluir OrderID si está presente (no es None)
+    if data.OrderID is not None:
+        obj_data['OrderID'] = data.OrderID
+        
+    obj_data.update({
+        'ItemID': data.ItemID,
+        'Quantity': data.Quantity,
+        'UnitPrice': data.UnitPrice,
+        'Description': data.Description
+    })
+    
+    if data.LastModified is not None:
+        obj_data['LastModified'] = data.LastModified
+    
+    obj = OrderDetails(**obj_data)
     db.add(obj)
     db.commit()
     db.refresh(obj)
@@ -42,15 +59,15 @@ def update_orderdetails(db: Session, orderdetailid: int, data: OrderDetailsUpdat
     if obj:
         # Actualizar solo los campos que no son None
         update_fields = [
-            'OrderID', 'ItemID', 'Quantity', 'UnitPrice',
+            'OrderID', 'ItemID', 'Quantity', 'UnitPrice', 
             'Description', 'LastModified'
         ]
-
+        
         for field in update_fields:
             value = getattr(data, field, None)
             if value is not None:
                 setattr(obj, field, value)
-
+                
         db.commit()
         db.refresh(obj)
     return obj

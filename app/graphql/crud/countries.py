@@ -37,3 +37,4 @@ def delete_countries(db: Session, countryid: int):
         db.delete(obj)
         db.commit()
     return obj
+

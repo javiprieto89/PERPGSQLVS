@@ -51,12 +51,10 @@ class TempStockHistoryDetails(Base):
             ["Warehouses.WarehouseID"],
             name="FK__TempStock__Wareh__18EBB532",
         ),
-        PrimaryKeyConstraint("TempStockEntryID",
-                             name="PK__TempStoc__6BCFA2A4F18BE300"),
+        PrimaryKeyConstraint("TempStockEntryID", name="PK__TempStoc__6BCFA2A4F18BE300"),
     )
 
-    TempStockEntryID = Column(Integer, Identity(
-        start=1, increment=1), primary_key=True)
+    TempStockEntryID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
     CompanyID = Column(Integer)
     BranchID = Column(Integer)
     UniqueID = Column(Uuid, server_default=text("(newid())"))
@@ -81,7 +79,7 @@ class TempStockHistoryDetails(Base):
         overlaps="branches_,tempStockHistoryDetails"
     )
     items_: Mapped["Items"] = relationship(
-        "Items", back_populates="tempStockHistoryDetails_"
+        "Items", back_populates="tempStockHistoryDetails"
     )
     users_: Mapped["Users"] = relationship(
         "Users", back_populates="tempStockHistoryDetails"
@@ -89,3 +87,4 @@ class TempStockHistoryDetails(Base):
     warehouses_: Mapped["Warehouses"] = relationship(
         "Warehouses", back_populates="tempStockHistoryDetails"
     )
+

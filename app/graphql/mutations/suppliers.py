@@ -57,3 +57,4 @@ class SuppliersMutations:
             return obj_to_schema(SuppliersInDB, updated_supplier)
         finally:
             db_gen.close()
+

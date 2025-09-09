@@ -48,8 +48,7 @@ def update_brands(db: Session, brandid: int, data: BrandsUpdate):
 def delete_brands(db: Session, brandid: int):
     obj = get_brands_by_id(db, brandid)
     if obj:
-        linked_items = db.query(Items).filter(
-            Items.BrandID == brandid).first() is not None
+        linked_items = db.query(Items).filter(Items.BrandID == brandid).first() is not None
         if linked_items:
             raise ValueError(
                 "Cannot delete brand because it is referenced by existing items"
@@ -57,3 +56,4 @@ def delete_brands(db: Session, brandid: int):
         db.delete(obj)
         db.commit()
     return obj
+

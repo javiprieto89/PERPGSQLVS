@@ -26,3 +26,4 @@ class SysOrderStatus(Base):  # <--- nombre de la clase
 
     # Relaciones
     orders: Mapped[List['Orders']] = relationship('Orders', foreign_keys='Orders.OrderStatusID', back_populates='orderStatus_')
+

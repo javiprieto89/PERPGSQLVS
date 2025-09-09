@@ -3,7 +3,7 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:    
     from .countries import Countries
     from .sysdoctypes import SysDocTypes
     from .provinces import Provinces
@@ -23,8 +23,7 @@ from app.db import Base
 class Suppliers(Base):
     __tablename__ = 'Suppliers'
     __table_args__ = (
-        ForeignKeyConstraint(
-            ['DocTypeID'], ['SysDocTypes.DocTypeID'], name='FK_Suppliers_SysDocTypes'),
+        ForeignKeyConstraint(['DocTypeID'], ['SysDocTypes.DocTypeID'], name='FK_Suppliers_SysDocTypes'),
         ForeignKeyConstraint(
             ['CountryID', 'ProvinceID'],
             ['Provinces.CountryID', 'Provinces.ProvinceID'],
@@ -35,12 +34,10 @@ class Suppliers(Base):
             ['Branches.CompanyID', 'Branches.BranchID'],
             name='FK_Suppliers_Branches',
         ),
-        PrimaryKeyConstraint(
-            'SupplierID', name='PK__Supplier__4BE6669487E21347')
+        PrimaryKeyConstraint('SupplierID', name='PK__Supplier__4BE6669487E21347')
     )
 
-    SupplierID = Column(Integer, Identity(
-        start=1, increment=1), primary_key=True)
+    SupplierID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
     CompanyID = Column(Integer)
     BranchID = Column(Integer)
     DocTypeID = Column(Integer)
@@ -56,4 +53,22 @@ class Suppliers(Base):
     City = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
     PostalCode = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
 
-    # Relaciones eliminadas: solo FK explícitos según SQL definitivo
+    # Relaciones
+    countries_: Mapped['Countries'] = relationship(
+        'Countries',
+        back_populates='suppliers',
+        primaryjoin='Suppliers.CountryID == Countries.CountryID',
+        foreign_keys='Suppliers.CountryID',
+        overlaps='suppliers'
+    )
+    docTypes_: Mapped['SysDocTypes'] = relationship('SysDocTypes', back_populates='suppliers')
+    provinces_: Mapped['Provinces'] = relationship(
+        'Provinces',
+        back_populates='suppliers',
+        overlaps='countries_,suppliers'
+    )
+    accountBalances: Mapped[List['AccountBalances']] = relationship('AccountBalances', back_populates='suppliers_')
+    items: Mapped[List['Items']] = relationship('Items', back_populates='suppliers_')
+    itemstock: Mapped[List['Itemstock']] = relationship('Itemstock', back_populates='suppliers_')
+    orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='suppliers_')
+

@@ -25,3 +25,4 @@ class SysUserActions(Base):
 
     # Relaciones
     userActivityLog: Mapped[List['UserActivityLog']] = relationship('UserActivityLog', back_populates='sysUserActions_')
+

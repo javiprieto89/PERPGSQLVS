@@ -143,3 +143,4 @@ def obj_to_schema(schema_type: Any, obj: Any):
 
 def list_to_schema(schema_type: Any, objects: Sequence[Any]) -> List[Any]:
     return [obj_to_schema(schema_type, obj) for obj in objects if obj is not None]
+

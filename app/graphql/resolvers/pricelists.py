@@ -32,3 +32,4 @@ class PricelistsQuery:
 
 
 pricelistsQuery = PricelistsQuery()
+

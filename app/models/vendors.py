@@ -23,5 +23,3 @@ class Vendors(Base):
 
     # Relaciones
     clients: Mapped[List['Clients']] = relationship('Clients', back_populates='vendors_')
-
-    

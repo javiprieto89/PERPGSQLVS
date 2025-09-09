@@ -37,3 +37,4 @@ def delete_cashboxmovements(db: Session, movement_id: int):
         db.delete(obj)
         db.commit()
     return obj
+

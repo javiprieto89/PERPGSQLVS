@@ -68,3 +68,4 @@ class BranchesQuery:
 
 
 branchesQuery = BranchesQuery()
+

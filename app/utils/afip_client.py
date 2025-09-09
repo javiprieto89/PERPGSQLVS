@@ -214,3 +214,4 @@ def get_document_types() -> Dict[str, str]:
         "96": "DNI",
         "99": "Sin identificar"
     }
+    

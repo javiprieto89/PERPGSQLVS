@@ -126,3 +126,4 @@ class AfipQuery:
         """
         test_data = get_alternative_test_data()
         return json.dumps(test_data, indent=2, ensure_ascii=False)
+    

@@ -55,3 +55,4 @@ def delete_branches(db: Session, companyID: int, branchID: int):
         db.delete(obj)
         db.commit()
     return obj
+

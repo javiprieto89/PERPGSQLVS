@@ -26,3 +26,4 @@ class UsersMutations:
         db = next(get_db())
         deleted = delete_user(db, userID)
         return deleted is not None
+

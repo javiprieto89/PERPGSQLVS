@@ -43,3 +43,4 @@ def delete_systransactiontype(db: Session, id: int):
         db.delete(db_record)
         db.commit()
     return db_record
+

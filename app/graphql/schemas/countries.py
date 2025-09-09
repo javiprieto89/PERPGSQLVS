@@ -23,4 +23,3 @@ class CountriesInDB:
 
     # Relaciones
     #provinces: Optional[List[ProvincesInDB]] = None
-

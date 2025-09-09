@@ -32,3 +32,4 @@ class OrderdetailsQuery:
 
 
 orderdetailsQuery = OrderdetailsQuery()
+

@@ -18,4 +18,3 @@ class CreditCardGroupsUpdate:
 class CreditCardGroupsInDB:
     CreditCardGroupID: int
     GroupName: Optional[str] = None
-

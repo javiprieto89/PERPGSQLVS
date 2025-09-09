@@ -43,3 +43,4 @@ class CashBoxesMutations:
             return deleted is not None
         finally:
             db_gen.close()
+

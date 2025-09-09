@@ -45,3 +45,4 @@ class CarsQuery:
             db_gen.close()
 
 carsQuery = CarsQuery()
+

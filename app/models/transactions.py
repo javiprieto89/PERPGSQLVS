@@ -41,3 +41,4 @@ class Transactions(Base):
 
     # Relación con Branches - debe llamarse branches_ para coincidir con back_populates
     branches_: Mapped[Optional['Branches']] = relationship('Branches', back_populates='transactions')
+    

@@ -3,7 +3,7 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:    
     from .useractivitylog import UserActivityLog
     from .useraccess import UserAccess
     from .orders import Orders
@@ -18,13 +18,13 @@ from typing import List
 
 from sqlalchemy import Column, Integer, Unicode, Boolean, Identity, PrimaryKeyConstraint, text
 from sqlalchemy.orm import Mapped, relationship
-# from .useractivitylog import UserActivityLog
-# from .useraccess import UserAccess
-# from .orders import Orders
-# from .stockhistory import StockHistory
-# from .tempstockentries import TempStockEntries
-# from .orderhistory import OrderHistory
-# from .temporderdetails import TempOrderDetails
+#from .useractivitylog import UserActivityLog
+#from .useraccess import UserAccess
+#from .orders import Orders
+#from .stockhistory import StockHistory
+#from .tempstockentries import TempStockEntries
+#from .orderhistory import OrderHistory
+#from .temporderdetails import TempOrderDetails
 from app.db import Base
 
 
@@ -41,20 +41,13 @@ class Users(Base):
     IsActive = Column(Boolean, server_default=text('((1))'))
 
     # Relaciones
-    userActivityLog: Mapped[List['UserActivityLog']] = relationship(
-        'UserActivityLog', back_populates='users_')
-    userAccess: Mapped[List['UserAccess']] = relationship(
-        'UserAccess', back_populates='users_')
-    orders: Mapped[List['Orders']] = relationship(
-        'Orders', back_populates='users_')
-    # stockHistory relación eliminada para evitar conflicto de mapeo
-    tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship(
-        'TempStockHistoryDetails', back_populates='users_')
-    orderHistory_: Mapped[List['OrderHistory']] = relationship(
-        'OrderHistory', back_populates='users_')
-    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship(
-        'TempOrderDetails', back_populates='users_')
-    cashBoxes: Mapped[List['CashBoxes']] = relationship(
-        'CashBoxes', back_populates='users_')
-    cashBoxMovements: Mapped[List['CashBoxMovements']] = relationship(
-        'CashBoxMovements', back_populates='users_')
+    userActivityLog: Mapped[List['UserActivityLog']] = relationship('UserActivityLog', back_populates='users_')
+    userAccess: Mapped[List['UserAccess']] = relationship('UserAccess', back_populates='users_')
+    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='users_')
+    stockHistory: Mapped[List['StockHistory']] = relationship('StockHistory', back_populates='users_')
+    tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship('TempStockHistoryDetails', back_populates='users_')
+    orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='users_')
+    tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship('TempOrderDetails', back_populates='users_')
+    cashBoxes: Mapped[List['CashBoxes']] = relationship('CashBoxes', back_populates='users_')
+    cashBoxMovements: Mapped[List['CashBoxMovements']] = relationship('CashBoxMovements', back_populates='users_')
+    

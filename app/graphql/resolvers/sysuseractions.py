@@ -46,3 +46,4 @@ class SysuseractionsQuery:
 
 
 sysuseractionsQuery = SysuseractionsQuery()
+

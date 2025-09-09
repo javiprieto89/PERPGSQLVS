@@ -7,11 +7,9 @@ from app.models.itemsubcategories import ItemSubcategories
 from app.models.itemcategories import ItemCategories
 from app.graphql.schemas.itemsubcategories import ItemSubcategoriesCreate, ItemSubcategoriesUpdate
 
-
 def get_itemsubcategories(db: Session):
     """Obtener subcategorías con sus relaciones"""
     return db.query(ItemSubcategories).options(joinedload(ItemSubcategories.itemCategories_)).all()
-
 
 def get_itemsubcategories_by_id(db: Session, subcategoryid: int):
     """Obtener subcategoría por ID con relaciones"""
@@ -22,7 +20,6 @@ def get_itemsubcategories_by_id(db: Session, subcategoryid: int):
         .first()
     )
 
-
 def get_itemsubcategories_by_category_id(db: Session, category_id: int):
     """Obtener subcategorías filtradas por categoría"""
     return (
@@ -32,25 +29,23 @@ def get_itemsubcategories_by_category_id(db: Session, category_id: int):
         .all()
     )
 
-
 def create_itemsubcategories(db: Session, data: ItemSubcategoriesCreate):
-    obj = ItemSubcategories(**vars(data))
+    obj = ItemSubcategories(**asdict(data))
     db.add(obj)
     db.commit()
     db.refresh(obj)
     return obj
 
-
 def update_itemsubcategories(db: Session, subcategoryid: int, data: ItemSubcategoriesUpdate):
     obj = get_itemsubcategories_by_id(db, subcategoryid)
     if obj:
-        for k, v in vars(data).items():
+        update_data = asdict(data)
+        for k, v in update_data.items():
             if v is not None:
                 setattr(obj, k, v)
         db.commit()
         db.refresh(obj)
     return obj
-
 
 def delete_itemsubcategories(db: Session, subcategoryid: int):
     obj = get_itemsubcategories_by_id(db, subcategoryid)
@@ -68,3 +63,4 @@ def delete_itemsubcategories(db: Session, subcategoryid: int):
         db.delete(obj)
         db.commit()
     return obj
+

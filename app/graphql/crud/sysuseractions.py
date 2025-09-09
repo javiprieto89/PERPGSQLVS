@@ -54,3 +54,4 @@ def delete(db: Session, id: int):
         db.delete(db_record)
         db.commit()
     return db_record
+

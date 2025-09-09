@@ -171,3 +171,4 @@ print("\nProceso terminado.")
 print(f"Archivos corregidos ({len(cambios)}):")
 for k in cambios:
     print(" -", k)
+

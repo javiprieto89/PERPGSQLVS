@@ -60,3 +60,4 @@ def delete_itemcategories(db: Session, categoryid: int):
         db.delete(obj)
         db.commit()
     return obj
+

@@ -47,3 +47,4 @@ def delete_sysdocumenttypes(db: Session, id: int):
         db.delete(obj)
         db.commit()
     return obj
+

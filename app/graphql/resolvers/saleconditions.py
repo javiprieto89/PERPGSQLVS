@@ -32,3 +32,4 @@ class SaleconditionsQuery:
 
 
 saleconditionsQuery = SaleconditionsQuery()
+

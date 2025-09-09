@@ -62,3 +62,4 @@ def delete_companydata(db: Session, companyID: int):
         db.delete(obj)
         db.commit()
     return obj
+

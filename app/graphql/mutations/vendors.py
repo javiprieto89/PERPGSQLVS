@@ -61,3 +61,4 @@ class VendorsMutations:
             return obj_to_schema(VendorsInDB, updated_vendor)
         finally:
             db_gen.close()
+

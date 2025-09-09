@@ -130,3 +130,4 @@ def process_stock_session(db: Session, session_id: str):
         db.refresh(record)
 
     return processed_records
+

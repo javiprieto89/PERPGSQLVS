@@ -37,3 +37,4 @@ def delete_roles(db: Session, roleID: int):
         db.delete(obj)
         db.commit()
     return obj
+

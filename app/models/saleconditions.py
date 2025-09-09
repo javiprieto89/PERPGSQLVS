@@ -33,3 +33,4 @@ class SaleConditions(Base):
     # Relaciones
     creditCards_: Mapped['CreditCards'] = relationship('CreditCards', back_populates='saleConditions')
     orders: Mapped[List['Orders']] = relationship('Orders', back_populates='saleConditions_')
+

@@ -130,3 +130,4 @@ class CacheInvalidationMixin:
             warehouse_id = kwargs.get('warehouse_id')
             if warehouse_id:
                 invalidate_cache_pattern(f"warehouse:{warehouse_id}")
+                

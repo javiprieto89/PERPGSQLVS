@@ -71,3 +71,4 @@ class TemporderdetailsQuery:
 
 
 temporderdetailsQuery = TemporderdetailsQuery()
+

@@ -32,3 +32,4 @@ class SysdocumenttypesQuery:
 
 
 sysdocumenttypesQuery = SysdocumenttypesQuery()
+

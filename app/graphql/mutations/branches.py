@@ -40,3 +40,4 @@ class BranchesMutations:
             return deleted is not None
         finally:
             db_gen.close()
+

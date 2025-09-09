@@ -24,4 +24,4 @@ class BrandsInDB:
     Name: str
     IsActive: Optional[bool]
     CompanyID: Optional[int]
-    CompanyData: Optional[CompanyDataInDB] = None
+    CompanyData: Optional[CompanyDataInDB] = None    

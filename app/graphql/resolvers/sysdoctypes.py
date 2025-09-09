@@ -47,3 +47,4 @@ class SysdoctypesQuery:
             db_gen.close()
 
 sysdoctypesQuery = SysdoctypesQuery()
+

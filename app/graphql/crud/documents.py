@@ -36,3 +36,4 @@ def delete_documents(db: Session, documentID: int):
         db.delete(obj)
         db.commit()
     return obj
+

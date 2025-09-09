@@ -53,3 +53,4 @@ def delete_carbrands(db: Session, carbrandid: int):
         db.delete(obj)
         db.commit()
     return obj
+

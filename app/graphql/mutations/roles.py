@@ -26,3 +26,4 @@ class RolesMutations:
         db = next(get_db())
         deleted = delete_roles(db, roleID)
         return deleted is not None
+

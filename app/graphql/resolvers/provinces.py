@@ -48,3 +48,4 @@ class ProvincesQuery:
             db_gen.close()
 
 provincesQuery = ProvincesQuery()
+

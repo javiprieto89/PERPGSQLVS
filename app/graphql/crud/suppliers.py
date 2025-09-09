@@ -90,3 +90,4 @@ def delete_suppliers(db: Session, supplierid: int):
         db.delete(obj)
         db.commit()
     return obj
+

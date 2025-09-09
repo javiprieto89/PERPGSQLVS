@@ -67,3 +67,4 @@ class TempStockHistoryDetailsMutations:
             return list_to_schema(StockHistoryInDB, records)
         finally:
             db_gen.close()
+

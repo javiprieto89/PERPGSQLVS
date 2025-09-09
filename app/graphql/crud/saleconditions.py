@@ -58,3 +58,4 @@ def delete_saleconditions(db: Session, saleconditionid: int):
         db.delete(obj)
         db.commit()
     return obj
+

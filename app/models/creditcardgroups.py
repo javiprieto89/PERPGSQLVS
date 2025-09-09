@@ -22,3 +22,4 @@ class CreditCardGroups(Base):
 
     # Relaciones
     creditCards: Mapped[List[CreditCards]] = relationship('CreditCards', back_populates='creditCardGroups_')
+

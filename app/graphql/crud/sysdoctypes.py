@@ -37,3 +37,4 @@ def delete_sysdoctypes(db: Session, doctypeid: int):
         db.delete(obj)
         db.commit()
     return obj
+

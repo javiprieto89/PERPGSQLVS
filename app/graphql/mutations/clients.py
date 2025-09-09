@@ -68,3 +68,4 @@ class ClientsMutations:
             return obj_to_schema(ClientsInDB, updated_client)
         finally:
             db_gen.close()
+

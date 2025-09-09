@@ -50,3 +50,4 @@ class CashBoxes(Base):
     users_: Mapped[Optional[Users]] = relationship("Users", back_populates="cashBoxes")
     cashBoxMovements: Mapped[List[CashBoxMovements]] = relationship("CashBoxMovements", back_populates="cashBoxes_")
 
+

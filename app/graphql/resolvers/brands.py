@@ -45,3 +45,4 @@ class BrandsQuery:
             db_gen.close()
 
 brandsQuery = BrandsQuery()
+

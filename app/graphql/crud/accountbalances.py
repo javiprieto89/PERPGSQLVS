@@ -13,8 +13,7 @@ def get_accountbalances(db: Session):
 
 def get_accountbalances_by_id(db: Session, accountid: int):
     return (
-        db.query(AccountBalances).filter(
-            AccountBalances.AccountID == accountid).first()
+        db.query(AccountBalances).filter(AccountBalances.AccountID == accountid).first()
     )
 
 
@@ -43,3 +42,4 @@ def delete_accountbalances(db: Session, accountid: int):
         db.delete(obj)
         db.commit()
     return obj
+

@@ -12,3 +12,4 @@ class SysTransactionTypes(Base):  # <--- nombre de clase corregido
 
     TransactTypeID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
     TypeName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))  # <--- typo corregido
+

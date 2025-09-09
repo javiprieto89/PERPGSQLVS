@@ -29,12 +29,9 @@ class Cars(Base):
         ForeignKeyConstraint(
             ["CarModelID"], ["CarModels.CarModelID"], name="FK__Cars__carModelID__571DF1D5"
         ),
-        ForeignKeyConstraint(
-            ["ClientID"], ["Clients.ClientID"], name="FK_Cars_Clients"),
-        ForeignKeyConstraint(
-            ["DiscountID"], ["Discounts.DiscountID"], name="FK_Cars_Discounts"),
-        ForeignKeyConstraint(
-            ["CompanyID"], ["CompanyData.CompanyID"], name="FK_Cars_Company"),
+        ForeignKeyConstraint(["ClientID"], ["Clients.ClientID"], name="FK_Cars_Clients"),
+        ForeignKeyConstraint(["DiscountID"], ["Discounts.DiscountID"], name="FK_Cars_Discounts"),
+        ForeignKeyConstraint(["CompanyID"], ["CompanyData.CompanyID"], name="FK_Cars_Company"),
         PrimaryKeyConstraint("CarID", name="PK__Cars__68A0340E0C926E4D")
     )
 
@@ -47,3 +44,11 @@ class Cars(Base):
     Year = Column(Integer)
     LastServiceMileage = Column(Integer)
     IsDebtor = Column(Boolean)
+
+    # Relaciones
+    carModels_: Mapped[CarModels] = relationship('CarModels', back_populates='cars')
+    clients_: Mapped[Clients] = relationship('Clients', back_populates='cars')
+    discounts_: Mapped[Discounts] = relationship('Discounts', back_populates='cars')
+    orders: Mapped[List[Orders]] = relationship('Orders', back_populates='cars_')
+    orderHistory: Mapped[List[OrderHistory]] = relationship('OrderHistory', back_populates='cars_')
+

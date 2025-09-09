@@ -32,3 +32,4 @@ class TransactionsQuery:
 
 
 transactionsQuery = TransactionsQuery()
+

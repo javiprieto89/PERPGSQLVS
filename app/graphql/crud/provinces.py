@@ -50,3 +50,4 @@ def delete_provinces(db: Session, country_id: int, province_id: int):
         db.delete(obj)
         db.commit()
     return obj
+

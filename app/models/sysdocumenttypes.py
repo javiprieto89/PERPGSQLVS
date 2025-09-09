@@ -28,3 +28,5 @@ class SysDocumentTypes(Base):
     # Relaciones
     documents: Mapped[List['Documents']] = relationship('Documents', back_populates='sysDocumentTypes_')
     orders: Mapped[List['Orders']] = relationship('Orders', back_populates='sysDocumentTypes_')
+
+

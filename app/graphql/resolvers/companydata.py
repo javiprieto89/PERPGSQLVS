@@ -86,3 +86,4 @@ class CompanydataQuery:
 
 
 companydataQuery = CompanydataQuery()
+

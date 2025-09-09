@@ -28,34 +28,54 @@ from app.db import Base
 class StockHistory(Base):
     __tablename__ = "StockHistory"
     __table_args__ = (
-        ForeignKeyConstraint(["CompanyID", "BranchID"], [
-                             "Branches.CompanyID", "Branches.BranchID"], name="FK_StockHistory_CompanyBranch"),
-        ForeignKeyConstraint(["ItemID"], ["Items.ItemID"],
-                             name="FK_StockHistory_Items"),
-        ForeignKeyConstraint(["UserID"], ["Users.UserID"],
-                             name="FK_StockHistory_Users"),
-        ForeignKeyConstraint(["WarehouseID"], [
-                             "Warehouses.WarehouseID"], name="FK_StockHistory_Warehouses"),
-        PrimaryKeyConstraint(
-            "StockHistoryID", name="PK__StockHis__A6CE86DBEB46B995")
+        ForeignKeyConstraint(
+            ["ItemID"], ["Items.ItemID"], name="FK__StockHist__ItemI__7A672E12"
+        ),
+        ForeignKeyConstraint(
+            ["WarehouseID"],
+            ["Warehouses.WarehouseID"],
+            name="FK__StockHist__Wareh__7B5B524B",
+        ),
+        ForeignKeyConstraint(
+            ["CompanyID", "BranchID"],
+            ["Branches.CompanyID", "Branches.BranchID"],
+            name="FK_StockHistory_Branches",
+        ),
+        ForeignKeyConstraint(
+            ["CompanyID"], ["CompanyData.CompanyID"], name="FK_StockHistory_CompanyData"
+        ),
+        ForeignKeyConstraint(
+            ["UserID"], ["Users.UserID"], name="FK_StockHistory_Users"
+        ),
+        PrimaryKeyConstraint("StockHistoryID", name="PK__StockHis__A6CE86DBEB46B995"),
     )
 
-    StockHistoryID = Column(Integer, Identity(
-        start=1, increment=1), primary_key=True)
-    CompanyID = Column(Integer, nullable=False)
-    BranchID = Column(Integer, nullable=False)
-    UserID = Column(Integer, nullable=False)
-    ItemID = Column(Integer, nullable=False)
-    WarehouseID = Column(Integer, nullable=False)
-    QuantityUpdate = Column(Integer, nullable=False)
-    QuantityBefore = Column(Integer, nullable=False)
-    QuantityAfter = Column(Integer, nullable=False)
-    TransactionDate = Column(
-        DateTime, server_default=text("(getdate())"), nullable=False)
-    Reason = Column(Unicode(200, "Modern_Spanish_CI_AS"), nullable=True)
-    TransactionType = Column(
-        Unicode(50, "Modern_Spanish_CI_AS"), nullable=True)
-    Notes = Column(Unicode(255, "Modern_Spanish_CI_AS"), nullable=True)
+    StockHistoryID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
+    ItemID = Column(Integer)
+    CompanyID = Column(Integer)
+    BranchID = Column(Integer)
+    WarehouseID = Column(Integer)
+    QuantityUpdate = Column(Integer)
+    QuantityBefore = Column(Integer)
+    QuantityAfter = Column(Integer)
+    TransactionDate = Column(DateTime, server_default=text("(getdate())"))
+    Reason = Column(Unicode(200, "Modern_Spanish_CI_AS"))
+    UserID = Column(Integer)
 
-    # Relaciones simétricas y exactas según el SQL definitivo
-    # No se definen relaciones inversas aquí, solo FK explícitas
+    # Relaciones
+    items_: Mapped["Items"] = relationship("Items", back_populates="stockHistory")
+    warehouses_: Mapped["Warehouses"] = relationship(
+        "Warehouses", back_populates="stockHistory"
+    )
+    branches_: Mapped["Branches"] = relationship(
+        "Branches",
+        back_populates="stockHistory",
+        overlaps="stockHistory"
+    )
+    companyData_: Mapped["CompanyData"] = relationship(
+        "CompanyData",
+        back_populates="stockHistory",
+        overlaps="branches_,stockHistory"
+    )
+    users_: Mapped["Users"] = relationship("Users", back_populates="stockHistory")
+

@@ -43,3 +43,4 @@ def delete_useractivitylog(db: Session, activityid: int):
         db.delete(obj)
         db.commit()
     return obj
+

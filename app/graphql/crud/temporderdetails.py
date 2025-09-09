@@ -265,3 +265,4 @@ def load_orderdetails_to_temp(db: Session, order_id: int, user_id: int, company_
 
     db.commit()
     return str(session_id)
+

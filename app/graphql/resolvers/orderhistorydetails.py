@@ -39,3 +39,4 @@ class OrderhistorydetailsQuery:
 
 
 orderhistorydetailsQuery = OrderhistorydetailsQuery()
+

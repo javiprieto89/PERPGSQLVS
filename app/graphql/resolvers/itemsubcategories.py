@@ -62,3 +62,4 @@ class ItemsubcategoriesQuery:
 
 
 itemsubcategoriesQuery = ItemsubcategoriesQuery()
+

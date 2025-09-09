@@ -24,3 +24,4 @@ class Roles(Base):
 
     # Relaciones
     user_access: Mapped[List['UserAccess']] = relationship('UserAccess', back_populates='roles_')
+    

@@ -45,3 +45,4 @@ class CountriesQuery:
             db_gen.close()
 
 countriesQuery = CountriesQuery()
+

@@ -70,3 +70,4 @@ def delete_pricelistitem(db: Session, pricelist_id: int, item_id: int):
         db.commit()
     return obj
 
+

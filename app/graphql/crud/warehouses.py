@@ -51,3 +51,4 @@ def delete_warehouses(db: Session, warehouseid: int):
         db.delete(obj)
         db.commit()
     return obj
+

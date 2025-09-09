@@ -30,3 +30,4 @@ def build_dynamic_query(query: Query, model, filters: dict) -> Query:
             query = query.filter(column == value)
 
     return query
+

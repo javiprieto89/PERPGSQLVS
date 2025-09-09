@@ -48,3 +48,4 @@ def delete_creditcardgroup(db: Session, id: int):
         db.delete(obj)
         db.commit()
     return obj
+

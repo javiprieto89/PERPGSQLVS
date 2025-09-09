@@ -32,3 +32,4 @@ class DiscountsQuery:
 
 
 discountsQuery = DiscountsQuery()
+

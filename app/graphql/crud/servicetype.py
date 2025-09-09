@@ -7,15 +7,15 @@ from app.models.orderhistory import OrderHistory
 from app.graphql.schemas import servicetype as schema
 
 
-def get_servicetype(db: Session):
+def get_servicetypes(db: Session):
     return db.query(ServiceType).all()
 
 
-def get_servicetype_by_id(db: Session, id: int):
-    return db.query(ServiceType).filter(ServiceType.ServiceTypeID == id).first()
+def get_servicetypes_by_id(db: Session, id: int):
+    return db.query(ServiceType).filter(ServiceType.serviceTypeID == id).first()
 
 
-def create_servicetype(db: Session, record: schema.ServiceTypeCreate):
+def create(db: Session, record: schema.ServiceTypeCreate):
     db_record = ServiceType(**asdict(record))
     db.add(db_record)
     db.commit()
@@ -23,8 +23,8 @@ def create_servicetype(db: Session, record: schema.ServiceTypeCreate):
     return db_record
 
 
-def update_servicetype(db: Session, id: int, record: schema.ServiceTypeUpdate):
-    db_record = get_servicetype_by_id(db, id)
+def update(db: Session, id: int, record: schema.ServiceTypeUpdate):
+    db_record = get_servicetypes_by_id(db, id)
     if db_record:
         for k, v in asdict(record).items():
             if v is not None:
@@ -34,12 +34,11 @@ def update_servicetype(db: Session, id: int, record: schema.ServiceTypeUpdate):
     return db_record
 
 
-def delete_servicetype(db: Session, id: int):
-    db_record = get_servicetype_by_id(db, id)
+def delete(db: Session, id: int):
+    db_record = get_servicetypes_by_id(db, id)
     if db_record:
         # Ensure no orders or history records depend on this service type
-        has_orders = db.query(Orders).filter(
-            Orders.ServiceTypeID == id).first() is not None
+        has_orders = db.query(Orders).filter(Orders.ServiceTypeID == id).first() is not None
         has_history = (
             db.query(OrderHistory)
             .filter(OrderHistory.ServiceTypeID == id)
@@ -53,3 +52,4 @@ def delete_servicetype(db: Session, id: int):
         db.delete(db_record)
         db.commit()
     return db_record
+

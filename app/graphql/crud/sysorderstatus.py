@@ -44,3 +44,4 @@ def delete_sysorderstatus(db: Session, orderstatusid: int):
         db.delete(obj)
         db.commit()
     return obj
+

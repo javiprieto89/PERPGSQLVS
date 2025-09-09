@@ -32,3 +32,4 @@ class UserActivityLog(Base):
     # Relaciones
     sysUserActions_: Mapped['SysUserActions'] = relationship('SysUserActions', back_populates='userActivityLog')
     users_: Mapped['Users'] = relationship('Users', back_populates='userActivityLog')
+    

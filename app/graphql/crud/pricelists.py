@@ -66,3 +66,4 @@ def delete_pricelists(db: Session, pricelistid: int):
         db.delete(obj)
         db.commit()
     return obj
+

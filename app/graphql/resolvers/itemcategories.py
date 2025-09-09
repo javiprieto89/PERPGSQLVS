@@ -32,3 +32,4 @@ class ItemcategoriesQuery:
 
 
 itemcategoriesQuery = ItemcategoriesQuery()
+

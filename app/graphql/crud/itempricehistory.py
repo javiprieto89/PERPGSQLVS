@@ -45,3 +45,4 @@ def delete_itempricehistory(db: Session, pricehistoryid: int):
         db.delete(obj)
         db.commit()
     return obj
+

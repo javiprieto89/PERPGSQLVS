@@ -196,3 +196,4 @@ def update_user_password(db: Session, user_id: int, new_password: str) -> bool:
     except Exception:
         db.rollback()
         return False
+    

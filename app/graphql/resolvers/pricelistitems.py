@@ -51,3 +51,4 @@ class PricelistitemsQuery:
 
 pricelistitemsQuery = PricelistitemsQuery()
 
+

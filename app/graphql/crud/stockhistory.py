@@ -39,3 +39,4 @@ def delete_stockhistory(db: Session, history_id: int):
         db.delete(obj)
         db.commit()
     return obj
+

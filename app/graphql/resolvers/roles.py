@@ -32,3 +32,4 @@ class RolesQuery:
 
 
 rolesQuery = RolesQuery()
+

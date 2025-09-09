@@ -45,3 +45,4 @@ class PricelistitemsMutations:
         finally:
             db_gen.close()
 
+

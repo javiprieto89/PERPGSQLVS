@@ -35,3 +35,4 @@ class SysorderstatusQuery:
 
 
 sysorderstatusQuery = SysorderstatusQuery()
+

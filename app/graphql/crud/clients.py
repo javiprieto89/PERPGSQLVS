@@ -103,3 +103,4 @@ def delete_clients(db: Session, clientid: int):
         db.delete(obj)
         db.commit()
     return obj
+

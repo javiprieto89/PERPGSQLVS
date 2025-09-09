@@ -31,3 +31,4 @@ class AccountbalancesQuery:
             db_gen.close()
 
 accountbalancesQuery = AccountbalancesQuery()
+

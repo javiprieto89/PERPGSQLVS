@@ -25,4 +25,3 @@ class PriceListItemsInDB:
     EffectiveDate: datetime
     PriceListData: Optional[PriceListsInDB] = None
     ItemData: Optional[ItemsInDB] = None
-

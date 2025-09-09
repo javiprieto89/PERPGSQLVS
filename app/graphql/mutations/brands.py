@@ -44,3 +44,4 @@ class BrandsMutations:
             return deleted_brand is not None
         finally:
             db_gen.close()
+

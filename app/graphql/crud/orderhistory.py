@@ -38,3 +38,4 @@ def delete_orderhistory(db: Session, historyid: int):
         db.delete(obj)
         db.commit()
     return obj
+

@@ -50,3 +50,4 @@ class TempstockhistorydetailsQuery:
 
 
 tempstockhistorydetailsQuery = TempstockhistorydetailsQuery()
+

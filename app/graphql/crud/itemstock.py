@@ -36,3 +36,4 @@ def delete_itemstock(db: Session, itemid: int):
         db.delete(obj)
         db.commit()
     return obj
+

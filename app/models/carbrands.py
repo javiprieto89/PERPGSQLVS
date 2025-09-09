@@ -24,11 +24,16 @@ class CarBrands(Base):
         ForeignKeyConstraint(
             ["CompanyID"], ["CompanyData.CompanyID"], name="FK_CarBrands_Company"
         ),
-        PrimaryKeyConstraint(
-            "CarBrandID", name="PK__CarBrand__3EAE0B29835BF1AC"),
+        PrimaryKeyConstraint("CarBrandID", name="PK__CarBrand__3EAE0B29835BF1AC"),
     )
 
-    CarBrandID = Column(Integer, Identity(
-        start=1, increment=1), primary_key=True)
+    CarBrandID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
     Name = Column(Unicode(100, "Modern_Spanish_CI_AS"))
     CompanyID = Column(Integer)
+
+    # Relaciones
+    carModels: Mapped[List["CarModels"]] = relationship(
+        "CarModels", back_populates="carBrand"
+    )
+
+

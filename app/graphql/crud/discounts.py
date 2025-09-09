@@ -36,3 +36,4 @@ def delete_discounts(db: Session, discountid: int):
         db.delete(obj)
         db.commit()
     return obj
+

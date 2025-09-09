@@ -52,3 +52,4 @@ class UserAccess(Base):
     )
     roles_: Mapped['Roles'] = relationship('Roles', back_populates='user_access')
     users_: Mapped['Users'] = relationship('Users', back_populates='userAccess')
+    

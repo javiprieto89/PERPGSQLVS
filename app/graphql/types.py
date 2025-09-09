@@ -210,3 +210,4 @@ class Users:
 @strawberry.type
 class Warehouses:
     pass  # TODO: completar campos manualmente
+

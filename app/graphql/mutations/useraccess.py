@@ -55,3 +55,4 @@ class UserAccessMutation:
         # Crear nuevo acceso con los nuevos datos
         obj = create_useraccess(db, newData)
         return obj_to_schema(UserAccessInDB, obj)
+

@@ -32,3 +32,4 @@ class ItemstockQuery:
 
 
 itemstockQuery = ItemstockQuery()
+

@@ -7,9 +7,9 @@ from app.graphql.schemas.servicetype import (
     ServiceTypeInDB,
 )
 from app.graphql.crud.servicetype import (
-    create_servicetype,
-    update_servicetype,
-    delete_servicetype,
+    create,
+    update,
+    delete,
 )
 from app.utils import obj_to_schema
 from app.db import get_db
@@ -26,7 +26,7 @@ class ServiceTypeMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            obj = create_servicetype(db, data)
+            obj = create(db, data)
             return obj_to_schema(ServiceTypeInDB, obj)
         finally:
             db_gen.close()
@@ -38,7 +38,7 @@ class ServiceTypeMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update_servicetype(db, serviceTypeID, data)
+            updated = update(db, serviceTypeID, data)
             return obj_to_schema(ServiceTypeInDB, updated) if updated else None
         finally:
             db_gen.close()
@@ -48,7 +48,7 @@ class ServiceTypeMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete_servicetype(db, serviceTypeID)
+            deleted = delete(db, serviceTypeID)
             success = deleted is not None
             message = "Service type deleted" if success else "Service type not found"
             return DeleteResponse(success=success, message=message)
@@ -57,3 +57,4 @@ class ServiceTypeMutations:
             return DeleteResponse(success=False, message=str(e))
         finally:
             db_gen.close()
+

@@ -57,3 +57,4 @@ class SysDocumentTypesMutations:
             return DeleteResponse(success=False, message=str(e))
         finally:
             db_gen.close()
+
