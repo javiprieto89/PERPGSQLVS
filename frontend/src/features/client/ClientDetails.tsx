@@ -5,7 +5,7 @@ import { type GetAllClientsQuery } from "~/graphql/_generated/graphql";
 export function ClientDetails({ client }: { client: GetAllClientsQuery['allClients'][0] }) {
   if (!client) return null;
   return (
-    <div className="card rounded-lg max-w-lg w-full p-6 space-y-4">
+    <div className="rounded-lg max-w-lg w-full p-6 space-y-4">
       <h2 className="font-bold">Detalles del Cliente</h2>
       <div className="space-y-1 text-sm">
         <h3 className="text-lg font-semibold ">

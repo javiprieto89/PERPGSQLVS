@@ -1,16 +1,17 @@
 // frontend/src/pages/Branches.jsx
-import { Plus, RefreshCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
-import { Button } from "~/components/ui/button";
+import { CreateButton } from "~/components/ui-admin/CreateButton";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
+import { ClientDetails } from "~/features/client/ClientDetails";
 import { useGetAllBranchesQuery } from "~/graphql/_generated/graphql";
 import { branchOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
@@ -68,10 +69,6 @@ export default function Branches() {
     [refetch]
   );
 
-  const handleRefetch = async () => {
-    await refetch();
-  };
-
   useEffect(() => {
     const handler = (e) => {
       if (e.data === "reload-branches") {
@@ -118,6 +115,7 @@ export default function Branches() {
         accessorKey: "ItemCategoryID",
         cell: ({ row }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(row.BranchID, row.CompanyID)}
             onEdit={() => handleEdit(row)}
           />
@@ -128,54 +126,45 @@ export default function Branches() {
   );
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Sucursales</h1>
-        <div className="flex space-x-2">
+    <section className="section">
+      <AdminTopBar title="Sucursales" quickAccessHidden>
+        <div className="ml-auto flex gap-2">
           {data && data.allBranches.length > 0 && (
             <>
-              <InputQuickSearch
-                rows={data.allBranches}
-                onSearch={(rows) => setBranches(rows)}
-              />
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
                 showFilters={showFilters}
               />
             </>
           )}
-          <Button onClick={handleRefetch}>
-            <RefreshCcw />
-            Recargar
-          </Button>
-          <Button variant="primary" onClick={handleCreate}>
-            <Plus strokeWidth={3} />
-            Nueva Sucursal
-          </Button>
+          <RefreshButton onClick={() => refetch()} loading={loading} />
+          <CreateButton title="Nueva Sucursal" onClick={handleCreate} />
         </div>
-      </div>
-      {showFilters && (
-        <div className="mb-6">
-          <TableFilters
-            modelName="branches"
-            data={data ? data.allBranches : []} // ← lista original sin filtrar
-            onFilterChange={handleFilterChange}
+      </AdminTopBar>
+      <div className="m-x-auto space-y-4 p-4">
+        {showFilters && (
+          <div className="mb-6">
+            <TableFilters
+              modelName="branches"
+              data={data ? data.allBranches : []} // ← lista original sin filtrar
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+        )}
+        {error && <ApiErrorMessage error={error} />}
+        {loading && <AlertLoading />}
+        {branches.length > 0 && (
+          <DataTable
+            getRowCanExpand={() => true}
+            renderSubComponent={({ row }) => (
+              <ClientDetails client={row.original} />
+            )}
+            columns={columns}
+            data={branches || []}
           />
-        </div>
-      )}
-      {error && <ApiErrorMessage error={error} />}
-      {loading && <AlertLoading />}
-      {branches.length > 0 && (
-        <AdminTable
-          getRowCanExpand={() => true}
-          renderSubComponent={({ row }) => (
-            <ClientDetails client={row.original} />
-          )}
-          columns={columns}
-          data={branches || []}
-        />
-      )}
-      {loading && <AdminTableLoading />}
-    </div>
+        )}
+        {loading && <AdminTableLoading />}
+      </div>
+    </section>
   );
 }

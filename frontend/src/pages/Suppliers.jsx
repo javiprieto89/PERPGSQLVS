@@ -1,11 +1,4 @@
-import {
-  EllipsisVertical,
-  Eye,
-  Pencil,
-  Trash,
-  UserRoundPlus,
-  Users,
-} from "lucide-react";
+import { Plus, Users } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { supplierOperations } from "~/graphql/operations.js";
@@ -15,22 +8,17 @@ import {
   DiagnosticInfo,
 } from "~/components/diagnostic/Diagnostic";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { RefreshButton } from "~/components/RefreshButton";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
+  TableActionButton,
   TableIsActiveCell,
 } from "~/components/table/TableExtraComponents";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import { useGetAllSuppliersQuery } from "~/graphql/_generated/graphql";
 import TableFilters from "../components/TableFilters";
 import { openReactWindow } from "../utils/openReactWindow";
@@ -39,7 +27,7 @@ import SupplierCreate from "./SupplierCreate";
 function SupplierDetails({ supplier }) {
   if (!supplier) return null;
   return (
-    <div className="border bg-accent rounded-lg max-w-lg w-full p-6 space-y-4">
+    <div className="rounded-lg max-w-lg w-full p-6 space-y-4">
       <h2 className="text-xl font-bold">Detalles del Proveedor</h2>
       <div className="space-y-1 text-sm">
         <p>
@@ -66,7 +54,9 @@ function SupplierDetails({ supplier }) {
 }
 
 export default function Suppliers() {
-  const { data, error, loading, refetch } = useGetAllSuppliersQuery();
+  const { data, error, loading, refetch } = useGetAllSuppliersQuery({
+    notifyOnNetworkStatusChange: true,
+  });
   const [suppliers, setSuppliers] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -138,7 +128,7 @@ export default function Suppliers() {
     () => [
       {
         header: "ID",
-        accessorKey: "ClientID",
+        accessorKey: "SupplierID",
       },
       {
         header: "Name",
@@ -168,40 +158,16 @@ export default function Suppliers() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "ClientID",
         cell: ({ row, getValue }) => {
           return (
-            <div className="flex gap-2">
-              {row.getCanExpand() && (
-                <Button
-                  variant={row.getIsExpanded() ? "primary" : "outline"}
-                  onClick={row.getToggleExpandedHandler()}
-                >
-                  <Eye />
-                </Button>
-              )}
-              <Button
-                onClick={() => handleEdit(row.original)}
-                className="hidden md:inline px-3 py-2 text-sm rounded"
-              >
-                <Pencil />
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button>
-                    <EllipsisVertical />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    variant="destructive"
-                    onClick={() => handleDelete(getValue())}
-                  >
-                    <Trash />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            <div className="ml-auto flex gap-2">
+              <TableActionButton
+                row={row}
+                onDelete={() => handleDelete(row.original)}
+                onEdit={() => handleEdit(row.original)}
+              />
             </div>
           );
         },
@@ -211,16 +177,11 @@ export default function Suppliers() {
   );
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Proveedores</h1>
-        <div className="flex space-x-2">
+    <div>
+      <AdminTopBar title="Proveedores" quickAccessHidden>
+        <div className="ml-auto flex gap-2">
           {data && data.allSuppliers.length > 0 && (
             <>
-              <InputQuickSearch
-                rows={data.allSuppliers}
-                onSearch={(rows) => setSuppliers(rows)}
-              />
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
                 showFilters={showFilters}
@@ -230,65 +191,68 @@ export default function Suppliers() {
           <DiagnosticButton />
           <RefreshButton onClick={() => refetch()} loading={loading} />
           <Button variant="primary" onClick={handleCreate}>
-            <UserRoundPlus />
-            Nuevo
+            <Plus strokeWidth={3} />
+            <span className="hidden lg:inline">Nuevo</span>
           </Button>
         </div>
-      </div>
-
-      {showFilters && (
-        <div className="mb-6">
-          <TableFilters
-            modelName="suppliers"
-            data={data?.allSuppliers || []}
-            onFilterChange={handleFilterChange}
-          />
-        </div>
-      )}
-
-      <DiagnosticInfo />
-
-      {error && <ApiErrorMessage error={error} />}
-
-      {loading && <AlertLoading />}
-
-      {!error && !loading && suppliers.length === 0 && (
-        <div className="text-center py-12">
-          <Users size="48" className="m-auto" />
-          <h3 className="mt-2 text-sm font-medium">No hay proveedores</h3>
-          <p className="mt-1 text-sm ">Comienza creando tu primer proveedor.</p>
-          <div className="mt-6">
-            <Button variant="primary" onClick={handleCreate}>
-              Crear Primer Proveedor
-            </Button>
+      </AdminTopBar>
+      <div className="m-x-auto space-y-4 p-4">
+        {showFilters && (
+          <div className="mb-6">
+            <TableFilters
+              modelName="suppliers"
+              data={data?.allSuppliers || []}
+              onFilterChange={handleFilterChange}
+            />
           </div>
-        </div>
-      )}
+        )}
 
-      {suppliers && suppliers.length > 0 && (
-        <div>
-          <AdminTable
-            getRowCanExpand={() => true}
-            renderSubComponent={({ row }) => (
-              <SupplierDetails supplier={row.original} />
-            )}
-            columns={columns}
-            data={suppliers || []}
-            expanded={(row) => {
-              <div>{row.id}</div>;
-            }}
-          />
+        <DiagnosticInfo />
 
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-muted-foreground text-sm">
-              Mostrando {suppliers.length} proveedor
-              {suppliers.length !== 1 ? "es" : ""}
+        {error && <ApiErrorMessage error={error} />}
+
+        {loading && <AlertLoading />}
+
+        {!error && !loading && suppliers.length === 0 && (
+          <div className="text-center py-12">
+            <Users size="48" className="m-auto" />
+            <h3 className="mt-2 text-sm font-medium">No hay proveedores</h3>
+            <p className="mt-1 text-sm ">
+              Comienza creando tu primer proveedor.
             </p>
+            <div className="mt-6">
+              <Button variant="primary" onClick={handleCreate}>
+                Crear Primer Proveedor
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {loading && <AdminTableLoading />}
+        {suppliers && suppliers.length > 0 && (
+          <div>
+            <DataTable
+              getRowCanExpand={() => true}
+              renderSubComponent={({ row }) => (
+                <SupplierDetails supplier={row.original} />
+              )}
+              columns={columns}
+              data={suppliers || []}
+              expanded={(row) => {
+                <div>{row.id}</div>;
+              }}
+            />
+
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-muted-foreground text-sm">
+                Mostrando {suppliers.length} proveedor
+                {suppliers.length !== 1 ? "es" : ""}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {loading && <AdminTableLoading />}
+      </div>
     </div>
   );
 }

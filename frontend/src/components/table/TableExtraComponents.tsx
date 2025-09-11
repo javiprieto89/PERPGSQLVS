@@ -1,5 +1,5 @@
-import { type Table } from '@tanstack/react-table';
-import { CheckCircle, ChevronDown, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, Columns2, EllipsisVertical, Loader, Pencil, Save, Trash, X } from "lucide-react";
+import { Column, type Table } from '@tanstack/react-table';
+import { CheckCircle, ChevronDown, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, Columns2, EllipsisVertical, Eye, Loader, Pencil, Save, Trash, X } from "lucide-react";
 import { useRef, useState } from 'react';
 import { NavLink, type NavLinkProps } from 'react-router';
 
@@ -7,7 +7,7 @@ import { cn } from '~/lib/utils';
 
 import { Badge } from '~/components/ui/badge';
 import { Button, type ButtonProps } from "~/components/ui/button";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import { Label } from '~/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
 
@@ -164,8 +164,12 @@ export const EditableInput = ({ defaultValue, onSave, ...props }: React.Componen
   );
 }
 
-
-export function TableColumnVisibility<TData>({ table }: { table: Table<TData> }) {
+export function TableColumnVisibility<TData>({ table, onChange, onToggleAll, onReset }: {
+  table: Table<TData>,
+  onChange?: (column: Column<TData, unknown>, checked: boolean) => void;
+  onToggleAll?: (checked: boolean) => void;
+  onReset?: () => void;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -174,6 +178,37 @@ export function TableColumnVisibility<TData>({ table }: { table: Table<TData> })
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        {onToggleAll &&
+          <DropdownMenuCheckboxItem
+            {...{
+              type: 'checkbox',
+              checked: table.getIsAllColumnsVisible(),
+              onSelect: () => {
+                const handler = table.getToggleAllColumnsVisibilityHandler();
+                onToggleAll?.(!table.getIsAllColumnsVisible());
+                handler((value: any) => console.log("HANDLER", value));
+              },
+            }}
+          >
+            Toggle All
+          </DropdownMenuCheckboxItem>}
+        {onReset &&
+          <>
+            <DropdownMenuCheckboxItem
+              {...{
+                type: 'checkbox',
+                onSelect: () => {
+                  table.resetColumnVisibility();
+                  onReset?.();
+                },
+                disabled: table.getIsAllColumnsVisible()
+              }}
+            >
+              Reset All
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuSeparator />
+          </>
+        }
         {table
           .getAllColumns()
           .filter((column) => column.getCanHide())
@@ -184,9 +219,10 @@ export function TableColumnVisibility<TData>({ table }: { table: Table<TData> })
                 key={column.id}
                 className="capitalize"
                 checked={column.getIsVisible()}
-                onCheckedChange={(value) =>
-                  column.toggleVisibility(!!value)
-                }
+                onCheckedChange={(checked) => {
+                  onChange?.(column, checked);
+                  column.toggleVisibility(!!checked)
+                }}
               >
                 {column.id}
               </DropdownMenuCheckboxItem>
@@ -202,7 +238,7 @@ export function TableActionDropdown({ onDelete, onEdit }: { onDelete: () => void
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='ghost'>
+        <Button variant='ghost' size="sm">
           <EllipsisVertical />
         </Button>
       </DropdownMenuTrigger>
@@ -291,10 +327,25 @@ export function DropdownMenuItemLink(props: NavLinkProps) {
   )
 }
 
-export function TableActionButton({ onEdit, onDelete }: { onEdit?: () => void, onDelete: () => void }) {
+export function TableActionButton({ row, onEdit, onDelete, onExpanded }: { row: any, onEdit?: () => void, onDelete: () => void, onExpanded?: () => void }) {
+  const toggle = row.getToggleExpandedHandler();
+
   return (
-    <div className="flex gap-2 justify-end">
+    <div className="ml-auto flex gap-2 justify-end items-end">
+      {row.getCanExpand() && (
+        <Button
+          size="sm"
+          variant={row.getIsExpanded() ? "primary" : "outline"}
+          onClick={() => {
+            toggle();
+            onExpanded?.();
+          }}
+        >
+          <Eye />
+        </Button>
+      )}
       <Button
+        size="sm"
         onClick={onEdit}
         className="hidden md:inline px-3 py-2 text-sm rounded"
       >

@@ -1,16 +1,18 @@
 // frontend/src/pages/PriceListItemsBrowser.jsx
+import { BrushCleaning } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   EditableInput,
   TableActionButton,
   TableIsActiveCell,
 } from "~/components/table/TableExtraComponents";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {
@@ -209,9 +211,13 @@ export default function PriceListItemsBrowser() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "BrandID",
         cell: ({ row }) => (
-          <TableActionButton onEdit={() => handleEdit(row.original)} />
+          <TableActionButton
+            row={row}
+            onEdit={() => handleEdit(row.original)}
+          />
         ),
       },
     ],
@@ -219,70 +225,73 @@ export default function PriceListItemsBrowser() {
   );
 
   return (
-    <div className="p-6 space-y-4">
-      <h1 className="text-3xl font-bold">Listas de precios - Items</h1>
-      <div className="flex gap-2 items-center">
-        {data && data.allPricelistitems.length > 0 && (
-          <>
-            <InputQuickSearch
-              rows={data.allPricelistitems}
-              onSearch={(rows) => setPriceLists(rows)}
-            />
-            <ShowFilterButton
-              onClick={() => setShowFilters(!showFilters)}
-              showFilters={showFilters}
-            />
-          </>
+    <section className="section">
+      <AdminTopBar title="Listas de precios - Items" quickAccessHidden>
+        <div className="ml-auto flex gap-2">
+          {data && data.allPricelistitems.length > 0 && (
+            <>
+              <ShowFilterButton
+                onClick={() => setShowFilters(!showFilters)}
+                showFilters={showFilters}
+              />
+            </>
+          )}
+          <CreateButton title="Agregar" onClick={handleAdd} />
+        </div>
+      </AdminTopBar>
+      <div className="m-x-auto space-y-4 p-4">
+        <div class="filters flex gap-2">
+          <select
+            value={priceListID}
+            onChange={(e) => setPriceListID(e.target.value)}
+            className="border p-2 rounded w-[220px]"
+          >
+            <option value="">Todas las listas</option>
+            {priceLists?.map((pl) => (
+              <option
+                key={`select-${pl.PriceListID}-${pl.ItemID}`}
+                value={pl.PriceListID}
+              >
+                {pl.PriceListData.Name}
+              </option>
+            ))}
+          </select>
+          <Input
+            type="text"
+            readOnly
+            onClick={() => setShowFilters(true)}
+            value={
+              selectedItem
+                ? `${selectedItem.Code} - ${selectedItem.Description}`
+                : ""
+            }
+            placeholder="Buscar ítem"
+          />
+          <Button variant="primary" onClick={() => fetchFiltered()}>
+            Filtrar
+          </Button>
+          <Button onClick={clearFilters}>
+            <BrushCleaning />
+            Limpiar
+          </Button>
+        </div>
+        {error && <ApiErrorMessage error={error} />}
+        {errorListFiltered && <ApiErrorMessage error={errorListFiltered} />}
+        {loading && <AlertLoading />}
+        {loadingListFiltered && <AlertLoading message="Cargando filtros..." />}
+
+        {priceLists.length > 0 && (
+          <DataTable columns={columns} data={priceLists} />
         )}
-        <select
-          value={priceListID}
-          onChange={(e) => setPriceListID(e.target.value)}
-          className="border p-2 rounded"
-        >
-          <option value="">Todas las listas</option>
-          {priceLists?.map((pl) => (
-            <option
-              key={`select-${pl.PriceListID}-${pl.ItemID}`}
-              value={pl.PriceListID}
-            >
-              {pl.PriceListData.Name}
-            </option>
-          ))}
-        </select>
-        <Input
-          type="text"
-          readOnly
-          onClick={() => setShowFilters(true)}
-          value={
-            selectedItem
-              ? `${selectedItem.Code} - ${selectedItem.Description}`
-              : ""
-          }
-          placeholder="Buscar ítem"
-        />
-        <Button variant="primary" onClick={() => fetchFiltered()}>
-          Filtrar
-        </Button>
-        <Button onClick={clearFilters}>Limpiar</Button>
-        <Button onClick={handleAdd}>Agregar</Button>
+        {showFilters && (
+          <ItemSearchModal
+            isOpen={true}
+            onClose={() => setShowFilters(false)}
+            onItemSelect={handleSelectItem}
+          />
+        )}
+        {loading && <AdminTableLoading />}
       </div>
-
-      {error && <ApiErrorMessage error={error} />}
-      {errorListFiltered && <ApiErrorMessage error={errorListFiltered} />}
-      {loading && <AlertLoading />}
-      {loadingListFiltered && <AlertLoading message="Cargando filtros..." />}
-
-      {priceLists.length > 0 && (
-        <AdminTable columns={columns} data={priceLists} />
-      )}
-      {showFilters && (
-        <ItemSearchModal
-          isOpen={true}
-          onClose={() => setShowFilters(false)}
-          onItemSelect={handleSelectItem}
-        />
-      )}
-      {loading && <AdminTableLoading />}
-    </div>
+    </section>
   );
 }

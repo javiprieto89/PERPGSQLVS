@@ -2,14 +2,14 @@ import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { RefreshButton } from "~/components/RefreshButton";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 import { useGetAllCreditCardGroupsQuery } from "~/graphql/_generated/graphql";
 import { creditCardGroupOperations } from "~/graphql/operations.js";
@@ -110,9 +110,11 @@ export default function CreditCardGroups() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "CreditCardGroupID",
         cell: ({ row, getValue }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(getValue())}
             onEdit={() => handleEdit(row.original)}
           />
@@ -124,7 +126,7 @@ export default function CreditCardGroups() {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">
           Grupos de Tarjetas
         </h1>
@@ -158,7 +160,7 @@ export default function CreditCardGroups() {
       )}
       {error && <ApiErrorMessage error={error} />}
       {loading && <AlertLoading />}
-      {groups.length > 0 && <AdminTable columns={columns} data={groups} />}
+      {groups.length > 0 && <DataTable columns={columns} data={groups} />}
       {loading && <AdminTableLoading />}
     </div>
   );

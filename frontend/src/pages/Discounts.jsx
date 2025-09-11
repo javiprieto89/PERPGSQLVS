@@ -3,14 +3,14 @@ import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { RefreshButton } from "~/components/RefreshButton";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 import { useGetAllDiscountsQuery } from "~/graphql/_generated/graphql";
 import { discountOperations } from "~/graphql/operations.js";
@@ -116,9 +116,11 @@ export default function Discounts() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "DiscountID",
         cell: ({ row, getValue }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(getValue())}
             onEdit={() => handleEdit(row.original)}
           />
@@ -130,7 +132,7 @@ export default function Discounts() {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">Descuentos</h1>
         <div className="flex space-x-2">
           {data && data.allDiscounts.length > 0 && (
@@ -163,7 +165,7 @@ export default function Discounts() {
       )}
       {error && <ApiErrorMessage error={error} />}
       {loading && <AlertLoading />}
-      <AdminTable columns={columns} data={discounts || []} />
+      <DataTable columns={columns} data={discounts || []} />
       {loading && <AdminTableLoading />}
     </div>
   );

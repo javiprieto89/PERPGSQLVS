@@ -4,18 +4,30 @@ import { Info, LoaderCircle, Stethoscope } from "lucide-react";
 import { diagnosticInfoAtom, useDiagnostic } from "~/hooks/useDiagnostic";
 
 import { Alert } from "~/components/ui/alert";
-import { Button } from "~/components/ui/button";
+import { Button, ButtonProps } from "~/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-export function DiagnosticButton() {
+export function DiagnosticButton(props: ButtonProps) {
   const { loadingDiagnostic, runDiagnostic } = useDiagnostic();
 
   return (
-    <Button onClick={runDiagnostic}>
-      {loadingDiagnostic ?
-        <LoaderCircle className="animate-spin" /> :
-        <Stethoscope />}
-      Diagnóstico
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button onClick={runDiagnostic} {...props}>
+          {loadingDiagnostic ?
+            <LoaderCircle className="animate-spin" /> :
+            <Stethoscope />}
+          <span className="hidden lg:inline">Diagnóstico</span>
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent
+        side="bottom"
+        align="center"
+        hidden={false}
+      >
+        Diagnóstico
+      </TooltipContent>
+    </Tooltip>
   )
 }
 

@@ -1,17 +1,17 @@
 // frontend/src/pages/CompanyData.jsx
-import { Eye, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { RefreshButton } from "~/components/RefreshButton";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
   TableIsActiveCell,
 } from "~/components/table/TableExtraComponents";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { CreateButton } from "~/components/ui-admin/CreateButton";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 import { useGetAllCompaniesQuery } from "~/graphql/_generated/graphql";
 import { companyOperations } from "~/graphql/operations.js";
@@ -141,7 +141,7 @@ export default function CompanyData() {
           <img
             src={`data:image/*;base64,${getValue()}`}
             alt="Logo"
-            className="h-16 mb-2 object-contain"
+            className="h-10 w-10 mb-2 object-cover"
           />
         ),
       },
@@ -166,22 +166,14 @@ export default function CompanyData() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "CompanyID",
         cell: ({ row, getValue }) => (
-          <div className="flex gap-2">
-            {row.getCanExpand() && (
-              <Button
-                variant={row.getIsExpanded() ? "primary" : "outline"}
-                onClick={row.getToggleExpandedHandler()}
-              >
-                <Eye />
-              </Button>
-            )}
-            <TableActionButton
-              onDelete={() => handleDelete(getValue())}
-              onEdit={() => handleEdit(row.original)}
-            />
-          </div>
+          <TableActionButton
+            row={row}
+            onDelete={() => handleDelete(getValue())}
+            onEdit={() => handleEdit(row.original)}
+          />
         ),
       },
     ],
@@ -189,16 +181,11 @@ export default function CompanyData() {
   );
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Empresas</h1>
-        <div className="flex space-x-2">
+    <section className="section">
+      <AdminTopBar title="Empresas" quickAccessHidden>
+        <div className="ml-auto flex gap-2">
           {data && data.allCompanydata.length > 0 && (
             <>
-              <InputQuickSearch
-                rows={data.allCompanydata}
-                onSearch={(rows) => setCompanies(rows)}
-              />
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
                 showFilters={showFilters}
@@ -206,36 +193,35 @@ export default function CompanyData() {
             </>
           )}
           <RefreshButton onClick={() => refetch()} loading={loading} />
-          <Button variant="primary" onClick={handleCreate}>
-            <Plus strokeWidth={3} />
-            Nuevo
-          </Button>
+          <CreateButton title="Nuevo" onClick={handleCreate} />
         </div>
+      </AdminTopBar>
+      <div className="m-x-auto space-y-4 p-4">
+        {showFilters && (
+          <TableFilters
+            modelName="companydata"
+            data={data.allCompanydata || []}
+            onFilterChange={handleFilterChange}
+          />
+        )}
+        {error && <ApiErrorMessage error={error} />}
+        {loading && <AlertLoading />}
+        {companies.length > 0 && (
+          <DataTable
+            getRowCanExpand={() => true}
+            columns={columns}
+            data={companies}
+            renderSubComponent={({ row }) => (
+              <CompanyDetail
+                company={row.original}
+                onEdit={() => handleEdit(row.original)}
+                onDelete={() => handleDelete(row.CompanyID)}
+              />
+            )}
+          />
+        )}
+        {loading && companies.length === 0 && <AdminTableLoading />}
       </div>
-      {showFilters && (
-        <TableFilters
-          modelName="companydata"
-          data={data.allCompanydata || []}
-          onFilterChange={handleFilterChange}
-        />
-      )}
-      {error && <ApiErrorMessage error={error} />}
-      {loading && <AlertLoading />}
-      {companies.length > 0 && (
-        <AdminTable
-          getRowCanExpand={() => true}
-          columns={columns}
-          data={companies}
-          renderSubComponent={({ row }) => (
-            <CompanyDetail
-              company={row.original}
-              onEdit={() => handleEdit(row.original)}
-              onDelete={() => handleDelete(row.CompanyID)}
-            />
-          )}
-        />
-      )}
-      {loading && companies.length === 0 && <AdminTableLoading />}
-    </div>
+    </section>
   );
 }

@@ -1,15 +1,15 @@
 import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { RefreshButton } from "~/components/RefreshButton";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 import { useGetAllItemsQuery } from "~/graphql/_generated/graphql";
 import { itemOperations } from "~/graphql/operations.js";
@@ -18,7 +18,9 @@ import { openReactWindow } from "../utils/openReactWindow";
 import ItemCreate from "./ItemCreate";
 
 export default function Items() {
-  const { data, error, loading, refetch } = useGetAllItemsQuery();
+  const { data, error, loading, refetch } = useGetAllItemsQuery({
+    notifyOnNetworkStatusChange: true,
+  });
   const [items, setItems] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -114,9 +116,11 @@ export default function Items() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "ItemID",
         cell: ({ row, getValue }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(getValue())}
             onEdit={() => handleEdit(row.original)}
           />
@@ -127,42 +131,45 @@ export default function Items() {
   );
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Ítems</h1>
-        <div className="flex space-x-2">
+    <div>
+      <AdminTopBar title="Ítems" quickAccessHidden>
+        <div className="ml-auto flex gap-2">
           {data && data.allItems.length > 0 && (
             <>
-              <InputQuickSearch
-                rows={data.allItems}
-                onSearch={(rows) => setItems(rows)}
-              />
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
                 showFilters={showFilters}
               />
             </>
           )}
-          <RefreshButton onClick={() => refetch()} loading={loading} />
+          <RefreshButton
+            onClick={() => {
+              console.log("CLICK");
+              refetch();
+            }}
+            loading={loading}
+          />
           <Button variant="primary" onClick={handleCreate}>
             <Plus strokeWidth={3} />
-            Nuevo
+            <span className="hidden lg:inline">Nuevo</span>
           </Button>
         </div>
+      </AdminTopBar>
+      <div className="m-x-auto space-y-4 p-4">
+        {showFilters && (
+          <div className="mb-6">
+            <TableFilters
+              modelName="items"
+              data={data?.allItems || []}
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+        )}
+        {error && <ApiErrorMessage error={error} />}
+        {loading && <AlertLoading />}
+        {items.length > 0 && <DataTable columns={columns} data={items} />}
+        {loading && <AdminTableLoading />}
       </div>
-      {showFilters && (
-        <div className="mb-6">
-          <TableFilters
-            modelName="items"
-            data={data?.allItems || []}
-            onFilterChange={handleFilterChange}
-          />
-        </div>
-      )}
-      {error && <ApiErrorMessage error={error} />}
-      {loading && <AlertLoading />}
-      {items.length > 0 && <AdminTable columns={columns} data={items} />}
-      {loading && <AdminTableLoading />}
     </div>
   );
 }

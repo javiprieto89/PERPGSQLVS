@@ -10,16 +10,17 @@ import { openReactWindow } from "../utils/openReactWindow";
 import { NavLink } from "react-router-dom";
 import AdvancedFilter from "~/components/filter/AdvancedFilter";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { RefreshButton } from "~/components/RefreshButton";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
 import TableFilters from "~/components/TableFilters";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { CreateButton } from "~/components/ui-admin/CreateButton";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 import OrderCreate from "./OrderCreate";
 
@@ -163,9 +164,11 @@ export default function Orders() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "OrderID",
         cell: ({ row, getValue }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(getValue())}
             onEdit={() => handleEdit(row.original)}
           />
@@ -177,16 +180,11 @@ export default function Orders() {
 
   return (
     <>
-      <div className="p-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold mb-4">Pedidos</h1>
-          <div className="flex gap-2">
+      <div>
+        <AdminTopBar title="Pedidos" quickAccessHidden>
+          <div className="ml-auto flex gap-2">
             {data && data.allOrders.length > 0 && (
               <>
-                <InputQuickSearch
-                  rows={data.allOrders}
-                  onSearch={(rows) => setOrders(rows)}
-                />
                 <ShowFilterButton
                   onClick={() => setShowFilters(!showFilters)}
                   showFilters={showFilters}
@@ -200,35 +198,30 @@ export default function Orders() {
                 Nuevo
               </NavLink>
             </Button>
-            <Button variant="primary" onClick={handleCreate}>
-              <Plus strokeWidth={3} />
-              Nuevo Pedido
-            </Button>
+            <CreateButton title="Nuevo Pedido" onClick={handleCreate} />
           </div>
-        </div>
-
-        {/* Filtros */}
-        {showFilters && (
-          <div className="my-6 gap-2">
-            <TableFilters
-              modelName="clients"
-              data={data ? data.allClients : []} // ← lista original sin filtrar
-              onFilterChange={handleFilterChange}
-            />
-            <AdvancedFilter
-              modelName="clients"
-              data={data ? data.allClients : []} // ← lista original sin filtrar
-              onFilterChange={handleFilterChange}
-            />
-          </div>
-        )}
-
-        <div className="flex flex-col gap-2 my-6">
+        </AdminTopBar>
+        <div className="m-x-auto space-y-4 p-4">
+          {/* Filtros */}
+          {showFilters && (
+            <div className="my-6 gap-2">
+              <TableFilters
+                modelName="clients"
+                data={data ? data.allClients : []} // ← lista original sin filtrar
+                onFilterChange={handleFilterChange}
+              />
+              <AdvancedFilter
+                modelName="clients"
+                data={data ? data.allClients : []} // ← lista original sin filtrar
+                onFilterChange={handleFilterChange}
+              />
+            </div>
+          )}
           {/* Error */}
           {error && <ApiErrorMessage error={error} />}
           {loading && <AlertLoading />}
           {loading && <AdminTableLoading />}
-          {orders.length > 0 && <AdminTable columns={columns} data={orders} />}
+          {orders.length > 0 && <DataTable columns={columns} data={orders} />}
         </div>
       </div>
     </>

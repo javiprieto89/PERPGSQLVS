@@ -1,17 +1,60 @@
 // src/components/Sidebar.jsx
-import { IconInnerShadowTop } from "@tabler/icons-react";
+import { IconDatabase, IconFileWord, IconHelp, IconReport, IconSearch, IconSettings } from "@tabler/icons-react";
 import { useEffect } from "react";
 
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "~/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, useSidebar } from "~/components/ui/sidebar";
 
 import { BranchAccessDropdown } from "~/features/branch/BranchAccessDropdown";
 import { NavMenu } from "./NavMenu";
 import { NavUser } from "./NavUser";
 
+import { NavSecondary } from "./NavSecondary";
 import { SidebarHelper } from "./sidebarHelper";
 
+const data = {
+  user: {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  },
+  navSecondary: [
+    {
+      title: "Settings",
+      url: "#",
+      icon: IconSettings,
+    },
+    {
+      title: "Get Help",
+      url: "#",
+      icon: IconHelp,
+    },
+    {
+      title: "Search",
+      url: "#",
+      icon: IconSearch,
+    },
+  ],
+  documents: [
+    {
+      name: "Data Library",
+      url: "#",
+      icon: IconDatabase,
+    },
+    {
+      name: "Reports",
+      url: "#",
+      icon: IconReport,
+    },
+    {
+      name: "Word Assistant",
+      url: "#",
+      icon: IconFileWord,
+    },
+  ],
+}
+
 export default function AppSidebar() {
-  const { open } = useSidebar();
+  const { open, state, isMobile } = useSidebar();
 
   useEffect(() => {
     SidebarHelper.setSidebarOpen(open)
@@ -20,25 +63,13 @@ export default function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <div className="flex items-center gap-4">
-              <SidebarMenuButton
-                asChild
-                className="data-[slot=sidebar-menu-button]:!p-1.5"
-              >
-                <div>
-                  <IconInnerShadowTop />
-                  <span className="text-base font-semibold">ERP</span>
-                </div>
-              </SidebarMenuButton>
-            </div>
-          </SidebarMenuItem>
-        </SidebarMenu>
-        <BranchAccessDropdown />
+        <div className="mb-6">
+          <BranchAccessDropdown />
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavMenu />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

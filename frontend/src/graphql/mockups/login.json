@@ -1,0 +1,53 @@
+{
+  "data": {
+    "login": {
+      "success": true,
+      "message": "Login exitoso",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqYXZpZXJwIiwiZXhwIjoxNzU2ODMyMzE1fQ.Kuc9rSHJA1thyA8BQVz9rBm5tcYqwsdjyo9T2VeWl5A",
+      "user": {
+        "UserID": 1,
+        "Nickname": "javierp",
+        "FullName": "Javier Prieto",
+        "IsActive": true,
+        "UserAccess": [
+          {
+            "UserID": 1,
+            "CompanyID": 1,
+            "Company": "CT",
+            "BranchID": 1,
+            "Branch": "CENTRAL",
+            "RoleID": 1,
+            "Role": "Admin"
+          },
+          {
+            "UserID": 1,
+            "CompanyID": 1,
+            "Company": "CT",
+            "BranchID": 1,
+            "Branch": "CENTRAL",
+            "RoleID": 2,
+            "Role": "Usuario"
+          },
+          {
+            "UserID": 1,
+            "CompanyID": 1,
+            "Company": "CT",
+            "BranchID": 2,
+            "Branch": "SECUNDARIA",
+            "RoleID": 1,
+            "Role": "Admin"
+          },
+          {
+            "UserID": 1,
+            "CompanyID": 2,
+            "Company": "CT2",
+            "BranchID": 3,
+            "Branch": "CENTRAL_CT2",
+            "RoleID": 1,
+            "Role": "Admin"
+          }
+        ]
+      }
+    }
+  }
+}

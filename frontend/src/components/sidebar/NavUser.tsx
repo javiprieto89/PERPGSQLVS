@@ -1,13 +1,13 @@
 import {
   IconCreditCard,
-  IconDotsVertical,
   IconLogout,
   IconNotification,
-  IconUserCircle,
+  IconUserCircle
 } from "@tabler/icons-react";
 
 import { useUser } from "~/hooks/useUser";
 
+import { ChevronsUpDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   Avatar,
@@ -77,7 +77,7 @@ export function NavUser() {
                     </span>
                   )}
                 </div>
-                <IconDotsVertical className="ml-auto size-4" />
+                <ChevronsUpDown className="ml-auto size-4" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent

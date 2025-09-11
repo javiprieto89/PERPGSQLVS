@@ -42,9 +42,4 @@ query GetAllOrders {
       Percentage
     }
   }
-  allClients {
-    FirstName
-    LastName
-    ClientID
-  }
 }

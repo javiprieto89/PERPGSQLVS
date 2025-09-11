@@ -23,7 +23,7 @@ export default function UiPage() {
           <div className="my-20">
             <hr />
           </div>
-          {/* <AdvancedFilter
+          <AdvancedFilter
             modelName="saleconditions"
             data={[
               {
@@ -57,7 +57,7 @@ export default function UiPage() {
             onFilterChange={(value) => {
               console.log("UI CALLBACK onFilterChange", value);
             }}
-          /> */}
+          />
           {/*
           <ClientDropdown />
           <CarDropdown />

@@ -1,20 +1,19 @@
 // frontend/src/pages/Warehouses.jsx
-import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
-import { Button } from "~/components/ui/button";
 import TableFilters from "../components/TableFilters";
 
-import { RefreshButton } from "~/components/RefreshButton";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
+import { CreateButton } from "~/components/ui-admin/CreateButton";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { useGetWarehousesQuery } from "~/graphql/_generated/graphql";
 import { warehouseOperations } from "~/graphql/operations.js";
 import { openReactWindow } from "../utils/openReactWindow";
@@ -117,9 +116,11 @@ export default function Warehouses() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "WarehouseID",
         cell: ({ row, getValue }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(getValue())}
             onEdit={() => handleEdit(row.original)}
           />
@@ -130,16 +131,11 @@ export default function Warehouses() {
   );
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Depósitos</h1>
-        <div className="flex space-x-2">
+    <section className="section">
+      <AdminTopBar title="Depósitos" quickAccessHidden>
+        <div className="ml-auto flex gap-2">
           {data && data.allWarehouses.length > 0 && (
             <>
-              <InputQuickSearch
-                rows={data.allWarehouses}
-                onSearch={(rows) => setWarehouses(rows)}
-              />
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
                 showFilters={showFilters}
@@ -147,25 +143,24 @@ export default function Warehouses() {
             </>
           )}
           <RefreshButton onClick={() => refetch()} loading={loading} />
-          <Button variant="primary" onClick={handleCreate}>
-            <Plus strokeWidth={3} />
-            Nuevo
-          </Button>
+          <CreateButton title="Nuevo" onClick={handleCreate} />
         </div>
+      </AdminTopBar>
+      <div className="m-x-auto space-y-4 p-4">
+        {showFilters && (
+          <div className="mb-6">
+            <TableFilters
+              modelName="warehouses"
+              data={data.allWarehouses}
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+        )}
+        {error && <ApiErrorMessage error={error} />}
+        {loading && <AlertLoading />}
+        <DataTable columns={columns} data={warehouses || []} />
+        {loading && <AdminTableLoading />}
       </div>
-      {showFilters && (
-        <div className="mb-6">
-          <TableFilters
-            modelName="warehouses"
-            data={data.allWarehouses}
-            onFilterChange={handleFilterChange}
-          />
-        </div>
-      )}
-      {error && <ApiErrorMessage error={error} />}
-      {loading && <AlertLoading />}
-      <AdminTable columns={columns} data={warehouses || []} />
-      {loading && <AdminTableLoading />}
-    </div>
+    </section>
   );
 }

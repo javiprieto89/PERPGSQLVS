@@ -1,4 +1,3 @@
-import { Plus, RefreshCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useGetAllItemCategoriesQuery } from "~/graphql/_generated/graphql";
@@ -6,15 +5,16 @@ import { itemCategoryOperations } from "~/graphql/operations.js";
 import { openReactWindow } from "../utils/openReactWindow";
 
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
-import { Button } from "~/components/ui/button";
+import { CreateButton } from "~/components/ui-admin/CreateButton";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import TableFilters from "../components/TableFilters";
 import ItemCategoryCreate from "./ItemCategoryCreate";
 
@@ -102,9 +102,11 @@ export default function ItemCategories() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "ItemCategoryID",
         cell: ({ row, getValue }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(getValue())}
             onEdit={() => handleEdit(row.original)}
           />
@@ -115,47 +117,38 @@ export default function ItemCategories() {
   );
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Categorías</h1>
-        <div className="flex space-x-2">
+    <div>
+      <AdminTopBar title="Categorías" quickAccessHidden>
+        <div className="ml-auto flex gap-2">
           {data && data.allItemcategories.length > 0 && (
             <>
-              <InputQuickSearch
-                rows={data.allItemcategories}
-                onSearch={(rows) => setCategories(rows)}
-              />
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
                 showFilters={showFilters}
               />
             </>
           )}
-          <Button onClick={handleRefetch}>
-            <RefreshCcw />
-            Recargar
-          </Button>
-          <Button variant="primary" onClick={handleCreate}>
-            <Plus strokeWidth={3} />
-            Nuevo
-          </Button>
+          <RefreshButton onClick={() => refetch()} loading={loading} />
+          <CreateButton title="Nuevo" onClick={handleCreate} />
         </div>
+      </AdminTopBar>
+      <div className="m-x-auto space-y-4 p-4">
+        {showFilters && (
+          <div className="mb-6">
+            <TableFilters
+              modelName="itemcategories"
+              data={data.allItemcategories || []}
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+        )}
+        {loading && <AlertLoading />}
+        {error && <ApiErrorMessage error={error} />}
+        {categories.length > 0 && (
+          <DataTable columns={columns} data={categories || []} />
+        )}
+        {loading && <AdminTableLoading />}
       </div>
-      {showFilters && (
-        <div className="mb-6">
-          <TableFilters
-            modelName="itemcategories"
-            data={data.allItemcategories || []}
-            onFilterChange={handleFilterChange}
-          />
-        </div>
-      )}
-      {loading && <AlertLoading />}
-      {error && <ApiErrorMessage error={error} />}
-      {categories.length > 0 && (
-        <AdminTable columns={columns} data={categories || []} />
-      )}
-      {loading && <AdminTableLoading />}
     </div>
   );
 }
