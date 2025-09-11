@@ -119,7 +119,7 @@ export class AuthHelper {
       );
 
       return true;
-    } catch (error: unknown) {
+    } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error("Error en setSelectedAccess:", message);
       if (sessionStorage.getItem(this.SELECTED_ACCESS_KEY))

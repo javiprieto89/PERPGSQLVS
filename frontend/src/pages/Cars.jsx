@@ -1,15 +1,15 @@
 ﻿import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { RefreshButton } from "~/components/RefreshButton";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 import { useGetAllCarsQuery } from "~/graphql/_generated/graphql";
 import { carOperations } from "~/graphql/operations.js";
@@ -18,7 +18,9 @@ import { openReactWindow } from "../utils/openReactWindow";
 import CarCreate from "./CarCreate";
 
 export default function Cars() {
-  const { data, error, loading, refetch } = useGetAllCarsQuery();
+  const { data, error, loading, refetch } = useGetAllCarsQuery({
+    notifyOnNetworkStatusChange: true,
+  });
   const [cars, setCars] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -149,9 +151,11 @@ export default function Cars() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "CarID",
         cell: ({ row, getValue }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(getValue())}
             onEdit={() => handleEdit(row.original)}
           />
@@ -162,16 +166,11 @@ export default function Cars() {
   );
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Autos</h1>
-        <div className="flex space-x-2">
+    <div>
+      <AdminTopBar title="Autos" quickAccessHidden>
+        <div className="ml-auto flex gap-2">
           {data && data.allCars.length > 0 && (
             <>
-              <InputQuickSearch
-                rows={data.allCars}
-                onSearch={(rows) => setCars(rows)}
-              />
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
                 showFilters={showFilters}
@@ -180,84 +179,87 @@ export default function Cars() {
           )}
           <RefreshButton onClick={() => refetch()} loading={loading} />
           <Button variant="primary" onClick={handleCreate}>
-            <Plus strokeWidth={3} /> Nuevo
+            <Plus strokeWidth={3} />
+            <span className="hidden lg:inline">Nuevo</span>
           </Button>
         </div>
-      </div>
-
-      {showFilters && (
-        <div className="mb-6">
-          <TableFilters
-            modelName="cars"
-            data={data.allCars}
-            onFilterChange={handleFilterChange}
-          />
-        </div>
-      )}
-
-      {/* Error */}
-      {error && <ApiErrorMessage error={error} />}
-
-      {loading && <AlertLoading />}
-
-      {cars.length > 0 && <AdminTable columns={columns} data={cars} />}
-      {/* Lista de autos */}
-      {!error && cars.length > 0 && (
-        <div>
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-muted-foreground">
-              Mostrando {cars.length} auto{cars.length !== 1 ? "s" : ""} de{" "}
-              {data.allCars.length} total{data.allCars.length !== 1 ? "es" : ""}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {loading && <AdminTableLoading />}
-
-      {/* Estado vacío */}
-      {!error && !loading && cars.length === 0 && (
-        <div className="text-center py-12">
-          <svg
-            className="mx-auto h-12 w-12 text-muted-foreground"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+      </AdminTopBar>
+      <div className="m-x-auto space-y-4 p-4">
+        {showFilters && (
+          <div className="mb-6">
+            <TableFilters
+              modelName="cars"
+              data={data.allCars}
+              onFilterChange={handleFilterChange}
             />
-          </svg>
-          <h3 className="mt-2 text-sm font-medium text-foreground">
-            No hay autos
-          </h3>
-          <p className="mt-1 text-sm text-foreground/80">
-            {showFilters
-              ? "No se encontraron autos con los filtros aplicados."
-              : "Comienza creando tu primer auto."}
-          </p>
-          <div className="mt-6">
-            {showFilters ? (
-              <button
-                onClick={() => alert("Ups")}
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
-              >
-                Limpiar Filtros
-              </button>
-            ) : (
-              <button
-                onClick={handleCreate}
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
-              >
-                Crear Primer Auto
-              </button>
-            )}
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Error */}
+        {error && <ApiErrorMessage error={error} />}
+
+        {loading && <AlertLoading />}
+
+        {cars.length > 0 && <DataTable columns={columns} data={cars} />}
+        {/* Lista de autos */}
+        {!error && cars.length > 0 && (
+          <div>
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-muted-foreground">
+                Mostrando {cars.length} auto{cars.length !== 1 ? "s" : ""} de{" "}
+                {data.allCars.length} total
+                {data.allCars.length !== 1 ? "es" : ""}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {loading && <AdminTableLoading />}
+
+        {/* Estado vacío */}
+        {!error && !loading && cars.length === 0 && (
+          <div className="text-center py-12">
+            <svg
+              className="mx-auto h-12 w-12 text-muted-foreground"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+            <h3 className="mt-2 text-sm font-medium text-foreground">
+              No hay autos
+            </h3>
+            <p className="mt-1 text-sm text-foreground/80">
+              {showFilters
+                ? "No se encontraron autos con los filtros aplicados."
+                : "Comienza creando tu primer auto."}
+            </p>
+            <div className="mt-6">
+              {showFilters ? (
+                <button
+                  onClick={() => alert("Ups")}
+                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
+                >
+                  Limpiar Filtros
+                </button>
+              ) : (
+                <button
+                  onClick={handleCreate}
+                  className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
+                >
+                  Crear Primer Auto
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -5,14 +5,16 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import apolloClient from "~/lib/apollo";
 import { useTabSession } from "./hooks/useTabSession";
 
-import Layout from "./layout/Layout";
+import { AdminLayout } from "./layout/Layout";
 
+import { PropsWithChildren } from "react";
 import { UserProvider } from "./context/UserContext";
 import Branches from "./pages/Branches";
 import Brands from "./pages/Brands";
 import CarBrands from "./pages/CarBrands";
 import CarModels from "./pages/CarModels";
 import Cars from "./pages/Cars";
+import { ClientsForm } from "./pages/clients/form-new";
 import { Clients } from "./pages/clients/list";
 import CompanyData from "./pages/CompanyData";
 import CreditCardGroups from "./pages/CreditCardGroups";
@@ -54,7 +56,7 @@ export function RedirectRoot() {
   );
 }
 
-const RequireAuth = ({ children }) => {
+const RequireAuth = ({ children }: PropsWithChildren) => {
   if (!AuthHelper.isAuthenticated()) {
     sessionStorage.setItem("redirectAfterLogin", window.location.pathname);
     return <Navigate to="/login" replace />;
@@ -78,13 +80,20 @@ export default function App() {
           <Route
             element={
               <RequireAuth>
-                <Layout />
+                <AdminLayout />
               </RequireAuth>
             }
           >
-            <Route index path="dashboard" element={<Dashboard />} />
+            <Route
+              path="dashboard"
+              element={
+                <Dashboard />
+              }
+            />
             <Route path="clients">
               <Route index element={<Clients />} />
+              {/* <Route path=":city" element={<City />} /> */}
+              <Route path="form/:id?" element={<ClientsForm />} />
             </Route>
             <Route path="suppliers" element={<Suppliers />} />
             <Route path="brands" element={<Brands />} />

@@ -1,17 +1,16 @@
 // frontend/src/pages/Roles.jsx
-import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { RefreshButton } from "~/components/RefreshButton";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
-import { Button } from "~/components/ui/button";
+import { CreateButton } from "~/components/ui-admin/CreateButton";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { useGetAllRolesQuery } from "~/graphql/_generated/graphql";
 import { roleOperations } from "~/graphql/operations.js";
 import TableFilters from "../components/TableFilters";
@@ -111,9 +110,11 @@ export default function Roles() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "RoleID",
         cell: ({ row, getValue }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(getValue())}
             onEdit={() => handleEdit(row.original)}
           />
@@ -124,16 +125,11 @@ export default function Roles() {
   );
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-3xl font-bold">Roles</h1>
-        <div className="flex space-x-2">
+    <section className="section">
+      <AdminTopBar title="Roles" quickAccessHidden>
+        <div className="ml-auto flex gap-2">
           {data && data.allRoles.length > 0 && (
             <>
-              <InputQuickSearch
-                rows={data.allRoles}
-                onSearch={(rows) => setRoles(rows)}
-              />
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
                 showFilters={showFilters}
@@ -141,25 +137,24 @@ export default function Roles() {
             </>
           )}
           <RefreshButton onClick={() => refetch()} loading={loading} />
-          <Button variant="primary" onClick={handleCreate}>
-            <Plus strokeWidth={3} />
-            Nuevo
-          </Button>
+          <CreateButton title="Nuevo" onClick={handleCreate} />
         </div>
+      </AdminTopBar>
+      <div className="m-x-auto space-y-4 p-4">
+        {showFilters && (
+          <div className="mb-6">
+            <TableFilters
+              modelName="roles"
+              data={data.allRoles}
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+        )}
+        {error && <ApiErrorMessage error={error} />}
+        {loading && <AlertLoading />}
+        {loading && <AdminTableLoading />}
+        {roles.length > 0 && <DataTable columns={columns} data={roles} />}
       </div>
-      {showFilters && (
-        <div className="mb-6">
-          <TableFilters
-            modelName="roles"
-            data={data.allRoles}
-            onFilterChange={handleFilterChange}
-          />
-        </div>
-      )}
-      {error && <ApiErrorMessage error={error} />}
-      {loading && <AlertLoading />}
-      {loading && <AdminTableLoading />}
-      {roles.length > 0 && <AdminTable columns={columns} data={roles} />}
-    </div>
+    </section>
   );
 }

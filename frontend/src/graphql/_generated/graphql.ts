@@ -24,7 +24,9 @@ export type AccountBalancesInDb = {
   __typename?: 'AccountBalancesInDB';
   AccountID: Scalars['Int']['output'];
   Balance: Scalars['Float']['output'];
+  ClientData?: Maybe<ClientsInDb>;
   ClientID?: Maybe<Scalars['Int']['output']>;
+  SupplierData?: Maybe<SuppliersInDb>;
   SupplierID?: Maybe<Scalars['Int']['output']>;
 };
 
@@ -1570,6 +1572,7 @@ export type OrdersInDb = {
   ServiceTypeID?: Maybe<Scalars['Int']['output']>;
   Subtotal: Scalars['Float']['output'];
   Total: Scalars['Float']['output'];
+  UserData?: Maybe<UsersInDb>;
   UserID: Scalars['Int']['output'];
   VAT: Scalars['Float']['output'];
   WarehouseData?: Maybe<WarehousesInDb>;
@@ -2813,7 +2816,7 @@ export type GetAllItemsQuery = { __typename?: 'Query', allItems: Array<{ __typen
 export type GetAllOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllOrdersQuery = { __typename?: 'Query', allOrders: Array<{ __typename?: 'OrdersInDB', OrderID: number, CompanyID: number, BranchID: number, Date_: any, ClientID: number, CarID?: number | null, IsService?: boolean | null, ServiceTypeID?: number | null, Mileage?: number | null, NextServiceMileage?: number | null, Notes?: string | null, SaleConditionID: number, DiscountID: number, Subtotal: number, Total: number, VAT: number, UserID: number, DocumentID: number, PriceListID: number, OrderStatusID: number, WarehouseID: number, SaleConditionData?: { __typename?: 'SaleConditionsInDB', SaleConditionID: number, Name: string } | null, ClientData?: { __typename?: 'ClientsInDB', ClientID: number, FirstName: string, LastName?: string | null, VendorID: number } | null, DiscountData?: { __typename?: 'DiscountsInDB', DiscountID: number, DiscountName: string, Percentage: number } | null }>, allClients: Array<{ __typename?: 'ClientsInDB', FirstName: string, LastName?: string | null, ClientID: number }> };
+export type GetAllOrdersQuery = { __typename?: 'Query', allOrders: Array<{ __typename?: 'OrdersInDB', OrderID: number, CompanyID: number, BranchID: number, Date_: any, ClientID: number, CarID?: number | null, IsService?: boolean | null, ServiceTypeID?: number | null, Mileage?: number | null, NextServiceMileage?: number | null, Notes?: string | null, SaleConditionID: number, DiscountID: number, Subtotal: number, Total: number, VAT: number, UserID: number, DocumentID: number, PriceListID: number, OrderStatusID: number, WarehouseID: number, SaleConditionData?: { __typename?: 'SaleConditionsInDB', SaleConditionID: number, Name: string } | null, ClientData?: { __typename?: 'ClientsInDB', ClientID: number, FirstName: string, LastName?: string | null, VendorID: number } | null, UserData?: { __typename?: 'UsersInDB', UserID: number, Nickname?: string | null, FullName?: string | null } | null, DiscountData?: { __typename?: 'DiscountsInDB', DiscountID: number, DiscountName: string, Percentage: number } | null }> };
 
 export type GetAllOrderstatusQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2927,7 +2930,7 @@ export type GetClientFormDataQueryVariables = Exact<{
 }>;
 
 
-export type GetClientFormDataQuery = { __typename?: 'Query', clientsById?: { __typename?: 'ClientsInDB', ClientID: number, DocTypeID: number, CompanyID?: number | null, BranchID?: number | null, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, City?: string | null, PostalCode?: string | null, IsActive: boolean, CountryID: number, ProvinceID: number, PriceListID: number, VendorID: number } | null, docTypes: Array<{ __typename?: 'SysDocTypesInDB', DocTypeID: number, Name: string }>, countries: Array<{ __typename?: 'CountriesInDB', CountryID: number, Name: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, Name: string }>, priceLists: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, Name: string, Description?: string | null, IsActive?: boolean | null }>, vendors: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string, IsActive: boolean }>, companies: Array<{ __typename?: 'CompanyDataInDB', CompanyID: number, Name?: string | null }> };
+export type GetClientFormDataQuery = { __typename?: 'Query', docTypes: Array<{ __typename?: 'SysDocTypesInDB', DocTypeID: number, Name: string }>, countries: Array<{ __typename?: 'CountriesInDB', CountryID: number, Name: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, Name: string }>, priceLists: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, Name: string, Description?: string | null, IsActive?: boolean | null }>, vendors: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string, IsActive: boolean }>, companies: Array<{ __typename?: 'CompanyDataInDB', CompanyID: number, Name?: string | null }> };
 
 export type GetCompanyByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -4431,16 +4434,16 @@ export const GetAllOrdersDocument = gql`
       LastName
       VendorID
     }
+    UserData {
+      UserID
+      Nickname
+      FullName
+    }
     DiscountData {
       DiscountID
       DiscountName
       Percentage
     }
-  }
-  allClients {
-    FirstName
-    LastName
-    ClientID
   }
 }
     `;
@@ -5304,25 +5307,6 @@ export type GetClientByIdSuspenseQueryHookResult = ReturnType<typeof useGetClien
 export type GetClientByIdQueryResult = Apollo.QueryResult<GetClientByIdQuery, GetClientByIdQueryVariables>;
 export const GetClientFormDataDocument = gql`
     query GetClientFormData($id: Int!) {
-  clientsById(id: $id) {
-    ClientID
-    DocTypeID
-    CompanyID
-    BranchID
-    DocNumber
-    FirstName
-    LastName
-    Phone
-    Email
-    Address
-    City
-    PostalCode
-    IsActive
-    CountryID
-    ProvinceID
-    PriceListID
-    VendorID
-  }
   docTypes: allSysdoctypes {
     DocTypeID
     Name

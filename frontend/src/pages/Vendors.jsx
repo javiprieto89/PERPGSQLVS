@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
@@ -15,7 +15,7 @@ import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
 import TableFilters from "../components/TableFilters";
 
-import { RefreshButton } from "~/components/RefreshButton";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { useGetAllVendorsQuery } from "~/graphql/_generated/graphql";
 import { vendorOperations } from "~/graphql/operations.js";
 import { openReactWindow } from "../utils/openReactWindow";
@@ -124,9 +124,11 @@ export default function Vendors() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "VendorID",
         cell: ({ row, getValue }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(getValue())}
             onEdit={() => handleEdit(row.original)}
           />
@@ -138,7 +140,7 @@ export default function Vendors() {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">Vendedores</h1>
         <div className="flex space-x-2">
           {data && data.allVendors.length > 0 && (
@@ -171,7 +173,7 @@ export default function Vendors() {
       )}
       {error && <ApiErrorMessage error={error} />}
       {loading && <AlertLoading />}
-      <AdminTable columns={columns} data={vendors} />
+      <DataTable columns={columns} data={vendors} />
       {loading && <AdminTableLoading />}
     </div>
   );

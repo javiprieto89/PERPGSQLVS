@@ -1,13 +1,12 @@
-import { Eye, UserRoundPlus, Users } from "lucide-react";
+import { Plus, UserRoundPlus, Users } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useGetAllClientsQuery } from "~/graphql/_generated/graphql";
+import jsonDAta from "~/graphql/mockups/getAllClients.json";
+// import { useGetAllClientsQuery } from "~/graphql/_generated/graphql";
 import { clientOperations } from "~/graphql/operations";
 import { openReactWindow } from "~/utils/openReactWindow";
 
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
-import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { RefreshButton } from "~/components/RefreshButton";
 import {
   AdminTableLoading,
   TableActionButton,
@@ -16,15 +15,23 @@ import {
 import TableFilters from "~/components/TableFilters";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 // import { AdminTable } from "~/components/table/AdminTable";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import { Button } from "~/components/ui/button";
 
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { ClientDetails } from "~/features/client/ClientDetails";
 import { ClientsForm } from "./form";
 
 export function Clients() {
-  const { data, error, loading, refetch } = useGetAllClientsQuery();
+  // const { data, error, loading, refetch } = useGetAllClientsQuery({
+  //   notifyOnNetworkStatusChange: true,
+  // });
+  const data = jsonDAta.data;
+  const error = null;
+  const loading = false;
+  const refetch = () => {};
   const [clients, setClients] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -113,6 +120,7 @@ export function Clients() {
       {
         header: "Name",
         accessorFn: (row) => `${row.FirstName} ${row.LastName}`,
+        enableHiding: false,
       },
       {
         header: "Email",
@@ -138,20 +146,13 @@ export function Clients() {
       {
         header: "",
         id: "actions",
-        accessorKey: "ClientID",
         enableHiding: false,
+        accessorKey: "ClientID",
         cell: ({ row, getValue }) => {
           return (
-            <div className="flex gap-2 justify-end">
-              {row.getCanExpand() && (
-                <Button
-                  variant={row.getIsExpanded() ? "primary" : "outline"}
-                  onClick={row.getToggleExpandedHandler()}
-                >
-                  <Eye />
-                </Button>
-              )}
+            <div className="ml-auto flex gap-2 justify-end">
               <TableActionButton
+                row={row}
                 onEdit={() => handleEdit(row.original)}
                 onDelete={() => handleDelete(getValue())}
               />
@@ -163,17 +164,17 @@ export function Clients() {
     [handleDelete, handleEdit]
   );
 
+  const defaultColumnVisibility = {
+    Address: false,
+    id: false,
+  };
+
   return (
-    <div className="max-w-full overflow-x-auto flex flex-col px-4">
-      <div className="flex items-center justify-between my-4">
-        <h1 className="text-2xl font-bold leading-4">Clientes</h1>
-        <div className="flex space-x-2">
+    <>
+      <AdminTopBar title="Clientes" quickAccessHidden>
+        <div className="ml-auto flex gap-2">
           {data && data.allClients.length > 0 && (
             <>
-              <InputQuickSearch
-                rows={data.allClients}
-                onSearch={(rows) => setClients(rows)}
-              />
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
                 showFilters={showFilters}
@@ -182,59 +183,62 @@ export function Clients() {
           )}
           <RefreshButton onClick={() => refetch()} loading={loading} />
           <Button variant="primary" onClick={handleCreate}>
-            <UserRoundPlus />
-            Nuevo Cliente
+            <Plus strokeWidth={3} />
+            <span className="hidden lg:inline">Nuevo Cliente</span>
           </Button>
         </div>
-      </div>
-
-      {/* Filtros */}
-      {showFilters && (
-        <div className="mb-6">
-          <TableFilters
-            modelName="clients"
-            data={data ? data.allClients : []} // ← lista original sin filtrar
-            onFilterChange={handleFilterChange}
-          />
-        </div>
-      )}
-
-      {/* Error */}
-      {error && <ApiErrorMessage error={error} />}
-
-      {loading && <AlertLoading />}
-
-      {/* Estado vacío */}
-      {!error && !loading && clients.length === 0 && (
-        <div className="bg-card border rounded-2xl text-center py-12">
-          <Users size="48" className="m-auto" />
-          <h3 className="mt-2 text-sm font-medium">No hay clientes</h3>
-          <p className="mt-1 text-sm ">Comienza creando tu primer cliente.</p>
-          <div className="mt-6">
-            <Button variant="primary" onClick={handleCreate}>
-              <UserRoundPlus /> Crear Primer Cliente
-            </Button>
+      </AdminTopBar>
+      <div className="m-x-auto space-y-4 p-4">
+        {/* Filtros */}
+        {showFilters && (
+          <div className="mb-6">
+            <TableFilters
+              modelName="clients"
+              data={data ? data.allClients : []} // ← lista original sin filtrar
+              onFilterChange={handleFilterChange}
+            />
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Lista de clientes */}
-      {clients.length > 0 && (
-        <>
-          <AdminTable
-            getRowCanExpand={() => true}
-            renderSubComponent={({ row }) => (
-              <ClientDetails client={row.original} />
-            )}
-            columns={columns}
-            data={clients || []}
-            expanded={(row) => {
-              <div>{row.id}</div>;
-            }}
-          />
-        </>
-      )}
-      {loading && <AdminTableLoading />}
-    </div>
+        {/* Error */}
+        {error && <ApiErrorMessage error={error} />}
+
+        {loading && <AlertLoading />}
+
+        {/* Estado vacío */}
+        {!error && !loading && clients.length === 0 && (
+          <div className="bg-card border rounded-2xl text-center py-12">
+            <Users size="48" className="m-auto" />
+            <h3 className="mt-2 text-sm font-medium">No hay clientes</h3>
+            <p className="mt-1 text-sm ">Comienza creando tu primer cliente.</p>
+            <div className="mt-6">
+              <Button variant="primary" onClick={handleCreate}>
+                <UserRoundPlus /> Crear Primer Cliente
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Lista de clientes */}
+        {clients.length > 0 && (
+          <>
+            <DataTable
+              columnGroupName="clients"
+              defaultColumnVisibility={defaultColumnVisibility}
+              getRowCanExpand={() => true}
+              renderSubComponent={({ row }) => (
+                <ClientDetails client={row.original} />
+              )}
+              columns={columns}
+              data={clients || []}
+              expanded={(row) => {
+                <div>{row.id}</div>;
+              }}
+            />
+          </>
+        )}
+        {loading && <AdminTableLoading />}
+      </div>
+    </>
   );
 }

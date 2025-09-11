@@ -2,8 +2,7 @@ import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
-import { RefreshButton } from "~/components/RefreshButton";
-import { AdminTable } from "~/components/table/AdminTable";
+import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
@@ -11,6 +10,7 @@ import {
 } from "~/components/table/TableExtraComponents";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { useGetAllSaleConditionsQuery } from "~/graphql/_generated/graphql";
@@ -167,9 +167,11 @@ export default function SaleConditions() {
       {
         header: "",
         id: "actions",
+        enableHiding: false,
         accessorKey: "SaleConditionID",
         cell: ({ row, getValue }) => (
           <TableActionButton
+            row={row}
             onDelete={() => handleDelete(getValue())}
             onEdit={() => handleEdit(row.original)}
           />
@@ -181,7 +183,7 @@ export default function SaleConditions() {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-foreground">
           Condiciones de Venta
         </h1>
@@ -216,7 +218,7 @@ export default function SaleConditions() {
       )}
       {error && <ApiErrorMessage error={error} />}
       {loading && <AlertLoading />}
-      <AdminTable columns={columns} data={saleConditions} />
+      <DataTable columns={columns} data={saleConditions} />
       {loading && <AdminTableLoading />}
     </div>
   );

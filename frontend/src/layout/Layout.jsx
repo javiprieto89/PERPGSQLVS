@@ -1,14 +1,12 @@
-// src/layout/Layout.jsx
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import RenderInWindow from "~/components/RenderInWindow";
 import AppSidebar from "~/components/sidebar/AppSidebar";
 import { SidebarHelper } from "~/components/sidebar/sidebarHelper";
-import { AdminHeader } from "~/components/ui-admin/AdminHeader";
-import { SidebarProvider } from "~/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 
-export default function Layout() {
+export function AdminLayout() {
   // Ventanas flotantes
   const [windows, setWindows] = useState([]);
 
@@ -20,25 +18,26 @@ export default function Layout() {
   return (
     <SidebarProvider defaultOpen={SidebarHelper.isOpenSidebar()}>
       <AppSidebar />
-      <main className="grow">
-        <AdminHeader title="Section Title" />
-        <Outlet />
+      <SidebarInset>
+        <main className="relative">
+          <Outlet />
 
-        {/* Ventanas emergentes */}
-        {windows.map((window) => {
-          const WindowComponent = window.Component;
-          return (
-            <RenderInWindow
-              key={window.id}
-              title={window.title}
-              onClose={() => closeWindow(window.id)}
-              {...window.options}
-            >
-              <WindowComponent />
-            </RenderInWindow>
-          );
-        })}
-      </main>
+          {/* Ventanas emergentes */}
+          {windows.map((window) => {
+            const WindowComponent = window.Component;
+            return (
+              <RenderInWindow
+                key={window.id}
+                title={window.title}
+                onClose={() => closeWindow(window.id)}
+                {...window.options}
+              >
+                <WindowComponent />
+              </RenderInWindow>
+            );
+          })}
+        </main>
+      </SidebarInset>
     </SidebarProvider>
   );
 }

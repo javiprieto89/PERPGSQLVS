@@ -6,23 +6,26 @@ import {
   ExternalLink,
   Home,
   PackageCheck,
+  Plus,
   Ship,
   Tag,
   type LucideProps
 } from "lucide-react";
 import { Fragment, useContext } from "react";
 
-import { cn } from "~/lib/utils";
 import { openReactWindow } from "~/utils/openReactWindow";
 
 import { DrawerContext } from "~/components/ui/drawer/Drawer";
-import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuLink, SidebarMenuSub, SidebarMenuSubItem } from "~/components/ui/sidebar";
+import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuLink, SidebarMenuSub, SidebarMenuSubItem, useSidebar } from "~/components/ui/sidebar";
 import StockEntry from "~/pages/StockEntry";
 
-import { CollapsibleContent } from "@radix-ui/react-collapsible";
+import { CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 import OrderCreate from "~/pages/OrderCreate";
 import PriceListItemsPage from "~/pages/PriceListItems";
-import { Collapsible, CollapsibleTrigger } from "../ui/collapsible";
+import { Collapsible } from "../ui/collapsible";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { SidebarHelper } from "./sidebarHelper";
 
 const openPopup = (Component: React.ComponentType<any>, title: string, width = 1000, height = 700) => {
@@ -33,23 +36,27 @@ const openPopup = (Component: React.ComponentType<any>, title: string, width = 1
   );
 };
 
+type RightButton = {
+  icon?: Icon | React.FunctionComponent<LucideProps>
+  url?: string;
+  action?: () => void;
+  title?: string | null;
+};
+
 type SideNav = {
   title: string | null;
   items?: SideNav[];
   icon?: Icon | React.FunctionComponent<LucideProps>
   url?: string;
   action?: () => void;
+  rightButton?: RightButton;
 }
 
 type SideMenu = {
   key: string;
   title?: string | null;
   items?: SideNav[];
-  rightButton?: {
-    icon?: Icon | React.FunctionComponent<LucideProps>
-    url?: string;
-    action?: () => void;
-  }
+  rightButton?: RightButton;
 }
 
 const sections: SideMenu[] = [
@@ -64,16 +71,24 @@ const sections: SideMenu[] = [
       {
         title: "Productos",
         icon: Tag,
+        url: "/items",
         items: [
+          {
+            title: "Ítems", url: "/items",
+            rightButton: {
+              title: "Cargar Stock",
+              icon: Plus,
+              action: () => openPopup(StockEntry, "Ingreso de Stock", 1000, 700),
+            }
+          },
           {
             title: "Cargar Stock",
             action: () => openPopup(StockEntry, "Ingreso de Stock", 1000, 700),
           },
-          { title: "Historial de stock", url: "/stockhistory" },
+          { title: "Historial de stock (N/A)", url: "/stockhistory" },
           { title: "Categorías", url: "/itemcategories" },
           { title: "Subcategorías", url: "/itemsubcategories" },
           { title: "Marcas", url: "/brands" },
-          { title: "Ítems", url: "/items" },
           { title: "Depósitos", url: "/warehouses" },
           { title: "Listas de precios", url: "/pricelists" },
           { title: "Listas de precios-Items", url: "/pricelistitems" },
@@ -86,6 +101,7 @@ const sections: SideMenu[] = [
       },
       {
         title: "Autos",
+        url: "/cars",
         icon: Car,
         items: [
           { title: "Lista de Autos", url: "/cars" },
@@ -95,6 +111,7 @@ const sections: SideMenu[] = [
       },
       {
         title: "Pedidos",
+        url: "/orders",
         icon: PackageCheck,
         items: [
           { title: "Listar pedidos", url: "/orders" },
@@ -114,6 +131,7 @@ const sections: SideMenu[] = [
       {
         title: "Factura electrónica",
         icon: IconFileDescription,
+        url: "/fe-last",
         items: [
           { title: "Último comprobante", url: "/fe-last" },
           { title: "Constatación comprobante", url: "/fe-info" },
@@ -158,18 +176,45 @@ function Item(item: SideNav) {
   return (
     <Fragment key={item.title}>
       {item.url ? (
-        <SidebarMenuButton asChild>
-          <SidebarMenuLink
-            to={item.url}
-            onClick={close}
-            className="data-[slot=sidebar-menu-button]:!p-1.5 text-nowrap"
-          >
-            {item.icon && <item.icon />}
-            <span className="truncate">{item.title}</span>
-          </SidebarMenuLink>
-        </SidebarMenuButton>
+        <div className="flex items-center gap-2">
+          <SidebarMenuButton tooltip={item.title || undefined} asChild>
+            <SidebarMenuLink
+              to={item.url}
+              onClick={close}
+              className="data-[slot=sidebar-menu-button]:!p-1.5 text-nowrap"
+            >
+              {item.icon && <item.icon />}
+              <span className="truncate">{item.title}</span>
+            </SidebarMenuLink>
+          </SidebarMenuButton>
+          {item.rightButton && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="sm"
+                  className="size-8 group-data-[collapsible=icon]:opacity-0"
+                  variant="ghost"
+                  onClick={item.rightButton.action}
+                >
+                  {item.rightButton.icon && <item.rightButton.icon />}
+                  {item.rightButton.title && <span className="sr-only">{item.rightButton.title}</span>}
+                </Button>
+              </TooltipTrigger>
+              {item.rightButton.title && (
+                <TooltipContent
+                  side="bottom"
+                  align="center"
+                  hidden={false}
+                >
+                  {item.rightButton.title}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          )}
+        </div>
       ) : (
         <SidebarMenuButton
+          tooltip={item.title || undefined}
           className="data-[slot=sidebar-menu-button]:!p-1.5 text-nowrap"
           onClick={item.action}
         >
@@ -184,6 +229,7 @@ function Item(item: SideNav) {
 
 function SidebarSubmenu({ items, parentKey }: { items: SideNav[] | undefined; parentKey: string; }) {
   if (!items || items.length === 0) return null;
+  const { state } = useSidebar()
 
   const navState = SidebarHelper.getAll();
 
@@ -205,28 +251,34 @@ function SidebarSubmenu({ items, parentKey }: { items: SideNav[] | undefined; pa
             SidebarHelper.updateState(key, isOpen);;
           }}>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                tooltip={item.title || undefined}
-                className="data-[slot=sidebar-menu-button]:!p-1.5"
-              >
-                <CollapsibleTrigger>
-                  {item.icon && <item.icon />}
-                  <span className="truncate">
-                    {item.title}
-                  </span>
-                  <ChevronRight
-                    size={16}
-                    className={cn(
-                      "ml-auto transition-[translate,transform] ease-linear group-data-[state=open]/collapsible:rotate-90",
-                    )}
-                  />
-                </CollapsibleTrigger>
-              </SidebarMenuButton>
+              {state === "collapsed" ? (
+                <Item {...item} />
+              ) : (
+                <>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title || undefined}
+                    className="data-[slot=sidebar-menu-button]:!p-1.5"
+                  >
+                    <CollapsibleTrigger>
+                      {item.icon && <item.icon />}
+                      <span className="truncate">
+                        {item.title}
+                      </span>
+                      <ChevronRight
+                        size={16}
+                        className={cn(
+                          "ml-auto transition-[translate,transform] ease-linear group-data-[state=open]/collapsible:rotate-90",
+                        )}
+                      />
+                    </CollapsibleTrigger>
+                  </SidebarMenuButton>
+                </>
+              )}
               <CollapsibleContent>
-                <SidebarMenuSub>
+                <SidebarMenuSub className="!mr-0 pr-0">
                   {item.items.map((sub) => (
-                    <SidebarMenuSubItem key={`${item.title}-subitem-${sub.title}`} className="flex flex-col px-3">
+                    <SidebarMenuSubItem key={`${item.title}-subitem-${sub.title}`} className="flex flex-col pl-3">
                       <Item {...sub} />
                     </SidebarMenuSubItem>
                   ))}
