@@ -1,0 +1,8 @@
+mutation CreatePricelistItem($input: PriceListItemsCreate!) {
+            createPricelistitem(data: $input) {
+                PriceListID
+                ItemID
+                Price
+                EffectiveDate
+            }
+        }

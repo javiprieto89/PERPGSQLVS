@@ -6,8 +6,8 @@ query GetPricelistItemsFiltered($priceListID: Int, $itemID: Int) {
     EffectiveDate
     # TODO Code // check if this code is related with another relation
     PriceListData {
-      Name
-      Description
+      PriceListName
+      PriceListDescription
     }
   }
 }

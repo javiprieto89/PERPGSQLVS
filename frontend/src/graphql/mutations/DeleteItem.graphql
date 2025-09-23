@@ -1,0 +1,3 @@
+mutation DeleteItem($itemID: Int!, $companyId: Int!) {
+  deleteItem(itemID: $itemID, companyID: $companyId)
+}

@@ -1,0 +1,3 @@
+mutation DeleteCreditCard($id: Int!) {
+            deleteCreditcard(id: $id)
+        }

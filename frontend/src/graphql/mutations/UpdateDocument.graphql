@@ -1,0 +1,20 @@
+mutation UpdateDocument($documentID: Int!, $input: CommercialDocumentsUpdate!) {
+  updateDocument(documentID: $documentID, data: $input) {
+    DocumentID
+    CompanyID
+    BranchID
+    DocumentTypeID
+    DocumentDescription
+    DocumentNumber
+    PointOfSale
+    IsActive
+    IsTest
+    ShouldAccount
+    AffectsStock
+    IsFiscal
+    IsElectronic
+    IsManual
+    IsQuotation
+    MaxItems
+  }
+}

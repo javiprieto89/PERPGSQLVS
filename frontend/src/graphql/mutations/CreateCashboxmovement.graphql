@@ -1,0 +1,14 @@
+mutation CreateCashboxmovement($input: CashBoxMovementsCreate!) {
+            createCashboxmovement(data: $input) {
+                CashBoxMovementID
+                CashBoxID
+                CompanyID
+                BranchID
+                MovementDate
+                Amount
+                MovementType
+                Description
+                UserID
+                Notes
+            }
+        }

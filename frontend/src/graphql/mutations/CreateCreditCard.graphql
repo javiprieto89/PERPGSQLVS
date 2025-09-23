@@ -1,0 +1,10 @@
+mutation CreateCreditCard($input: CreditCardsCreate!) {
+            createCreditcard(data: $input) {
+                CreditCardID
+                CreditCardGroupID
+                CardName
+                Surcharge
+                Installments
+                IsActive
+            }
+        }

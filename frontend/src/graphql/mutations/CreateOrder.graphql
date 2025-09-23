@@ -1,0 +1,30 @@
+mutation CreateOrder($input: OrdersCreate!) {
+  createOrder(data: $input) {
+    order {
+      OrderID
+      CompanyID
+      BranchID
+      OrderDate
+      ClientID
+      CarID
+      IsService
+      ServiceTypeID
+      Mileage
+      NextServiceMileage
+      Notes
+      SaleConditionID
+      DiscountID
+      Subtotal
+      Total
+      # TODO: replace VatAmount to Taxes
+      VatAmount
+      UserID
+      DocumentID
+      PriceListID
+      OrderStatusID
+      WarehouseID
+    }
+    sessionID
+    message
+  }
+}

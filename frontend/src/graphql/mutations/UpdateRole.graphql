@@ -1,0 +1,6 @@
+mutation UpdateRole($roleID: Int!, $input: RolesUpdate!) {
+            updateRole(roleID: $roleID, data: $input) {
+                RoleID
+                RoleName
+            }
+        }

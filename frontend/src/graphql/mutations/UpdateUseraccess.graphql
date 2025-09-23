@@ -1,0 +1,20 @@
+mutation UpdateUseraccess(
+            $oldUserID: Int!,
+            $oldCompanyID: Int!,
+            $oldBranchID: Int!,
+            $oldRoleID: Int!,
+            $newData: UserAccessCreate!
+        ) {
+            updateUseraccess(
+                oldUserID: $oldUserID,
+                oldCompanyID: $oldCompanyID,
+                oldBranchID: $oldBranchID,
+                oldRoleID: $oldRoleID,
+                newData: $newData
+            ) {
+                UserID
+                CompanyID
+                BranchID
+                RoleID
+            }
+        }

@@ -1,3 +1,4 @@
+# TODO: variables don't working
 query SearchClients($searchTerm: String!, $isActive: Boolean) {
   allClients {
     ClientID

@@ -28,8 +28,8 @@ export const dashboardHelpers = {
 
     // Filtrar órdenes del mes actual - CORREGIDO
     const monthlyOrders = filteredOrders.filter((order) => {
-      if (!order.Date_) return false; // Corregido: usar Date_ en lugar de Date
-      const orderDate = new Date(order.Date_);
+      if (!order.OrderDate) return false; // Corregido: usar OrderDate en lugar de Date
+      const orderDate = new Date(order.OrderDate);
       return (
         orderDate.getMonth() === currentMonth &&
         orderDate.getFullYear() === currentYear

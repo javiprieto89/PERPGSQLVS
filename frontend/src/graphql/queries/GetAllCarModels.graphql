@@ -2,9 +2,9 @@ query GetAllCarModels {
   allCarmodels {
     CarModelID
     CarBrandID
-    Model
+    CarModelName
     CarBrandData {
-      Name
+      CarBrandName
     }
   }
 }

@@ -1,10 +1,10 @@
-query GetCarModelById($id: Int!) {
-  carmodelsById(id: $id) {
+query GetCarModelById($id: Int!, $carBrandId: Int!, $companyId: Int!) {
+  carmodelsById(id: $id, carBrandID: $carBrandId, companyID: $companyId) {
     CarModelID
     CarBrandID
-    Model
+    CarModelName
     CarBrandData {
-      Name
+      CarBrandName
     }
   }
 }

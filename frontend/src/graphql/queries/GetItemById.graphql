@@ -1,11 +1,11 @@
-query GetItemById($id: Int!) {
-  itemsById(id: $id) {
+query GetItemById($id: Int!, $companyId: Int!) {
+  itemsById(id: $id, companyID: $companyId) {
     ItemID
     CompanyID
     BranchID
     BrandID
-    Code
-    Description
+    ItemCode
+    ItemDescription
     ItemCategoryID
     ItemSubcategoryID
     SupplierID

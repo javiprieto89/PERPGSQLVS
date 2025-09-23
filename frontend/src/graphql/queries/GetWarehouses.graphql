@@ -1,7 +1,7 @@
 query GetWarehouses {
   allWarehouses {
     WarehouseID
-    Name
-    Addres
+    WarehouseName
+    Address
   }
 }

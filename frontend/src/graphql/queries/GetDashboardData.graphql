@@ -15,7 +15,7 @@ query GetDashboardData {
     CompanyID
     OrderStatusID
     Total
-    Date_
+    OrderDate
   }
   itemstock: allItemstock {
     ItemID

@@ -3,11 +3,11 @@ query GetAllItems {
     ItemID
     CompanyID
     BranchID
-    Code
-    Description
     BrandID
     ItemCategoryID
     ItemSubcategoryID
+    ItemCode
+    ItemDescription
     SupplierID
     ControlStock
     ReplenishmentStock

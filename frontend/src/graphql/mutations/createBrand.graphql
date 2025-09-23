@@ -1,7 +1,7 @@
 mutation CreateBrand2($input: BrandsCreate!) {
   createBrand(data: $input) {
     BrandID
-    Name
+    BrandName
     IsActive
   }
 }

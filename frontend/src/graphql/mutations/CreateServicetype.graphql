@@ -1,0 +1,6 @@
+mutation CreateServicetype($input: ServiceTypeCreate!) {
+  createServicetype(data: $input) {
+    ServiceTypeID
+    ServiceTypeName
+  }
+}

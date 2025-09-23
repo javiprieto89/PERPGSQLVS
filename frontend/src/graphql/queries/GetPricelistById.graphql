@@ -1,8 +1,8 @@
-query GetPricelistById($id: Int!) {
-  pricelistsById(id: $id) {
+query GetPricelistById($id: Int!, $companyId: Int!) {
+  pricelistsById(id: $id, companyID: $companyId) {
     PriceListID
-    Name
-    Description
+    PriceListName
+    PriceListDescription
     IsActive
   }
 }

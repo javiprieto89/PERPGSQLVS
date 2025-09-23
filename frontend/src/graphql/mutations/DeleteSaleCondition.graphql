@@ -1,0 +1,6 @@
+mutation DeleteSaleCondition($saleConditionID: Int!) {
+            deleteSalecondition(saleConditionID: $saleConditionID) {
+                success
+                message
+            }
+        }

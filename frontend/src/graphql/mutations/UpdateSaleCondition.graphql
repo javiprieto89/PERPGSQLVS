@@ -1,0 +1,10 @@
+mutation UpdateSaleCondition($saleConditionID: Int!, $input: SaleConditionsUpdate!) {
+            updateSalecondition(saleConditionID: $saleConditionID, data: $input) {
+                SaleConditionID
+                CreditCardID
+                Name
+                DueDate
+                Surcharge
+                IsActive
+            }
+        }

@@ -1,0 +1,46 @@
+query GetRelations(
+  $Branch: Boolean = false
+  $Company: Boolean = false
+  $Country: Boolean = false
+  $CreditCard: Boolean = false
+  $DocType: Boolean = false
+  $Pricelist: Boolean = false
+  $Province: Boolean = false
+  $Vendor: Boolean = false
+) {
+  Branch: allBranches @include(if: $Branch) {
+    BranchID
+    CompanyID
+    BranchName
+  }
+  Company: allCompanydata @include(if: $Company) {
+    CompanyID
+    CompanyName
+  }
+  Country: allCountries @include(if: $Country) {
+    CountryID
+    CountryName
+  }
+  CreditCard: allCreditcards @include(if: $CreditCard) {
+    CreditCardID
+    CreditCardGroupID
+    CardName
+  }
+  DocType: sysIdentityDocTypes @include(if: $DocType) {
+    DocTypeID
+    DocTypeName
+  }
+  PriceList: allPricelists @include(if: $Pricelist) {
+    PriceListID
+    PriceListName
+  }
+  Province: allProvinces @include(if: $Province) {
+    ProvinceID
+    CountryID
+    ProvinceName
+  }
+  Vendor: allVendors @include(if: $Vendor) {
+    VendorID
+    VendorName
+  }
+}

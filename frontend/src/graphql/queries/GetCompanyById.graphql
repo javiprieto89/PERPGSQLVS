@@ -1,7 +1,7 @@
 query GetCompanyById($id: Int!) {
   companydataById(id: $id) {
     CompanyID
-    Name
+    CompanyName
     Address
     CUIT
     Grossincome

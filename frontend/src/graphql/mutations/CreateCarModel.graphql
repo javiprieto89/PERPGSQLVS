@@ -1,0 +1,7 @@
+mutation CreateCarModel($input: CarModelsCreate!) {
+  createCarmodel(data: $input) {
+    CarModelID
+    CarBrandID
+    CarModelName
+  }
+}

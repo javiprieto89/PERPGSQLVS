@@ -1,0 +1,16 @@
+mutation UpdatePricelist(
+  $pricelistID: Int!
+  $input: PriceListsUpdate!
+  $companyId: Int!
+) {
+  updatePricelist(
+    pricelistID: $pricelistID
+    data: $input
+    companyID: $companyId
+  ) {
+    PriceListID
+    PriceListName
+    PriceListDescription
+    IsActive
+  }
+}

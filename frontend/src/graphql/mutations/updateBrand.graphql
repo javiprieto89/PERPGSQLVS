@@ -1,7 +1,7 @@
-mutation UpdateBrand($brandID: Int!, $input: BrandsUpdate!) {
-  updateBrand(brandID: $brandID, data: $input) {
+mutation UpdateBrand($brandID: Int!, $input: BrandsUpdate!, $companyId: Int!) {
+  updateBrand(brandID: $brandID, data: $input, companyID: $companyId) {
     BrandID
-    Name
+    BrandName
     IsActive
   }
 }

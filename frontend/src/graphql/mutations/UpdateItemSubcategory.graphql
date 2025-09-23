@@ -1,0 +1,10 @@
+mutation UpdateItemSubcategory(
+  $subcategoryID: Int!
+  $input: ItemSubcategoriesUpdate!
+) {
+  updateItemsubcategory(subcategoryID: $subcategoryID, data: $input) {
+    ItemSubcategoryID
+    ItemCategoryID
+    SubcategoryName
+  }
+}

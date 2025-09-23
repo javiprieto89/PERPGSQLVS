@@ -1,0 +1,3 @@
+mutation DeleteCarBrand($carBrandID: Int!, $companyId: Int!) {
+  deleteCarbrand(carBrandID: $carBrandID, companyID: $companyId)
+}

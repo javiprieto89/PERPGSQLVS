@@ -1,6 +1,6 @@
 query GetDocumentTypes {
-  allSysdocumenttypes {
-    DocumentTypeID
-    Name
+  sysIdentityDocTypes {
+    DocTypeID
+    DocTypeName
   }
 }

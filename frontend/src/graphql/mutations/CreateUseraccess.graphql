@@ -1,0 +1,8 @@
+mutation CreateUseraccess($input: UserAccessCreate!) {
+            createUseraccess(data: $input) {
+                UserID
+                CompanyID
+                BranchID
+                RoleID
+            }
+        }

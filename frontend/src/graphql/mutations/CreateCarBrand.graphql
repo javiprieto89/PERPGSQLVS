@@ -1,0 +1,6 @@
+mutation CreateCarBrand($input: CarBrandsCreate!) {
+  createCarbrand(data: $input) {
+    CarBrandID
+    CarBrandName
+  }
+}

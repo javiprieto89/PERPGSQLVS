@@ -149,7 +149,7 @@ export default function Orders() {
       },
       {
         header: "Fecha",
-        accessorKey: "Date_",
+        accessorKey: "OrderDate",
         cell: ({ getValue }) => getValue()?.slice(0, 10),
       },
       {

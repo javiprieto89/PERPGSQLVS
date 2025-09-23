@@ -1,8 +1,8 @@
 query SearchItems($filters: ItemFilters, $pagination: ItemPagination) {
   searchItems(filters: $filters, pagination: $pagination) {
     items {
-      Description
-      Code
+      ItemDescription
+      ItemCode
       ItemID
       Price
       StockQuantity

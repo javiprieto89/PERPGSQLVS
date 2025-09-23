@@ -1,0 +1,7 @@
+mutation CreateItemSubcategory($input: ItemSubcategoriesCreate!) {
+  createItemsubcategory(data: $input) {
+    ItemSubcategoryID
+    ItemCategoryID
+    SubcategoryName
+  }
+}

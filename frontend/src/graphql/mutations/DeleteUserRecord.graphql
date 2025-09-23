@@ -1,0 +1,3 @@
+mutation DeleteUserRecord($userID: Int!) {
+            deleteUserRecord(userID: $userID)
+        }

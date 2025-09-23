@@ -682,7 +682,7 @@ export const MUTATIONS = {
                     DiscountID
                     Subtotal
                     Total
-                    VAT
+                    Taxes
                     UserID
                     DocumentID
                     PriceListID
@@ -714,7 +714,7 @@ export const MUTATIONS = {
                     DiscountID
                     Subtotal
                     Total
-                    VAT
+                    Taxes
                     UserID
                     DocumentID
                     PriceListID

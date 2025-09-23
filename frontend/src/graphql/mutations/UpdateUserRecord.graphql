@@ -1,0 +1,8 @@
+mutation UpdateUserRecord($userID: Int!, $input: UserUpdate!) {
+            updateUserRecord(userID: $userID, data: $input) {
+                UserID
+                Nickname
+                FullName
+                IsActive
+            }
+        }

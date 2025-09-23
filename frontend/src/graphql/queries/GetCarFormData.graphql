@@ -1,12 +1,12 @@
 query GetCarFormData {
   carBrands: allCarbrands {
     CarBrandID
-    Name
+    CarBrandName
   }
   carModels: allCarmodels {
     CarModelID
     CarBrandID
-    Model
+    CarModelName
   }
   clients: allClients {
     ClientID

@@ -1,0 +1,16 @@
+mutation UpdateCashbox($cashBoxID: Int!, $input: CashBoxesUpdate!) {
+            updateCashbox(cashBoxID: $cashBoxID, data: $input) {
+                CashBoxID
+                CompanyID
+                BranchID
+                Name
+                Description
+                IsActive
+                OpenDate
+                CloseDate
+                InitialBalance
+                CurrentBalance
+                UserID
+                Notes
+            }
+        }
