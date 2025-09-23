@@ -1,5 +1,5 @@
 query GetCompanyById($id: Int!) {
-  companydataById(id: $id) {
+  companyById(id: $id) {
     CompanyID
     CompanyName
     Address

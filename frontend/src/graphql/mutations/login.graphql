@@ -8,14 +8,14 @@ mutation Login($input: LoginInput!) {
       Nickname
       FullName
       IsActive
-      UserAccess {
+      UserPermissions {
         UserID
         CompanyID
-        Company
+        CompanyName
         BranchID
-        Branch
+        BranchName
         RoleID
-        Role
+        RoleName
       }
     }
   }

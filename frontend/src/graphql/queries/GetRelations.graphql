@@ -13,7 +13,7 @@ query GetRelations(
     CompanyID
     BranchName
   }
-  Company: allCompanydata @include(if: $Company) {
+  Company: allCompany @include(if: $Company) {
     CompanyID
     CompanyName
   }

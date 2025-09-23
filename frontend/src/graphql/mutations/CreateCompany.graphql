@@ -1,4 +1,4 @@
-mutation CreateCompany($input: CompanyDataCreate!) {
+mutation CreateCompany($input: CompanyCreate!) {
   createCompany(data: $input) {
     CompanyID
     CompanyName

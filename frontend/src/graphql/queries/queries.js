@@ -324,7 +324,7 @@ export const QUERIES = {
     `,
 
     GET_USERACCESS_BY_ID: `
-        query GetUseraccessById($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
+        query GetUserpermissionsById($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
             useraccessById(userID: $userID, companyID: $companyID, branchID: $branchID, roleID: $roleID) {
                 UserID
                 CompanyID
@@ -366,7 +366,7 @@ export const QUERIES = {
                 VendorName
                 IsActive
             }
-            companies: allCompanydata {
+            companies: allCompany {
                 CompanyID
                 Name
             }
@@ -394,7 +394,7 @@ export const QUERIES = {
                 CountryID
                 Name
             }
-            companies: allCompanydata {
+            companies: allCompany {
                 CompanyID
                 Name
             }
@@ -409,7 +409,7 @@ export const QUERIES = {
     // FORMULARIO DE AUTOS
     GET_CAR_FORM_DATA: `
         query GetCarFormData {
-            companies: allCompanydata {
+            companies: allCompany {
                 CompanyID
                 Name
             }
@@ -1000,7 +1000,7 @@ export const QUERIES = {
     // EMPRESAS
     GET_ALL_COMPANIES: `
         query GetAllCompanies {
-            allCompanydata {
+            allCompany {
                 CompanyID
                 Name
                 Address

@@ -1,5 +1,5 @@
 query GetAllUseraccess {
-  allUseraccess {
+  allUserpermissions {
     UserID
     CompanyID
     BranchID

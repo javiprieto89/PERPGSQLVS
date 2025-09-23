@@ -1,4 +1,4 @@
-mutation UpdateCompany($companyID: Int!, $input: CompanyDataUpdate!) {
+mutation UpdateCompany($companyID: Int!, $input: CompanyUpdate!) {
   updateCompany(companyID: $companyID, data: $input) {
     CompanyID
     CompanyName

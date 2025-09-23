@@ -452,7 +452,7 @@ export const userAccessOperations = {
     async create(data) {
         try {
             const res = await graphqlClient.mutation(MUTATIONS.CREATE_USERACCESS, { input: data });
-            return res.createUseraccess;
+            return res.createUserpermissions;
         } catch (error) {
             console.error("Error creando asignación:", error);
             throw error;
@@ -475,7 +475,7 @@ export const userAccessOperations = {
     async delete(keys) {
         try {
             const res = await graphqlClient.mutation(MUTATIONS.DELETE_USERACCESS, keys);
-            return res.deleteUseraccess;
+            return res.deleteUserpermissions;
         } catch (error) {
             console.error("Error eliminando asignación:", error);
             throw error;
@@ -1632,7 +1632,7 @@ export const companyOperations = {
     async getAllCompanies() {
         try {
             const data = await graphqlClient.query(QUERIES.GET_ALL_COMPANIES);
-            return data.allCompanydata || [];
+            return data.allCompany || [];
         } catch (error) {
             console.error("Error obteniendo compañías:", error);
             throw error;

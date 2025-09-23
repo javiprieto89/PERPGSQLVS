@@ -48,7 +48,7 @@ export type BranchesInDb = {
   Address?: Maybe<Scalars['String']['output']>;
   BranchID: Scalars['Int']['output'];
   BranchName: Scalars['String']['output'];
-  CompanyData?: Maybe<CompanyDataInDb>;
+  CompanyData?: Maybe<CompanyInDb>;
   CompanyID: Scalars['Int']['output'];
   Logo?: Maybe<Scalars['String']['output']>;
   Phone?: Maybe<Scalars['String']['output']>;
@@ -72,7 +72,7 @@ export type BrandsInDb = {
   __typename?: 'BrandsInDB';
   BrandID: Scalars['Int']['output'];
   BrandName: Scalars['String']['output'];
-  CompanyData?: Maybe<CompanyDataInDb>;
+  CompanyData?: Maybe<CompanyInDb>;
   CompanyID?: Maybe<Scalars['Int']['output']>;
   IsActive?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -112,6 +112,7 @@ export type CarModelsInDb = {
   CarBrandID: Scalars['Int']['output'];
   CarModelID: Scalars['Int']['output'];
   CarModelName: Scalars['String']['output'];
+  CompanyData?: Maybe<CompanyInDb>;
   CompanyID: Scalars['Int']['output'];
 };
 
@@ -144,7 +145,7 @@ export type CarsInDb = {
   CarModelID: Scalars['Int']['output'];
   ClientData?: Maybe<ClientsInDb>;
   ClientID: Scalars['Int']['output'];
-  CompanyData?: Maybe<CompanyDataInDb>;
+  CompanyData?: Maybe<CompanyInDb>;
   CompanyID?: Maybe<Scalars['Int']['output']>;
   DiscountData?: Maybe<DiscountsInDb>;
   DiscountID: Scalars['Int']['output'];
@@ -266,7 +267,7 @@ export type ClientsInDb = {
   BranchID?: Maybe<Scalars['Int']['output']>;
   City?: Maybe<Scalars['String']['output']>;
   ClientID: Scalars['Int']['output'];
-  CompanyData?: Maybe<CompanyDataInDb>;
+  CompanyData?: Maybe<CompanyInDb>;
   CompanyID?: Maybe<Scalars['Int']['output']>;
   CountryData?: Maybe<CountriesInDb>;
   CountryID: Scalars['Int']['output'];
@@ -371,7 +372,7 @@ export type CommercialDocumentsUpdate = {
   ShouldAccount?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type CompanyDataCreate = {
+export type CompanyCreate = {
   Address?: InputMaybe<Scalars['String']['input']>;
   CUIT?: InputMaybe<Scalars['String']['input']>;
   CompanyName?: InputMaybe<Scalars['String']['input']>;
@@ -380,8 +381,8 @@ export type CompanyDataCreate = {
   Startdate?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
-export type CompanyDataInDb = {
-  __typename?: 'CompanyDataInDB';
+export type CompanyInDb = {
+  __typename?: 'CompanyInDB';
   Address?: Maybe<Scalars['String']['output']>;
   CUIT?: Maybe<Scalars['String']['output']>;
   CompanyID: Scalars['Int']['output'];
@@ -391,7 +392,7 @@ export type CompanyDataInDb = {
   Startdate?: Maybe<Scalars['DateTime']['output']>;
 };
 
-export type CompanyDataUpdate = {
+export type CompanyUpdate = {
   Address?: InputMaybe<Scalars['String']['input']>;
   CUIT?: InputMaybe<Scalars['String']['input']>;
   CompanyName?: InputMaybe<Scalars['String']['input']>;
@@ -407,17 +408,20 @@ export type CountriesInDb = {
 };
 
 export type CreditCardGroupsCreate = {
-  GroupName?: InputMaybe<Scalars['String']['input']>;
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
+  CreditCardGroupName?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreditCardGroupsInDb = {
   __typename?: 'CreditCardGroupsInDB';
+  CompanyID?: Maybe<Scalars['Int']['output']>;
   CreditCardGroupID: Scalars['Int']['output'];
   GroupName?: Maybe<Scalars['String']['output']>;
 };
 
 export type CreditCardGroupsUpdate = {
-  GroupName?: InputMaybe<Scalars['String']['input']>;
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
+  CreditCardGroupName?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreditCardsCreate = {
@@ -431,9 +435,9 @@ export type CreditCardsCreate = {
 export type CreditCardsInDb = {
   __typename?: 'CreditCardsInDB';
   CardName: Scalars['String']['output'];
+  CreditCardGroupData?: Maybe<CreditCardGroupsInDb>;
   CreditCardGroupID: Scalars['Int']['output'];
   CreditCardID: Scalars['Int']['output'];
-  GroupData?: Maybe<CreditCardGroupsInDb>;
   Installments?: Maybe<Scalars['Int']['output']>;
   IsActive?: Maybe<Scalars['Boolean']['output']>;
   Surcharge?: Maybe<Scalars['Float']['output']>;
@@ -481,7 +485,7 @@ export type DiscountsCreate = {
 
 export type DiscountsInDb = {
   __typename?: 'DiscountsInDB';
-  CompanyData?: Maybe<CompanyDataInDb>;
+  CompanyData?: Maybe<CompanyInDb>;
   CompanyID: Scalars['Int']['output'];
   DiscountID: Scalars['Int']['output'];
   DiscountName: Scalars['String']['output'];
@@ -550,25 +554,40 @@ export type ItemPagination = {
   page?: Scalars['Int']['input'];
 };
 
+export type ItemPriceHistoriesCreate = {
+  BranchID: Scalars['Int']['input'];
+  CompanyID: Scalars['Int']['input'];
+  CurrencyID: Scalars['Int']['input'];
+  EffectiveDate: Scalars['DateTime']['input'];
+  ItemID: Scalars['Int']['input'];
+  Price: Scalars['Float']['input'];
+  PriceListID: Scalars['Int']['input'];
+  UserID: Scalars['Int']['input'];
+};
+
 export type ItemPriceHistoriesInDb = {
   __typename?: 'ItemPriceHistoriesInDB';
   BranchID: Scalars['Int']['output'];
   CompanyID: Scalars['Int']['output'];
-  CurrencyID?: Maybe<Scalars['Int']['output']>;
-  EffectiveDate: Scalars['String']['output'];
-  ItemID: Scalars['Int']['output'];
-  Price: Scalars['Float']['output'];
-  PriceHistoryID: Scalars['Int']['output'];
-  PriceListID: Scalars['Int']['output'];
-  UserID?: Maybe<Scalars['Int']['output']>;
-};
-
-export type ItemPriceHistoryInDb = {
-  __typename?: 'ItemPriceHistoryInDB';
+  CurrencyID: Scalars['Int']['output'];
   EffectiveDate: Scalars['DateTime']['output'];
   ItemID: Scalars['Int']['output'];
   Price: Scalars['Float']['output'];
   PriceHistoryID: Scalars['Int']['output'];
+  PriceListID: Scalars['Int']['output'];
+  UserID: Scalars['Int']['output'];
+};
+
+export type ItemPriceHistoriesUpdate = {
+  BranchID?: InputMaybe<Scalars['Int']['input']>;
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
+  CurrencyID?: InputMaybe<Scalars['Int']['input']>;
+  EffectiveDate?: InputMaybe<Scalars['DateTime']['input']>;
+  ItemID?: InputMaybe<Scalars['Int']['input']>;
+  Price?: InputMaybe<Scalars['Float']['input']>;
+  PriceHistoryID: Scalars['Int']['input'];
+  PriceListID?: InputMaybe<Scalars['Int']['input']>;
+  UserID?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type ItemSearchResult = {
@@ -665,7 +684,7 @@ export type ItemsInDb = {
   BrandData?: Maybe<BrandsInDb>;
   BrandID: Scalars['Int']['output'];
   CategoryData?: Maybe<ItemCategoriesInDb>;
-  CompanyData?: Maybe<CompanyDataInDb>;
+  CompanyData?: Maybe<CompanyInDb>;
   CompanyID: Scalars['Int']['output'];
   ControlStock: Scalars['Boolean']['output'];
   IsActive: Scalars['Boolean']['output'];
@@ -714,8 +733,6 @@ export type ItemsUpdate = {
 };
 
 export type LoginInput = {
-  branchId?: InputMaybe<Scalars['Int']['input']>;
-  companyId?: InputMaybe<Scalars['Int']['input']>;
   nickname: Scalars['String']['input'];
   password: Scalars['String']['input'];
 };
@@ -742,25 +759,29 @@ export type Mutation = {
   createCashbox: CashBoxesInDb;
   createCashboxmovement: CashBoxMovementsInDb;
   createClient: ClientsInDb;
-  createCompany: CompanyDataInDb;
+  createCompany: CompanyInDb;
   createCreditcard: CreditCardsInDb;
   createCreditcardgroup: CreditCardGroupsInDb;
   createDiscount: DiscountsInDb;
   createDocument: CommercialDocumentsInDb;
   createItem: ItemsInDb;
   createItemcategory: ItemCategoriesInDb;
+  createItempricehistory: ItemPriceHistoriesInDb;
   createItemsubcategory: ItemSubcategoriesInDb;
   createOrder: OrderResponse;
   createPricelist: PriceListsInDb;
   createPricelistitem: PriceListItemsInDb;
+  createRma: RmaInDb;
+  createRmaDetail: RmaDetailInDb;
   createRole: RolesInDb;
   createSalecondition: SaleConditionsInDb;
   createServicetype: ServiceTypeInDb;
-  createStockhistory: StockHistoryInDb;
+  createStockhistories: StockHistoriesInDb;
+  createStockhistorydetail: StockHistoryDetailsInDb;
   createSupplier: SuppliersInDb;
   createUser: AuthResponse;
   createUserRecord: UsersInDb;
-  createUseraccess: UserAccessInDb;
+  createUserpermissions: UserPermissionsInDb;
   createVendor: VendorsInDb;
   createWarehouse: WarehousesInDb;
   deleteBranch: Scalars['Boolean']['output'];
@@ -778,17 +799,21 @@ export type Mutation = {
   deleteDocument: DeleteResponse;
   deleteItem: Scalars['Boolean']['output'];
   deleteItemcategory: Scalars['Boolean']['output'];
+  deleteItempricehistory: Scalars['Boolean']['output'];
   deleteItemsubcategory: Scalars['Boolean']['output'];
   deleteOrder: Scalars['Boolean']['output'];
   deletePricelist: Scalars['Boolean']['output'];
   deletePricelistitem: Scalars['Boolean']['output'];
+  deleteRma: Scalars['Boolean']['output'];
+  deleteRmaDetail: Scalars['Boolean']['output'];
   deleteRole: Scalars['Boolean']['output'];
   deleteSalecondition: DeleteResponse;
   deleteServicetype: DeleteResponse;
-  deleteStockhistory: Scalars['Boolean']['output'];
+  deleteStockhistories: Scalars['Boolean']['output'];
+  deleteStockhistorydetail: Scalars['Boolean']['output'];
   deleteSupplier: Scalars['Boolean']['output'];
   deleteUserRecord: Scalars['Boolean']['output'];
-  deleteUseraccess: Scalars['Boolean']['output'];
+  deleteUserpermissions: Scalars['Boolean']['output'];
   deleteVendor: Scalars['Boolean']['output'];
   deleteWarehouse: Scalars['Boolean']['output'];
   finalizeOrder?: Maybe<OrderResponse>;
@@ -805,24 +830,28 @@ export type Mutation = {
   updateCashbox?: Maybe<CashBoxesInDb>;
   updateCashboxmovement?: Maybe<CashBoxMovementsInDb>;
   updateClient?: Maybe<ClientsInDb>;
-  updateCompany?: Maybe<CompanyDataInDb>;
+  updateCompany?: Maybe<CompanyInDb>;
   updateCreditcard?: Maybe<CreditCardsInDb>;
   updateCreditcardgroup?: Maybe<CreditCardGroupsInDb>;
   updateDiscount?: Maybe<DiscountsInDb>;
   updateDocument?: Maybe<CommercialDocumentsInDb>;
   updateItem?: Maybe<ItemsInDb>;
   updateItemcategory?: Maybe<ItemCategoriesInDb>;
+  updateItempricehistory?: Maybe<ItemPriceHistoriesInDb>;
   updateItemsubcategory?: Maybe<ItemSubcategoriesInDb>;
   updateOrder?: Maybe<OrderResponse>;
   updatePricelist?: Maybe<PriceListsInDb>;
   updatePricelistitem?: Maybe<PriceListItemsInDb>;
+  updateRma?: Maybe<RmaInDb>;
+  updateRmaDetail?: Maybe<RmaDetailInDb>;
   updateRole?: Maybe<RolesInDb>;
   updateSalecondition?: Maybe<SaleConditionsInDb>;
   updateServicetype?: Maybe<ServiceTypeInDb>;
-  updateStockhistory?: Maybe<StockHistoryInDb>;
+  updateStockhistories?: Maybe<StockHistoriesInDb>;
+  updateStockhistorydetail?: Maybe<StockHistoryDetailsInDb>;
   updateSupplier?: Maybe<SuppliersInDb>;
   updateUserRecord?: Maybe<UsersInDb>;
-  updateUseraccess: UserAccessInDb;
+  updateUserpermissions: UserPermissionsInDb;
   updateVendor?: Maybe<VendorsInDb>;
   updateWarehouse?: Maybe<WarehousesInDb>;
 };
@@ -890,7 +919,7 @@ export type MutationCreateClientArgs = {
 
 
 export type MutationCreateCompanyArgs = {
-  data: CompanyDataCreate;
+  data: CompanyCreate;
 };
 
 
@@ -924,6 +953,11 @@ export type MutationCreateItemcategoryArgs = {
 };
 
 
+export type MutationCreateItempricehistoryArgs = {
+  data: ItemPriceHistoriesCreate;
+};
+
+
 export type MutationCreateItemsubcategoryArgs = {
   data: ItemSubcategoriesCreate;
 };
@@ -944,6 +978,16 @@ export type MutationCreatePricelistitemArgs = {
 };
 
 
+export type MutationCreateRmaArgs = {
+  data: RmaCreate;
+};
+
+
+export type MutationCreateRmaDetailArgs = {
+  data: RmaDetailCreate;
+};
+
+
 export type MutationCreateRoleArgs = {
   data: RolesCreate;
 };
@@ -959,8 +1003,13 @@ export type MutationCreateServicetypeArgs = {
 };
 
 
-export type MutationCreateStockhistoryArgs = {
-  data: StockHistoryCreate;
+export type MutationCreateStockhistoriesArgs = {
+  data: StockHistoriesCreate;
+};
+
+
+export type MutationCreateStockhistorydetailArgs = {
+  data: StockHistoryDetailsCreate;
 };
 
 
@@ -979,8 +1028,8 @@ export type MutationCreateUserRecordArgs = {
 };
 
 
-export type MutationCreateUseraccessArgs = {
-  data: UserAccessCreate;
+export type MutationCreateUserpermissionsArgs = {
+  data: UserPermissionsCreate;
 };
 
 
@@ -1076,6 +1125,11 @@ export type MutationDeleteItemcategoryArgs = {
 };
 
 
+export type MutationDeleteItempricehistoryArgs = {
+  priceHistoryID: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteItemsubcategoryArgs = {
   subcategoryID: Scalars['Int']['input'];
 };
@@ -1100,6 +1154,21 @@ export type MutationDeletePricelistitemArgs = {
 };
 
 
+export type MutationDeleteRmaArgs = {
+  branchID: Scalars['Int']['input'];
+  companyID: Scalars['Int']['input'];
+  rmaID: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteRmaDetailArgs = {
+  branchID: Scalars['Int']['input'];
+  companyID: Scalars['Int']['input'];
+  rmaDetailID: Scalars['Int']['input'];
+  rmaID: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteRoleArgs = {
   roleID: Scalars['Int']['input'];
 };
@@ -1116,7 +1185,12 @@ export type MutationDeleteServicetypeArgs = {
 };
 
 
-export type MutationDeleteStockhistoryArgs = {
+export type MutationDeleteStockhistoriesArgs = {
+  historyID: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteStockhistorydetailArgs = {
   historyID: Scalars['Int']['input'];
 };
 
@@ -1131,7 +1205,7 @@ export type MutationDeleteUserRecordArgs = {
 };
 
 
-export type MutationDeleteUseraccessArgs = {
+export type MutationDeleteUserpermissionsArgs = {
   branchID: Scalars['Int']['input'];
   companyID: Scalars['Int']['input'];
   roleID: Scalars['Int']['input'];
@@ -1244,7 +1318,7 @@ export type MutationUpdateClientArgs = {
 
 export type MutationUpdateCompanyArgs = {
   companyID: Scalars['Int']['input'];
-  data: CompanyDataUpdate;
+  data: CompanyUpdate;
 };
 
 
@@ -1285,6 +1359,12 @@ export type MutationUpdateItemcategoryArgs = {
 };
 
 
+export type MutationUpdateItempricehistoryArgs = {
+  data: ItemPriceHistoriesUpdate;
+  priceHistoryID: Scalars['Int']['input'];
+};
+
+
 export type MutationUpdateItemsubcategoryArgs = {
   data: ItemSubcategoriesUpdate;
   subcategoryID: Scalars['Int']['input'];
@@ -1313,6 +1393,23 @@ export type MutationUpdatePricelistitemArgs = {
 };
 
 
+export type MutationUpdateRmaArgs = {
+  branchID: Scalars['Int']['input'];
+  companyID: Scalars['Int']['input'];
+  data: RmaUpdate;
+  rmaID: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateRmaDetailArgs = {
+  branchID: Scalars['Int']['input'];
+  companyID: Scalars['Int']['input'];
+  data: RmaDetailUpdate;
+  rmaDetailID: Scalars['Int']['input'];
+  rmaID: Scalars['Int']['input'];
+};
+
+
 export type MutationUpdateRoleArgs = {
   data: RolesUpdate;
   roleID: Scalars['Int']['input'];
@@ -1332,8 +1429,14 @@ export type MutationUpdateServicetypeArgs = {
 };
 
 
-export type MutationUpdateStockhistoryArgs = {
-  data: StockHistoryUpdate;
+export type MutationUpdateStockhistoriesArgs = {
+  data: StockHistoriesUpdate;
+  historyID: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateStockhistorydetailArgs = {
+  data: StockHistoryDetailsUpdate;
   historyID: Scalars['Int']['input'];
 };
 
@@ -1350,8 +1453,8 @@ export type MutationUpdateUserRecordArgs = {
 };
 
 
-export type MutationUpdateUseraccessArgs = {
-  newData: UserAccessCreate;
+export type MutationUpdateUserpermissionsArgs = {
+  newData: UserPermissionsCreate;
   oldBranchID: Scalars['Int']['input'];
   oldCompanyID: Scalars['Int']['input'];
   oldRoleID: Scalars['Int']['input'];
@@ -1478,7 +1581,7 @@ export type OrdersInDb = {
   CarID?: Maybe<Scalars['Int']['output']>;
   ClientData?: Maybe<ClientsInDb>;
   ClientID: Scalars['Int']['output'];
-  CompanyData?: Maybe<CompanyDataInDb>;
+  CompanyData?: Maybe<CompanyInDb>;
   CompanyID: Scalars['Int']['output'];
   DiscountData?: Maybe<DiscountsInDb>;
   DiscountID: Scalars['Int']['output'];
@@ -1604,13 +1707,13 @@ export type Query = {
   allCashboxmovements: Array<CashBoxMovementsInDb>;
   allClients: Array<ClientsInDb>;
   allCommercialdocuments: Array<CommercialDocumentsInDb>;
-  allCompanydata: Array<CompanyDataInDb>;
+  allCompany: Array<CompanyInDb>;
   allCountries: Array<CountriesInDb>;
   allCreditcardgroups: Array<CreditCardGroupsInDb>;
   allCreditcards: Array<CreditCardsInDb>;
   allDiscounts: Array<DiscountsInDb>;
   allItemcategories: Array<ItemCategoriesInDb>;
-  allItempricehistory: Array<ItemPriceHistoryInDb>;
+  allItempricehistory: Array<ItemPriceHistoriesInDb>;
   allItems: Array<ItemsInDb>;
   allItemstock: Array<ItemStockInDb>;
   allItemsubcategories: Array<ItemSubcategoriesInDb>;
@@ -1621,13 +1724,16 @@ export type Query = {
   allPricelistitems: Array<PriceListItemsInDb>;
   allPricelists: Array<PriceListsInDb>;
   allProvinces: Array<ProvincesInDb>;
+  allRmaDetails: Array<RmaDetailInDb>;
+  allRmas: Array<RmaInDb>;
   allRoles: Array<RolesInDb>;
   allSaleconditions: Array<SaleConditionsInDb>;
   allServicetypes: Array<ServiceTypeInDb>;
-  allStockhistory: Array<StockHistoryInDb>;
+  allStockhistories: Array<StockHistoriesInDb>;
+  allStockhistorydetails: Array<StockHistoryDetailsInDb>;
   allSuppliers: Array<SuppliersInDb>;
   allTransactions: Array<TransactionsInDb>;
-  allUseraccess: Array<UserAccessInDb>;
+  allUserpermissions: Array<UserPermissionsInDb>;
   allUsers: Array<UsersInDb>;
   allVendors: Array<VendorsInDb>;
   allWarehouses: Array<WarehousesInDb>;
@@ -1647,7 +1753,7 @@ export type Query = {
   clientsByCompany: Array<ClientsInDb>;
   clientsById?: Maybe<ClientsInDb>;
   commercialdocumentsById?: Maybe<CommercialDocumentsInDb>;
-  companydataById?: Maybe<CompanyDataInDb>;
+  companyById?: Maybe<CompanyInDb>;
   countriesById?: Maybe<CountriesInDb>;
   creditcardById?: Maybe<CreditCardsInDb>;
   creditcardgroupById?: Maybe<CreditCardGroupsInDb>;
@@ -1664,8 +1770,7 @@ export type Query = {
   informacionComprobante: VoucherInfo;
   informacionRapidaComprobante: VoucherBasicInfo;
   itemcategoriesById?: Maybe<ItemCategoriesInDb>;
-  itempricehistoriesByItem: Array<ItemPriceHistoriesInDb>;
-  itempricehistoryById?: Maybe<ItemPriceHistoryInDb>;
+  itempricehistoryById?: Maybe<ItemPriceHistoriesInDb>;
   itemsById?: Maybe<ItemsInDb>;
   itemstockById?: Maybe<ItemStockInDb>;
   itemstocks: Array<ItemStocksInDb>;
@@ -1680,16 +1785,16 @@ export type Query = {
   pricelistsById?: Maybe<PriceListsInDb>;
   provincesByCountry: Array<ProvincesInDb>;
   provincesById?: Maybe<ProvincesInDb>;
-  rma?: Maybe<RmAsInDb>;
-  rmaDetails: Array<RmaDetailsInDb>;
-  rmas: Array<RmAsInDb>;
+  rmaById?: Maybe<RmaInDb>;
+  rmaDetailById?: Maybe<RmaDetailInDb>;
   rolesById?: Maybe<RolesInDb>;
   saleconditionsById?: Maybe<SaleConditionsInDb>;
   searchGlobal: GlobalSearchResult;
   searchItems: ItemsResponse;
   serverInfo: ServerInfo;
   servicetypesById?: Maybe<ServiceTypeInDb>;
-  stockhistoryById?: Maybe<StockHistoryInDb>;
+  stockhistoryById?: Maybe<StockHistoriesInDb>;
+  stockhistorydetailById?: Maybe<StockHistoryDetailsInDb>;
   suppliersByBranch: Array<SuppliersInDb>;
   suppliersByCompany: Array<SuppliersInDb>;
   suppliersById?: Maybe<SuppliersInDb>;
@@ -1700,7 +1805,7 @@ export type Query = {
   testAfipConnection: TestConnectionResult;
   transactionsById?: Maybe<TransactionsInDb>;
   ultimoComprobante: Scalars['Int']['output'];
-  useraccessById?: Maybe<UserAccessInDb>;
+  userpermissionsById?: Maybe<UserPermissionsInDb>;
   usersById?: Maybe<UsersInDb>;
   vendorsById?: Maybe<VendorsInDb>;
   verifyToken?: Maybe<UserInfo>;
@@ -1710,6 +1815,16 @@ export type Query = {
 
 export type QueryAccountbalancesByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryAllRmaDetailsArgs = {
+  filter?: InputMaybe<RmaDetailFilter>;
+};
+
+
+export type QueryAllRmasArgs = {
+  filter?: InputMaybe<RmaFilter>;
 };
 
 
@@ -1801,7 +1916,7 @@ export type QueryCommercialdocumentsByIdArgs = {
 };
 
 
-export type QueryCompanydataByIdArgs = {
+export type QueryCompanyByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -1865,14 +1980,6 @@ export type QueryInformacionRapidaComprobanteArgs = {
 
 export type QueryItemcategoriesByIdArgs = {
   id: Scalars['Int']['input'];
-};
-
-
-export type QueryItempricehistoriesByItemArgs = {
-  branchID?: InputMaybe<Scalars['Int']['input']>;
-  companyID: Scalars['Int']['input'];
-  itemID: Scalars['Int']['input'];
-  priceListID?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -1961,22 +2068,18 @@ export type QueryProvincesByIdArgs = {
 };
 
 
-export type QueryRmaArgs = {
-  branchId: Scalars['Int']['input'];
-  companyId: Scalars['Int']['input'];
-  rmaId: Scalars['Int']['input'];
+export type QueryRmaByIdArgs = {
+  branchID: Scalars['Int']['input'];
+  companyID: Scalars['Int']['input'];
+  rmaID: Scalars['Int']['input'];
 };
 
 
-export type QueryRmaDetailsArgs = {
-  branchId: Scalars['Int']['input'];
-  companyId: Scalars['Int']['input'];
-  rmaId: Scalars['Int']['input'];
-};
-
-
-export type QueryRmasArgs = {
-  filter: RmAsFilter;
+export type QueryRmaDetailByIdArgs = {
+  branchID: Scalars['Int']['input'];
+  companyID: Scalars['Int']['input'];
+  rmaDetailID: Scalars['Int']['input'];
+  rmaID: Scalars['Int']['input'];
 };
 
 
@@ -2010,6 +2113,11 @@ export type QueryServicetypesByIdArgs = {
 
 
 export type QueryStockhistoryByIdArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryStockhistorydetailByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -2056,7 +2164,7 @@ export type QueryUltimoComprobanteArgs = {
 };
 
 
-export type QueryUseraccessByIdArgs = {
+export type QueryUserpermissionsByIdArgs = {
   branchID: Scalars['Int']['input'];
   companyID: Scalars['Int']['input'];
   roleID: Scalars['Int']['input'];
@@ -2083,12 +2191,49 @@ export type QueryWarehousesByIdArgs = {
   id: Scalars['Int']['input'];
 };
 
-export type RmaDetailsInDb = {
-  __typename?: 'RMADetailsInDB';
+export type RmaCreate = {
+  BranchID: Scalars['Int']['input'];
+  ClientID?: InputMaybe<Scalars['Int']['input']>;
+  CompanyID: Scalars['Int']['input'];
+  DocumentID?: InputMaybe<Scalars['Int']['input']>;
+  Notes?: InputMaybe<Scalars['String']['input']>;
+  PriceListID?: InputMaybe<Scalars['Int']['input']>;
+  RelatedOrderID?: InputMaybe<Scalars['Int']['input']>;
+  RelatedPIID?: InputMaybe<Scalars['Int']['input']>;
+  RmaTypeID: Scalars['Int']['input'];
+  StatusID: Scalars['Int']['input'];
+  Subtotal?: InputMaybe<Scalars['Float']['input']>;
+  SupplierID?: InputMaybe<Scalars['Int']['input']>;
+  Total?: InputMaybe<Scalars['Float']['input']>;
+  UserID: Scalars['Int']['input'];
+  VatAmount?: InputMaybe<Scalars['Float']['input']>;
+  WarehouseID: Scalars['Int']['input'];
+};
+
+export type RmaDetailCreate = {
+  BranchID: Scalars['Int']['input'];
+  CompanyID: Scalars['Int']['input'];
+  ItemID: Scalars['Int']['input'];
+  LineDescription?: InputMaybe<Scalars['String']['input']>;
+  Quantity: Scalars['Float']['input'];
+  RmaID: Scalars['Int']['input'];
+  UnitPrice: Scalars['Float']['input'];
+  WarehouseID: Scalars['Int']['input'];
+};
+
+export type RmaDetailFilter = {
+  BranchID?: InputMaybe<Scalars['Int']['input']>;
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
+  ItemID?: InputMaybe<Scalars['Int']['input']>;
+  RmaID?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type RmaDetailInDb = {
+  __typename?: 'RMADetailInDB';
   BranchID: Scalars['Int']['output'];
   CompanyID: Scalars['Int']['output'];
   ItemID: Scalars['Int']['output'];
-  LastModified: Scalars['String']['output'];
+  LastModified: Scalars['DateTime']['output'];
   LineDescription?: Maybe<Scalars['String']['output']>;
   Quantity: Scalars['Float']['output'];
   RmaDetailID: Scalars['Int']['output'];
@@ -2097,14 +2242,26 @@ export type RmaDetailsInDb = {
   WarehouseID: Scalars['Int']['output'];
 };
 
-export type RmAsFilter = {
-  branchId?: InputMaybe<Scalars['Int']['input']>;
-  companyId: Scalars['Int']['input'];
-  rmaId?: InputMaybe<Scalars['Int']['input']>;
+export type RmaDetailUpdate = {
+  ItemID?: InputMaybe<Scalars['Int']['input']>;
+  LineDescription?: InputMaybe<Scalars['String']['input']>;
+  Quantity?: InputMaybe<Scalars['Float']['input']>;
+  UnitPrice?: InputMaybe<Scalars['Float']['input']>;
+  WarehouseID?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type RmAsInDb = {
-  __typename?: 'RMAsInDB';
+export type RmaFilter = {
+  BranchID?: InputMaybe<Scalars['Int']['input']>;
+  ClientID?: InputMaybe<Scalars['Int']['input']>;
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
+  RmaTypeID?: InputMaybe<Scalars['Int']['input']>;
+  StatusID?: InputMaybe<Scalars['Int']['input']>;
+  SupplierID?: InputMaybe<Scalars['Int']['input']>;
+  UserID?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type RmaInDb = {
+  __typename?: 'RMAInDB';
   BranchID: Scalars['Int']['output'];
   ClientID?: Maybe<Scalars['Int']['output']>;
   CompanyID: Scalars['Int']['output'];
@@ -2113,7 +2270,7 @@ export type RmAsInDb = {
   PriceListID?: Maybe<Scalars['Int']['output']>;
   RelatedOrderID?: Maybe<Scalars['Int']['output']>;
   RelatedPIID?: Maybe<Scalars['Int']['output']>;
-  RmaDate: Scalars['String']['output'];
+  RmaDate: Scalars['DateTime']['output'];
   RmaID: Scalars['Int']['output'];
   RmaTypeID: Scalars['Int']['output'];
   StatusID: Scalars['Int']['output'];
@@ -2123,6 +2280,24 @@ export type RmAsInDb = {
   UserID: Scalars['Int']['output'];
   VatAmount: Scalars['Float']['output'];
   WarehouseID: Scalars['Int']['output'];
+};
+
+export type RmaUpdate = {
+  ClientID?: InputMaybe<Scalars['Int']['input']>;
+  DocumentID?: InputMaybe<Scalars['Int']['input']>;
+  Notes?: InputMaybe<Scalars['String']['input']>;
+  PriceListID?: InputMaybe<Scalars['Int']['input']>;
+  RelatedOrderID?: InputMaybe<Scalars['Int']['input']>;
+  RelatedPIID?: InputMaybe<Scalars['Int']['input']>;
+  RmaDate?: InputMaybe<Scalars['DateTime']['input']>;
+  RmaTypeID?: InputMaybe<Scalars['Int']['input']>;
+  StatusID?: InputMaybe<Scalars['Int']['input']>;
+  Subtotal?: InputMaybe<Scalars['Float']['input']>;
+  SupplierID?: InputMaybe<Scalars['Int']['input']>;
+  Total?: InputMaybe<Scalars['Float']['input']>;
+  UserID?: InputMaybe<Scalars['Int']['input']>;
+  VatAmount?: InputMaybe<Scalars['Float']['input']>;
+  WarehouseID?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type RolesCreate = {
@@ -2196,7 +2371,36 @@ export type ServiceTypeUpdate = {
   ServiceTypeName?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type StockHistoryCreate = {
+export type StockHistoriesCreate = {
+  BranchID: Scalars['Int']['input'];
+  CompanyID: Scalars['Int']['input'];
+  Notes: Scalars['String']['input'];
+  Reason: Scalars['String']['input'];
+  TransactionDate: Scalars['DateTime']['input'];
+  UserID: Scalars['Int']['input'];
+};
+
+export type StockHistoriesInDb = {
+  __typename?: 'StockHistoriesInDB';
+  BranchID: Scalars['Int']['output'];
+  CompanyID: Scalars['Int']['output'];
+  Notes: Scalars['String']['output'];
+  Reason: Scalars['String']['output'];
+  StockHistoryID: Scalars['Int']['output'];
+  TransactionDate: Scalars['DateTime']['output'];
+  UserID: Scalars['Int']['output'];
+};
+
+export type StockHistoriesUpdate = {
+  BranchID?: InputMaybe<Scalars['Int']['input']>;
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
+  Notes?: InputMaybe<Scalars['String']['input']>;
+  Reason?: InputMaybe<Scalars['String']['input']>;
+  TransactionDate?: InputMaybe<Scalars['DateTime']['input']>;
+  UserID?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type StockHistoryDetailsCreate = {
   BranchID: Scalars['Int']['input'];
   CompanyID: Scalars['Int']['input'];
   ItemID: Scalars['Int']['input'];
@@ -2208,8 +2412,8 @@ export type StockHistoryCreate = {
   WarehouseID: Scalars['Int']['input'];
 };
 
-export type StockHistoryInDb = {
-  __typename?: 'StockHistoryInDB';
+export type StockHistoryDetailsInDb = {
+  __typename?: 'StockHistoryDetailsInDB';
   BranchID: Scalars['Int']['output'];
   CompanyID: Scalars['Int']['output'];
   ItemID: Scalars['Int']['output'];
@@ -2218,12 +2422,12 @@ export type StockHistoryInDb = {
   QuantityUpdate: Scalars['Int']['output'];
   Reason?: Maybe<Scalars['String']['output']>;
   StockHistoryID: Scalars['Int']['output'];
-  TransactionDate: Scalars['DateTime']['output'];
+  TransactionDate: Scalars['Date']['output'];
   UserID: Scalars['Int']['output'];
   WarehouseID: Scalars['Int']['output'];
 };
 
-export type StockHistoryUpdate = {
+export type StockHistoryDetailsUpdate = {
   BranchID?: InputMaybe<Scalars['Int']['input']>;
   CompanyID?: InputMaybe<Scalars['Int']['input']>;
   ItemID?: InputMaybe<Scalars['Int']['input']>;
@@ -2256,7 +2460,7 @@ export type SuppliersInDb = {
   Address?: Maybe<Scalars['String']['output']>;
   BranchData?: Maybe<BranchesInDb>;
   City?: Maybe<Scalars['String']['output']>;
-  CompanyData?: Maybe<CompanyDataInDb>;
+  CompanyData?: Maybe<CompanyInDb>;
   CompanyID?: Maybe<Scalars['Int']['output']>;
   CountryData?: Maybe<CountriesInDb>;
   CountryID?: Maybe<Scalars['Int']['output']>;
@@ -2325,36 +2529,6 @@ export type TransactionsInDb = {
   TransactionID: Scalars['Int']['output'];
 };
 
-export type UserAccessCreate = {
-  BranchID: Scalars['Int']['input'];
-  CompanyID: Scalars['Int']['input'];
-  RoleID: Scalars['Int']['input'];
-  UserID: Scalars['Int']['input'];
-};
-
-export type UserAccessInDb = {
-  __typename?: 'UserAccessInDB';
-  BranchData?: Maybe<BranchesInDb>;
-  BranchID: Scalars['Int']['output'];
-  CompanyData?: Maybe<CompanyDataInDb>;
-  CompanyID: Scalars['Int']['output'];
-  RoleData?: Maybe<RolesInDb>;
-  RoleID: Scalars['Int']['output'];
-  UserData?: Maybe<UsersInDb>;
-  UserID: Scalars['Int']['output'];
-};
-
-export type UserAccessInfo = {
-  __typename?: 'UserAccessInfo';
-  Branch: Scalars['String']['output'];
-  BranchID: Scalars['Int']['output'];
-  Company: Scalars['String']['output'];
-  CompanyID: Scalars['Int']['output'];
-  Role: Scalars['String']['output'];
-  RoleID: Scalars['Int']['output'];
-  UserID: Scalars['Int']['output'];
-};
-
 export type UserCreate = {
   FullName?: InputMaybe<Scalars['String']['input']>;
   IsActive?: InputMaybe<Scalars['Boolean']['input']>;
@@ -2363,7 +2537,6 @@ export type UserCreate = {
 };
 
 export type UserCreateInput = {
-  companyId: Scalars['Int']['input'];
   fullname: Scalars['String']['input'];
   isActive?: Scalars['Boolean']['input'];
   nickname: Scalars['String']['input'];
@@ -2375,7 +2548,37 @@ export type UserInfo = {
   FullName?: Maybe<Scalars['String']['output']>;
   IsActive: Scalars['Boolean']['output'];
   Nickname: Scalars['String']['output'];
-  UserAccess: Array<UserAccessInfo>;
+  UserID: Scalars['Int']['output'];
+  UserPermissions: Array<UserPermissionsInfo>;
+};
+
+export type UserPermissionsCreate = {
+  BranchID: Scalars['Int']['input'];
+  CompanyID: Scalars['Int']['input'];
+  RoleID: Scalars['Int']['input'];
+  UserID: Scalars['Int']['input'];
+};
+
+export type UserPermissionsInDb = {
+  __typename?: 'UserPermissionsInDB';
+  BranchData?: Maybe<BranchesInDb>;
+  BranchID: Scalars['Int']['output'];
+  CompanyData?: Maybe<CompanyInDb>;
+  CompanyID: Scalars['Int']['output'];
+  RoleData?: Maybe<RolesInDb>;
+  RoleID: Scalars['Int']['output'];
+  UserData?: Maybe<UsersInDb>;
+  UserID: Scalars['Int']['output'];
+};
+
+export type UserPermissionsInfo = {
+  __typename?: 'UserPermissionsInfo';
+  BranchID: Scalars['Int']['output'];
+  BranchName: Scalars['String']['output'];
+  CompanyID: Scalars['Int']['output'];
+  CompanyName: Scalars['String']['output'];
+  RoleID: Scalars['Int']['output'];
+  RoleName: Scalars['String']['output'];
   UserID: Scalars['Int']['output'];
 };
 
@@ -2447,12 +2650,14 @@ export type VoucherRequestBasic = {
 
 export type WarehousesCreate = {
   Address?: InputMaybe<Scalars['String']['input']>;
+  CompanyID: Scalars['Int']['input'];
   WarehouseName: Scalars['String']['input'];
 };
 
 export type WarehousesInDb = {
   __typename?: 'WarehousesInDB';
   Address?: Maybe<Scalars['String']['output']>;
+  CompanCompanyData?: Maybe<CompanyInDb>;
   CompanyID: Scalars['Int']['output'];
   WarehouseID: Scalars['Int']['output'];
   WarehouseName: Scalars['String']['output'];
@@ -2460,6 +2665,7 @@ export type WarehousesInDb = {
 
 export type WarehousesUpdate = {
   Address?: InputMaybe<Scalars['String']['input']>;
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
   WarehouseName?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2469,13 +2675,6 @@ export type CreateBranchMutationVariables = Exact<{
 
 
 export type CreateBranchMutation = { __typename?: 'Mutation', createBranch: { __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string } };
-
-export type CreateBrand2MutationVariables = Exact<{
-  input: BrandsCreate;
-}>;
-
-
-export type CreateBrand2Mutation = { __typename?: 'Mutation', createBrand: { __typename?: 'BrandsInDB', BrandID: number, BrandName: string, IsActive?: boolean | null } };
 
 export type CreateCarMutationVariables = Exact<{
   input: CarsCreate;
@@ -2520,11 +2719,11 @@ export type CreateClientMutationVariables = Exact<{
 export type CreateClientMutation = { __typename?: 'Mutation', createClient: { __typename?: 'ClientsInDB', ClientID: number, DocTypeID: number, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, City?: string | null, PostalCode?: string | null, IsActive: boolean, CountryID: number, ProvinceID: number, PriceListID: number, VendorID: number } };
 
 export type CreateCompanyMutationVariables = Exact<{
-  input: CompanyDataCreate;
+  input: CompanyCreate;
 }>;
 
 
-export type CreateCompanyMutation = { __typename?: 'Mutation', createCompany: { __typename?: 'CompanyDataInDB', CompanyID: number, CompanyName?: string | null, Address?: string | null, CUIT?: string | null, Grossincome?: string | null, Startdate?: any | null, Logo?: string | null } };
+export type CreateCompanyMutation = { __typename?: 'Mutation', createCompany: { __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null, Address?: string | null, CUIT?: string | null, Grossincome?: string | null, Startdate?: any | null, Logo?: string | null } };
 
 export type CreateCreditCardMutationVariables = Exact<{
   input: CreditCardsCreate;
@@ -2632,11 +2831,11 @@ export type CreateUserRecordMutationVariables = Exact<{
 export type CreateUserRecordMutation = { __typename?: 'Mutation', createUserRecord: { __typename?: 'UsersInDB', UserID: number, Nickname?: string | null, FullName?: string | null, IsActive?: boolean | null } };
 
 export type CreateUseraccessMutationVariables = Exact<{
-  input: UserAccessCreate;
+  input: UserPermissionsCreate;
 }>;
 
 
-export type CreateUseraccessMutation = { __typename?: 'Mutation', createUseraccess: { __typename?: 'UserAccessInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number } };
+export type CreateUseraccessMutation = { __typename?: 'Mutation', createUserpermissions: { __typename?: 'UserPermissionsInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number } };
 
 export type CreateVendorMutationVariables = Exact<{
   input: VendorsCreate;
@@ -2659,14 +2858,6 @@ export type DeleteBranchMutationVariables = Exact<{
 
 
 export type DeleteBranchMutation = { __typename?: 'Mutation', deleteBranch: boolean };
-
-export type DeleteBrandMutationVariables = Exact<{
-  brandID: Scalars['Int']['input'];
-  companyId: Scalars['Int']['input'];
-}>;
-
-
-export type DeleteBrandMutation = { __typename?: 'Mutation', deleteBrand: boolean };
 
 export type DeleteCarMutationVariables = Exact<{
   carID: Scalars['Int']['input'];
@@ -2840,7 +3031,7 @@ export type DeleteUseraccessMutationVariables = Exact<{
 }>;
 
 
-export type DeleteUseraccessMutation = { __typename?: 'Mutation', deleteUseraccess: boolean };
+export type DeleteUseraccessMutation = { __typename?: 'Mutation', deleteUserpermissions: boolean };
 
 export type DeleteVendorMutationVariables = Exact<{
   vendorID: Scalars['Int']['input'];
@@ -2855,13 +3046,6 @@ export type DeleteWarehouseMutationVariables = Exact<{
 
 
 export type DeleteWarehouseMutation = { __typename?: 'Mutation', deleteWarehouse: boolean };
-
-export type LoginMutationVariables = Exact<{
-  input: LoginInput;
-}>;
-
-
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', success: boolean, message: string, token?: string | null, user?: { __typename?: 'UserInfo', UserID: number, Nickname: string, FullName?: string | null, IsActive: boolean, UserAccess: Array<{ __typename?: 'UserAccessInfo', UserID: number, CompanyID: number, Company: string, BranchID: number, Branch: string, RoleID: number, Role: string }> } | null } };
 
 export type ToggleClientStatusMutationVariables = Exact<{
   clientID: Scalars['Int']['input'];
@@ -2895,15 +3079,6 @@ export type UpdateBranchMutationVariables = Exact<{
 
 
 export type UpdateBranchMutation = { __typename?: 'Mutation', updateBranch?: { __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string } | null };
-
-export type UpdateBrandMutationVariables = Exact<{
-  brandID: Scalars['Int']['input'];
-  input: BrandsUpdate;
-  companyId: Scalars['Int']['input'];
-}>;
-
-
-export type UpdateBrandMutation = { __typename?: 'Mutation', updateBrand?: { __typename?: 'BrandsInDB', BrandID: number, BrandName: string, IsActive?: boolean | null } | null };
 
 export type UpdateCarMutationVariables = Exact<{
   carID: Scalars['Int']['input'];
@@ -2959,11 +3134,11 @@ export type UpdateClientMutation = { __typename?: 'Mutation', updateClient?: { _
 
 export type UpdateCompanyMutationVariables = Exact<{
   companyID: Scalars['Int']['input'];
-  input: CompanyDataUpdate;
+  input: CompanyUpdate;
 }>;
 
 
-export type UpdateCompanyMutation = { __typename?: 'Mutation', updateCompany?: { __typename?: 'CompanyDataInDB', CompanyID: number, CompanyName?: string | null, Address?: string | null, CUIT?: string | null, Grossincome?: string | null, Startdate?: any | null, Logo?: string | null } | null };
+export type UpdateCompanyMutation = { __typename?: 'Mutation', updateCompany?: { __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null, Address?: string | null, CUIT?: string | null, Grossincome?: string | null, Startdate?: any | null, Logo?: string | null } | null };
 
 export type UpdateCreditCardMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -3083,6 +3258,17 @@ export type UpdateSupplierMutationVariables = Exact<{
 
 export type UpdateSupplierMutation = { __typename?: 'Mutation', updateSupplier?: { __typename?: 'SuppliersInDB', SupplierID: number, DocTypeID?: number | null, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, IsActive?: boolean | null, CountryID?: number | null, ProvinceID?: number | null, City?: string | null, PostalCode?: string | null } | null };
 
+export type UpdateUserPermissionsMutationVariables = Exact<{
+  oldUserID: Scalars['Int']['input'];
+  oldCompanyID: Scalars['Int']['input'];
+  oldBranchID: Scalars['Int']['input'];
+  oldRoleID: Scalars['Int']['input'];
+  newData: UserPermissionsCreate;
+}>;
+
+
+export type UpdateUserPermissionsMutation = { __typename?: 'Mutation', updateUserpermissions: { __typename?: 'UserPermissionsInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number } };
+
 export type UpdateUserRecordMutationVariables = Exact<{
   userID: Scalars['Int']['input'];
   input: UserUpdate;
@@ -3090,17 +3276,6 @@ export type UpdateUserRecordMutationVariables = Exact<{
 
 
 export type UpdateUserRecordMutation = { __typename?: 'Mutation', updateUserRecord?: { __typename?: 'UsersInDB', UserID: number, Nickname?: string | null, FullName?: string | null, IsActive?: boolean | null } | null };
-
-export type UpdateUseraccessMutationVariables = Exact<{
-  oldUserID: Scalars['Int']['input'];
-  oldCompanyID: Scalars['Int']['input'];
-  oldBranchID: Scalars['Int']['input'];
-  oldRoleID: Scalars['Int']['input'];
-  newData: UserAccessCreate;
-}>;
-
-
-export type UpdateUseraccessMutation = { __typename?: 'Mutation', updateUseraccess: { __typename?: 'UserAccessInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number } };
 
 export type UpdateVendorMutationVariables = Exact<{
   vendorID: Scalars['Int']['input'];
@@ -3118,15 +3293,46 @@ export type UpdateWarehouseMutationVariables = Exact<{
 
 export type UpdateWarehouseMutation = { __typename?: 'Mutation', updateWarehouse?: { __typename?: 'WarehousesInDB', WarehouseID: number, WarehouseName: string, Address?: string | null } | null };
 
+export type CreateBrand2MutationVariables = Exact<{
+  input: BrandsCreate;
+}>;
+
+
+export type CreateBrand2Mutation = { __typename?: 'Mutation', createBrand: { __typename?: 'BrandsInDB', BrandID: number, BrandName: string, IsActive?: boolean | null } };
+
+export type DeleteBrandMutationVariables = Exact<{
+  brandID: Scalars['Int']['input'];
+  companyId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteBrandMutation = { __typename?: 'Mutation', deleteBrand: boolean };
+
+export type LoginMutationVariables = Exact<{
+  input: LoginInput;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', success: boolean, message: string, token?: string | null, user?: { __typename?: 'UserInfo', UserID: number, Nickname: string, FullName?: string | null, IsActive: boolean, UserPermissions: Array<{ __typename?: 'UserPermissionsInfo', UserID: number, CompanyID: number, CompanyName: string, BranchID: number, BranchName: string, RoleID: number, RoleName: string }> } | null } };
+
+export type UpdateBrandMutationVariables = Exact<{
+  brandID: Scalars['Int']['input'];
+  input: BrandsUpdate;
+  companyId: Scalars['Int']['input'];
+}>;
+
+
+export type UpdateBrandMutation = { __typename?: 'Mutation', updateBrand?: { __typename?: 'BrandsInDB', BrandID: number, BrandName: string, IsActive?: boolean | null } | null };
+
 export type GetAllBranchesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllBranchesQuery = { __typename?: 'Query', allBranches: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string, Address?: string | null, Phone?: string | null, CompanyData?: { __typename?: 'CompanyDataInDB', CompanyName?: string | null } | null }> };
+export type GetAllBranchesQuery = { __typename?: 'Query', allBranches: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string, Address?: string | null, Phone?: string | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyName?: string | null } | null }> };
 
 export type GetAllBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllBrandsQuery = { __typename?: 'Query', allBrands: Array<{ __typename?: 'BrandsInDB', BrandID: number, BrandName: string, IsActive?: boolean | null, CompanyData?: { __typename?: 'CompanyDataInDB', CompanyID: number, CompanyName?: string | null } | null }> };
+export type GetAllBrandsQuery = { __typename?: 'Query', allBrands: Array<{ __typename?: 'BrandsInDB', BrandID: number, BrandName: string, IsActive?: boolean | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null } | null }> };
 
 export type GetAllCarBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3151,7 +3357,7 @@ export type GetAllClientsQuery = { __typename?: 'Query', allClients: Array<{ __t
 export type GetAllCompaniesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllCompaniesQuery = { __typename?: 'Query', allCompanydata: Array<{ __typename?: 'CompanyDataInDB', CompanyID: number, CompanyName?: string | null, Address?: string | null, CUIT?: string | null, Grossincome?: string | null, Startdate?: any | null, Logo?: string | null }> };
+export type GetAllCompaniesQuery = { __typename?: 'Query', allCompany: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null, Address?: string | null, CUIT?: string | null, Grossincome?: string | null, Startdate?: any | null, Logo?: string | null }> };
 
 export type GetAllCreditCardGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3161,7 +3367,7 @@ export type GetAllCreditCardGroupsQuery = { __typename?: 'Query', allCreditcardg
 export type GetAllCreditCardsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllCreditCardsQuery = { __typename?: 'Query', allCreditcards: Array<{ __typename?: 'CreditCardsInDB', CreditCardID: number, CreditCardGroupID: number, CardName: string, Surcharge?: number | null, Installments?: number | null, IsActive?: boolean | null, GroupData?: { __typename?: 'CreditCardGroupsInDB', GroupName?: string | null } | null }> };
+export type GetAllCreditCardsQuery = { __typename?: 'Query', allCreditcards: Array<{ __typename?: 'CreditCardsInDB', CreditCardID: number, CreditCardGroupID: number, CardName: string, Surcharge?: number | null, Installments?: number | null, IsActive?: boolean | null, CreditCardGroupData?: { __typename?: 'CreditCardGroupsInDB', GroupName?: string | null } | null }> };
 
 export type GetAllDiscountsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3221,7 +3427,7 @@ export type GetAllSuppliersQuery = { __typename?: 'Query', allSuppliers: Array<{
 export type GetAllUseraccessQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllUseraccessQuery = { __typename?: 'Query', allUseraccess: Array<{ __typename?: 'UserAccessInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number, UserData?: { __typename?: 'UsersInDB', FullName?: string | null } | null, CompanyData?: { __typename?: 'CompanyDataInDB', CompanyName?: string | null } | null, BranchData?: { __typename?: 'BranchesInDB', BranchName: string } | null, RoleData?: { __typename?: 'RolesInDB', RoleName: string } | null }> };
+export type GetAllUseraccessQuery = { __typename?: 'Query', allUserpermissions: Array<{ __typename?: 'UserPermissionsInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number, UserData?: { __typename?: 'UsersInDB', FullName?: string | null } | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyName?: string | null } | null, BranchData?: { __typename?: 'BranchesInDB', BranchName: string } | null, RoleData?: { __typename?: 'RolesInDB', RoleName: string } | null }> };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3304,14 +3510,14 @@ export type GetClientByIdQuery = { __typename?: 'Query', clientsById?: { __typen
 export type GetClientFormDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetClientFormDataQuery = { __typename?: 'Query', docTypes: Array<{ __typename?: 'SysIdentityDocTypesInDB', DocTypeID: number, DocTypeName: string }>, countries: Array<{ __typename?: 'CountriesInDB', CountryID: number, CountryName: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, priceLists: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, PriceListName: string, PriceListDescription?: string | null, IsActive?: boolean | null }>, vendors: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string, IsActive: boolean }>, companies: Array<{ __typename?: 'CompanyDataInDB', CompanyID: number, CompanyName?: string | null }> };
+export type GetClientFormDataQuery = { __typename?: 'Query', docTypes: Array<{ __typename?: 'SysIdentityDocTypesInDB', DocTypeID: number, DocTypeName: string }>, countries: Array<{ __typename?: 'CountriesInDB', CountryID: number, CountryName: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, priceLists: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, PriceListName: string, PriceListDescription?: string | null, IsActive?: boolean | null }>, vendors: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string, IsActive: boolean }>, companies: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }> };
 
 export type GetCompanyByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type GetCompanyByIdQuery = { __typename?: 'Query', companydataById?: { __typename?: 'CompanyDataInDB', CompanyID: number, CompanyName?: string | null, Address?: string | null, CUIT?: string | null, Grossincome?: string | null, Startdate?: any | null, Logo?: string | null } | null };
+export type GetCompanyByIdQuery = { __typename?: 'Query', companyById?: { __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null, Address?: string | null, CUIT?: string | null, Grossincome?: string | null, Startdate?: any | null, Logo?: string | null } | null };
 
 export type GetCountriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3323,7 +3529,7 @@ export type GetCreditCardByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetCreditCardByIdQuery = { __typename?: 'Query', creditcardById?: { __typename?: 'CreditCardsInDB', CreditCardID: number, CreditCardGroupID: number, CardName: string, Surcharge?: number | null, Installments?: number | null, IsActive?: boolean | null, GroupData?: { __typename?: 'CreditCardGroupsInDB', GroupName?: string | null } | null } | null };
+export type GetCreditCardByIdQuery = { __typename?: 'Query', creditcardById?: { __typename?: 'CreditCardsInDB', CreditCardID: number, CreditCardGroupID: number, CardName: string, Surcharge?: number | null, Installments?: number | null, IsActive?: boolean | null, CreditCardGroupData?: { __typename?: 'CreditCardGroupsInDB', GroupName?: string | null } | null } | null };
 
 export type GetCreditCardGroupByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -3446,7 +3652,7 @@ export type GetRelationsQueryVariables = Exact<{
 }>;
 
 
-export type GetRelationsQuery = { __typename?: 'Query', Branch?: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string }>, Company?: Array<{ __typename?: 'CompanyDataInDB', CompanyID: number, CompanyName?: string | null }>, Country?: Array<{ __typename?: 'CountriesInDB', CountryID: number, CountryName: string }>, CreditCard?: Array<{ __typename?: 'CreditCardsInDB', CreditCardID: number, CreditCardGroupID: number, CardName: string }>, DocType?: Array<{ __typename?: 'SysIdentityDocTypesInDB', DocTypeID: number, DocTypeName: string }>, PriceList?: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, PriceListName: string }>, Province?: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, Vendor?: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string }> };
+export type GetRelationsQuery = { __typename?: 'Query', Branch?: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string }>, Company?: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }>, Country?: Array<{ __typename?: 'CountriesInDB', CountryID: number, CountryName: string }>, CreditCard?: Array<{ __typename?: 'CreditCardsInDB', CreditCardID: number, CreditCardGroupID: number, CardName: string }>, DocType?: Array<{ __typename?: 'SysIdentityDocTypesInDB', DocTypeID: number, DocTypeName: string }>, PriceList?: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, PriceListName: string }>, Province?: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, Vendor?: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string }> };
 
 export type GetRoleByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -3487,7 +3693,7 @@ export type GetUserByIdQueryVariables = Exact<{
 
 export type GetUserByIdQuery = { __typename?: 'Query', usersById?: { __typename?: 'UsersInDB', UserID: number, Nickname?: string | null, FullName?: string | null, IsActive?: boolean | null } | null };
 
-export type GetUseraccessByIdQueryVariables = Exact<{
+export type GetUserpermissionsByIdQueryVariables = Exact<{
   userID: Scalars['Int']['input'];
   companyID: Scalars['Int']['input'];
   branchID: Scalars['Int']['input'];
@@ -3495,7 +3701,7 @@ export type GetUseraccessByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUseraccessByIdQuery = { __typename?: 'Query', useraccessById?: { __typename?: 'UserAccessInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number, UserData?: { __typename?: 'UsersInDB', Nickname?: string | null, FullName?: string | null } | null, CompanyData?: { __typename?: 'CompanyDataInDB', CompanyName?: string | null } | null, RoleData?: { __typename?: 'RolesInDB', RoleName: string } | null, BranchData?: { __typename?: 'BranchesInDB', BranchName: string } | null } | null };
+export type GetUserpermissionsByIdQuery = { __typename?: 'Query', userpermissionsById?: { __typename?: 'UserPermissionsInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number, UserData?: { __typename?: 'UsersInDB', Nickname?: string | null, FullName?: string | null } | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyName?: string | null } | null, RoleData?: { __typename?: 'RolesInDB', RoleName: string } | null, BranchData?: { __typename?: 'BranchesInDB', BranchName: string } | null } | null };
 
 export type GetVendorsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3566,41 +3772,6 @@ export function useCreateBranchMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateBranchMutationHookResult = ReturnType<typeof useCreateBranchMutation>;
 export type CreateBranchMutationResult = Apollo.MutationResult<CreateBranchMutation>;
 export type CreateBranchMutationOptions = Apollo.BaseMutationOptions<CreateBranchMutation, CreateBranchMutationVariables>;
-export const CreateBrand2Document = gql`
-    mutation CreateBrand2($input: BrandsCreate!) {
-  createBrand(data: $input) {
-    BrandID
-    BrandName
-    IsActive
-  }
-}
-    `;
-export type CreateBrand2MutationFn = Apollo.MutationFunction<CreateBrand2Mutation, CreateBrand2MutationVariables>;
-
-/**
- * __useCreateBrand2Mutation__
- *
- * To run a mutation, you first call `useCreateBrand2Mutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateBrand2Mutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createBrand2Mutation, { data, loading, error }] = useCreateBrand2Mutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateBrand2Mutation(baseOptions?: Apollo.MutationHookOptions<CreateBrand2Mutation, CreateBrand2MutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateBrand2Mutation, CreateBrand2MutationVariables>(CreateBrand2Document, options);
-      }
-export type CreateBrand2MutationHookResult = ReturnType<typeof useCreateBrand2Mutation>;
-export type CreateBrand2MutationResult = Apollo.MutationResult<CreateBrand2Mutation>;
-export type CreateBrand2MutationOptions = Apollo.BaseMutationOptions<CreateBrand2Mutation, CreateBrand2MutationVariables>;
 export const CreateCarDocument = gql`
     mutation CreateCar($input: CarsCreate!) {
   createCar(data: $input) {
@@ -3844,7 +4015,7 @@ export type CreateClientMutationHookResult = ReturnType<typeof useCreateClientMu
 export type CreateClientMutationResult = Apollo.MutationResult<CreateClientMutation>;
 export type CreateClientMutationOptions = Apollo.BaseMutationOptions<CreateClientMutation, CreateClientMutationVariables>;
 export const CreateCompanyDocument = gql`
-    mutation CreateCompany($input: CompanyDataCreate!) {
+    mutation CreateCompany($input: CompanyCreate!) {
   createCompany(data: $input) {
     CompanyID
     CompanyName
@@ -4457,8 +4628,8 @@ export type CreateUserRecordMutationHookResult = ReturnType<typeof useCreateUser
 export type CreateUserRecordMutationResult = Apollo.MutationResult<CreateUserRecordMutation>;
 export type CreateUserRecordMutationOptions = Apollo.BaseMutationOptions<CreateUserRecordMutation, CreateUserRecordMutationVariables>;
 export const CreateUseraccessDocument = gql`
-    mutation CreateUseraccess($input: UserAccessCreate!) {
-  createUseraccess(data: $input) {
+    mutation CreateUseraccess($input: UserPermissionsCreate!) {
+  createUserpermissions(data: $input) {
     UserID
     CompanyID
     BranchID
@@ -4595,38 +4766,6 @@ export function useDeleteBranchMutation(baseOptions?: Apollo.MutationHookOptions
 export type DeleteBranchMutationHookResult = ReturnType<typeof useDeleteBranchMutation>;
 export type DeleteBranchMutationResult = Apollo.MutationResult<DeleteBranchMutation>;
 export type DeleteBranchMutationOptions = Apollo.BaseMutationOptions<DeleteBranchMutation, DeleteBranchMutationVariables>;
-export const DeleteBrandDocument = gql`
-    mutation DeleteBrand($brandID: Int!, $companyId: Int!) {
-  deleteBrand(brandID: $brandID, companyID: $companyId)
-}
-    `;
-export type DeleteBrandMutationFn = Apollo.MutationFunction<DeleteBrandMutation, DeleteBrandMutationVariables>;
-
-/**
- * __useDeleteBrandMutation__
- *
- * To run a mutation, you first call `useDeleteBrandMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteBrandMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteBrandMutation, { data, loading, error }] = useDeleteBrandMutation({
- *   variables: {
- *      brandID: // value for 'brandID'
- *      companyId: // value for 'companyId'
- *   },
- * });
- */
-export function useDeleteBrandMutation(baseOptions?: Apollo.MutationHookOptions<DeleteBrandMutation, DeleteBrandMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteBrandMutation, DeleteBrandMutationVariables>(DeleteBrandDocument, options);
-      }
-export type DeleteBrandMutationHookResult = ReturnType<typeof useDeleteBrandMutation>;
-export type DeleteBrandMutationResult = Apollo.MutationResult<DeleteBrandMutation>;
-export type DeleteBrandMutationOptions = Apollo.BaseMutationOptions<DeleteBrandMutation, DeleteBrandMutationVariables>;
 export const DeleteCarDocument = gql`
     mutation DeleteCar($carID: Int!, $companyId: Int!) {
   deleteCar(carID: $carID, companyID: $companyId)
@@ -5337,7 +5476,7 @@ export type DeleteUserRecordMutationResult = Apollo.MutationResult<DeleteUserRec
 export type DeleteUserRecordMutationOptions = Apollo.BaseMutationOptions<DeleteUserRecordMutation, DeleteUserRecordMutationVariables>;
 export const DeleteUseraccessDocument = gql`
     mutation DeleteUseraccess($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
-  deleteUseraccess(
+  deleteUserpermissions(
     userID: $userID
     companyID: $companyID
     branchID: $branchID
@@ -5436,56 +5575,6 @@ export function useDeleteWarehouseMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteWarehouseMutationHookResult = ReturnType<typeof useDeleteWarehouseMutation>;
 export type DeleteWarehouseMutationResult = Apollo.MutationResult<DeleteWarehouseMutation>;
 export type DeleteWarehouseMutationOptions = Apollo.BaseMutationOptions<DeleteWarehouseMutation, DeleteWarehouseMutationVariables>;
-export const LoginDocument = gql`
-    mutation Login($input: LoginInput!) {
-  login(input: $input) {
-    success
-    message
-    token
-    user {
-      UserID
-      Nickname
-      FullName
-      IsActive
-      UserAccess {
-        UserID
-        CompanyID
-        Company
-        BranchID
-        Branch
-        RoleID
-        Role
-      }
-    }
-  }
-}
-    `;
-export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
-
-/**
- * __useLoginMutation__
- *
- * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLoginMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [loginMutation, { data, loading, error }] = useLoginMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-      }
-export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
-export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
-export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const ToggleClientStatusDocument = gql`
     mutation ToggleClientStatus($clientID: Int!, $isActive: Boolean!) {
   updateClient(clientID: $clientID, data: {IsActive: $isActive}) {
@@ -5628,43 +5717,6 @@ export function useUpdateBranchMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateBranchMutationHookResult = ReturnType<typeof useUpdateBranchMutation>;
 export type UpdateBranchMutationResult = Apollo.MutationResult<UpdateBranchMutation>;
 export type UpdateBranchMutationOptions = Apollo.BaseMutationOptions<UpdateBranchMutation, UpdateBranchMutationVariables>;
-export const UpdateBrandDocument = gql`
-    mutation UpdateBrand($brandID: Int!, $input: BrandsUpdate!, $companyId: Int!) {
-  updateBrand(brandID: $brandID, data: $input, companyID: $companyId) {
-    BrandID
-    BrandName
-    IsActive
-  }
-}
-    `;
-export type UpdateBrandMutationFn = Apollo.MutationFunction<UpdateBrandMutation, UpdateBrandMutationVariables>;
-
-/**
- * __useUpdateBrandMutation__
- *
- * To run a mutation, you first call `useUpdateBrandMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateBrandMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateBrandMutation, { data, loading, error }] = useUpdateBrandMutation({
- *   variables: {
- *      brandID: // value for 'brandID'
- *      input: // value for 'input'
- *      companyId: // value for 'companyId'
- *   },
- * });
- */
-export function useUpdateBrandMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBrandMutation, UpdateBrandMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateBrandMutation, UpdateBrandMutationVariables>(UpdateBrandDocument, options);
-      }
-export type UpdateBrandMutationHookResult = ReturnType<typeof useUpdateBrandMutation>;
-export type UpdateBrandMutationResult = Apollo.MutationResult<UpdateBrandMutation>;
-export type UpdateBrandMutationOptions = Apollo.BaseMutationOptions<UpdateBrandMutation, UpdateBrandMutationVariables>;
 export const UpdateCarDocument = gql`
     mutation UpdateCar($carID: Int!, $input: CarsUpdate!, $companyId: Int!) {
   updateCar(carID: $carID, data: $input, companyID: $companyId) {
@@ -5923,7 +5975,7 @@ export type UpdateClientMutationHookResult = ReturnType<typeof useUpdateClientMu
 export type UpdateClientMutationResult = Apollo.MutationResult<UpdateClientMutation>;
 export type UpdateClientMutationOptions = Apollo.BaseMutationOptions<UpdateClientMutation, UpdateClientMutationVariables>;
 export const UpdateCompanyDocument = gql`
-    mutation UpdateCompany($companyID: Int!, $input: CompanyDataUpdate!) {
+    mutation UpdateCompany($companyID: Int!, $input: CompanyUpdate!) {
   updateCompany(companyID: $companyID, data: $input) {
     CompanyID
     CompanyName
@@ -6529,6 +6581,52 @@ export function useUpdateSupplierMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdateSupplierMutationHookResult = ReturnType<typeof useUpdateSupplierMutation>;
 export type UpdateSupplierMutationResult = Apollo.MutationResult<UpdateSupplierMutation>;
 export type UpdateSupplierMutationOptions = Apollo.BaseMutationOptions<UpdateSupplierMutation, UpdateSupplierMutationVariables>;
+export const UpdateUserPermissionsDocument = gql`
+    mutation UpdateUserPermissions($oldUserID: Int!, $oldCompanyID: Int!, $oldBranchID: Int!, $oldRoleID: Int!, $newData: UserPermissionsCreate!) {
+  updateUserpermissions(
+    oldUserID: $oldUserID
+    oldCompanyID: $oldCompanyID
+    oldBranchID: $oldBranchID
+    oldRoleID: $oldRoleID
+    newData: $newData
+  ) {
+    UserID
+    CompanyID
+    BranchID
+    RoleID
+  }
+}
+    `;
+export type UpdateUserPermissionsMutationFn = Apollo.MutationFunction<UpdateUserPermissionsMutation, UpdateUserPermissionsMutationVariables>;
+
+/**
+ * __useUpdateUserPermissionsMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserPermissionsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserPermissionsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserPermissionsMutation, { data, loading, error }] = useUpdateUserPermissionsMutation({
+ *   variables: {
+ *      oldUserID: // value for 'oldUserID'
+ *      oldCompanyID: // value for 'oldCompanyID'
+ *      oldBranchID: // value for 'oldBranchID'
+ *      oldRoleID: // value for 'oldRoleID'
+ *      newData: // value for 'newData'
+ *   },
+ * });
+ */
+export function useUpdateUserPermissionsMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserPermissionsMutation, UpdateUserPermissionsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserPermissionsMutation, UpdateUserPermissionsMutationVariables>(UpdateUserPermissionsDocument, options);
+      }
+export type UpdateUserPermissionsMutationHookResult = ReturnType<typeof useUpdateUserPermissionsMutation>;
+export type UpdateUserPermissionsMutationResult = Apollo.MutationResult<UpdateUserPermissionsMutation>;
+export type UpdateUserPermissionsMutationOptions = Apollo.BaseMutationOptions<UpdateUserPermissionsMutation, UpdateUserPermissionsMutationVariables>;
 export const UpdateUserRecordDocument = gql`
     mutation UpdateUserRecord($userID: Int!, $input: UserUpdate!) {
   updateUserRecord(userID: $userID, data: $input) {
@@ -6566,52 +6664,6 @@ export function useUpdateUserRecordMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateUserRecordMutationHookResult = ReturnType<typeof useUpdateUserRecordMutation>;
 export type UpdateUserRecordMutationResult = Apollo.MutationResult<UpdateUserRecordMutation>;
 export type UpdateUserRecordMutationOptions = Apollo.BaseMutationOptions<UpdateUserRecordMutation, UpdateUserRecordMutationVariables>;
-export const UpdateUseraccessDocument = gql`
-    mutation UpdateUseraccess($oldUserID: Int!, $oldCompanyID: Int!, $oldBranchID: Int!, $oldRoleID: Int!, $newData: UserAccessCreate!) {
-  updateUseraccess(
-    oldUserID: $oldUserID
-    oldCompanyID: $oldCompanyID
-    oldBranchID: $oldBranchID
-    oldRoleID: $oldRoleID
-    newData: $newData
-  ) {
-    UserID
-    CompanyID
-    BranchID
-    RoleID
-  }
-}
-    `;
-export type UpdateUseraccessMutationFn = Apollo.MutationFunction<UpdateUseraccessMutation, UpdateUseraccessMutationVariables>;
-
-/**
- * __useUpdateUseraccessMutation__
- *
- * To run a mutation, you first call `useUpdateUseraccessMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateUseraccessMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateUseraccessMutation, { data, loading, error }] = useUpdateUseraccessMutation({
- *   variables: {
- *      oldUserID: // value for 'oldUserID'
- *      oldCompanyID: // value for 'oldCompanyID'
- *      oldBranchID: // value for 'oldBranchID'
- *      oldRoleID: // value for 'oldRoleID'
- *      newData: // value for 'newData'
- *   },
- * });
- */
-export function useUpdateUseraccessMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUseraccessMutation, UpdateUseraccessMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateUseraccessMutation, UpdateUseraccessMutationVariables>(UpdateUseraccessDocument, options);
-      }
-export type UpdateUseraccessMutationHookResult = ReturnType<typeof useUpdateUseraccessMutation>;
-export type UpdateUseraccessMutationResult = Apollo.MutationResult<UpdateUseraccessMutation>;
-export type UpdateUseraccessMutationOptions = Apollo.BaseMutationOptions<UpdateUseraccessMutation, UpdateUseraccessMutationVariables>;
 export const UpdateVendorDocument = gql`
     mutation UpdateVendor($vendorID: Int!, $input: VendorsUpdate!) {
   updateVendor(vendorID: $vendorID, data: $input) {
@@ -6685,6 +6737,160 @@ export function useUpdateWarehouseMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateWarehouseMutationHookResult = ReturnType<typeof useUpdateWarehouseMutation>;
 export type UpdateWarehouseMutationResult = Apollo.MutationResult<UpdateWarehouseMutation>;
 export type UpdateWarehouseMutationOptions = Apollo.BaseMutationOptions<UpdateWarehouseMutation, UpdateWarehouseMutationVariables>;
+export const CreateBrand2Document = gql`
+    mutation CreateBrand2($input: BrandsCreate!) {
+  createBrand(data: $input) {
+    BrandID
+    BrandName
+    IsActive
+  }
+}
+    `;
+export type CreateBrand2MutationFn = Apollo.MutationFunction<CreateBrand2Mutation, CreateBrand2MutationVariables>;
+
+/**
+ * __useCreateBrand2Mutation__
+ *
+ * To run a mutation, you first call `useCreateBrand2Mutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBrand2Mutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBrand2Mutation, { data, loading, error }] = useCreateBrand2Mutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateBrand2Mutation(baseOptions?: Apollo.MutationHookOptions<CreateBrand2Mutation, CreateBrand2MutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateBrand2Mutation, CreateBrand2MutationVariables>(CreateBrand2Document, options);
+      }
+export type CreateBrand2MutationHookResult = ReturnType<typeof useCreateBrand2Mutation>;
+export type CreateBrand2MutationResult = Apollo.MutationResult<CreateBrand2Mutation>;
+export type CreateBrand2MutationOptions = Apollo.BaseMutationOptions<CreateBrand2Mutation, CreateBrand2MutationVariables>;
+export const DeleteBrandDocument = gql`
+    mutation DeleteBrand($brandID: Int!, $companyId: Int!) {
+  deleteBrand(brandID: $brandID, companyID: $companyId)
+}
+    `;
+export type DeleteBrandMutationFn = Apollo.MutationFunction<DeleteBrandMutation, DeleteBrandMutationVariables>;
+
+/**
+ * __useDeleteBrandMutation__
+ *
+ * To run a mutation, you first call `useDeleteBrandMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteBrandMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteBrandMutation, { data, loading, error }] = useDeleteBrandMutation({
+ *   variables: {
+ *      brandID: // value for 'brandID'
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useDeleteBrandMutation(baseOptions?: Apollo.MutationHookOptions<DeleteBrandMutation, DeleteBrandMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteBrandMutation, DeleteBrandMutationVariables>(DeleteBrandDocument, options);
+      }
+export type DeleteBrandMutationHookResult = ReturnType<typeof useDeleteBrandMutation>;
+export type DeleteBrandMutationResult = Apollo.MutationResult<DeleteBrandMutation>;
+export type DeleteBrandMutationOptions = Apollo.BaseMutationOptions<DeleteBrandMutation, DeleteBrandMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    success
+    message
+    token
+    user {
+      UserID
+      Nickname
+      FullName
+      IsActive
+      UserPermissions {
+        UserID
+        CompanyID
+        CompanyName
+        BranchID
+        BranchName
+        RoleID
+        RoleName
+      }
+    }
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const UpdateBrandDocument = gql`
+    mutation UpdateBrand($brandID: Int!, $input: BrandsUpdate!, $companyId: Int!) {
+  updateBrand(brandID: $brandID, data: $input, companyID: $companyId) {
+    BrandID
+    BrandName
+    IsActive
+  }
+}
+    `;
+export type UpdateBrandMutationFn = Apollo.MutationFunction<UpdateBrandMutation, UpdateBrandMutationVariables>;
+
+/**
+ * __useUpdateBrandMutation__
+ *
+ * To run a mutation, you first call `useUpdateBrandMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBrandMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBrandMutation, { data, loading, error }] = useUpdateBrandMutation({
+ *   variables: {
+ *      brandID: // value for 'brandID'
+ *      input: // value for 'input'
+ *      companyId: // value for 'companyId'
+ *   },
+ * });
+ */
+export function useUpdateBrandMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBrandMutation, UpdateBrandMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateBrandMutation, UpdateBrandMutationVariables>(UpdateBrandDocument, options);
+      }
+export type UpdateBrandMutationHookResult = ReturnType<typeof useUpdateBrandMutation>;
+export type UpdateBrandMutationResult = Apollo.MutationResult<UpdateBrandMutation>;
+export type UpdateBrandMutationOptions = Apollo.BaseMutationOptions<UpdateBrandMutation, UpdateBrandMutationVariables>;
 export const GetAllBranchesDocument = gql`
     query GetAllBranches {
   allBranches {
@@ -6973,7 +7179,7 @@ export type GetAllClientsSuspenseQueryHookResult = ReturnType<typeof useGetAllCl
 export type GetAllClientsQueryResult = Apollo.QueryResult<GetAllClientsQuery, GetAllClientsQueryVariables>;
 export const GetAllCompaniesDocument = gql`
     query GetAllCompanies {
-  allCompanydata {
+  allCompany {
     CompanyID
     CompanyName
     Address
@@ -7065,7 +7271,7 @@ export const GetAllCreditCardsDocument = gql`
     Surcharge
     Installments
     IsActive
-    GroupData {
+    CreditCardGroupData {
       GroupName
     }
   }
@@ -7639,7 +7845,7 @@ export type GetAllSuppliersSuspenseQueryHookResult = ReturnType<typeof useGetAll
 export type GetAllSuppliersQueryResult = Apollo.QueryResult<GetAllSuppliersQuery, GetAllSuppliersQueryVariables>;
 export const GetAllUseraccessDocument = gql`
     query GetAllUseraccess {
-  allUseraccess {
+  allUserpermissions {
     UserID
     CompanyID
     BranchID
@@ -8233,7 +8439,7 @@ export const GetClientFormDataDocument = gql`
     VendorName
     IsActive
   }
-  companies: allCompanydata {
+  companies: allCompany {
     CompanyID
     CompanyName
   }
@@ -8273,7 +8479,7 @@ export type GetClientFormDataSuspenseQueryHookResult = ReturnType<typeof useGetC
 export type GetClientFormDataQueryResult = Apollo.QueryResult<GetClientFormDataQuery, GetClientFormDataQueryVariables>;
 export const GetCompanyByIdDocument = gql`
     query GetCompanyById($id: Int!) {
-  companydataById(id: $id) {
+  companyById(id: $id) {
     CompanyID
     CompanyName
     Address
@@ -8366,7 +8572,7 @@ export const GetCreditCardByIdDocument = gql`
     Surcharge
     Installments
     IsActive
-    GroupData {
+    CreditCardGroupData {
       GroupName
     }
   }
@@ -9164,7 +9370,7 @@ export const GetRelationsDocument = gql`
     CompanyID
     BranchName
   }
-  Company: allCompanydata @include(if: $Company) {
+  Company: allCompany @include(if: $Company) {
     CompanyID
     CompanyName
   }
@@ -9507,9 +9713,9 @@ export type GetUserByIdQueryHookResult = ReturnType<typeof useGetUserByIdQuery>;
 export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLazyQuery>;
 export type GetUserByIdSuspenseQueryHookResult = ReturnType<typeof useGetUserByIdSuspenseQuery>;
 export type GetUserByIdQueryResult = Apollo.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
-export const GetUseraccessByIdDocument = gql`
-    query GetUseraccessById($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
-  useraccessById(
+export const GetUserpermissionsByIdDocument = gql`
+    query GetUserpermissionsById($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
+  userpermissionsById(
     userID: $userID
     companyID: $companyID
     branchID: $branchID
@@ -9537,16 +9743,16 @@ export const GetUseraccessByIdDocument = gql`
     `;
 
 /**
- * __useGetUseraccessByIdQuery__
+ * __useGetUserpermissionsByIdQuery__
  *
- * To run a query within a React component, call `useGetUseraccessByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUseraccessByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetUserpermissionsByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserpermissionsByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetUseraccessByIdQuery({
+ * const { data, loading, error } = useGetUserpermissionsByIdQuery({
  *   variables: {
  *      userID: // value for 'userID'
  *      companyID: // value for 'companyID'
@@ -9555,22 +9761,22 @@ export const GetUseraccessByIdDocument = gql`
  *   },
  * });
  */
-export function useGetUseraccessByIdQuery(baseOptions: Apollo.QueryHookOptions<GetUseraccessByIdQuery, GetUseraccessByIdQueryVariables> & ({ variables: GetUseraccessByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetUserpermissionsByIdQuery(baseOptions: Apollo.QueryHookOptions<GetUserpermissionsByIdQuery, GetUserpermissionsByIdQueryVariables> & ({ variables: GetUserpermissionsByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUseraccessByIdQuery, GetUseraccessByIdQueryVariables>(GetUseraccessByIdDocument, options);
+        return Apollo.useQuery<GetUserpermissionsByIdQuery, GetUserpermissionsByIdQueryVariables>(GetUserpermissionsByIdDocument, options);
       }
-export function useGetUseraccessByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUseraccessByIdQuery, GetUseraccessByIdQueryVariables>) {
+export function useGetUserpermissionsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserpermissionsByIdQuery, GetUserpermissionsByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUseraccessByIdQuery, GetUseraccessByIdQueryVariables>(GetUseraccessByIdDocument, options);
+          return Apollo.useLazyQuery<GetUserpermissionsByIdQuery, GetUserpermissionsByIdQueryVariables>(GetUserpermissionsByIdDocument, options);
         }
-export function useGetUseraccessByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUseraccessByIdQuery, GetUseraccessByIdQueryVariables>) {
+export function useGetUserpermissionsByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUserpermissionsByIdQuery, GetUserpermissionsByIdQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetUseraccessByIdQuery, GetUseraccessByIdQueryVariables>(GetUseraccessByIdDocument, options);
+          return Apollo.useSuspenseQuery<GetUserpermissionsByIdQuery, GetUserpermissionsByIdQueryVariables>(GetUserpermissionsByIdDocument, options);
         }
-export type GetUseraccessByIdQueryHookResult = ReturnType<typeof useGetUseraccessByIdQuery>;
-export type GetUseraccessByIdLazyQueryHookResult = ReturnType<typeof useGetUseraccessByIdLazyQuery>;
-export type GetUseraccessByIdSuspenseQueryHookResult = ReturnType<typeof useGetUseraccessByIdSuspenseQuery>;
-export type GetUseraccessByIdQueryResult = Apollo.QueryResult<GetUseraccessByIdQuery, GetUseraccessByIdQueryVariables>;
+export type GetUserpermissionsByIdQueryHookResult = ReturnType<typeof useGetUserpermissionsByIdQuery>;
+export type GetUserpermissionsByIdLazyQueryHookResult = ReturnType<typeof useGetUserpermissionsByIdLazyQuery>;
+export type GetUserpermissionsByIdSuspenseQueryHookResult = ReturnType<typeof useGetUserpermissionsByIdSuspenseQuery>;
+export type GetUserpermissionsByIdQueryResult = Apollo.QueryResult<GetUserpermissionsByIdQuery, GetUserpermissionsByIdQueryVariables>;
 export const GetVendorsDocument = gql`
     query GetVendors {
   allVendors {

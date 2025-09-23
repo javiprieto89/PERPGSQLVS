@@ -1,10 +1,10 @@
-query GetUseraccessById(
+query GetUserpermissionsById(
   $userID: Int!
   $companyID: Int!
   $branchID: Int!
   $roleID: Int!
 ) {
-  useraccessById(
+  userpermissionsById(
     userID: $userID
     companyID: $companyID
     branchID: $branchID

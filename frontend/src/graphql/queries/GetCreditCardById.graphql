@@ -6,7 +6,7 @@ query GetCreditCardById($id: Int!) {
     Surcharge
     Installments
     IsActive
-    GroupData {
+    CreditCardGroupData {
       GroupName
     }
   }

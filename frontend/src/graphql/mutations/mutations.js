@@ -593,7 +593,7 @@ export const MUTATIONS = {
         }
     `,
     UPDATE_COMPANY: `
-        mutation UpdateCompany($companyID: Int!, $input: CompanyDataUpdate!) {
+        mutation UpdateCompany($companyID: Int!, $input: CompanyUpdate!) {
             updateCompany(companyID: $companyID, data: $input) {
                 CompanyID
                 Name
@@ -865,8 +865,8 @@ export const MUTATIONS = {
 
     // USER ACCESS
     CREATE_USERACCESS: `
-        mutation CreateUseraccess($input: UserAccessCreate!) {
-            createUseraccess(data: $input) {
+        mutation CreateUseraccess($input: UserPermissionsCreate!) {
+            createUserpermissions(data: $input) {
                 UserID
                 CompanyID
                 BranchID
@@ -875,12 +875,12 @@ export const MUTATIONS = {
         }
     `,
     UPDATE_USERACCESS: `
-        mutation UpdateUseraccess(
+        mutation UpdateUserPermissions(
             $oldUserID: Int!,
             $oldCompanyID: Int!,
             $oldBranchID: Int!,
             $oldRoleID: Int!,
-            $newData: UserAccessCreate!
+            $newData: UserPermissionsCreate!
         ) {
             updateUseraccess(
                 oldUserID: $oldUserID,
@@ -898,7 +898,7 @@ export const MUTATIONS = {
     `,
     DELETE_USERACCESS: `
         mutation DeleteUseraccess($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
-            deleteUseraccess(userID: $userID, companyID: $companyID, branchID: $branchID, roleID: $roleID)
+            deleteUserpermissions(userID: $userID, companyID: $companyID, branchID: $branchID, roleID: $roleID)
         }
     `,
 

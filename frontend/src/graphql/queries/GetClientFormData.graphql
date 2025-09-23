@@ -23,7 +23,7 @@ query GetClientFormData {
     VendorName
     IsActive
   }
-  companies: allCompanydata {
+  companies: allCompany {
     CompanyID
     CompanyName
   }

@@ -1,0 +1,83 @@
+{
+  "data": {
+    "DocType": [
+      {
+        "DocTypeID": 1,
+        "Name": "DNI"
+      },
+      {
+        "DocTypeID": 2,
+        "Name": "CUIT"
+      }
+    ],
+    "Country": [
+      {
+        "CountryID": 51,
+        "Name": "Peru"
+      },
+      {
+        "CountryID": 54,
+        "Name": "Argentina"
+      }
+    ],
+    "Province": [
+      {
+        "ProvinceID": 3,
+        "CountryID": 51,
+        "Name": "Lima"
+      },
+      {
+        "ProvinceID": 1,
+        "CountryID": 54,
+        "Name": "CABA"
+      },
+      {
+        "ProvinceID": 2,
+        "CountryID": 54,
+        "Name": "Santa Fe"
+      }
+    ],
+    "PriceList": [
+      {
+        "PriceListID": 1,
+        "Name": "Lista 1",
+        "Description": "Descripción lista 1",
+        "IsActive": true
+      },
+      {
+        "PriceListID": 2,
+        "Name": "Lista 2",
+        "Description": "Lista 2",
+        "IsActive": true
+      },
+      {
+        "PriceListID": 3,
+        "Name": "Lista 33",
+        "Description": "",
+        "IsActive": true
+      }
+    ],
+    "Vendor": [
+      {
+        "VendorID": 1,
+        "VendorName": "Vendedor 1",
+        "IsActive": true
+      },
+      {
+        "VendorID": 2,
+        "VendorName": "Pepe",
+        "IsActive": true
+      }
+    ],
+    "Company": [
+      {
+        "CompanyID": 1,
+        "Name": "CT"
+      },
+      {
+        "CompanyID": 2,
+        "Name": "CT2"
+      }
+    ]
+  }
+}

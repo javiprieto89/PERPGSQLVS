@@ -1,0 +1,20 @@
+mutation UpdateUserPermissions(
+  $oldUserID: Int!
+  $oldCompanyID: Int!
+  $oldBranchID: Int!
+  $oldRoleID: Int!
+  $newData: UserPermissionsCreate!
+) {
+  updateUserpermissions(
+    oldUserID: $oldUserID
+    oldCompanyID: $oldCompanyID
+    oldBranchID: $oldBranchID
+    oldRoleID: $oldRoleID
+    newData: $newData
+  ) {
+    UserID
+    CompanyID
+    BranchID
+    RoleID
+  }
+}
