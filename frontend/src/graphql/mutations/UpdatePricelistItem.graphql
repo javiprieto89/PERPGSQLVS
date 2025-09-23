@@ -1,0 +1,8 @@
+mutation UpdatePricelistItem($pricelistID: Int!, $itemID: Int!, $input: PriceListItemsUpdate!) {
+            updatePricelistitem(pricelistID: $pricelistID, itemID: $itemID, data: $input) {
+                PriceListID
+                ItemID
+                Price
+                EffectiveDate
+            }
+        }

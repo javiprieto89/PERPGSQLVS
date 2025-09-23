@@ -1,0 +1,8 @@
+mutation CreateUserRecord($input: UserCreate!) {
+            createUserRecord(data: $input) {
+                UserID
+                Nickname
+                FullName
+                IsActive
+            }
+        }

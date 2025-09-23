@@ -1,0 +1,16 @@
+mutation CreateCashbox($input: CashBoxesCreate!) {
+            createCashbox(data: $input) {
+                CashBoxID
+                CompanyID
+                BranchID
+                Name
+                Description
+                IsActive
+                OpenDate
+                CloseDate
+                InitialBalance
+                CurrentBalance
+                UserID
+                Notes
+            }
+        }

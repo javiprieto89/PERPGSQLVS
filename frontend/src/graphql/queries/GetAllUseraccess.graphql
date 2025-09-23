@@ -8,10 +8,10 @@ query GetAllUseraccess {
       FullName
     }
     CompanyData {
-      Name
+      CompanyName
     }
     BranchData {
-      Name
+      BranchName
     }
     RoleData {
       RoleName

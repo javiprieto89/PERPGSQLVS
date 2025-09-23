@@ -1,0 +1,10 @@
+mutation UpdateCreditCard($id: Int!, $input: CreditCardsUpdate!) {
+            updateCreditcard(id: $id, data: $input) {
+                CreditCardID
+                CreditCardGroupID
+                CardName
+                Surcharge
+                Installments
+                IsActive
+            }
+        }

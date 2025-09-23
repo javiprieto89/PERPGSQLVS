@@ -1,5 +1,6 @@
 // frontend/src/pages/Documents.jsx
 // TODO: recreate Graphql query to reduce the amount of queries
+// TODO: change Documents to CommercialDocuments
 import { useEffect, useState } from "react";
 import {
   branchOperations,

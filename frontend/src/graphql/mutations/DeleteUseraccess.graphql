@@ -1,0 +1,3 @@
+mutation DeleteUseraccess($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
+            deleteUseraccess(userID: $userID, companyID: $companyID, branchID: $branchID, roleID: $roleID)
+        }

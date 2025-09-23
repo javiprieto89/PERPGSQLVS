@@ -1,21 +1,21 @@
-query GetClientFormData($id: Int!) {
-  docTypes: allSysdoctypes {
+query GetClientFormData {
+  docTypes: sysIdentityDocTypes {
     DocTypeID
-    Name
+    DocTypeName
   }
   countries: allCountries {
     CountryID
-    Name
+    CountryName
   }
   provinces: allProvinces {
     ProvinceID
     CountryID
-    Name
+    ProvinceName
   }
   priceLists: allPricelists {
     PriceListID
-    Name
-    Description
+    PriceListName
+    PriceListDescription
     IsActive
   }
   vendors: allVendors {
@@ -25,6 +25,6 @@ query GetClientFormData($id: Int!) {
   }
   companies: allCompanydata {
     CompanyID
-    Name
+    CompanyName
   }
 }

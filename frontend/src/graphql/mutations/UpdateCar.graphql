@@ -1,0 +1,12 @@
+mutation UpdateCar($carID: Int!, $input: CarsUpdate!, $companyId: Int!) {
+  updateCar(carID: $carID, data: $input, companyID: $companyId) {
+    CarID
+    LicensePlate
+    Year
+    CarModelID
+    ClientID
+    LastServiceMileage
+    IsDebtor
+    DiscountID
+  }
+}

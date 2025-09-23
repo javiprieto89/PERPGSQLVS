@@ -1,0 +1,7 @@
+mutation UpdateDiscount($id: Int!, $input: DiscountsUpdate!) {
+            updateDiscount(id: $id, data: $input) {
+                DiscountID
+                DiscountName
+                Percentage
+            }
+        }

@@ -19,13 +19,13 @@ query GetUseraccessById(
       FullName
     }
     CompanyData {
-      Name
+      CompanyName
     }
     RoleData {
       RoleName
     }
     BranchData {
-      Name
+      BranchName
     }
   }
 }

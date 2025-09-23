@@ -1,0 +1,3 @@
+mutation DeleteBranch($companyID: Int!, $branchID: Int!) {
+            deleteBranch(companyID: $companyID, branchID: $branchID)
+        }

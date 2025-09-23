@@ -1,0 +1,6 @@
+mutation UpdateItemCategory($categoryID: Int!, $input: ItemCategoriesUpdate!) {
+  updateItemcategory(categoryID: $categoryID, data: $input) {
+    ItemCategoryID
+    CategoryName
+  }
+}

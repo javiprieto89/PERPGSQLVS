@@ -1,20 +1,21 @@
 query GetAllDocuments {
-  allDocuments {
+  allCommercialdocuments {
     DocumentID
     CompanyID
     BranchID
     DocumentTypeID
-    Description
     DocumentNumber
     PointOfSale
     IsActive
-    Testing
     ShouldAccount
-    MovesStock
     IsFiscal
     IsElectronic
     IsManual
     IsQuotation
     MaxItems
+    DocumentDescription
+    IsTest
+    FromDate
+    CurrencyID
   }
 }

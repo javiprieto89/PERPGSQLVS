@@ -1,0 +1,6 @@
+mutation UpdateCreditCardGroup($id: Int!, $input: CreditCardGroupsUpdate!) {
+            updateCreditcardgroup(id: $id, data: $input) {
+                CreditCardGroupID
+                GroupName
+            }
+        }

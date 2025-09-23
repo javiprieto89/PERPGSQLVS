@@ -83,7 +83,7 @@ export default function OrderCreate({
         companyId: String(initialOrder.CompanyID),
         branchId: String(initialOrder.BranchID),
         date:
-          initialOrder.Date_?.slice(0, 10) ||
+          initialOrder.OrderDate?.slice(0, 10) ||
           new Date().toISOString().slice(0, 10),
         clientId: String(initialOrder.ClientID || ""),
         carId: initialOrder.CarID ? String(initialOrder.CarID) : "",
@@ -462,7 +462,7 @@ export default function OrderCreate({
     const orderData = {
       CompanyID: parseInt(finalFormData.companyId),
       BranchID: parseInt(finalFormData.branchId),
-      Date_: new Date(finalFormData.date),
+      OrderDate: new Date(finalFormData.date),
       ClientID: parseInt(finalFormData.clientId),
       CarID: finalFormData.carId ? parseInt(finalFormData.carId) : null,
       IsService: Boolean(finalFormData.isService),

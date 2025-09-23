@@ -1,6 +1,6 @@
 query GetBranchesByCompany($companyID: Int!) {
   branchesByCompany(companyID: $companyID) {
     BranchID
-    Name
+    BranchName
   }
 }

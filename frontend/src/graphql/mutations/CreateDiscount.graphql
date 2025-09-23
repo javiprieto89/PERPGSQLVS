@@ -1,0 +1,7 @@
+mutation CreateDiscount($input: DiscountsCreate!) {
+            createDiscount(data: $input) {
+                DiscountID
+                DiscountName
+                Percentage
+            }
+        }

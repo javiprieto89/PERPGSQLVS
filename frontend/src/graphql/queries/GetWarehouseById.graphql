@@ -1,7 +1,7 @@
 query GetWarehouseById($id: Int!) {
   warehousesById(id: $id) {
     WarehouseID
-    Name
-    Addres
+    WarehouseName
+    Address
   }
 }

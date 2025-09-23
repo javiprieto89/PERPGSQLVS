@@ -1,0 +1,7 @@
+mutation UpdateWarehouse($warehouseID: Int!, $input: WarehousesUpdate!) {
+  updateWarehouse(warehouseID: $warehouseID, data: $input) {
+    WarehouseID
+    WarehouseName
+    Address
+  }
+}

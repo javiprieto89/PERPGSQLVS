@@ -1,0 +1,10 @@
+mutation CreateSaleCondition($input: SaleConditionsCreate!) {
+            createSalecondition(data: $input) {
+                SaleConditionID
+                CreditCardID
+                Name
+                DueDate
+                Surcharge
+                IsActive
+            }
+        }

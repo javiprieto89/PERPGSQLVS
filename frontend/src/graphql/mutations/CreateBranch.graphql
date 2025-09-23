@@ -1,0 +1,7 @@
+mutation CreateBranch($input: BranchesCreate!) {
+  createBranch(data: $input) {
+    BranchID
+    CompanyID
+    BranchName
+  }
+}

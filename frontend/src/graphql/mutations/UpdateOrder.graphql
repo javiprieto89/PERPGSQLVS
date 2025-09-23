@@ -1,0 +1,39 @@
+mutation UpdateOrder(
+  $orderID: Int!
+  $input: OrdersUpdate!
+  $brandId: Int!
+  $companyId: Int!
+) {
+  updateOrder(
+    orderID: $orderID
+    data: $input
+    branchID: $brandId
+    companyID: $companyId
+  ) {
+    order {
+      OrderID
+      CompanyID
+      BranchID
+      OrderDate
+      ClientID
+      CarID
+      IsService
+      ServiceTypeID
+      Mileage
+      NextServiceMileage
+      Notes
+      SaleConditionID
+      DiscountID
+      Subtotal
+      Total
+      VatAmount
+      UserID
+      DocumentID
+      PriceListID
+      OrderStatusID
+      WarehouseID
+    }
+    sessionID
+    message
+  }
+}

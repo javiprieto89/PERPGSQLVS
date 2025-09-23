@@ -1,11 +1,11 @@
 query GetAllBrands {
   allBrands {
     BrandID
-    Name
+    BrandName
     IsActive
     CompanyData {
       CompanyID
-      Name
+      CompanyName
     }
   }
 }

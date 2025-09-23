@@ -1,9 +1,9 @@
-query GetOrderById($id: Int!) {
-  ordersById(id: $id) {
+query GetOrderById($id: Int!, $branchId: Int!, $companyId: Int!) {
+  ordersById(id: $id, branchID: $branchId, companyID: $companyId) {
     OrderID
     CompanyID
     BranchID
-    Date_
+    OrderDate
     ClientID
     CarID
     IsService
@@ -15,7 +15,8 @@ query GetOrderById($id: Int!) {
     DiscountID
     Subtotal
     Total
-    VAT
+    # TODO: VatAmount should be replaced by Taxes
+    VatAmount
     UserID
     DocumentID
     PriceListID
@@ -26,7 +27,7 @@ query GetOrderById($id: Int!) {
       ItemID
       Quantity
       UnitPrice
-      Description
+      LineDescription
     }
   }
 }

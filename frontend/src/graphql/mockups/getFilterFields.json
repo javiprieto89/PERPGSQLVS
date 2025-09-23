@@ -2,44 +2,86 @@
   "data": {
     "filterFields": [
       {
-        "field": "SaleConditionID",
-        "label": "ID de condición",
+        "field": "ClientID",
+        "label": "ID de cliente",
         "type": "number",
         "relationModel": null,
         "dependsOn": null
       },
       {
-        "field": "CreditCardID",
-        "label": "Tarjeta",
+        "field": "DocTypeID",
+        "label": "Tipo de documento",
         "type": "select",
-        "relationModel": "CreditCard",
+        "relationModel": "DocType",
         "dependsOn": null
       },
       {
-        "field": "CardName",
-        "label": "Tarjeta (nombre)",
+        "field": "DocNumber",
+        "label": "Número de documento",
         "type": "text",
         "relationModel": null,
         "dependsOn": null
       },
       {
-        "field": "Name",
+        "field": "CompanyID",
+        "label": "Compañía",
+        "type": "select",
+        "relationModel": "Company",
+        "dependsOn": null
+      },
+      {
+        "field": "BranchID",
+        "label": "Sucursal",
+        "type": "select",
+        "relationModel": "Branch",
+        "dependsOn": "CompanyID"
+      },
+      {
+        "field": "FirstName",
         "label": "Nombre",
         "type": "text",
         "relationModel": null,
         "dependsOn": null
       },
       {
-        "field": "DueDate",
-        "label": "Vencimiento",
+        "field": "LastName",
+        "label": "Apellido",
         "type": "text",
         "relationModel": null,
         "dependsOn": null
       },
       {
-        "field": "Surcharge",
-        "label": "Recargo",
-        "type": "number",
+        "field": "Phone",
+        "label": "Teléfono",
+        "type": "text",
+        "relationModel": null,
+        "dependsOn": null
+      },
+      {
+        "field": "Email",
+        "label": "Correo electrónico",
+        "type": "text",
+        "relationModel": null,
+        "dependsOn": null
+      },
+      {
+        "field": "Address",
+        "label": "Dirección",
+        "type": "text",
+        "relationModel": null,
+        "dependsOn": null
+      },
+      {
+        "field": "City",
+        "label": "Ciudad",
+        "type": "text",
+        "relationModel": null,
+        "dependsOn": null
+      },
+      {
+        "field": "PostalCode",
+        "label": "Código postal",
+        "type": "text",
         "relationModel": null,
         "dependsOn": null
       },
@@ -48,6 +90,34 @@
         "label": "Activo",
         "type": "boolean",
         "relationModel": null,
+        "dependsOn": null
+      },
+      {
+        "field": "CountryID",
+        "label": "País",
+        "type": "select",
+        "relationModel": "Country",
+        "dependsOn": null
+      },
+      {
+        "field": "ProvinceID",
+        "label": "Provincia",
+        "type": "select",
+        "relationModel": "Province",
+        "dependsOn": "CountryID"
+      },
+      {
+        "field": "PriceListID",
+        "label": "Lista de precios",
+        "type": "select",
+        "relationModel": "PriceList",
+        "dependsOn": null
+      },
+      {
+        "field": "VendorID",
+        "label": "Vendedor",
+        "type": "select",
+        "relationModel": "Vendor",
         "dependsOn": null
       }
     ]

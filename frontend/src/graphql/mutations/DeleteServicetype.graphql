@@ -1,0 +1,6 @@
+mutation DeleteServicetype($serviceTypeID: Int!, $companyId: Int!) {
+  deleteServicetype(serviceTypeID: $serviceTypeID, companyID: $companyId) {
+    success
+    message
+  }
+}

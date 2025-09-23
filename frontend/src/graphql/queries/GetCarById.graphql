@@ -1,5 +1,5 @@
-query GetCarById($id: Int!) {
-  carsById(id: $id) {
+query GetCarById($id: Int!, $companyId: Int!) {
+  carsById(id: $id, companyID: $companyId) {
     CarID
     LicensePlate
     Year
@@ -10,10 +10,10 @@ query GetCarById($id: Int!) {
     IsDebtor
     DiscountID
     CarModelData {
-      Model
+      CarModelName
     }
     CarBrandData {
-      Name
+      CarBrandName
     }
     ClientData {
       FirstName

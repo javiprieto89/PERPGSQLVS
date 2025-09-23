@@ -1,0 +1,3 @@
+mutation DeletePricelistItem($pricelistID: Int!, $itemID: Int!) {
+            deletePricelistitem(pricelistID: $pricelistID, itemID: $itemID)
+        }

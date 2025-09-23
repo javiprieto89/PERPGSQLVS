@@ -1,0 +1,6 @@
+mutation DeleteDocument($documentID: Int!) {
+            deleteDocument(documentID: $documentID) {
+                success
+                message
+            }
+        }

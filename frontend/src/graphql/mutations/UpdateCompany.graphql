@@ -1,0 +1,11 @@
+mutation UpdateCompany($companyID: Int!, $input: CompanyDataUpdate!) {
+  updateCompany(companyID: $companyID, data: $input) {
+    CompanyID
+    CompanyName
+    Address
+    CUIT
+    Grossincome
+    Startdate
+    Logo
+  }
+}

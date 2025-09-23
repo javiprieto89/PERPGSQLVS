@@ -1,0 +1,7 @@
+mutation CreateWarehouse($input: WarehousesCreate!) {
+  createWarehouse(data: $input) {
+    WarehouseID
+    WarehouseName
+    Address
+  }
+}

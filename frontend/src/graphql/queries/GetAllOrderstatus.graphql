@@ -1,6 +1,0 @@
-query GetAllOrderstatus {
-  allSysorderstatus {
-    OrderStatusID
-    Status
-  }
-}

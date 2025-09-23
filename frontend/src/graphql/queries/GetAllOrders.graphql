@@ -3,7 +3,7 @@ query GetAllOrders {
     OrderID
     CompanyID
     BranchID
-    Date_
+    OrderDate
     ClientID
     CarID
     IsService
@@ -15,7 +15,8 @@ query GetAllOrders {
     DiscountID
     Subtotal
     Total
-    VAT
+    # Taxes
+    VatAmount
     UserID
     DocumentID
     PriceListID

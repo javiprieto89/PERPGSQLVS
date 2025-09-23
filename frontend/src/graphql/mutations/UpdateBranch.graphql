@@ -1,0 +1,11 @@
+mutation UpdateBranch(
+  $companyID: Int!
+  $branchID: Int!
+  $input: BranchesUpdate!
+) {
+  updateBranch(companyID: $companyID, branchID: $branchID, data: $input) {
+    BranchID
+    CompanyID
+    BranchName
+  }
+}

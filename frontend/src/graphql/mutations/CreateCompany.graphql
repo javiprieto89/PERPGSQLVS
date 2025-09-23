@@ -1,0 +1,11 @@
+mutation CreateCompany($input: CompanyDataCreate!) {
+  createCompany(data: $input) {
+    CompanyID
+    CompanyName
+    Address
+    CUIT
+    Grossincome
+    Startdate
+    Logo
+  }
+}

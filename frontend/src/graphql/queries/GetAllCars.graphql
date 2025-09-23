@@ -9,11 +9,11 @@ query GetAllCars {
     IsDebtor
     DiscountID
     CarModelData {
-      Model
+      CarModelName
     }
     CarBrandData {
       CarBrandID
-      Name
+      CarBrandName
     }
     ClientData {
       FirstName

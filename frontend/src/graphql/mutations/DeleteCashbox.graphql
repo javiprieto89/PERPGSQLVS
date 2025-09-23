@@ -1,0 +1,3 @@
+mutation DeleteCashbox($cashBoxID: Int!) {
+            deleteCashbox(cashBoxID: $cashBoxID)
+        }

@@ -1,0 +1,3 @@
+mutation DeleteOrder($orderID: Int!, $branchId: Int!, $companyId: Int!) {
+  deleteOrder(orderID: $orderID, branchID: $branchId, companyID: $companyId)
+}

@@ -1,0 +1,14 @@
+mutation UpdateServicetype(
+  $serviceTypeID: Int!
+  $input: ServiceTypeUpdate!
+  $companyId: Int!
+) {
+  updateServicetype(
+    serviceTypeID: $serviceTypeID
+    data: $input
+    companyID: $companyId
+  ) {
+    ServiceTypeID
+    ServiceTypeName
+  }
+}

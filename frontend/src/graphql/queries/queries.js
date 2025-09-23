@@ -501,7 +501,7 @@ export const QUERIES = {
                 OrderID
                 CompanyID
                 BranchID
-                Date_
+                OrderDate
                 ClientID
                 CarID
                 IsService
@@ -513,7 +513,7 @@ export const QUERIES = {
                 DiscountID
                 Subtotal
                 Total
-                VAT
+                Taxes
                 UserID
                 DocumentID
                 PriceListID
@@ -542,7 +542,7 @@ export const QUERIES = {
                 DiscountID
                 Subtotal
                 Total
-                VAT
+                Taxes
                 UserID
                 DocumentID
                 PriceListID

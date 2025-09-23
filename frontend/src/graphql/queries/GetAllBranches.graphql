@@ -2,11 +2,11 @@ query GetAllBranches {
   allBranches {
     BranchID
     CompanyID
-    Name
+    BranchName
     Address
     Phone
     CompanyData {
-      Name
+      CompanyName
     }
   }
 }

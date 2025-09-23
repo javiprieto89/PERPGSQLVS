@@ -1,0 +1,6 @@
+mutation CreateCreditCardGroup($input: CreditCardGroupsCreate!) {
+            createCreditcardgroup(data: $input) {
+                CreditCardGroupID
+                GroupName
+            }
+        }

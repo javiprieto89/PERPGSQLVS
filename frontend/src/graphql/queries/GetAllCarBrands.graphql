@@ -1,7 +1,7 @@
 query GetAllCarBrands {
   allCarbrands {
     CarBrandID
-    Name
+    CarBrandName
     CompanyID
   }
 }

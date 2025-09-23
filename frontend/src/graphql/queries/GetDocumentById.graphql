@@ -1,16 +1,16 @@
 query GetDocumentById($id: Int!) {
-  documentsById(id: $id) {
+  commercialdocumentsById(id: $id) {
     DocumentID
     CompanyID
     BranchID
     DocumentTypeID
-    Description
+    DocumentDescription
     DocumentNumber
     PointOfSale
     IsActive
-    Testing
+    IsTest
     ShouldAccount
-    MovesStock
+    AffectsStock
     IsFiscal
     IsElectronic
     IsManual

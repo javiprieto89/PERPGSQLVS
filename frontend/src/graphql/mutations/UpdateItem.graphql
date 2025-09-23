@@ -1,0 +1,6 @@
+mutation UpdateItem($itemID: Int!, $input: ItemsUpdate!, $companyId: Int!) {
+  updateItem(itemID: $itemID, data: $input, companyID: $companyId) {
+    ItemID
+    ItemCode
+  }
+}
