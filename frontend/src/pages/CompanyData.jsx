@@ -121,8 +121,8 @@ export default function CompanyData() {
   );
 
   useEffect(() => {
-    if (data?.allCompanydata) {
-      setCompanies(data.allCompanydata);
+    if (data?.allCompany) {
+      setCompanies(data.allCompany);
     }
   }, [data]);
 
@@ -184,7 +184,7 @@ export default function CompanyData() {
     <section className="section">
       <AdminTopBar title="Empresas" quickAccessHidden>
         <div className="ml-auto flex gap-2">
-          {data && data.allCompanydata.length > 0 && (
+          {data && data.allCompany.length > 0 && (
             <>
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
@@ -200,7 +200,7 @@ export default function CompanyData() {
         {showFilters && (
           <TableFilters
             modelName="companydata"
-            data={data.allCompanydata || []}
+            data={data.allCompany || []}
             onFilterChange={handleFilterChange}
           />
         )}

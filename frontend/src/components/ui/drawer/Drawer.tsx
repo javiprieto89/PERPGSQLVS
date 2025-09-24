@@ -4,7 +4,7 @@ import { createContext, type PropsWithChildren, useCallback, useContext, useRef 
 import clsx from "clsx";
 import { useFocus } from "~/hooks/useFocus";
 import { useOverflow } from "~/hooks/useOverflow";
-import { Button, ButtonProps } from "../button";
+import { Button, type ButtonProps } from "../button";
 import styles from './Drawer.module.css';
 
 const drawerVariants = cva(

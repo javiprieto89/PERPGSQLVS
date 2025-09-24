@@ -23,7 +23,7 @@ export function CompanyDropdown({ ...props }) {
       <SelectContent>
         <SelectGroup>
           {/* <SelectLabel>Fruits</SelectLabel> */}
-          {data?.allCompanydata.map((c) => (
+          {data?.allCompany.map((c) => (
             <SelectItem
               key={c.CompanyID}
               value={String(c.CompanyID)}

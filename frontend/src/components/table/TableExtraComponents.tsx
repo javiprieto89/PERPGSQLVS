@@ -1,6 +1,6 @@
-import { Column, type Table } from '@tanstack/react-table';
+import { type Column, type Table } from '@tanstack/react-table';
 import { CheckCircle, ChevronDown, ChevronFirst, ChevronLast, ChevronLeft, ChevronRight, Columns2, EllipsisVertical, Eye, Loader, Pencil, Save, Trash, X } from "lucide-react";
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { NavLink, type NavLinkProps } from 'react-router';
 
 import { cn } from '~/lib/utils';

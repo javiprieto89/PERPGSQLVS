@@ -51,9 +51,9 @@ export default function UserAccessForm({
         );
         setUsers(userRes.allUsers || []);
         const companyRes = await graphqlClient.query(
-          `query { allCompanydata { CompanyID Name } }`
+          `query { allCompany { CompanyID Name } }`
         );
-        setCompanies(companyRes.allCompanydata || []);
+        setCompanies(companyRes.allCompany || []);
         const roleRes = await graphqlClient.query(
           `query { allRoles { RoleID RoleName } }`
         );

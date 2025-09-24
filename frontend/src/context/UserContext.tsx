@@ -1,7 +1,7 @@
 // src/context/UserContext.jsx
 import { type ApolloError } from "@apollo/client";
 import { atom, useAtom } from 'jotai';
-import { createContext, PropsWithChildren, useContext, useEffect } from "react";
+import { createContext, type PropsWithChildren, useContext, useEffect } from "react";
 import { useLoginMutation } from '~/graphql/_generated/graphql';
 import { AuthHelper, type UserAccess, type UserData } from "~/utils/authHelper";
 

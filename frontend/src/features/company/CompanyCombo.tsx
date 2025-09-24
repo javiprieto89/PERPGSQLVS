@@ -51,7 +51,7 @@ export function CompanyCombo({ onSelect, defaultValue, id }: {
           >
             {loading ? "Loading..." : (
               value
-                ? data?.allCompanydata.find((c) => String(c.CompanyID) === value)?.Name
+                ? data?.allCompany.find((c) => String(c.CompanyID) === value)?.CompanyName
                 : "Select company..."
             )}
             <ChevronsUpDown className="opacity-50" />
@@ -63,18 +63,18 @@ export function CompanyCombo({ onSelect, defaultValue, id }: {
             <CommandList>
               <CommandEmpty>No framework found.</CommandEmpty>
               <CommandGroup>
-                {data?.allCompanydata.map((c) => (
+                {data?.allCompany.map((c) => (
                   <CommandItem
                     key={c.CompanyID}
-                    value={String(c.Name)}
-                    onSelect={(currentValue) => {
+                    value={String(c.CompanyName)}
+                    onSelect={() => {
                       const newValue = value === String(c.CompanyID) ? "" : String(c.CompanyID);
                       setValue(newValue)
                       onSelect(newValue);
                       setOpen(false)
                     }}
                   >
-                    {c.Name}
+                    {c.CompanyName}
                     <Check
                       className={cn(
                         "ml-auto",

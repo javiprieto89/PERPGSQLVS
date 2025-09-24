@@ -1,8 +1,7 @@
 import { RefreshCcw } from "lucide-react";
-import { ButtonProps } from "react-day-picker";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-import { Button } from "../ui/button";
+import { Button, type ButtonProps } from "../ui/button";
 
 export function RefreshButton({ loading, ...props }: ButtonProps & { loading?: boolean }) {
   return (

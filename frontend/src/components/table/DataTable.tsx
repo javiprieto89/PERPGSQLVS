@@ -1,4 +1,4 @@
-import { Column, type ColumnDef, flexRender, getCoreRowModel, getExpandedRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, type Row, type TableOptions, useReactTable, type VisibilityState } from '@tanstack/react-table';
+import { type Column, type ColumnDef, flexRender, getCoreRowModel, getExpandedRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, type Row, type TableOptions, useReactTable, type VisibilityState } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
@@ -60,9 +60,9 @@ export function DataTable<TData>({ columnGroupName, columns, data, caption, colu
     getPaginationRowModel: getPaginationRowModel(),
 
     // debug
-    debugTable: true,
-    debugHeaders: true,
-    debugColumns: true,
+    // debugTable: true,
+    // debugHeaders: true,
+    // debugColumns: true,
 
     // column visibility
     state: {
@@ -155,8 +155,8 @@ export function DataTable<TData>({ columnGroupName, columns, data, caption, colu
         </Table>
       </div>
       <TablePagination table={table} />
-      <div className="h-4" />
-      <pre>{JSON.stringify(table.getState().columnVisibility, null, 2)}</pre>
+      {/* <div className="h-4" />
+      <pre>{JSON.stringify(table.getState().columnVisibility, null, 2)}</pre> */}
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { type GetAllClientsQuery, useGetAllClientsQuery } from "~/graphql/_generated/graphql";
 import { cn } from "~/lib/utils";
 
-import { Button, ButtonProps } from "~/components/ui/button";
+import { Button, type ButtonProps } from "~/components/ui/button";
 import {
   Command,
   CommandEmpty,

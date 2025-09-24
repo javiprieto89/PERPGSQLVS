@@ -7,7 +7,7 @@ import {
   Ship,
   UserRoundCog
 } from "lucide-react";
-import { NavLink, NavLinkProps } from "react-router-dom";
+import { NavLink, type NavLinkProps } from "react-router-dom";
 
 import {
   DiagnosticButton

@@ -4,7 +4,7 @@ import { Info, LoaderCircle, Stethoscope } from "lucide-react";
 import { diagnosticInfoAtom, useDiagnostic } from "~/hooks/useDiagnostic";
 
 import { Alert } from "~/components/ui/alert";
-import { Button, ButtonProps } from "~/components/ui/button";
+import { Button, type ButtonProps } from "~/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export function DiagnosticButton(props: ButtonProps) {

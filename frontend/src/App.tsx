@@ -1,5 +1,6 @@
 // src/App.jsx
 import { ApolloProvider } from "@apollo/client";
+import { type PropsWithChildren } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import apolloClient from "~/lib/apollo";
@@ -7,7 +8,6 @@ import { useTabSession } from "./hooks/useTabSession";
 
 import { AdminLayout } from "./layout/Layout";
 
-import { PropsWithChildren } from "react";
 import { UserProvider } from "./context/UserContext";
 import Branches from "./pages/Branches";
 import Brands from "./pages/Brands";
