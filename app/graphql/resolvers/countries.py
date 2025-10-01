@@ -7,6 +7,7 @@ from app.db import get_db
 from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
 
+
 @strawberry.type
 class CountriesQuery:
     @strawberry.field
@@ -15,15 +16,7 @@ class CountriesQuery:
         db = next(db_gen)
         try:
             countries = get_countries(db)
-            result = []
-            for country in countries:
-                country_dict = country.__dict__
-                filtered_dict = {
-                    'CountryID': int(country_dict['CountryID']),
-                    'Name': str(country_dict['Name'])
-                }
-                result.append(CountriesInDB(**filtered_dict))
-            return result
+            return list_to_schema(CountriesInDB, countries)
         finally:
             db_gen.close()
 
@@ -33,16 +26,9 @@ class CountriesQuery:
         db = next(db_gen)
         try:
             country = get_countries_by_id(db, id)
-            if country:
-                country_dict = country.__dict__
-                filtered_dict = {
-                    'CountryID': int(country_dict['CountryID']),
-                    'Name': str(country_dict['Name'])
-                }
-                return CountriesInDB(**filtered_dict)
-            return None
+            return obj_to_schema(CountriesInDB, country) if country else None
         finally:
             db_gen.close()
 
-countriesQuery = CountriesQuery()
 
+countriesQuery = CountriesQuery()

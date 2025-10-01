@@ -12,6 +12,7 @@ def get_suppliers(db: Session):
             joinedload(Suppliers.docTypes_),
             joinedload(Suppliers.countries_),
             joinedload(Suppliers.provinces_),
+            joinedload(Suppliers.company_),
         )
         .all()
     )
@@ -25,6 +26,7 @@ def get_suppliers_by_company(db: Session, company_id: int):
             joinedload(Suppliers.docTypes_),
             joinedload(Suppliers.countries_),
             joinedload(Suppliers.provinces_),
+            joinedload(Suppliers.company_),
         )
         .filter(Suppliers.CompanyID == company_id)
         .all()
@@ -39,10 +41,12 @@ def get_suppliers_by_branch(db: Session, company_id: int, branch_id: int):
             joinedload(Suppliers.docTypes_),
             joinedload(Suppliers.countries_),
             joinedload(Suppliers.provinces_),
+            joinedload(Suppliers.company_),
         )
         .filter(Suppliers.CompanyID == company_id, Suppliers.BranchID == branch_id)
         .all()
     )
+
 
 def get_suppliers_by_id(db: Session, supplierid: int):
     return (
@@ -51,6 +55,7 @@ def get_suppliers_by_id(db: Session, supplierid: int):
             joinedload(Suppliers.docTypes_),
             joinedload(Suppliers.countries_),
             joinedload(Suppliers.provinces_),
+            joinedload(Suppliers.company_),
         )
         .filter(Suppliers.SupplierID == supplierid)
         .first()
@@ -79,7 +84,8 @@ def update_suppliers(db: Session, supplierid: int, data: SuppliersUpdate):
 def delete_suppliers(db: Session, supplierid: int):
     obj = get_suppliers_by_id(db, supplierid)
     if obj:
-        linked_items = db.query(Items).filter(Items.SupplierID == supplierid).first() is not None
+        linked_items = db.query(Items).filter(
+            Items.SupplierID == supplierid).first() is not None
         linked_accounts = db.query(AccountBalances).filter(
             AccountBalances.SupplierID == supplierid
         ).first() is not None
@@ -90,4 +96,3 @@ def delete_suppliers(db: Session, supplierid: int):
         db.delete(obj)
         db.commit()
     return obj
-

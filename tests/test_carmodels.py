@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import pytest
 from app.graphql.crud.carmodels import create_carmodels, get_carmodels, update_carmodels, delete_carmodels
 from app.graphql.schemas.carmodels import CarModelsCreate, CarModelsUpdate
@@ -6,7 +7,7 @@ from app.models.carbrands import CarBrands
 
 def test_create_get_update_delete_carmodels(db_session):
     # Crear dependencia CarBrand
-    carbrand = CarBrands(Name="CarBrand Test")
+    carbrand = CarBrands(CarBrandName="CarBrand Test")
     db_session.add(carbrand)
     db_session.commit()
     db_session.refresh(carbrand)

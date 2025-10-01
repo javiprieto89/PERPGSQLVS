@@ -3,28 +3,26 @@
 from __future__ import annotations
 
 from sqlalchemy import (
-    Column,
+
     Integer,
     Identity,
     PrimaryKeyConstraint,
     ForeignKeyConstraint,
 )
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 
 from app.db import Base
-
 
 class ItemTaxes(Base):
     __tablename__ = 'ItemTaxes'
     __table_args__ = (
         ForeignKeyConstraint(['CompanyID', 'BranchID'], ['Branches.CompanyID', 'Branches.BranchID'], name='FK_ItemTaxes_CompanyBranch'),
-        ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK_ItemTaxes_Item'),
-        ForeignKeyConstraint(['TaxID'], ['Taxes.TaxID'], name='FK_ItemTaxes_Tax'),
-        PrimaryKeyConstraint('ItemTaxID', name='PK__ItemTaxe__0E367AA2F11B9CE0'),
+        ForeignKeyConstraint(['CompanyID','ItemID'], ['Items.CompanyID','Items.ItemID'], name='FK_ItemTaxes_Items'),
+        ForeignKeyConstraint(['CompanyID','BranchID','TaxID'], ['Taxes.CompanyID','Taxes.BranchID','Taxes.TaxID'], name='FK_ItemTaxes_Taxes'),
+        PrimaryKeyConstraint('CompanyID','BranchID','ItemID','TaxID', name='PK_ItemTaxes'),
     )
 
-    ItemTaxID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    CompanyID = Column(Integer, nullable=False)
-    BranchID = Column(Integer, nullable=False)
-    ItemID = Column(Integer, nullable=False)
-    TaxID = Column(Integer, nullable=False)
+    CompanyID: Mapped[int] = mapped_column(Integer, nullable=False)
+    BranchID: Mapped[int] = mapped_column(Integer, nullable=False)
+    ItemID: Mapped[int] = mapped_column(Integer, nullable=False)
+    TaxID: Mapped[int] = mapped_column(Integer, nullable=False)

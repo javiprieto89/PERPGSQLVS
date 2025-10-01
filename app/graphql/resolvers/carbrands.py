@@ -24,11 +24,11 @@ class CarbrandsQuery:
             db_gen.close()
 
     @strawberry.field
-    def carbrands_by_id(self, info: Info, id: int) -> Optional[CarBrandsInDB]:
+    def carbrands_by_id(self, info: Info, companyID: int, id: int) -> Optional[CarBrandsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            item = get_carbrands_by_id(db, id)
+            item = get_carbrands_by_id(db, companyID, id)
             return obj_to_schema(CarBrandsInDB, item) if item else None
         finally:
             db_gen.close()

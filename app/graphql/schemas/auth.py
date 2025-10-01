@@ -2,16 +2,18 @@
 import strawberry
 from typing import List, Optional
 
+
 @strawberry.type
-class UserAccessInfo:
+class UserPermissionsInfo:
     """Información de acceso del usuario"""
     UserID: int
     CompanyID: int
-    Company: str
+    CompanyName: str
     BranchID: int
-    Branch: str
+    BranchName: str
     RoleID: int
-    Role: str
+    RoleName: str
+
 
 @strawberry.type
 class UserInfo:
@@ -20,13 +22,15 @@ class UserInfo:
     Nickname: str
     FullName: Optional[str] = None  # Cambiado de Fullname a FullName
     IsActive: bool
-    UserAccess: List[UserAccessInfo]
+    UserPermissions: List[UserPermissionsInfo]
+
 
 @strawberry.input
 class LoginInput:
     """Input para login"""
     nickname: str
     password: str
+
 
 @strawberry.type
 class LoginResponse:
@@ -36,6 +40,7 @@ class LoginResponse:
     token: Optional[str] = None
     user: Optional[UserInfo] = None
 
+
 @strawberry.input
 class UserCreateInput:
     """Input para crear usuario"""
@@ -44,12 +49,14 @@ class UserCreateInput:
     password: str
     is_active: bool = True
 
+
 @strawberry.input
 class PasswordChangeInput:
     """Input para cambiar contraseña"""
     user_id: int
     current_password: str
     new_password: str
+
 
 @strawberry.type
 class AuthResponse:

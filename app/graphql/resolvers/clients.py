@@ -25,7 +25,7 @@ class ClientsQuery:
         finally:
             db_gen.close()
 
-    @strawberry.field
+    @strawberry.field(name="clientsById")
     def clients_by_id(self, info: Info, id: int) -> Optional[ClientsInDB]:
         db_gen = get_db()
         db = next(db_gen)
@@ -48,9 +48,9 @@ class ClientsQuery:
 
     @strawberry.field
     def clients_by_branch(
-        self, info: Info, companyID: int, branchID: int
+        self, info: Info, companyID: int, branchID: Optional[int] = None
     ) -> List[ClientsInDB]:
-        """Obtener clientes filtrados por CompanyID y BranchID"""
+        """Obtener clientes filtrados por CompanyID y opcionalmente BranchID"""
         db_gen = get_db()
         db = next(db_gen)
         try:

@@ -1,0 +1,59 @@
+# ========== SysCurrencies ==========
+# app/models/syscurrencies.py
+from __future__ import annotations
+
+from typing import Optional
+
+from sqlalchemy import (
+    Boolean,
+    Identity,
+    Integer,
+    PrimaryKeyConstraint,
+    String,
+    UniqueConstraint,
+    Unicode,
+    text,
+)
+from sqlalchemy.orm import Mapped, mapped_column
+
+from app.db import Base
+
+
+class SysCurrencies(Base):
+    __tablename__ = "sysCurrencies"
+    __table_args__ = (
+        PrimaryKeyConstraint("CurrencyID", name="PK_sysCurrency"),
+        UniqueConstraint("Code", name="UQ_sysCurrencies_Code"),
+    )
+
+    CurrencyID: Mapped[int] = mapped_column(
+        Integer,
+        Identity(start=1, increment=1),
+        nullable=False,
+    )
+    CurrencyName: Mapped[str] = mapped_column(
+        Unicode(100, "Modern_Spanish_CI_AS"),
+        nullable=False,
+    )
+    Symbol: Mapped[str] = mapped_column(
+        Unicode(10, "Modern_Spanish_CI_AS"),
+        nullable=False,
+    )
+    IsBase: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        server_default=text("((0))"),
+    )
+    IsActive: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        server_default=text("((1))"),
+    )
+    Code: Mapped[Optional[str]] = mapped_column(
+        String(8, "Modern_Spanish_CI_AS"),
+        nullable=True,
+    )
+    Name: Mapped[str] = mapped_column(
+        String(50, "Modern_Spanish_CI_AS"),
+        nullable=False,
+    )

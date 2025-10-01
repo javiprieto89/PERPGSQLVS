@@ -38,7 +38,7 @@ class Clients:
 
 
 @strawberry.type
-class CompanyData:
+class Company:
     pass  # TODO: completar campos manualmente
 
 
@@ -83,7 +83,7 @@ class ItemCategories:
 
 
 @strawberry.type
-class ItemPriceHistory:
+class itempricehistories:
     pass  # TODO: completar campos manualmente
 
 
@@ -188,7 +188,7 @@ class transactionTypes:
 
 
 @strawberry.type
-class UserAccess:
+class UserPermissions:
     pass  # TODO: completar campos manualmente
 
 
@@ -210,4 +210,3 @@ class Users:
 @strawberry.type
 class Warehouses:
     pass  # TODO: completar campos manualmente
-

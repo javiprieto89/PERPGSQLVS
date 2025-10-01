@@ -5,16 +5,18 @@ from app.graphql.schemas.carmodels import CarModelsInDB
 from app.graphql.schemas.carbrands import CarBrandsInDB
 from app.graphql.schemas.clients import ClientsInDB
 from app.graphql.schemas.discounts import DiscountsInDB
-from app.graphql.schemas.companydata import CompanyDataInDB
+from app.graphql.schemas.company import CompanyInDB
 
 
 @strawberry.input
 class CarsCreate:
-    LicensePlate: str
-    Year: Optional[int] = None
+    CompanyID: int
+    BranchID: Optional[int] = None
+    CarBrandID: Optional[int] = None
     CarModelID: int
     ClientID: int
-    CompanyID: Optional[int] = None
+    LicensePlate: str
+    Year: Optional[int] = None
     LastServiceMileage: Optional[int] = None
     IsDebtor: Optional[bool] = None
     DiscountID: int
@@ -22,11 +24,13 @@ class CarsCreate:
 
 @strawberry.input
 class CarsUpdate:
-    LicensePlate: Optional[str] = None
-    Year: Optional[int] = None
+    CompanyID: Optional[int] = None
+    BranchID: Optional[int] = None
+    CarBrandID: Optional[int] = None
     CarModelID: Optional[int] = None
     ClientID: Optional[int] = None
-    CompanyID: Optional[int] = None
+    LicensePlate: Optional[str] = None
+    Year: Optional[int] = None
     LastServiceMileage: Optional[int] = None
     IsDebtor: Optional[bool] = None
     DiscountID: Optional[int] = None
@@ -34,12 +38,14 @@ class CarsUpdate:
 
 @strawberry.type
 class CarsInDB:
+    CompanyID: int | None
     CarID: int
+    BranchID: Optional[int] = None
+    CarBrandID: Optional[int] = None
     LicensePlate: str
     Year: Optional[int] = None
     CarModelID: int
     ClientID: int
-    CompanyID: Optional[int] = None
     LastServiceMileage: Optional[int] = None
     IsDebtor: Optional[bool] = None
     DiscountID: int
@@ -47,4 +53,4 @@ class CarsInDB:
     CarBrandData: Optional[CarBrandsInDB] = None
     ClientData: Optional[ClientsInDB] = None
     DiscountData: Optional[DiscountsInDB] = None
-    CompanyData: Optional[CompanyDataInDB] = None
+    CompanyData: Optional[CompanyInDB] = None

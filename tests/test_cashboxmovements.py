@@ -1,18 +1,19 @@
+from datetime import datetime, timezone
 import pytest
 from app.graphql.crud.cashboxmovements import create_cashboxmovements, get_cashboxmovements, update_cashboxmovements, delete_cashboxmovements
 from app.graphql.schemas.cashboxmovements import CashBoxMovementsCreate, CashBoxMovementsUpdate
 from app.models.cashboxes import CashBoxes
-from app.models.companydata import CompanyData
+from app.models.company import Company
 from app.models.branches import Branches
 
 
 def test_create_get_update_delete_cashboxmovements(db_session):
     # Crear dependencias mínimas
-    company = CompanyData(Name="Test Company")
+    company = Company(CompanyName="Test Company")
     db_session.add(company)
     db_session.commit()
     db_session.refresh(company)
-    branch = Branches(CompanyID=company.CompanyID, Name="Sucursal Test")
+    branch = Branches(CompanyID=company.CompanyID, BranchName="Sucursal Test")
     db_session.add(branch)
     db_session.commit()
     db_session.refresh(branch)

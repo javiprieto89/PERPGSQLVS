@@ -38,10 +38,12 @@ def create_orderdetails(db: Session, data: OrderDetailsCreate):
         obj_data['OrderID'] = data.OrderID
         
     obj_data.update({
+        'CompanyID': data.CompanyID,
+        'BranchID': data.BranchID,
         'ItemID': data.ItemID,
         'Quantity': data.Quantity,
         'UnitPrice': data.UnitPrice,
-        'Description': data.Description
+        'LineDescription': data.LineDescription
     })
     
     if data.LastModified is not None:
@@ -59,8 +61,8 @@ def update_orderdetails(db: Session, orderdetailid: int, data: OrderDetailsUpdat
     if obj:
         # Actualizar solo los campos que no son None
         update_fields = [
-            'OrderID', 'ItemID', 'Quantity', 'UnitPrice', 
-            'Description', 'LastModified'
+            'CompanyID', 'BranchID', 'OrderID', 'ItemID', 'Quantity', 'UnitPrice',
+            'LineDescription', 'LastModified'
         ]
         
         for field in update_fields:

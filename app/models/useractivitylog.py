@@ -1,6 +1,7 @@
 # ========== UserActivityLog ===========
 # app/models/useractivitylog.py
 from __future__ import annotations
+import datetime
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -9,12 +10,11 @@ if TYPE_CHECKING:
 
 from typing import List
 
-from sqlalchemy import Column, Integer, DateTime, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Integer, DateTime, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 #from .sysuseractions import SysUserActions
 #from .users import Users
 from app.db import Base
-
 
 class UserActivityLog(Base):
     __tablename__ = 'UserActivityLog'
@@ -24,10 +24,10 @@ class UserActivityLog(Base):
         PrimaryKeyConstraint('ActivityID', name='PK__UserActi__45F4A7F1A8CAACBC')
     )
 
-    ActivityID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    UserID = Column(Integer)
-    UserActionID = Column(Integer)
-    Timestamp = Column(DateTime, server_default=text('(getdate())'))
+    ActivityID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
+    UserID: Mapped[int] = mapped_column(Integer)
+    UserActionID: Mapped[int] = mapped_column(Integer)
+    Timestamp: Mapped[datetime.datetime] = mapped_column(DateTime, server_default=text('(getdate())'))
 
     # Relaciones
     sysUserActions_: Mapped['SysUserActions'] = relationship('SysUserActions', back_populates='userActivityLog')

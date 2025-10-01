@@ -2,19 +2,27 @@
 
 import strawberry
 from typing import Optional
+from app.graphql.schemas.company import CompanyInDB
 
 
 @strawberry.input
 class CreditCardGroupsCreate:
-    GroupName: Optional[str] = None
+    CompanyID: int | None
+    CreditCardGroupName: str | None
 
 
 @strawberry.input
 class CreditCardGroupsUpdate:
-    GroupName: Optional[str] = None
+    CompanyID: int | None
+    CreditCardGroupName: Optional[str] = None
 
 
 @strawberry.type
 class CreditCardGroupsInDB:
+    CompanyID: int | None
     CreditCardGroupID: int
-    GroupName: Optional[str] = None
+    GroupName: str | None
+
+
+# Relaciones solicitadas
+CompanyData: Optional[CompanyInDB] = None

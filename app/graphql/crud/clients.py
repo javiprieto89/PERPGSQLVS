@@ -16,7 +16,7 @@ def get_clients(db: Session):
             joinedload(Clients.pricelists_),
             joinedload(Clients.vendors_),
             joinedload(Clients.branches_),
-            joinedload(Clients.companyData_),
+            joinedload(Clients.company_),
         )
         .all()
     )
@@ -33,16 +33,16 @@ def get_clients_by_company(db: Session, company_id: int):
             joinedload(Clients.pricelists_),
             joinedload(Clients.vendors_),
             joinedload(Clients.branches_),
-            joinedload(Clients.companyData_),
+            joinedload(Clients.company_),
         )
         .filter(Clients.CompanyID == company_id)
         .all()
     )
 
 
-def get_clients_by_branch(db: Session, company_id: int, branch_id: int):
-    """Retrieve clients filtered by CompanyID and BranchID"""
-    return (
+def get_clients_by_branch(db: Session, company_id: int, branch_id: int | None = None):
+    """Retrieve clients filtered by CompanyID and optionally BranchID"""
+    query = (
         db.query(Clients)
         .options(
             joinedload(Clients.docTypes_),
@@ -51,11 +51,16 @@ def get_clients_by_branch(db: Session, company_id: int, branch_id: int):
             joinedload(Clients.pricelists_),
             joinedload(Clients.vendors_),
             joinedload(Clients.branches_),
-            joinedload(Clients.companyData_),
+            joinedload(Clients.company_),
         )
-        .filter(Clients.CompanyID == company_id, Clients.BranchID == branch_id)
-        .all()
+        .filter(Clients.CompanyID == company_id)
     )
+    if branch_id is None:
+        query = query.filter(Clients.BranchID.is_(None))
+    else:
+        query = query.filter(Clients.BranchID == branch_id)
+    return query.all()
+
 
 def get_clients_by_id(db: Session, clientid: int):
     return (
@@ -67,7 +72,7 @@ def get_clients_by_id(db: Session, clientid: int):
             joinedload(Clients.pricelists_),
             joinedload(Clients.vendors_),
             joinedload(Clients.branches_),
-            joinedload(Clients.companyData_),
+            joinedload(Clients.company_),
         )
         .filter(Clients.ClientID == clientid)
         .first()
@@ -97,10 +102,11 @@ def delete_clients(db: Session, clientid: int):
     obj = get_clients_by_id(db, clientid)
     if obj:
         # Check for existing orders before deleting
-        has_orders = db.query(Orders).filter(Orders.ClientID == clientid).first() is not None
+        has_orders = db.query(Orders).filter(
+            Orders.ClientID == clientid).first() is not None
         if has_orders:
-            raise ValueError("Client has associated orders and cannot be deleted")
+            raise ValueError(
+                "Client has associated orders and cannot be deleted")
         db.delete(obj)
         db.commit()
     return obj
-

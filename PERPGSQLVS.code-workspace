@@ -1,0 +1,57 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "search.exclude": {
+      "**/node_modules/**": true,
+      "**/bower_components/**": true,
+      "**/dist/**": true,
+      "**/build/**": true,
+      "**/coverage/**": true,
+      "**/.next/**": true,
+      "**/.vercel/**": true,
+      "**/.cache/**": true,
+      "**/.git/**": true,
+      "**/*-lock.*": true,
+      "**/*.bkp.*": true,
+      "**/*.patch": true,
+      "*.pyproj": true
+    },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "always",
+      "source.organizeImports": "always"
+    },
+    "cSpell.words": [
+      "noopener",
+      "noreferrer",
+      "svgr",
+      "tailwind",
+      "tailwindcss",
+      "tanstack",
+      "typecheck",
+      "vaporwave",
+      "virtuals",
+      "youtube",
+      "zustand"
+    ],
+    "cSpell.language": "en,es",
+
+    // 👇 terminal con venv activado
+    "terminal.integrated.profiles": {
+      "PowerShell": {
+        "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+      }
+    },
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.shellIntegration.enabled": true,
+    "terminal.integrated.shellArgs.windows": [
+      "-NoExit",
+      "-Command",
+      "& 'C:\\Users\\javie\\OneDrive\\_Development\\PERPGSQLVS\\venv\\Scripts\\Activate.ps1'"
+    ]
+  }
+}

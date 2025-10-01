@@ -23,21 +23,21 @@ class ItemsMutations:
             db_gen.close()
 
     @strawberry.mutation
-    def update_item(self, info: Info, itemID: int, data: ItemsUpdate) -> Optional[ItemsInDB]:
+    def update_item(self, info: Info, companyID: int, itemID: int, data: ItemsUpdate) -> Optional[ItemsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update_items(db, itemID, data)
+            updated = update_items(db, companyID, itemID, data)
             return obj_to_schema(ItemsInDB, updated) if updated else None
         finally:
             db_gen.close()
 
     @strawberry.mutation
-    def delete_item(self, info: Info, itemID: int) -> bool:
+    def delete_item(self, info: Info, companyID: int, itemID: int) -> bool:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete_items(db, itemID)
+            deleted = delete_items(db, companyID, itemID)
             return deleted is not None
         finally:
             db_gen.close()

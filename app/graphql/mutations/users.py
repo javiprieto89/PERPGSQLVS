@@ -11,19 +11,31 @@ from strawberry.types import Info
 class UsersMutations:
     @strawberry.mutation
     def create_user_record(self, info: Info, data: UserCreate) -> UsersInDB:
-        db = next(get_db())
-        obj = create_user(db, data)
-        return obj_to_schema(UsersInDB, obj)
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            obj = create_user(db, data)
+            return obj_to_schema(UsersInDB, obj)
+        finally:
+            db_gen.close()  
 
     @strawberry.mutation
     def update_user_record(self, info: Info, userID: int, data: UserUpdate) -> Optional[UsersInDB]:
-        db = next(get_db())
-        updated = update_user(db, userID, data)
-        return obj_to_schema(UsersInDB, updated) if updated else None
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            updated = update_user(db, userID, data)
+            return obj_to_schema(UsersInDB, updated) if updated else None
+        finally:
+            db_gen.close()
 
     @strawberry.mutation
     def delete_user_record(self, info: Info, userID: int) -> bool:
-        db = next(get_db())
-        deleted = delete_user(db, userID)
-        return deleted is not None
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            deleted = delete_user(db, userID)
+            return deleted is not None
+        finally:
+            db_gen.close()        
 

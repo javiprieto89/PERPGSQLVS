@@ -4,11 +4,12 @@ from typing import Optional
 
 
 @strawberry.input
-class DocumentsCreate:
+class CommercialDocumentsCreate:
     CompanyID: int
     BranchID: int
     DocumentTypeID: int
-    Description: str
+    CurrencyID: Optional[int] = None
+    DocumentDescription: str
     DocumentNumber: int
     PointOfSale: int
     IsFiscal: Optional[bool] = None
@@ -16,18 +17,20 @@ class DocumentsCreate:
     IsManual: Optional[bool] = None
     IsQuotation: Optional[bool] = None
     IsActive: bool
-    Testing: bool
+    IsTest: bool
     MaxItems: Optional[int] = None
     ShouldAccount: bool
-    MovesStock: bool        
+    AffectsStock: bool
+    FromDate: Optional[str] = None
 
 
 @strawberry.input
-class DocumentsUpdate:
+class CommercialDocumentsUpdate:
     CompanyID: Optional[int] = None
     BranchID: Optional[int] = None
     DocumentTypeID: Optional[int] = None
-    Description: Optional[str] = None
+    CurrencyID: Optional[int] = None
+    DocumentDescription: Optional[str] = None
     DocumentNumber: Optional[int] = None
     PointOfSale: Optional[int] = None
     IsFiscal: Optional[bool] = None
@@ -35,19 +38,21 @@ class DocumentsUpdate:
     IsManual: Optional[bool] = None
     IsQuotation: Optional[bool] = None
     IsActive: Optional[bool] = None
-    Testing: Optional[bool] = None
+    IsTest: Optional[bool] = None
     MaxItems: Optional[int] = None
     ShouldAccount: Optional[bool] = None
-    MovesStock: Optional[bool] = None     
+    AffectsStock: Optional[bool] = None
+    FromDate: Optional[str] = None
 
 
 @strawberry.type
-class DocumentsInDB:
+class CommercialDocumentsInDB:
     DocumentID: int
     CompanyID: int
     BranchID: int
     DocumentTypeID: int
-    Description: str
+    CurrencyID: Optional[int]
+    DocumentDescription: str
     DocumentNumber: int
     PointOfSale: int
     IsFiscal: Optional[bool] = None
@@ -55,7 +60,8 @@ class DocumentsInDB:
     IsManual: Optional[bool] = None
     IsQuotation: Optional[bool] = None
     IsActive: bool
-    Testing: bool
+    IsTest: bool
     MaxItems: Optional[int] = None
     ShouldAccount: bool
-    MovesStock: bool
+    AffectsStock: bool
+    FromDate: Optional[str] = None

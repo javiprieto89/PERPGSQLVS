@@ -1,31 +1,34 @@
 import pytest
-from app.graphql.crud.pricelists import create_pricelists, get_pricelists, update_pricelists, delete_pricelists
+from datetime import datetime, timezone
+from app.graphql.crud.pricelists import (
+    create_pricelists,
+    get_pricelists,
+    update_pricelists,
+    delete_pricelists,
+)
 from app.graphql.schemas.pricelists import PriceListsCreate, PriceListsUpdate
 
 
-def test_create_get_update_delete_pricelists(db_session):
-    # Crear con campos obligatorios
-    from datetime import datetime
-    data = PriceListsCreate(Name="Lista Test", Description="desc",
-                            IsActive=True, CreatedDate=datetime(2025, 8, 16, 0, 0, 0))
+@pytest.mark.usefixtures("tenant_ids")
+def test_create_get_update_delete_pricelists(db_session, tenant_ids):
+    company_id, _ = tenant_ids
+    data = PriceListsCreate(
+        CompanyID=company_id,
+        PriceListName="Lista Test",
+        PriceListDescription="desc",
+        IsActive=True,
+        CreatedDate=datetime(2025, 8, 16, 0, 0, 0, tzinfo=timezone.utc),
+    )
     obj = create_pricelists(db_session, data)
-    assert obj is not None
-    assert str(getattr(obj, 'Name', '')) == "Lista Test"
-    # Obtener
+    assert obj and obj.PriceListName == "Lista Test" and obj.CompanyID == company_id
+
     all_objs = get_pricelists(db_session)
-    assert any(int(getattr(o, 'PriceListID', 0)) == int(
-        getattr(obj, 'PriceListID', 0)) for o in all_objs)
-    # Actualizar
-    update = PriceListsUpdate(Name="Lista Modificada")
-    updated = update_pricelists(db_session, int(
-        getattr(obj, 'PriceListID', 0)), update)
-    assert updated is not None
-    assert str(getattr(updated, 'Name', '')) == "Lista Modificada"
-    # Eliminar
-    deleted = delete_pricelists(
-        db_session, int(getattr(obj, 'PriceListID', 0)))
-    assert deleted is not None
-    assert int(getattr(deleted, 'PriceListID', 0)) == int(
-        getattr(obj, 'PriceListID', 0))
-    assert all(int(getattr(o, 'PriceListID', 0)) != int(
-        getattr(obj, 'PriceListID', 0)) for o in get_pricelists(db_session))
+    assert any(o.PriceListID == obj.PriceListID and o.CompanyID == company_id for o in all_objs)
+
+    update = PriceListsUpdate(PriceListName="Lista Modificada")
+    updated = update_pricelists(db_session, company_id, obj.PriceListID, update)
+    assert updated and updated.PriceListName == "Lista Modificada"
+
+    deleted = delete_pricelists(db_session, company_id, obj.PriceListID)
+    assert deleted and deleted.PriceListID == obj.PriceListID
+    assert all(o.PriceListID != obj.PriceListID for o in get_pricelists(db_session))

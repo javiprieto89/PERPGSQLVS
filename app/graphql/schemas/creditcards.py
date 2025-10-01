@@ -31,4 +31,4 @@ class CreditCardsInDB:
     Surcharge: Optional[float] = None
     Installments: Optional[int] = None
     IsActive: Optional[bool] = None
-    GroupData: Optional[CreditCardGroupsInDB] = None
+    CreditCardGroupData: Optional[CreditCardGroupsInDB] = None

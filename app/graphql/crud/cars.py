@@ -35,7 +35,7 @@ def get_cars_by_company(db: Session, company_id: int):
     )
 
 
-def get_cars_by_id(db: Session, carid: int):
+def get_cars_by_id(db: Session, company_id: int, carid: int):
     return (
         db.query(Cars)
         .options(
@@ -43,12 +43,12 @@ def get_cars_by_id(db: Session, carid: int):
             joinedload(Cars.clients_),
             joinedload(Cars.discounts_),
         )
-        .filter(Cars.CarID == carid)
+        .filter(Cars.CompanyID == company_id, Cars.CarID == carid)
         .first()
     )
 
 
-def get_cars_by_client_id(db: Session, client_id: int):
+def get_cars_by_client_id(db: Session, company_id: int, client_id: int):
     return (
         db.query(Cars)
         .options(
@@ -56,7 +56,7 @@ def get_cars_by_client_id(db: Session, client_id: int):
             joinedload(Cars.clients_),
             joinedload(Cars.discounts_),
         )
-        .filter(Cars.ClientID == client_id)
+        .filter(Cars.CompanyID == company_id, Cars.ClientID == client_id)
         .all()
     )
 
@@ -69,8 +69,8 @@ def create_cars(db: Session, data: CarsCreate):
     return obj
 
 
-def update_cars(db: Session, carid: int, data: CarsUpdate):
-    obj = get_cars_by_id(db, carid)
+def update_cars(db: Session, company_id: int, carid: int, data: CarsUpdate):
+    obj = get_cars_by_id(db, company_id, carid)
     if obj:
         for k, v in vars(data).items():
             if v is not None:
@@ -80,11 +80,21 @@ def update_cars(db: Session, carid: int, data: CarsUpdate):
     return obj
 
 
-def delete_cars(db: Session, carid: int):
-    obj = get_cars_by_id(db, carid)
+def delete_cars(db: Session, company_id: int, carid: int):
+    obj = get_cars_by_id(db, company_id, carid)
     if obj:
-        linked_orders = db.query(Orders).filter(Orders.CarID == carid).first() is not None
-        linked_history = db.query(OrderHistory).filter(OrderHistory.CarID == carid).first() is not None
+        linked_orders = (
+            db.query(Orders)
+            .filter(Orders.CompanyID == company_id, Orders.CarID == carid)
+            .first()
+            is not None
+        )
+        linked_history = (
+            db.query(OrderHistory)
+            .filter(OrderHistory.CompanyID == company_id, OrderHistory.CarID == carid)
+            .first()
+            is not None
+        )
         if linked_orders or linked_history:
             raise ValueError("Cannot delete car because it is referenced by existing orders")
         db.delete(obj)

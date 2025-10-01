@@ -69,7 +69,7 @@ def delete_tempstockhistorydetails(db: Session, entry_id: int):
 def process_stock_session(db: Session, session_id: str):
     """Procesar todas las entradas de una sesión y actualizar stock."""
     from app.models.itemstock import Itemstock
-    from app.models.stockhistory import StockHistory
+    from app.models.stockhistorydetails import StockHistoryDetails
 
     entries = (
         db.query(TempStockHistoryDetails)
@@ -108,7 +108,7 @@ def process_stock_session(db: Session, session_id: str):
             )
             db.add(item_stock)
 
-        history = StockHistory(
+        history = StockHistoryDetails(
             ItemID=entry.ItemID,
             CompanyID=entry.CompanyID,
             BranchID=entry.BranchID,

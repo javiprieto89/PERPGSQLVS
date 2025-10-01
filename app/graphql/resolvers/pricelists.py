@@ -21,11 +21,11 @@ class PricelistsQuery:
             db_gen.close()
 
     @strawberry.field
-    def pricelists_by_id(self, info: Info, id: int) -> Optional[PriceListsInDB]:
+    def pricelists_by_id(self, info: Info, companyID: int, id: int) -> Optional[PriceListsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            pl = get_pricelists_by_id(db, id)
+            pl = get_pricelists_by_id(db, companyID, id)
             return obj_to_schema(PriceListsInDB, pl) if pl else None
         finally:
             db_gen.close()

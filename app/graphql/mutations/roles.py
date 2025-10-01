@@ -11,19 +11,32 @@ from strawberry.types import Info
 class RolesMutations:
     @strawberry.mutation
     def create_role(self, info: Info, data: RolesCreate) -> RolesInDB:
-        db = next(get_db())
-        obj = create_roles(db, data)
-        return obj_to_schema(RolesInDB, obj)
-
+        db_gen =get_db()
+        db = next(db_gen)        
+        try:
+            obj = create_roles(db, data)
+            return obj_to_schema(RolesInDB, obj)
+        finally:
+            db_gen.close()
+            
     @strawberry.mutation
     def update_role(self, info: Info, roleID: int, data: RolesUpdate) -> Optional[RolesInDB]:
-        db = next(get_db())
-        updated = update_roles(db, roleID, data)
-        return obj_to_schema(RolesInDB, updated) if updated else None
-
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            updated = update_roles(db, roleID, data)
+            return obj_to_schema(RolesInDB, updated) if updated else None
+        finally:
+            db_gen.close()
+        
     @strawberry.mutation
     def delete_role(self, info: Info, roleID: int) -> bool:
-        db = next(get_db())
-        deleted = delete_roles(db, roleID)
-        return deleted is not None
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            deleted = delete_roles(db, roleID)        
+            return deleted is not None
+        finally:
+            db_gen.close()  
+            
 

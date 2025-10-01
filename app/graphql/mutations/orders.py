@@ -46,7 +46,7 @@ class OrdersMutations:
 
     @strawberry.mutation
     def update_order(
-        self, info: Info, orderID: int, data: OrdersUpdate
+        self, info: Info, companyID: int, branchID: int, orderID: int, data: OrdersUpdate
     ) -> Optional[OrderResponse]:
         """
         Actualizar orden. Si tiene items, se cargan a TempOrderDetails para edición.
@@ -54,7 +54,7 @@ class OrdersMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update_orders(db, orderID, data)
+            updated = update_orders(db, companyID, branchID, orderID, data)
             if not updated:
                 return None
                 
@@ -72,19 +72,19 @@ class OrdersMutations:
             db_gen.close()
 
     @strawberry.mutation
-    def delete_order(self, info: Info, orderID: int) -> bool:
+    def delete_order(self, info: Info, companyID: int, branchID: int, orderID: int) -> bool:
         """Eliminar orden y todos sus detalles"""
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete_orders(db, orderID)
+            deleted = delete_orders(db, companyID, branchID, orderID)
             return deleted is not None
         finally:
             db_gen.close()
 
     @strawberry.mutation
     def finalize_order(
-        self, info: Info, orderID: int, sessionID: str
+        self, info: Info, companyID: int, branchID: int, orderID: int, sessionID: str
     ) -> Optional[OrderResponse]:
         """
         Finalizar orden: mover items de TempOrderDetails a OrderDetails.
@@ -93,7 +93,7 @@ class OrdersMutations:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            finalized = finalize_order(db, orderID, sessionID)
+            finalized = finalize_order(db, companyID, branchID, orderID, sessionID)
             if not finalized:
                 return None
                 
@@ -107,7 +107,7 @@ class OrdersMutations:
 
     @strawberry.mutation
     def save_order_draft(
-        self, info: Info, orderID: int, sessionID: str
+        self, info: Info, companyID: int, branchID: int, orderID: int, sessionID: str
     ) -> Optional[OrderResponse]:
         """
         Guardar borrador de orden sin finalizar.
@@ -117,7 +117,7 @@ class OrdersMutations:
         db = next(db_gen)
         try:
             from app.graphql.crud.orders import get_orders_by_id
-            order = get_orders_by_id(db, orderID)
+            order = get_orders_by_id(db, companyID, branchID, orderID)
             if not order:
                 return None
                 

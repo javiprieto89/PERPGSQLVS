@@ -5,10 +5,7 @@ from dataclasses import asdict
 from uuid import uuid4, UUID
 
 from app.models.temporderdetails import TempOrderDetails
-from app.graphql.schemas.temporderdetails import (
-    TempOrderDetailsCreate,
-    TempOrderDetailsUpdate,
-)
+# No dependemos de schemas GraphQL; este CRUD es interno
 
 
 def _safe_get_int(obj: Any, field_name: str) -> int:
@@ -60,9 +57,13 @@ def get_temporderdetail_by_session(
     )
 
 
-def create_temporderdetails(db: Session, data: TempOrderDetailsCreate) -> TempOrderDetails:
+def create_temporderdetails(db: Session, data: Any) -> TempOrderDetails:
     # Convertir dataclass a diccionario y filtrar valores None
-    data_dict = {k: v for k, v in asdict(data).items() if v is not None}
+    # Aceptar dataclass u objeto dict-like
+    try:
+        data_dict = {k: v for k, v in asdict(data).items() if v is not None}
+    except Exception:
+        data_dict = {k: v for k, v in dict(data).items() if v is not None}
 
     # Generar OrderSessionID si no se proporciona
     if "OrderSessionID" not in data_dict or data_dict["OrderSessionID"] is None:
@@ -95,7 +96,7 @@ def update_temporderdetails(
     db: Session,
     session_id: str,
     item_id: int,
-    data: TempOrderDetailsUpdate,
+    data: Any,
 ) -> Optional[TempOrderDetails]:
     """Actualizar un item temporal usando ``OrderSessionID`` e ``ItemID``"""
     # Buscar el registro por OrderSessionID e ItemID
@@ -104,7 +105,11 @@ def update_temporderdetails(
         return None
 
     # Actualizar solo los campos que no son None
-    for field, value in asdict(data).items():
+    try:
+        src = asdict(data)
+    except Exception:
+        src = dict(data)
+    for field, value in src.items():
         if value is not None and hasattr(obj, field):
             setattr(obj, field, value)
 
@@ -163,14 +168,18 @@ def get_temporderdetail_by_detail_id(db: Session, detail_id: int) -> Optional[Te
 
 
 def update_temporderdetails_by_detail_id(
-    db: Session, detail_id: int, data: TempOrderDetailsUpdate
+    db: Session, detail_id: int, data: Any
 ) -> Optional[TempOrderDetails]:
     """Actualizar un item temporal usando su ``OrderDetailID``"""
     obj = get_temporderdetail_by_detail_id(db, detail_id)
     if not obj:
         return None
 
-    for field, value in asdict(data).items():
+    try:
+        src = asdict(data)
+    except Exception:
+        src = dict(data)
+    for field, value in src.items():
         if value is not None and hasattr(obj, field):
             setattr(obj, field, value)
 
@@ -259,7 +268,7 @@ def load_orderdetails_to_temp(db: Session, order_id: int, user_id: int, company_
             WarehouseID=warehouse_id,
             PriceListID=price_list_id,
             UnitPrice=unit_price,
-            Description=detail.Description,
+            Description=getattr(detail, 'LineDescription', getattr(detail, 'Description', None)),
         )
         db.add(temp_detail)
 

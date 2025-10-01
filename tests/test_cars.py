@@ -1,15 +1,16 @@
+from datetime import datetime, timezone
 import pytest
 from app.graphql.crud.cars import create_cars, get_cars, update_cars, delete_cars
 from app.graphql.schemas.cars import CarsCreate, CarsUpdate
 from app.models.carmodels import CarModels
 from app.models.clients import Clients
 from app.models.discounts import Discounts
-from app.models.companydata import CompanyData
+from app.models.company import Company
 
 
 def test_create_get_update_delete_cars(db_session):
     # Crear dependencias mínimas
-    company = CompanyData(Name="Test Company")
+    company = Company(CompanyName="Test Company")
     db_session.add(company)
     db_session.commit()
     db_session.refresh(company)
