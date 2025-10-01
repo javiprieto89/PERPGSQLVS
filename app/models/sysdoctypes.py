@@ -6,8 +6,8 @@ if TYPE_CHECKING:
     from .clients import Clients
     from .suppliers import Suppliers
 
-from sqlalchemy import Column, Integer, Unicode, Boolean, Identity, PrimaryKeyConstraint, text
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Integer, Unicode, Boolean, Identity, PrimaryKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 from app.db import Base
 
 class SysDocTypes(Base):
@@ -16,11 +16,10 @@ class SysDocTypes(Base):
         PrimaryKeyConstraint('DocTypeID', name='PK__SysDocTypes__055E26832A8E0FF3'),
     )
 
-    DocTypeID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    IsActive = Column(Boolean, server_default=text('((1))'))
+    DocTypeID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
+    Name: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    IsActive: Mapped[bool] = mapped_column(Boolean, server_default=text('((1))'))
 
-    # Relaciones
-    clients: Mapped[List['Clients']] = relationship('Clients', back_populates='docTypes_')
-    suppliers: Mapped[List['Suppliers']] = relationship('Suppliers', back_populates='docTypes_')
+    # Relaciones deshabilitadas (tabla legacy sin FKs hacia Clients/Suppliers en el schema actual)
+    # Mantener el modelo por compatibilidad, sin relaciones que requieran join automático.
     

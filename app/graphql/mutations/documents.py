@@ -1,7 +1,7 @@
 ﻿# app/graphql/mutations/documents.py
 import strawberry
 from typing import Optional
-from app.graphql.schemas.documents import DocumentsCreate, DocumentsUpdate, DocumentsInDB
+from app.graphql.schemas.documents import CommercialDocumentsCreate, CommercialDocumentsUpdate, CommercialDocumentsInDB
 from app.graphql.crud.documents import create_documents, update_documents, delete_documents
 from app.utils import obj_to_schema
 from app.db import get_db
@@ -11,22 +11,22 @@ from app.graphql.schemas.delete_response import DeleteResponse
 @strawberry.type
 class DocumentsMutations:
     @strawberry.mutation
-    def create_document(self, info: Info, data: DocumentsCreate) -> DocumentsInDB:
+    def create_document(self, info: Info, data: CommercialDocumentsCreate) -> CommercialDocumentsInDB:
         db_gen = get_db()
         db = next(db_gen)
         try:
             obj = create_documents(db, data)
-            return obj_to_schema(DocumentsInDB, obj)
+            return obj_to_schema(CommercialDocumentsInDB, obj)
         finally:
             db_gen.close()
 
     @strawberry.mutation
-    def update_document(self, info: Info, documentID: int, data: DocumentsUpdate) -> Optional[DocumentsInDB]:
+    def update_document(self, info: Info, documentID: int, data: CommercialDocumentsUpdate) -> Optional[CommercialDocumentsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
             updated = update_documents(db, documentID, data)
-            return obj_to_schema(DocumentsInDB, updated) if updated else None
+            return obj_to_schema(CommercialDocumentsInDB, updated) if updated else None
         finally:
             db_gen.close()
 

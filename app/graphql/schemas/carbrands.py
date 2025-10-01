@@ -4,16 +4,16 @@ from typing import Optional
 
 @strawberry.input
 class CarBrandsCreate:
-    Name: str
-    CompanyID: Optional[int] = None
+    CompanyID: int
+    CarBrandName: str
 
 @strawberry.input
 class CarBrandsUpdate:
-    Name: Optional[str] = None
     CompanyID: Optional[int] = None
+    CarBrandName: Optional[str] = None
 
 @strawberry.type
 class CarBrandsInDB:
+    CompanyID: int
     CarBrandID: int
-    Name: str
-    CompanyID: int | None
+    CarBrandName: str

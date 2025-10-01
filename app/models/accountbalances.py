@@ -1,16 +1,16 @@
 # ========== AccountBalances ===========
 # app/models/accountbalances.py
 from __future__ import annotations
+import decimal
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.clients import Clients
     from app.models.suppliers import Suppliers
 
-from sqlalchemy import Column, Integer, DECIMAL, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Integer, DECIMAL, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 from app.db import Base
-
 
 class AccountBalances(Base):
     __tablename__ = 'AccountBalances'
@@ -20,10 +20,10 @@ class AccountBalances(Base):
         PrimaryKeyConstraint('AccountID', name='PK__AccountB__349DA5866875C1B5')
     )
 
-    AccountID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    Balance = Column(DECIMAL(10, 2), server_default=text('((0))'))
-    SupplierID = Column(Integer)
-    ClientID = Column(Integer)
+    AccountID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
+    Balance: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 2), server_default=text('((0))'))
+    SupplierID: Mapped[int] = mapped_column(Integer)
+    ClientID: Mapped[int] = mapped_column(Integer)
 
     # Relaciones
     clients_: Mapped[Optional['Clients']] = relationship('Clients', back_populates='accountBalances')

@@ -7,7 +7,7 @@ from app.graphql.schemas.itemcategories import ItemCategoriesInDB
 from app.graphql.schemas.itemsubcategories import ItemSubcategoriesInDB
 from app.graphql.schemas.suppliers import SuppliersInDB
 from app.graphql.schemas.branches import BranchesInDB
-from app.graphql.schemas.companydata import CompanyDataInDB
+from app.graphql.schemas.company import CompanyInDB
 from app.graphql.schemas.warehouses import WarehousesInDB
 
 
@@ -16,8 +16,8 @@ class ItemsCreate:
     CompanyID: int
     BranchID: int
     BrandID: int
-    Code: str
-    Description: str
+    ItemCode: str
+    ItemDescription: str
     ItemCategoryID: int  # Corregido nombre del campo
     ItemSubcategoryID: int  # Corregido nombre del campo
     SupplierID: int
@@ -35,8 +35,8 @@ class ItemsUpdate:
     CompanyID: Optional[int] = None
     BranchID: Optional[int] = None
     BrandID: Optional[int] = None
-    Code: Optional[str] = None
-    Description: Optional[str] = None
+    ItemCode: Optional[str] = None
+    ItemDescription: Optional[str] = None
     ItemCategoryID: Optional[int] = None  # Corregido nombre del campo
     ItemSubcategoryID: Optional[int] = None  # Corregido nombre del campo
     SupplierID: Optional[int] = None
@@ -55,19 +55,21 @@ class ItemsInDB:
     CompanyID: int
     BranchID: int
     BrandID: int
-    Code: str
-    Description: str
+    ItemCode: str
+    ItemDescription: str
     ItemCategoryID: int  # Corregido nombre del campo
     ItemSubcategoryID: int  # Corregido nombre del campo
     SupplierID: int
-    ControlStock: bool  # Corregido nombre del campo (era CcontrolStock en el modelo)
+    # Corregido nombre del campo (era CcontrolStock en el modelo)
+    ControlStock: bool
     ReplenishmentStock: int
     IsOffer: bool
     OEM: Optional[str]
-    LastModified: Optional[date]  # Corregido nombre del campo (era lastModified)
+    # Corregido nombre del campo (era lastModified)
+    LastModified: Optional[date]
     WarehouseID: int
     IsActive: bool
-    CompanyData: Optional[CompanyDataInDB] = None
+    CompanyData: Optional[CompanyInDB] = None
     BranchData: Optional[BranchesInDB] = None
     BrandData: Optional[BrandsInDB] = None
     CategoryData: Optional[ItemCategoriesInDB] = None
@@ -76,12 +78,11 @@ class ItemsInDB:
     WarehouseData: Optional[WarehousesInDB] = None
 
 
-
 @strawberry.type
 class ItemSearchResult:
     ItemID: int
-    Code: str
-    Description: str
+    ItemCode: str
+    ItemDescription: str
     Brand: Optional[BrandsInDB] = None
     Category: Optional[ItemCategoriesInDB] = None
     Subcategory: Optional[ItemSubcategoriesInDB] = None

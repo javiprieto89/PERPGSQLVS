@@ -6,7 +6,7 @@ from app.graphql.schemas.brands import BrandsCreate, BrandsUpdate
 
 
 def get_brands(db: Session):
-    return db.query(Brands).options(joinedload(Brands.companyData_)).all()
+    return db.query(Brands).options(joinedload(Brands.company_)).all()
 
 
 def get_brands_by_company(db: Session, company_id: int):
@@ -18,10 +18,10 @@ def get_brands_by_company(db: Session, company_id: int):
     )
 
 
-def get_brands_by_id(db: Session, brandid: int):
+def get_brands_by_id(db: Session, company_id: int, brandid: int):
     return (
         db.query(Brands)
-        .filter(Brands.BrandID == brandid)
+        .filter(Brands.CompanyID == company_id, Brands.BrandID == brandid)
         .first()
     )
 
@@ -34,8 +34,8 @@ def create_brands(db: Session, data: BrandsCreate):
     return obj
 
 
-def update_brands(db: Session, brandid: int, data: BrandsUpdate):
-    obj = get_brands_by_id(db, brandid)
+def update_brands(db: Session, company_id: int, brandid: int, data: BrandsUpdate):
+    obj = get_brands_by_id(db, company_id, brandid)
     if obj:
         for k, v in vars(data).items():
             if v is not None:
@@ -45,10 +45,15 @@ def update_brands(db: Session, brandid: int, data: BrandsUpdate):
     return obj
 
 
-def delete_brands(db: Session, brandid: int):
-    obj = get_brands_by_id(db, brandid)
+def delete_brands(db: Session, company_id: int, brandid: int):
+    obj = get_brands_by_id(db, company_id, brandid)
     if obj:
-        linked_items = db.query(Items).filter(Items.BrandID == brandid).first() is not None
+        linked_items = (
+            db.query(Items)
+            .filter(Items.CompanyID == company_id, Items.BrandID == brandid)
+            .first()
+            is not None
+        )
         if linked_items:
             raise ValueError(
                 "Cannot delete brand because it is referenced by existing items"
@@ -56,4 +61,3 @@ def delete_brands(db: Session, brandid: int):
         db.delete(obj)
         db.commit()
     return obj
-

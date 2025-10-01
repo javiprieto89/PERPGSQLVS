@@ -9,23 +9,31 @@ if TYPE_CHECKING:
 
 from typing import List
 
-from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Integer, Unicode, Identity, PrimaryKeyConstraint
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 #from .orders import Orders
 #from .orderhistory import OrderHistory
 from app.db import Base
 
-
-class ServiceType(Base):
-    __tablename__ = 'ServiceType'
+class ServiceTypes(Base):
+    __tablename__ = 'ServiceTypes'
     __table_args__ = (
-        PrimaryKeyConstraint('ServiceTypeID', name='PK_tipos_casos'),
+        PrimaryKeyConstraint('CompanyID', 'ServiceTypeID', name='PK_ServiceTypes'),
     )
 
-    ServiceTypeID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    Type = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    CompanyID: Mapped[int] = mapped_column(Integer)
+    ServiceTypeID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1))
+    ServiceTypeName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='serviceType_')
-    orderHistory: Mapped[List['OrderHistory']] = relationship('OrderHistory', back_populates='serviceType_')
+    orders: Mapped[List['Orders']] = relationship(
+        'Orders',
+        back_populates='serviceType_',
+        overlaps='clients_,discounts_,orders,orders,priceLists_,saleConditions_,users_', viewonly=True
+    )
+    orderHistory: Mapped[List['OrderHistory']] = relationship(
+        'OrderHistory',
+        back_populates='serviceType_',
+        overlaps='orderHistory'
+    )
     

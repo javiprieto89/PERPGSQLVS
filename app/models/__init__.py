@@ -8,16 +8,16 @@ from .carbrands import *
 from .carmodels import *
 from .cars import *
 from .clients import *
-from .companydata import *
+from .company import *
 from .countries import *
 from .creditcardgroups import *
 from .creditcards import *
 from .discounts import *
-from .sysdoctypes import *
+from .sysidentitydoctypes import *
+from .sysfiscaldoctypes import *
 from .documents import *
-from .sysdocumenttypes import *
 from .itemcategories import *
-from .itempricehistory import *
+from .itempricehistories import *
 from .items import *
 from .itemstock import *
 from .itemsubcategories import *
@@ -28,11 +28,13 @@ from .orders import *
 from .sysorderstatus import *
 from .pricelistitems import *
 from .pricelists import *
+from .purchaseinvoices import *
 from .provinces import *
 from .roles import *
 from .saleconditions import *
 from .servicetype import *
-from .stockhistory import *
+from .stockhistorydetails import *
+from .stockhistories import *
 from .suppliers import *
 from .temporderdetails import *
 from .tempstockhistorydetails import *
@@ -40,7 +42,13 @@ from .cashboxes import *
 from .cashboxmovements import *
 from .transactions import *
 from .systransactiontypes import *
-from .useraccess import *
+from .taxes import *
+from .userapermissions import *
+from .syscurrencies import *
+from .sysrmatypes import *
+from .branchtaxes import *
+from .rmas import *
+from .rmadetails import *
 from .sysuseractions import *
 from .useractivitylog import *
 from .users import *
@@ -56,16 +64,16 @@ __all__ = [
     "carmodels",
     "cars",
     "clients",
-    "companydata",
+    "company",
     "countries",
     "creditcardgroups",
     "creditcards",
     "discounts",
-    "sysdoctypes",
+    "sysidentitydoctypes",
+    "sysfiscaldoctypes",
     "documents",
-    "sysdocumenttypes",
     "itemcategories",
-    "itempricehistory",
+    "itempricehistories",
     "items",
     "itemstock",
     "itemsubcategories",
@@ -76,11 +84,13 @@ __all__ = [
     "sysorderstatus",
     "pricelistitems",
     "pricelists",
+    "purchaseinvoices",
     "provinces",
     "roles",
     "saleconditions",
     "servicetype",
-    "stockhistory",
+    "stockhistorydetails",
+    "stockhistories",
     "suppliers",
     "temporderdetails",
     "tempstockhistorydetails",
@@ -88,7 +98,13 @@ __all__ = [
     "cashboxmovements",
     "transactions",
     "systransactiontypes",
-    "useraccess",
+    "taxes",
+    "userapermissions",
+    "syscurrencies",
+    "sysrmatypes",
+    "branchtaxes",
+    "rmas",
+    "rmadetails",
     "sysuseractions",
     "useractivitylog",
     "users",

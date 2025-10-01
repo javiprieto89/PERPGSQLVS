@@ -5,12 +5,12 @@ from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.items import Items
-    from app.models.companydata import CompanyData 
+    from app.models.company import Company
 
 from typing import List
 
 from sqlalchemy import (
-    Column,
+
     Integer,
     Unicode,
     Boolean,
@@ -19,28 +19,32 @@ from sqlalchemy import (
     ForeignKeyConstraint,
     text,
 )
-from sqlalchemy.orm import Mapped, relationship, foreign
+from sqlalchemy.orm import Mapped, relationship, foreign, mapped_column
 from app.db import Base
-
 
 class Brands(Base):
     __tablename__ = 'Brands'
     __table_args__ = (
-        ForeignKeyConstraint(["CompanyID"], ["CompanyData.CompanyID"], name="FK_Brands_Company"),
-        PrimaryKeyConstraint("BrandID", name="PK__Brands__DAD4F3BEC807F89F"),
+        ForeignKeyConstraint(
+            ["CompanyID"], ["Company.CompanyID"], name="FK_Brands_Company"),
+        PrimaryKeyConstraint("CompanyID", "BrandID", name="PK_Brands"),
     )
 
-    BrandID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    Name = Column(Unicode(100, "Modern_Spanish_CI_AS"))
-    IsActive = Column(Boolean, nullable=False, server_default=text("((1))"))
-    CompanyID = Column(Integer)
+    CompanyID: Mapped[int] = mapped_column(Integer)
+    BrandID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1))
+    BrandName: Mapped[str] = mapped_column(Unicode(100, "Modern_Spanish_CI_AS"))
+    IsActive: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("((1))"))
 
     # Relaciones
-    items: Mapped[List['Items']] = relationship('Items', back_populates='brands_')
-    companyData_: Mapped['CompanyData'] = relationship(
-        'CompanyData', 
-        back_populates='brands',
-        primaryjoin='Brands.CompanyID == CompanyData.CompanyID',
-        foreign_keys='[Brands.CompanyID]'
+    items: Mapped[List['Items']] = relationship(
+        'Items',
+        back_populates='brands_',
+        overlaps='items'
     )
-
+    company_: Mapped['Company'] = relationship(
+        'Company',
+        back_populates='brands',
+        primaryjoin='Brands.CompanyID == Company.CompanyID',
+        foreign_keys='[Brands.CompanyID]',
+        viewonly=True
+    )

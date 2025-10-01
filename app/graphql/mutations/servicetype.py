@@ -33,22 +33,22 @@ class ServiceTypeMutations:
 
     @strawberry.mutation
     def update_servicetype(
-        self, info: Info, serviceTypeID: int, data: ServiceTypeUpdate
+        self, info: Info, companyID: int, serviceTypeID: int, data: ServiceTypeUpdate
     ) -> Optional[ServiceTypeInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update(db, serviceTypeID, data)
+            updated = update(db, companyID, serviceTypeID, data)
             return obj_to_schema(ServiceTypeInDB, updated) if updated else None
         finally:
             db_gen.close()
 
     @strawberry.mutation
-    def delete_servicetype(self, info: Info, serviceTypeID: int) -> DeleteResponse:
+    def delete_servicetype(self, info: Info, companyID: int, serviceTypeID: int) -> DeleteResponse:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete(db, serviceTypeID)
+            deleted = delete(db, companyID, serviceTypeID)
             success = deleted is not None
             message = "Service type deleted" if success else "Service type not found"
             return DeleteResponse(success=success, message=message)

@@ -75,7 +75,7 @@ class AuthMutation:
             
             # Crear usuario
             new_user = create_user(
-                db=db,
+                db=db,                
                 nickname=input.nickname,
                 fullname=input.fullname,
                 password=input.password,

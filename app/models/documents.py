@@ -1,51 +1,55 @@
 # ========== Documents ===========
 # app/models/documents.py
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING
+import datetime
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .branches import Branches
-    from .companydata import CompanyData
+    from .company import Company
     from .sysdocumenttypes import SysDocumentTypes
+    from .sysfiscaldoctypes import SysFiscalDocTypes
 
 from typing import List
 
-from sqlalchemy import Column, Integer, Unicode, Boolean, LargeBinary, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
-from sqlalchemy.orm import Mapped, relationship, foreign
-#from .branches import Branches
-#from .companydata import CompanyData    
-#from .documenttypes import DocumentTypes    
+from sqlalchemy import Integer, Unicode, Boolean, LargeBinary, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text, Date
+from sqlalchemy.orm import Mapped, relationship, foreign, mapped_column
+# from .branches import Branches
+# from .company import Company
+# from .documenttypes import DocumentTypes
 from app.db import Base
 
-
 class Documents(Base):
-    __tablename__ = 'Documents'
+    __tablename__ = 'CommercialDocuments'
     __table_args__ = (
-        ForeignKeyConstraint(
-            ["CompanyID", "BranchID"],
-            ["Branches.CompanyID", "Branches.BranchID"],
-            name="FK_Documents_Branches",
-        ),
-        ForeignKeyConstraint(['DocumentTypeID'], ['SysDocumentTypes.DocumentTypeID'], name='FK_Documents_SysDocumentTypes'),
-        PrimaryKeyConstraint('DocumentID', name='PK__Document__1ABEEF6F4A2B1589')
+        ForeignKeyConstraint(["CompanyID", "BranchID"], [
+                             "Branches.CompanyID", "Branches.BranchID"], name="FK_CommercialDocuments_Branches"),
+        ForeignKeyConstraint(['DocumentTypeID'], [
+                             'sysFiscalDocTypes.DocumentTypeID'], name='FK_CommercialDocuments_sysFiscalDocTypes'),
+        ForeignKeyConstraint(['CompanyID'], ['Company.CompanyID'],
+                             name='FK_CommercialDocuments_Company'),
+        PrimaryKeyConstraint('CompanyID', 'BranchID',
+                             'DocumentID', name='PK_CommercialDocuments')
     )
 
-    DocumentID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    CompanyID = Column(Integer)
-    BranchID = Column(Integer)
-    DocumentTypeID = Column(Integer)
-    Description = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    DocumentNumber = Column(Integer)
-    PointOfSale = Column(Integer)
-    IsActive = Column(Boolean, server_default=text('((1))'))
-    Testing = Column(Boolean, server_default=text('((0))'))
-    ShouldAccount = Column(Boolean)
-    MovesStock = Column(Boolean)
-    IsFiscal = Column(Boolean)
-    IsElectronic = Column(Boolean)
-    IsManual = Column(Boolean)
-    IsQuotation = Column(Boolean)
-    MaxItems = Column(Integer)
+    DocumentID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1))
+    CompanyID: Mapped[int] = mapped_column(Integer)
+    BranchID: Mapped[int] = mapped_column(Integer)
+    DocumentTypeID: Mapped[int] = mapped_column(Integer)
+    CurrencyID: Mapped[int] = mapped_column(Integer)
+    DocumentDescription: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    DocumentNumber: Mapped[int] = mapped_column(Integer)
+    PointOfSale: Mapped[int] = mapped_column(Integer)
+    IsFiscal: Mapped[bool] = mapped_column(Boolean)
+    IsElectronic: Mapped[bool] = mapped_column(Boolean)
+    IsManual: Mapped[bool] = mapped_column(Boolean)
+    IsQuotation: Mapped[bool] = mapped_column(Boolean)
+    IsActive: Mapped[bool] = mapped_column(Boolean, server_default=text('((1))'))
+    IsTest: Mapped[bool] = mapped_column(Boolean, server_default=text('((0))'))
+    MaxItems: Mapped[int] = mapped_column(Integer)
+    ShouldAccount: Mapped[bool] = mapped_column(Boolean)
+    MovesStock: Mapped[bool] = mapped_column('AffectsStock', Boolean)
+    FromDate: Mapped[datetime.date] = mapped_column(Date)
 
     # Relaciones
     branches_: Mapped['Branches'] = relationship(
@@ -53,12 +57,19 @@ class Documents(Base):
         back_populates='documents',
         overlaps='documents'
     )
-    companyData_: Mapped['CompanyData'] = relationship(
-        'CompanyData',
+    company_: Mapped['Company'] = relationship(
+        'Company',
         back_populates='documents',
-        primaryjoin='foreign(Documents.CompanyID) == CompanyData.CompanyID',
+        primaryjoin='foreign(Documents.CompanyID) == Company.CompanyID',
         foreign_keys='Documents.CompanyID',
-        overlaps='branches_,documents'
+        overlaps='branches_,documents',
+        viewonly=True
     )
-    sysDocumentTypes_: Mapped['SysDocumentTypes'] = relationship('SysDocumentTypes', back_populates='documents')
-
+    fiscalDocType: Mapped['SysFiscalDocTypes'] = relationship(
+        'SysFiscalDocTypes',
+        back_populates='documents',
+        primaryjoin='foreign(Documents.DocumentTypeID) == SysFiscalDocTypes.DocumentTypeID',
+        foreign_keys='Documents.DocumentTypeID',
+        viewonly=True
+    )
+    # Not exposing sys types in GraphQL, but keep relationship for ORM

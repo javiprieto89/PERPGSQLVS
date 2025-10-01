@@ -1,51 +1,52 @@
 # ========== Itemstock ===========
 # app/models/itemstock.py
 from __future__ import annotations
+import datetime
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from app.models.branches import Branches
-    from app.models.companydata import CompanyData
+    from app.models.company import Company
     from app.models.items import Items
     from app.models.suppliers import Suppliers
     from app.models.warehouses import Warehouses
 
-from sqlalchemy import Column, Integer, Unicode, Date, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, Index, text
-from sqlalchemy.orm import Mapped, relationship, foreign
+from sqlalchemy import Integer, Unicode, Date, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, Index, text
+from sqlalchemy.orm import Mapped, relationship, foreign, mapped_column
 from app.db import Base
 
-
 class Itemstock(Base):
-    __tablename__ = 'Itemstock'
+    __tablename__ = 'ItemStocks'
     __table_args__ = (
         ForeignKeyConstraint(
-            ["CompanyID", "BranchID"],
-            ["Branches.CompanyID", "Branches.BranchID"],
-            name="FK_Itemstock_Branches",
-        ),
-        ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK_Itemstock_Items'),
-        ForeignKeyConstraint(['SupplierID'], ['Suppliers.SupplierID'], name='FK_Itemstock_Suppliers'),
-        ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_Itemstock_Warehouses'),
-        PrimaryKeyConstraint('ItemID', 'WarehouseID', name='PK__Itemstoc__F01E09161DA94055'),
+            ['BranchID'], ['Branches.BranchID'], name='FK_ItemStocks_Branches'),
+        ForeignKeyConstraint(['CompanyID', 'ItemID'], [
+                             'Items.CompanyID', 'Items.ItemID'], name='FK_ItemStocks_Items'),
+        ForeignKeyConstraint(['CompanyID', 'SupplierID'], [
+                             'Suppliers.CompanyID', 'Suppliers.SupplierID'], name='FK_ItemStocks_Suppliers'),
+        ForeignKeyConstraint(['CompanyID', 'WarehouseID'], [
+                             'Warehouses.CompanyID', 'Warehouses.WarehouseID'], name='FK_ItemStocks_Warehouses'),
+        PrimaryKeyConstraint('CompanyID', 'ItemID',
+                             'WarehouseID', name='PK_ItemStocks'),
         Index('idx_branchID', 'CompanyID'),
         Index('idx_ItemWarehouse', 'ItemID', 'WarehouseID'),
         Index('idx_SupplierStatus', 'SupplierID', 'StockStatus')
     )
 
-    ItemID = Column(Integer, primary_key=True)
-    WarehouseID = Column(Integer, primary_key=True)
-    CompanyID = Column(Integer)
-    BranchID = Column(Integer)
-    Quantity = Column(Integer)
-    ReservedQuantity = Column(Integer)
-    LastModified = Column(Date, server_default=text('(CONVERT([date],getdate()))'))
-    StockStatus = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
-    MinStockLevel = Column(Integer, server_default=text('((0))'))
-    MaxStockLevel = Column(Integer, server_default=text('((0))'))
-    SupplierID = Column(Integer)
-    StockLocation = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    BatchNumber = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
-    ExpiryDate = Column(Date)
+    CompanyID: Mapped[int] = mapped_column(Integer, primary_key=True)
+    ItemID: Mapped[int] = mapped_column(Integer, primary_key=True)
+    WarehouseID: Mapped[int] = mapped_column(Integer, primary_key=True)
+    BranchID: Mapped[int] = mapped_column(Integer)
+    Quantity: Mapped[int] = mapped_column(Integer)
+    ReservedQuantity: Mapped[int] = mapped_column(Integer)
+    LastModified: Mapped[datetime.date] = mapped_column(Date, server_default=text( '(CONVERT([date],getdate()))'))
+    StockStatus: Mapped[str] = mapped_column(Unicode(50, 'Modern_Spanish_CI_AS'))
+    MinStockLevel: Mapped[int] = mapped_column(Integer, server_default=text('((0))'))
+    MaxStockLevel: Mapped[int] = mapped_column(Integer, server_default=text('((0))'))
+    SupplierID: Mapped[int] = mapped_column(Integer)
+    StockLocation: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    BatchNumber: Mapped[str] = mapped_column(Unicode(50, 'Modern_Spanish_CI_AS'))
+    ExpiryDate: Mapped[datetime.date] = mapped_column(Date)
 
     # Relaciones
     branches_: Mapped[Branches] = relationship(
@@ -53,14 +54,26 @@ class Itemstock(Base):
         back_populates='itemstock',
         overlaps='itemstock'
     )
-    companyData_: Mapped[CompanyData] = relationship(
-        'CompanyData',
+    company_: Mapped[Company] = relationship(
+        'Company',
         back_populates='itemstock',
-        primaryjoin='foreign(Itemstock.CompanyID) == CompanyData.CompanyID',
+        primaryjoin='foreign(Itemstock.CompanyID) == Company.CompanyID',
         foreign_keys='Itemstock.CompanyID',
-        overlaps='branches_,itemstock'
+        overlaps='branches_,itemstock',
+        viewonly=True
     )
-    items_: Mapped[Items] = relationship('Items', back_populates='itemstock')
-    suppliers_: Mapped[Suppliers] = relationship('Suppliers', back_populates='itemstock')
-    warehouses_: Mapped[Warehouses] = relationship('Warehouses', back_populates='itemstock')
-
+    items_: Mapped[Items] = relationship(
+        'Items',
+        back_populates='itemstock',
+        overlaps='itemstock'
+    )
+    suppliers_: Mapped[Suppliers] = relationship(
+        'Suppliers',
+        back_populates='itemstock',
+        overlaps='items_,itemstock,itemstock'
+    )
+    warehouses_: Mapped[Warehouses] = relationship(
+        'Warehouses',
+        back_populates='itemstock',
+        overlaps='items_,itemstock,itemstock,suppliers_'
+    )

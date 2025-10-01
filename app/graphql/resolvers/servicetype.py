@@ -21,11 +21,11 @@ class ServicetypeQuery:
             db_gen.close()
 
     @strawberry.field
-    def servicetypes_by_id(self, info: Info, id: int) -> Optional[ServiceTypeInDB]:
+    def servicetypes_by_id(self, info: Info, companyID: int, id: int) -> Optional[ServiceTypeInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            record = get_servicetypes_by_id(db, id)
+            record = get_servicetypes_by_id(db, companyID, id)
             return obj_to_schema(ServiceTypeInDB, record) if record else None
         finally:
             db_gen.close()

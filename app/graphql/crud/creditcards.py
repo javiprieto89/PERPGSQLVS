@@ -9,12 +9,12 @@ from app.graphql.schemas.creditcards import CreditCardsCreate, CreditCardsUpdate
 
 
 def get_creditcards(db: Session):
-    return db.query(CreditCards).options(joinedload(CreditCards.creditCardGroups_)).all()
+    return db.query(CreditCards).options(joinedload(CreditCards.creditCardGroup_)).all()
 
 def get_creditcard_by_id(db: Session, id: int):
     return (
         db.query(CreditCards)
-        .options(joinedload(CreditCards.creditCardGroups_))
+        .options(joinedload(CreditCards.creditCardGroup_))
         .filter(CreditCards.CreditCardID == id)
         .first()
     )
@@ -23,7 +23,7 @@ def get_creditcard_by_id(db: Session, id: int):
 def get_creditcard_by_name(db: Session, name: str):
     return (
         db.query(CreditCards)
-        .options(joinedload(CreditCards.creditCardGroups_))
+        .options(joinedload(CreditCards.creditCardGroup_))
         .filter(CreditCards.CardName.ilike(f"%{name}%"))
         .all()
     )

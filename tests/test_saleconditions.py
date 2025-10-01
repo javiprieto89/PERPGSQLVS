@@ -4,7 +4,7 @@ from app.graphql.schemas.saleconditions import SaleConditionsCreate, SaleConditi
 
 
 def test_create_get_update_delete_saleconditions(db_session):
-    from datetime import date
+    from datetime import date, timezone
     from sqlalchemy import text
     # Buscar un CreditCardID real
     credit_card_id = db_session.execute(

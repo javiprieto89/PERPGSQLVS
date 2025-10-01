@@ -1,4 +1,5 @@
 ﻿# app/graphql/crud/orders.py - Versión type-safe
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm import Session
 from dataclasses import asdict
 from uuid import uuid4, UUID
@@ -35,25 +36,25 @@ def _safe_get_int(obj: Any, field_name: str) -> int:
     try:
         return int(value)
     except (ValueError, TypeError) as e:
-        raise ValueError(f"No se puede convertir {field_name}={value} a int: {e}")
-
-
-from sqlalchemy.orm import joinedload
+        raise ValueError(
+            f"No se puede convertir {field_name}={value} a int: {e}")
 
 
 def get_orders(db: Session):
     return (
         db.query(Orders)
         .options(
-            joinedload(Orders.companyData_),
+            joinedload(Orders.company_),
             joinedload(Orders.branches_),
             joinedload(Orders.saleConditions_),
-            joinedload(Orders.sysDocumentTypes_),
+            # sys types no expuestos
             joinedload(Orders.warehouses_),
             joinedload(Orders.clients_),
             joinedload(Orders.discounts_),
             joinedload(Orders.priceLists_),
-            joinedload(Orders.orderStatus_),
+            joinedload(Orders.vendors_),
+            joinedload(Orders.documents_),
+            # sys order status no expuestos
             joinedload(Orders.cars_),
             joinedload(Orders.serviceType_),
             joinedload(Orders.users_),
@@ -62,24 +63,56 @@ def get_orders(db: Session):
     )
 
 
-def get_orders_by_id(db: Session, orderid: int):
+def update_orders(db: Session, company_id: int, branch_id: int, orderid: int, data: OrdersUpdate) -> Optional[Orders]:
+    """Actualizar campos de Orders con mapeo de nombres y, si hay Items, cargar a temporales."""
+    order = get_orders_by_id(db, company_id, branch_id, orderid)
+    if not order:
+        return None
+
+    payload = asdict(data)
+    payload.pop('CompanyID', None)
+    payload.pop('BranchID', None)
+    if payload.get('OrderDate') is None:
+        payload.pop('OrderDate', None)
+    items = payload.pop('Items', None)
+
+    # Aplicar el resto de campos no None
+    for k, v in payload.items():
+        if v is not None and hasattr(order, k):
+            setattr(order, k, v)
+
+    # Si vienen items para edición, cargar detalles actuales a temporales
+    if items:
+        user_id = _safe_get_int(order, 'UserID')
+        load_orderdetails_to_temp(db, orderid, user_id, company_id, branch_id)
+        # Dejar una pista para la mutation
+        order._temp_session_id = str(uuid4())
+
+    db.commit()
+    db.refresh(order)
+    return order
+
+
+def get_orders_by_id(db: Session, company_id: int, branch_id: int, orderid: int):
     return (
         db.query(Orders)
         .options(
-            joinedload(Orders.companyData_),
+            joinedload(Orders.company_),
             joinedload(Orders.branches_),
             joinedload(Orders.saleConditions_),
-            joinedload(Orders.sysDocumentTypes_),
+            # sys types no expuestos
             joinedload(Orders.warehouses_),
             joinedload(Orders.clients_),
             joinedload(Orders.discounts_),
             joinedload(Orders.priceLists_),
-            joinedload(Orders.orderStatus_),
+            joinedload(Orders.vendors_),
+            joinedload(Orders.documents_),
+            # sys order status no expuestos
             joinedload(Orders.cars_),
             joinedload(Orders.serviceType_),
             joinedload(Orders.users_),
         )
-        .filter(Orders.OrderID == orderid)
+        .filter(Orders.CompanyID == company_id, Orders.BranchID == branch_id, Orders.OrderID == orderid)
         .first()
     )
 
@@ -94,6 +127,12 @@ def create_orders(db: Session, data: OrdersCreate):
 
     # Crear orden sin los ítems
     order_data = asdict(data)
+    if order_data.get('OrderDate') is None:
+        order_data.pop('OrderDate', None)
+    if order_data.get('DiscountAmount') is None:
+        order_data['DiscountAmount'] = 0.0
+    if order_data.get('TotalTaxAmount') is None:
+        order_data['TotalTaxAmount'] = 0.0
     order_data.pop("Items", None)  # Eliminar items del dict para el modelo
 
     # Crear el objeto Orders
@@ -124,7 +163,8 @@ def create_orders(db: Session, data: OrdersCreate):
             WarehouseID=warehouse_id,
             PriceListID=_safe_get_int(order, "PriceListID"),
             UnitPrice=item.UnitPrice,
-            Description=item.Description,
+            Description=getattr(item, 'LineDescription',
+                                getattr(item, 'Description', None)),
         )
         db.add(temp_detail)
 
@@ -137,50 +177,50 @@ def create_orders(db: Session, data: OrdersCreate):
     return order
 
 
-def update_orders(db: Session, orderid: int, data: OrdersUpdate):
-    """Actualizar orden y preparar los items para edición.
+# def update_orders(db: Session, orderid: int, data: OrdersUpdate):
+#     """Actualizar orden y preparar los items para edición.
 
-    Siempre carga los ``OrderDetails`` existentes a ``TempOrderDetails`` para
-    que puedan modificarse desde el frontend, independientemente de si el
-    payload incluye items nuevos o no.
-    """
-    obj = get_orders_by_id(db, orderid)
-    if not obj:
-        return None
+#     Siempre carga los ``OrderDetails`` existentes a ``TempOrderDetails`` para
+#     que puedan modificarse desde el frontend, independientemente de si el
+#     payload incluye items nuevos o no.
+#     """
+#     obj = get_orders_by_id(db, orderid)
+#     if not obj:
+#         return None
 
-    update_data = asdict(data)
-    # ``Items`` puede venir para futuras funcionalidades, pero por ahora sólo se
-    # extrae para evitar que intente asignarse directamente al modelo ``Orders``.
-    update_data.pop("Items", None)
+#     update_data = asdict(data)
+#     # ``Items`` puede venir para futuras funcionalidades, pero por ahora sólo se
+#     # extrae para evitar que intente asignarse directamente al modelo ``Orders``.
+#     update_data.pop("Items", None)
 
-    # Actualizar campos de la orden (excluyendo items)
-    for k, v in update_data.items():
-        if v is not None and hasattr(obj, k):
-            setattr(obj, k, v)
+#     # Actualizar campos de la orden (excluyendo items)
+#     for k, v in update_data.items():
+#         if v is not None and hasattr(obj, k):
+#             setattr(obj, k, v)
 
-    # Siempre cargar los detalles existentes a ``TempOrderDetails`` para poder
-    # editarlos desde la UI. Si ya existe una sesión previa, se generará una
-    # nueva para evitar colisiones.
-    db.flush()
-    db.refresh(obj)
+#     # Siempre cargar los detalles existentes a ``TempOrderDetails`` para poder
+#     # editarlos desde la UI. Si ya existe una sesión previa, se generará una
+#     # nueva para evitar colisiones.
+#     db.flush()
+#     db.refresh(obj)
 
-    session_id = load_orderdetails_to_temp(
-        db,
-        orderid,
-        _safe_get_int(obj, "UserID"),
-        _safe_get_int(obj, "CompanyID"),
-        _safe_get_int(obj, "BranchID"),
-    )
-    obj._temp_session_id = session_id
+#     session_id = load_orderdetails_to_temp(
+#         db,
+#         orderid,
+#         _safe_get_int(obj, "UserID"),
+#         _safe_get_int(obj, "CompanyID"),
+#         _safe_get_int(obj, "BranchID"),
+#     )
+#     obj._temp_session_id = session_id
 
-    db.commit()
-    db.refresh(obj)
-    return obj
+#     db.commit()
+#     db.refresh(obj)
+#     return obj
 
 
-def delete_orders(db: Session, orderid: int):
+def delete_orders(db: Session, company_id: int, branch_id: int, orderid: int):
     """Eliminar orden y sus detalles relacionados"""
-    obj = get_orders_by_id(db, orderid)
+    obj = get_orders_by_id(db, company_id, branch_id, orderid)
     if not obj:
         return None
 
@@ -200,13 +240,13 @@ def delete_orders(db: Session, orderid: int):
     return obj
 
 
-def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Orders]:
+def finalize_order(db: Session, company_id: int, branch_id: int, orderid: int, session_id: str) -> Optional[Orders]:
     """
     Finalizar orden: mover items de TempOrderDetails a OrderDetails y limpiar temporales.
     ``session_id`` se mantiene por compatibilidad pero se ignorará y se usará ``orderid``
     para obtener todos los registros temporales de la orden.
     """
-    order = get_orders_by_id(db, orderid)
+    order = get_orders_by_id(db, company_id, branch_id, orderid)
     if not order:
         return None
 
@@ -225,12 +265,14 @@ def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Order
     # Crear nuevos OrderDetails desde TempOrderDetails
     for temp_item in temp_items:
         order_detail = OrderDetails(
+            CompanyID=_safe_get_int(order, 'CompanyID'),
+            BranchID=_safe_get_int(order, 'BranchID'),
             OrderID=orderid,
             ItemID=_safe_get_int(temp_item, "ItemID"),
             WarehouseID=_safe_get_int(temp_item, "WarehouseID"),
             Quantity=_safe_get_int(temp_item, "Quantity"),
             UnitPrice=temp_item.UnitPrice,
-            Description=temp_item.Description,
+            LineDescription=temp_item.Description,
         )
         db.add(order_detail)
 
@@ -245,6 +287,8 @@ def finalize_order(db: Session, orderid: int, session_id: str) -> Optional[Order
 def add_item_to_order(
     db: Session,
     order_id: int,
+    company_id: int,
+    branch_id: int,
     session_id: Optional[str],
     item_data: dict,
 ) -> TempOrderDetails:
@@ -252,7 +296,7 @@ def add_item_to_order(
     Agregar un item a una orden en proceso (guardarlo en TempOrderDetails).
     Se usa durante la creación/edición de órdenes antes de finalizar.
     """
-    order = get_orders_by_id(db, order_id)
+    order = get_orders_by_id(db, company_id, branch_id,order_id)
     if not order:
         raise ValueError(f"Orden {order_id} no encontrada")
 

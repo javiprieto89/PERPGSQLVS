@@ -6,6 +6,7 @@ from app.models.items import Items
 from app.graphql.schemas.items import ItemsCreate, ItemsUpdate
 from dataclasses import asdict
 
+
 def get_items(db: Session):
     """Obtener items con todas sus relaciones"""
     return db.query(Items).options(
@@ -15,10 +16,11 @@ def get_items(db: Session):
         joinedload(Items.suppliers_),
         joinedload(Items.warehouses_),
         joinedload(Items.branches_),
-        joinedload(Items.companyData_),
+        joinedload(Items.company_),
     ).all()
 
-def get_items_by_id(db: Session, item_id: int):
+
+def get_items_by_id(db: Session, company_id: int, item_id: int):
     """Obtener item por ID con sus relaciones"""
     return (
         db.query(Items)
@@ -29,11 +31,12 @@ def get_items_by_id(db: Session, item_id: int):
             joinedload(Items.suppliers_),
             joinedload(Items.warehouses_),
             joinedload(Items.branches_),
-            joinedload(Items.companyData_),
+            joinedload(Items.company_),
         )
-        .filter(Items.ItemID == item_id)
+        .filter(Items.CompanyID == company_id, Items.ItemID == item_id)
         .first()
     )
+
 
 def create_items(db: Session, item: ItemsCreate):
     db_item = Items(**asdict(item))
@@ -42,8 +45,9 @@ def create_items(db: Session, item: ItemsCreate):
     db.refresh(db_item)
     return db_item
 
-def update_items(db: Session, item_id: int, item: ItemsUpdate):
-    db_item = get_items_by_id(db, item_id)
+
+def update_items(db: Session, company_id: int, item_id: int, item: ItemsUpdate):
+    db_item = get_items_by_id(db, company_id, item_id)
     if db_item:
         for key, value in asdict(item).items():
             if value is not None:
@@ -52,8 +56,9 @@ def update_items(db: Session, item_id: int, item: ItemsUpdate):
         db.refresh(db_item)
     return db_item
 
-def delete_items(db: Session, item_id: int):
-    db_item = get_items_by_id(db, item_id)
+
+def delete_items(db: Session, company_id: int, item_id: int):
+    db_item = get_items_by_id(db, company_id, item_id)
     if db_item:
         linked_price_list = (
             db.query(PriceListItems)
@@ -74,4 +79,3 @@ def delete_items(db: Session, item_id: int):
         db.delete(db_item)
         db.commit()
     return db_item
-

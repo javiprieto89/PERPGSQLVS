@@ -20,21 +20,21 @@ class PricelistsMutations:
             db_gen.close()
 
     @strawberry.mutation
-    def update_pricelist(self, info: Info, pricelistID: int, data: PriceListsUpdate) -> Optional[PriceListsInDB]:
+    def update_pricelist(self, info: Info, companyID: int, pricelistID: int, data: PriceListsUpdate) -> Optional[PriceListsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update_pricelists(db, pricelistID, data)
+            updated = update_pricelists(db, companyID, pricelistID, data)
             return obj_to_schema(PriceListsInDB, updated) if updated else None
         finally:
             db_gen.close()
 
     @strawberry.mutation
-    def delete_pricelist(self, info: Info, pricelistID: int) -> bool:
+    def delete_pricelist(self, info: Info, companyID: int, pricelistID: int) -> bool:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete_pricelists(db, pricelistID)
+            deleted = delete_pricelists(db, companyID, pricelistID)
             return deleted is not None
         finally:
             db_gen.close()

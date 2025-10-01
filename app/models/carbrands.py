@@ -7,33 +7,28 @@ if TYPE_CHECKING:
     from app.models.carmodels import CarModels
 
 from sqlalchemy import (
-    Column,
+
     Integer,
     Unicode,
     Identity,
     PrimaryKeyConstraint,
     ForeignKeyConstraint,
 )
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 from app.db import Base
-
 
 class CarBrands(Base):
     __tablename__ = 'CarBrands'
     __table_args__ = (
-        ForeignKeyConstraint(
-            ["CompanyID"], ["CompanyData.CompanyID"], name="FK_CarBrands_Company"
-        ),
-        PrimaryKeyConstraint("CarBrandID", name="PK__CarBrand__3EAE0B29835BF1AC"),
+        ForeignKeyConstraint(["CompanyID"], ["Company.CompanyID"], name="FK_CarBrands_Company"),
+        PrimaryKeyConstraint("CompanyID","CarBrandID", name="PK_CarBrands"),
     )
 
-    CarBrandID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    Name = Column(Unicode(100, "Modern_Spanish_CI_AS"))
-    CompanyID = Column(Integer)
+    CompanyID: Mapped[int] = mapped_column(Integer)
+    CarBrandID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1))
+    CarBrandName: Mapped[str] = mapped_column(Unicode(100, "Modern_Spanish_CI_AS"))
 
     # Relaciones
     carModels: Mapped[List["CarModels"]] = relationship(
         "CarModels", back_populates="carBrand"
     )
-
-

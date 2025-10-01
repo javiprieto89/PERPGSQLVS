@@ -27,12 +27,7 @@ class BranchesQuery:
         db = next(db_gen)
         try:
             items = get_branches(db)
-            result = []
-            for item in items:
-                obj = obj_to_schema(BranchesInDB, item)
-                obj.Logo = encode_logo(getattr(item, "Logo", None))
-                result.append(obj)
-            return result
+            return list_to_schema(BranchesInDB, items)
         finally:
             db_gen.close()
 
@@ -68,4 +63,3 @@ class BranchesQuery:
 
 
 branchesQuery = BranchesQuery()
-

@@ -10,8 +10,8 @@ if TYPE_CHECKING:
 
 from typing import List
 
-from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint, ForeignKeyConstraint
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Integer, Unicode, Identity, PrimaryKeyConstraint, ForeignKeyConstraint
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 
 from app.db import Base
 
@@ -23,15 +23,19 @@ class Provinces(Base):
             ["CountryID"], ["Countries.CountryID"],
             name="FK__Provinces__Count__403A8C7D",
         ),
-        PrimaryKeyConstraint("CountryID", "ProvinceID", name="PK_Provinces"),
+        PrimaryKeyConstraint("CountryID", "ProvinceID",
+                             name="PK_Provinces_CountryID_ProvinceID"),
     )
 
-    CountryID = Column(Integer, primary_key=True)
-    ProvinceID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    CountryID: Mapped[int] = mapped_column(Integer, primary_key=True)
+    ProvinceID: Mapped[int] = mapped_column(
+        Integer, Identity(start=1, increment=1), primary_key=True)
+    ProvinceName: Mapped[str] = mapped_column(
+        Unicode(100, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
-    countries_: Mapped['Countries'] = relationship('Countries', back_populates='provinces')
+    countries_: Mapped['Countries'] = relationship(
+        'Countries', back_populates='provinces')
     clients: Mapped[List['Clients']] = relationship(
         'Clients',
         back_populates='provinces_',
@@ -42,4 +46,3 @@ class Provinces(Base):
         back_populates='provinces_',
         overlaps='suppliers'
     )
-    

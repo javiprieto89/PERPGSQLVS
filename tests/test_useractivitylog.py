@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import pytest
 from app.graphql.crud.useractivitylog import create_useractivitylog, get_useractivitylog, update_useractivitylog, delete_useractivitylog
 from app.graphql.schemas.useractivitylog import UserActivityLogCreate, UserActivityLogUpdate

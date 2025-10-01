@@ -24,11 +24,11 @@ class BrandsMutations:
             db_gen.close()
 
     @strawberry.mutation
-    def update_brand(self, info: Info, brandID: int, data: BrandsUpdate) -> Optional[BrandsInDB]:
+    def update_brand(self, info: Info, companyID: int, brandID: int, data: BrandsUpdate) -> Optional[BrandsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated_brand = update_brands(db, brandID, data)
+            updated_brand = update_brands(db, companyID, brandID, data)
             if not updated_brand:
                 return None
             return obj_to_schema(BrandsInDB, updated_brand)
@@ -36,11 +36,11 @@ class BrandsMutations:
             db_gen.close()
 
     @strawberry.mutation
-    def delete_brand(self, info: Info, brandID: int) -> bool:
+    def delete_brand(self, info: Info, companyID: int, brandID: int) -> bool:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted_brand = delete_brands(db, brandID)
+            deleted_brand = delete_brands(db, companyID, brandID)
             return deleted_brand is not None
         finally:
             db_gen.close()

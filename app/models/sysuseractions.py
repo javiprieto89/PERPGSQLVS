@@ -8,11 +8,10 @@ if TYPE_CHECKING:
 
 from typing import List
 
-from sqlalchemy import Column, Integer, Unicode, Identity, PrimaryKeyConstraint
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Integer, Unicode, Identity, PrimaryKeyConstraint
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 
 from app.db import Base
-
 
 class SysUserActions(Base):
     __tablename__ = 'sysUserActions'
@@ -20,9 +19,8 @@ class SysUserActions(Base):
         PrimaryKeyConstraint('UserActionID', name='PK_sysUserActions'),
     )
 
-    UserActionID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    ActionName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    UserActionID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
+    ActionName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
     userActivityLog: Mapped[List['UserActivityLog']] = relationship('UserActivityLog', back_populates='sysUserActions_')
-

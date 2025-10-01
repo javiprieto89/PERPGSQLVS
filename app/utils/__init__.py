@@ -17,15 +17,29 @@ def _expects_str(field_type: Any) -> bool:
     return False
 
 
+def _strip_optional(field_type: Any) -> Any:
+    # Detecto los campos anidados y devuelvo el primer tipo de valor en una unión u opcional
+    # Por ejemplo campos anidados con <Entidad>Data
+    origin = get_origin(field_type)
+    if origin is Union:
+        args = [arg for arg in get_args(field_type) if arg is not type(None)]
+        if len(args) == 1:
+            return args[0]
+    return field_type
+
+
 def obj_to_schema(schema_type: Any, obj: Any):
     data = {}
+    # Auxiliares para cuando el dato pedido no es exacto
+    # Siempre que use <Entidad>Data esto no se va a usar
     alt_map = {
         "BranchData": ["branches_"],
         "RoleData": ["roles_"],
         "UserData": ["users_"],
         "WarehouseData": ["warehouses_"],
         "SaleConditionData": ["saleConditions_"],
-        "DocumentData": ["sysDocumentTypes_"],
+        "DocumentData": ["docTypes_"],
+        "VendorData": ["vendors_"],
         "ClientData": ["clients_"],
         "DiscountData": ["discounts_"],
         "PriceListData": ["priceLists_"],
@@ -34,7 +48,7 @@ def obj_to_schema(schema_type: Any, obj: Any):
         "ServiceTypeData": ["serviceType_"],
         "CarModelData": ["carModels_"],
         "CarBrandData": ["carBrand", "carModels_.carBrand"],
-        "GroupData": ["creditCardGroups_"],
+        "CreditCardGroupData": ["creditCardGroup_"],
         "ItemData": ["items_"],
         "DocTypeData": ["docTypes_"],
         "CountryData": ["countries_"],
@@ -43,7 +57,7 @@ def obj_to_schema(schema_type: Any, obj: Any):
         "CategoryData": ["itemCategories_"],
         "SubcategoryData": ["itemSubcategories_"],
         "SupplierData": ["suppliers_"],
-        "CompanyData": ["companyData_"],
+        "CompanyData": ["company_"],
     }
     obj_dict = getattr(obj, "__dict__", {})
     for f in fields(schema_type):
@@ -126,13 +140,15 @@ def obj_to_schema(schema_type: Any, obj: Any):
             value = base64.b64encode(value).decode("utf-8")
 
         # Convert nested dataclasses or lists of dataclasses
-        origin = get_origin(f.type)
-        if dataclasses.is_dataclass(f.type) and value is not None:
-            value = obj_to_schema(f.type, value)
+        target_type = _strip_optional(f.type)
+        origin = get_origin(target_type)
+
+        if dataclasses.is_dataclass(target_type) and value is not None:
+            value = obj_to_schema(target_type, value)
         elif origin in {list, List, Sequence}:
-            args = get_args(f.type)
+            args = get_args(target_type)
             if args:
-                inner = args[0]
+                inner = _strip_optional(args[0])
                 if dataclasses.is_dataclass(inner) and value is not None:
                     value = list_to_schema(inner, value)
 
@@ -143,4 +159,3 @@ def obj_to_schema(schema_type: Any, obj: Any):
 
 def list_to_schema(schema_type: Any, objects: Sequence[Any]) -> List[Any]:
     return [obj_to_schema(schema_type, obj) for obj in objects if obj is not None]
-

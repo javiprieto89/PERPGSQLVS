@@ -10,11 +10,10 @@ if TYPE_CHECKING:
 
 from typing import List
 
-from sqlalchemy import Column, Integer, Unicode, PrimaryKeyConstraint
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Integer, Unicode, PrimaryKeyConstraint
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 
 from app.db import Base
-
 
 class Countries(Base):
     __tablename__ = 'Countries'
@@ -22,8 +21,8 @@ class Countries(Base):
         PrimaryKeyConstraint('CountryID', name='PK__Countrie__10D160BFBD00A82C'),
     )
 
-    CountryID = Column(Integer, primary_key=True)
-    Name = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    CountryID: Mapped[int] = mapped_column(Integer, primary_key=True)
+    CountryName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
     provinces: Mapped[List['Provinces']] = relationship('Provinces', back_populates='countries_')
@@ -40,4 +39,3 @@ class Countries(Base):
         primaryjoin='Suppliers.CountryID == Countries.CountryID',
         foreign_keys='Suppliers.CountryID',
     )
-

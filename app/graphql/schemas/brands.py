@@ -1,19 +1,19 @@
 # app/graphql/schemas/brands.py
 import strawberry
 from typing import Optional
-from app.graphql.schemas.companydata import CompanyDataInDB
+from app.graphql.schemas.company import CompanyInDB
 
 
 @strawberry.input
 class BrandsCreate:
-    Name: str
+    BrandName: str
     IsActive: bool = True
     CompanyID: int
 
 
 @strawberry.input
 class BrandsUpdate:
-    Name: Optional[str] = None
+    BrandName: Optional[str] = None
     IsActive: Optional[bool] = None
     CompanyID: Optional[int] = None
 
@@ -21,7 +21,7 @@ class BrandsUpdate:
 @strawberry.type
 class BrandsInDB:
     BrandID: int
-    Name: str
+    BrandName: str
     IsActive: Optional[bool]
     CompanyID: Optional[int]
-    CompanyData: Optional[CompanyDataInDB] = None    
+    CompanyData: Optional[CompanyInDB] = None

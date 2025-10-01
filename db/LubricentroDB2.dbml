@@ -12,7 +12,7 @@ Project LubricentroDB2 {
 // Tablas principales del sistema
 // ==========================================
 
-Table CompanyData {
+Table Company {
   CompanyID int [pk, increment]
   Name nvarchar(100) [not null]
   Address nvarchar(200)
@@ -26,7 +26,7 @@ Table CompanyData {
 
 Table Branches {
   BranchID int [pk, increment]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   Name nvarchar(100) [not null]
   Address nvarchar(200)
   Phone nvarchar(20)
@@ -54,7 +54,7 @@ Table Roles {
 
 Table UserAccess {
   UserID int [not null, ref: > Users.UserID]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   RoleID int [not null, ref: > Roles.RoleID]
   
@@ -67,7 +67,7 @@ Table UserAccess {
 
 Table LastUserLogin {
   UserID int [not null, ref: > Users.UserID]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   RoleID int [not null, ref: > Roles.RoleID]
   LastLogin datetime [not null, default: `getdate()`]
@@ -268,7 +268,7 @@ Table Warehouses {
 
 Table Items {
   ItemID int [pk, increment]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   BrandID int [not null, ref: > Brands.BrandID]
   Code nvarchar(50) [not null, unique]
@@ -321,7 +321,7 @@ Table ItemPriceHistory {
 Table Itemstock {
   ItemID int [not null, ref: > Items.ItemID]
   WarehouseID int [not null, ref: > Warehouses.WarehouseID]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   Quantity int [not null]
   ReservedQuantity int [not null]
@@ -348,7 +348,7 @@ Table Itemstock {
 Table StockHistory {
   StockHistoryID int [pk, increment]
   ItemID int [not null, ref: > Items.ItemID]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   WarehouseID int [not null, ref: > Warehouses.WarehouseID]
   QuantityUpdate int [not null]
@@ -374,7 +374,7 @@ Table DocumentTypes {
 
 Table Documents {
   DocumentID int [pk, increment]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   DocumentTypeID int [not null, ref: > DocumentTypes.DocumentTypeID]
   Description nvarchar(100) [not null]
@@ -446,7 +446,7 @@ Table sysOrderStatus {
 
 Table Orders {
   OrderID int [pk, increment]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   Date datetime [not null, default: `getdate()`]
   ClientID int [not null, ref: > Clients.ClientID]
@@ -495,7 +495,7 @@ Table OrderDetails {
 
 Table OrderHistory {
   OrderHistoryID int [pk, increment]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   OrderID int [not null, ref: > Orders.OrderID]
   ClientID int [not null, ref: > Clients.ClientID]
@@ -534,7 +534,7 @@ Table TempOrderDetails {
   OrderDetailID int
   OrderID int [ref: > Orders.OrderID]
   OrderSessionID uniqueidentifier [not null, default: `newid()`]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   UserID int [not null, ref: > Users.UserID]
   ItemID int [not null, ref: > Items.ItemID]
@@ -549,7 +549,7 @@ Table TempOrderDetails {
 
 Table TempStockEntries {
   TempStockEntryID int [pk, increment]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   BranchID int [not null, ref: > Branches.BranchID]
   UniqueID uniqueidentifier [not null, default: `newid()`]
   SessionID nvarchar(100) [not null]
@@ -577,7 +577,7 @@ Table sysTransactionTypes {
 
 Table Transactions {
   TransactionID int [pk, increment]
-  CompanyID int [not null, ref: > CompanyData.CompanyID]
+  CompanyID int [not null, ref: > Company.CompanyID]
   TransactionDate datetime [not null, default: `getdate()`]
   ClientID int [ref: > Clients.ClientID]
   SupplierID int [ref: > Suppliers.SupplierID]

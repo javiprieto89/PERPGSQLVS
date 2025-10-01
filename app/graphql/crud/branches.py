@@ -5,13 +5,13 @@ from app.graphql.schemas.branches import BranchesCreate, BranchesUpdate
 
 
 def get_branches(db: Session):
-    return db.query(Branches).options(joinedload(Branches.companyData_)).all()
+    return db.query(Branches).options(joinedload(Branches.company_)).all()
 
 
 def get_branches_by_id(db: Session, companyID: int, branchID: int):
     return (
         db.query(Branches)
-        .options(joinedload(Branches.companyData_))
+        .options(joinedload(Branches.company_))
         .filter(
             Branches.CompanyID == companyID,
             Branches.BranchID == branchID,
@@ -24,7 +24,7 @@ def get_branches_by_company(db: Session, company_id: int):
     """Retrieve branches filtered by CompanyID"""
     return (
         db.query(Branches)
-        .options(joinedload(Branches.companyData_))
+        .options(joinedload(Branches.company_))
         .filter(Branches.CompanyID == company_id)
         .all()
     )
@@ -34,7 +34,7 @@ def create_branches(db: Session, data: BranchesCreate):
     obj = Branches(**vars(data))
     db.add(obj)
     db.commit()
-    db.refresh(obj)
+    db.refresh(obj)    
     return obj
 
 
@@ -55,4 +55,3 @@ def delete_branches(db: Session, companyID: int, branchID: int):
         db.delete(obj)
         db.commit()
     return obj
-

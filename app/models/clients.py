@@ -4,59 +4,53 @@ from __future__ import annotations
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.models.vendors import Vendors
     from app.models.accountbalances import AccountBalances
     from app.models.cars import Cars
     from app.models.orders import Orders
     from app.models.countries import Countries
-    from app.models.sysdoctypes import SysDocTypes
+    from app.models.sysidentitydoctypes import SysIdentityDocTypes
     from app.models.pricelists import PriceLists
     from app.models.provinces import Provinces
     from app.models.vendors import Vendors
     from app.models.branches import Branches
-    from app.models.companydata import CompanyData
+    from app.models.company import Company
 
-from sqlalchemy import Column, Integer, Unicode, Boolean, Date, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Integer, Unicode, Boolean, Date, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 from app.db import Base
-
 
 class Clients(Base):
     __tablename__ = 'Clients'
     __table_args__ = (
-        ForeignKeyConstraint(['DocTypeID'], ['SysDocTypes.DocTypeID'], name='FK_Clients_SysDocTypes'),
-        ForeignKeyConstraint(['PriceListID'], ['PriceLists.PriceListID'], name='FK_Clients_PriceLists'),
+        ForeignKeyConstraint(['DocTypeID'], ['sysIdentityDocTypes.DocTypeID'], name='FK_Clients_sysIdentityDocTypes'),
+        ForeignKeyConstraint(['CompanyID', 'PriceListID'], [
+                             'PriceLists.CompanyID', 'PriceLists.PriceListID'], name='FK_Clients_PriceLists'),
+        ForeignKeyConstraint(['CountryID', 'ProvinceID'], [
+                             'Provinces.CountryID', 'Provinces.ProvinceID'], name='FK_Clients_Provinces'),
+        ForeignKeyConstraint(['CompanyID', 'VendorID'], [
+                             'Vendors.CompanyID', 'Vendors.VendorID'], name='FK_Clients_Vendors'),
         ForeignKeyConstraint(
-            ['CountryID', 'ProvinceID'],
-            ['Provinces.CountryID', 'Provinces.ProvinceID'],
-            name='FK_Clients_Provinces',
-        ),
-        ForeignKeyConstraint(['VendorID'], ['Vendors.VendorID'], name='FK_Clients_Vendors'),
-        ForeignKeyConstraint(
-            ['CompanyID', 'BranchID'],
-            ['Branches.CompanyID', 'Branches.BranchID'],
-            name='FK_Clients_Branches',
-        ),
-        PrimaryKeyConstraint('ClientID', name='PK__Clients__E67E1A048D5F930D')
+            ['BranchID'], ['Branches.BranchID'], name='FK_Clients_Branches'),
+        PrimaryKeyConstraint('CompanyID', 'ClientID', name='PK_Clients')
     )
 
-    ClientID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    CompanyID = Column(Integer)
-    BranchID = Column(Integer)
-    DocTypeID = Column(Integer)
-    FirstName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    IsActive = Column(Boolean, server_default=text('((1))'))
-    CountryID = Column(Integer)
-    ProvinceID = Column(Integer)
-    PriceListID = Column(Integer)
-    VendorID = Column(Integer, server_default=text('((1))'))
-    DocNumber = Column(Unicode(50, 'Modern_Spanish_CI_AS'))
-    LastName = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    Phone = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
-    Email = Column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    Address = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
-    City = Column(Unicode(100, 'Modern_Spanish_CI_AS')) 
-    PostalCode = Column(Unicode(20, 'Modern_Spanish_CI_AS'))
+    CompanyID: Mapped[int] = mapped_column(Integer)
+    ClientID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1))
+    BranchID: Mapped[int] = mapped_column(Integer, nullable=True)
+    DocTypeID: Mapped[int] = mapped_column(Integer)
+    FirstName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    IsActive: Mapped[bool] = mapped_column(Boolean, server_default=text('((1))'))
+    CountryID: Mapped[int] = mapped_column(Integer)
+    ProvinceID: Mapped[int] = mapped_column(Integer)
+    PriceListID: Mapped[int] = mapped_column(Integer)
+    VendorID: Mapped[int] = mapped_column(Integer, server_default=text('((1))'))
+    DocNumber: Mapped[str] = mapped_column(Unicode(50, 'Modern_Spanish_CI_AS'))
+    LastName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    Phone: Mapped[str] = mapped_column(Unicode(20, 'Modern_Spanish_CI_AS'))
+    Email: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    Address: Mapped[str] = mapped_column(Unicode(200, 'Modern_Spanish_CI_AS'))
+    City: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    PostalCode: Mapped[str] = mapped_column(Unicode(20, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
     countries_: Mapped['Countries'] = relationship(
@@ -65,28 +59,47 @@ class Clients(Base):
         primaryjoin='Clients.CountryID == Countries.CountryID',
         foreign_keys='Clients.CountryID',
     )
-    docTypes_: Mapped['SysDocTypes'] = relationship('SysDocTypes', back_populates='clients')
-    pricelists_: Mapped['PriceLists'] = relationship('PriceLists', back_populates='clients')
+    docTypes_: Mapped['SysIdentityDocTypes'] = relationship(
+        'SysIdentityDocTypes', back_populates='clients')
+    pricelists_: Mapped['PriceLists'] = relationship(
+        'PriceLists',
+        back_populates='clients',
+        overlaps='clients'
+    )
     provinces_: Mapped['Provinces'] = relationship(
         'Provinces',
         back_populates='clients',
         overlaps='countries_',
     )
-    vendors_: Mapped['Vendors'] = relationship('Vendors', back_populates='clients')
-    accountBalances: Mapped[List['AccountBalances']] = relationship('AccountBalances', back_populates='clients_')
-    cars: Mapped[List['Cars']] = relationship('Cars', back_populates='clients_')
-    orders: Mapped[List['Orders']] = relationship('Orders', back_populates='clients_')
+    vendors_: Mapped['Vendors'] = relationship(
+        'Vendors',
+        back_populates='clients',
+        overlaps='clients,pricelists_'
+    )
+    accountBalances: Mapped[List['AccountBalances']] = relationship(
+        'AccountBalances', back_populates='clients_')
+    cars: Mapped[List['Cars']] = relationship(
+        'Cars',
+        back_populates='clients_',
+        overlaps='carModels_,cars'
+    )
+    orders: Mapped[List['Orders']] = relationship(
+        'Orders',
+        back_populates='clients_',
+        overlaps='orders', viewonly=True
+    )
     branches_: Mapped['Branches'] = relationship(
-        'Branches', 
+        'Branches',
         back_populates='clients',
         primaryjoin='and_(Clients.CompanyID == Branches.CompanyID, Clients.BranchID == Branches.BranchID)',
-        foreign_keys='[Clients.CompanyID, Clients.BranchID]'
+        foreign_keys='[Clients.CompanyID, Clients.BranchID]',
+        overlaps='pricelists_,vendors_'
     )
-    companyData_: Mapped['CompanyData'] = relationship(
-        'CompanyData',
+    company_: Mapped['Company'] = relationship(
+        'Company',
         back_populates='clients',
-        primaryjoin='Clients.CompanyID == CompanyData.CompanyID',
+        primaryjoin='Clients.CompanyID == Company.CompanyID',
         foreign_keys='[Clients.CompanyID]',
-        overlaps='branches_,clients'
+        overlaps='branches_,clients,pricelists_,vendors_',
+        viewonly=True
     )
-    

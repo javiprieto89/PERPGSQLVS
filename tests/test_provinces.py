@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import pytest
 from app.graphql.crud.provinces import create_provinces, get_provinces, update_provinces, delete_provinces
 from app.graphql.schemas.provinces import ProvincesCreate, ProvincesUpdate

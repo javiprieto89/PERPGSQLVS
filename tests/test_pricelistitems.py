@@ -1,40 +1,76 @@
 import pytest
 from sqlalchemy import text
-from app.graphql.crud.pricelistitems import create_pricelistitem, get_pricelistitems, update_pricelistitem, delete_pricelistitem
+from app.graphql.crud.pricelistitems import (
+    create_pricelistitem,
+    get_pricelistitems,
+    update_pricelistitem,
+    delete_pricelistitem,
+)
 from app.graphql.schemas.pricelistitems import PriceListItemsCreate, PriceListItemsUpdate
 
 
-def test_create_get_update_delete_pricelistitems(db_session):
-    # Crear con todos los campos obligatorios y FKs válidas
+@pytest.mark.usefixtures("tenant_ids")
+def test_create_get_update_delete_pricelistitems(db_session, tenant_ids):
     from datetime import datetime
-    # Crear un PriceList y un Item nuevos dejando que SQL Server asigne el IDENTITY
-    result_pl = db_session.execute(text(
-        "INSERT INTO PriceLists (Name, Description, IsActive, CreatedDate) OUTPUT INSERTED.PriceListID VALUES ('Lista Test', 'desc', 1, '2025-08-16')"))
-    new_pricelist_id = result_pl.scalar()
-    result_item = db_session.execute(text(
-        "INSERT INTO Items (CompanyID, BranchID, BrandID, Code, Description, ItemCategoryID, ItemSubcategoryID, SupplierID, ControlStock, ReplenishmentStock, IsOffer, OEM, LastModified, WarehouseID, IsActive) OUTPUT INSERTED.ItemID VALUES (1, 1, 1, 'CODEX', 'DESCX', 1, 1, 1, 0, 0, 0, NULL, '2025-08-16', 1, 1)"))
-    new_item_id = result_item.scalar()
+    company_id, branch_id = tenant_ids
+
+    # Crear PriceList multi-tenant (usando columnas reales)
+    pl_res = db_session.execute(text(
+        "INSERT INTO PriceLists (CompanyID, PriceListName, PriceListDescription, IsActive, CreatedDate) OUTPUT INSERTED.PriceListID VALUES (:cid, 'Lista Test', 'desc', 1, '2025-08-16')"
+    ), {"cid": company_id})
+    pricelist_id = pl_res.scalar()
+
+    # Asegurar dependencias mínimas para Item (Brand, Category, Subcategory, Supplier, Warehouse)
+    # Reusar IDs si existen, si no insertar.
+    def scalar_or_insert(select_sql, insert_sql, params=None):
+        val = db_session.execute(text(select_sql), params or {}).scalar()
+        if not val:
+            val = db_session.execute(text(insert_sql), params or {}).scalar()
+        return val
+
+    brand_id = scalar_or_insert(
+        f"SELECT TOP 1 BrandID FROM Brands WHERE CompanyID={company_id}",
+        f"INSERT INTO Brands (CompanyID, BrandName, IsActive) OUTPUT INSERTED.BrandID VALUES ({company_id}, 'MarcaX', 1)"
+    )
+    cat_id = scalar_or_insert(
+        f"SELECT TOP 1 ItemCategoryID FROM ItemCategories WHERE CompanyID={company_id}",
+        f"INSERT INTO ItemCategories (CompanyID, ItemCategoryName, IsActive) OUTPUT INSERTED.ItemCategoryID VALUES ({company_id}, 'CatX', 1)"
+    )
+    subcat_id = scalar_or_insert(
+        f"SELECT TOP 1 ItemSubcategoryID FROM ItemSubcategories WHERE CompanyID={company_id}",
+        f"INSERT INTO ItemSubcategories (CompanyID, ItemSubcategoryName, ItemCategoryID, IsActive) OUTPUT INSERTED.ItemSubcategoryID VALUES ({company_id}, 'SubCatX', {cat_id}, 1)"
+    )
+    supplier_id = scalar_or_insert(
+        f"SELECT TOP 1 SupplierID FROM Suppliers WHERE CompanyID={company_id}",
+        f"INSERT INTO Suppliers (CompanyID, FirstName, IsActive) OUTPUT INSERTED.SupplierID VALUES ({company_id}, 'ProvX', 1)"
+    )
+    warehouse_id = scalar_or_insert(
+        f"SELECT TOP 1 WarehouseID FROM Warehouses WHERE CompanyID={company_id}",
+        f"INSERT INTO Warehouses (CompanyID, WarehouseName, Address) OUTPUT INSERTED.WarehouseID VALUES ({company_id}, 'DepoX', 'Addr')"
+    )
+
+    item_res = db_session.execute(text(
+        "INSERT INTO Items (CompanyID, BranchID, BrandID, ItemCode, ItemDescription, ItemCategoryID, ItemSubcategoryID, SupplierID, ControlStock, ReplenishmentStock, IsOffer, OEM, LastModified, WarehouseID, IsActive) OUTPUT INSERTED.ItemID VALUES (:cid, :bid, :brandid, 'CODEX', 'DESCX', :catid, :subcatid, :supid, 0, 0, 0, NULL, '2025-08-16', :whid, 1)"
+    ), {"cid": company_id, "bid": branch_id, "brandid": brand_id, "catid": cat_id, "subcatid": subcat_id, "supid": supplier_id, "whid": warehouse_id})
+    item_id = item_res.scalar()
     db_session.commit()
-    data = PriceListItemsCreate(PriceListID=new_pricelist_id, ItemID=new_item_id,
-                                Price=100.0, EffectiveDate=datetime(2025, 8, 16, 0, 0, 0))
+
+    data = PriceListItemsCreate(
+        PriceListID=pricelist_id,
+        ItemID=item_id,
+        Price=100.0,
+        EffectiveDate=datetime(2025, 8, 16, 0, 0, 0),
+    )
     obj = create_pricelistitem(db_session, data)
-    assert obj is not None
-    assert int(getattr(obj, 'PriceListID', 0)) == new_pricelist_id and int(getattr(
-        obj, 'ItemID', 0)) == new_item_id and float(getattr(obj, 'Price', 0)) == 100.0
-    # Obtener
+    assert obj and obj.PriceListID == pricelist_id and obj.ItemID == item_id and float(obj.Price) == 100.0
+
     all_objs = get_pricelistitems(db_session)
-    assert any((int(getattr(o, 'PriceListID', 0)) == new_pricelist_id and int(
-        getattr(o, 'ItemID', 0)) == new_item_id) for o in all_objs)
-    # Actualizar
+    assert any(o.PriceListID == pricelist_id and o.ItemID == item_id for o in all_objs)
+
     update = PriceListItemsUpdate(Price=200.0)
-    updated = update_pricelistitem(
-        db_session, new_pricelist_id, new_item_id, update)
-    assert updated is not None
-    assert float(getattr(updated, 'Price', 0)) == 200.0
-    # Eliminar
-    deleted = delete_pricelistitem(db_session, new_pricelist_id, new_item_id)
-    assert deleted is not None
-    assert int(getattr(deleted, 'PriceListID', 0)) == new_pricelist_id and int(
-        getattr(deleted, 'ItemID', 0)) == new_item_id
-    assert all(not (int(getattr(o, 'PriceListID', 0)) == new_pricelist_id and int(
-        getattr(o, 'ItemID', 0)) == new_item_id) for o in get_pricelistitems(db_session))
+    updated = update_pricelistitem(db_session, pricelist_id, item_id, update)
+    assert updated and float(updated.Price) == 200.0
+
+    deleted = delete_pricelistitem(db_session, pricelist_id, item_id)
+    assert deleted and deleted.PriceListID == pricelist_id and deleted.ItemID == item_id
+    assert all(not (o.PriceListID == pricelist_id and o.ItemID == item_id) for o in get_pricelistitems(db_session))

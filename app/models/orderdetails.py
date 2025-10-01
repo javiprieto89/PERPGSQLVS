@@ -1,6 +1,8 @@
 # ========== OrderDetails ===========
 # app/models/orderdetails.py
 from __future__ import annotations
+import datetime
+import decimal
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:    
@@ -8,34 +10,43 @@ if TYPE_CHECKING:
     from .orders import Orders
     from .warehouses import Warehouses
 
-from sqlalchemy import Column, Integer, Unicode, DECIMAL, DateTime, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy import Integer, Unicode, DECIMAL, DateTime, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, text
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 #from .items import Items
 #from .orders import Orders
 #from .warehouses import Warehouses
 from app.db import Base
 
-
 class OrderDetails(Base):
     __tablename__ = 'OrderDetails'
     __table_args__ = (
-        ForeignKeyConstraint(['ItemID'], ['Items.ItemID'], name='FK__OrderDeta__ItemI__2DE6D218'),
-        ForeignKeyConstraint(['OrderID'], ['Orders.OrderID'], name='FK__OrderDeta__Order__2CF2ADDF'),
-        ForeignKeyConstraint(['WarehouseID'], ['Warehouses.WarehouseID'], name='FK_OrderDetails_Warehouses'),
-        PrimaryKeyConstraint('OrderDetailID', name='PK__OrderDet__9DD74D9DF5D37EDA')
+        ForeignKeyConstraint(['CompanyID','ItemID'], ['Items.CompanyID','Items.ItemID'], name='FK_OrderDetails_Items'),
+        ForeignKeyConstraint(['CompanyID','BranchID','OrderID'], ['Orders.CompanyID','Orders.BranchID','Orders.OrderID'], name='FK_OrderDetails_Orders'),
+        ForeignKeyConstraint(['CompanyID','WarehouseID'], ['Warehouses.CompanyID','Warehouses.WarehouseID'], name='FK_OrderDetails_Warehouses'),
+        PrimaryKeyConstraint('CompanyID','BranchID','OrderID','OrderDetailID', name='PK_OrderDetails')
     )
 
-    OrderDetailID = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    OrderID = Column(Integer)
-    ItemID = Column(Integer)
-    WarehouseID = Column(Integer)
-    Quantity = Column(Integer)
-    UnitPrice = Column(DECIMAL(10, 2))
-    Description = Column(Unicode(200, 'Modern_Spanish_CI_AS'))
-    LastModified = Column(DateTime, server_default=text('(getdate())'))
+    CompanyID: Mapped[int] = mapped_column(Integer)
+    BranchID: Mapped[int] = mapped_column(Integer)
+    OrderID: Mapped[int] = mapped_column(Integer)
+    OrderDetailID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1))
+    ItemID: Mapped[int] = mapped_column(Integer)
+    WarehouseID: Mapped[int] = mapped_column(Integer)
+    Quantity: Mapped[int] = mapped_column(Integer)
+    UnitPrice: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 2))
+    LineDescription: Mapped[str] = mapped_column(Unicode(200, 'Modern_Spanish_CI_AS'))
+    LastModified: Mapped[datetime.datetime] = mapped_column(DateTime, server_default=text('(getdate())'))
 
     # Relaciones
     items_: Mapped['Items'] = relationship('Items', back_populates='orderDetails')
-    orders_: Mapped['Orders'] = relationship('Orders', back_populates='orderDetails')
-    warehouses_: Mapped['Warehouses'] = relationship('Warehouses', back_populates='orderDetails')
+    orders_: Mapped['Orders'] = relationship(
+        'Orders',
+        back_populates='orderDetails',
+        overlaps='items_,orderDetails'
+    )
+    warehouses_: Mapped['Warehouses'] = relationship(
+        'Warehouses',
+        back_populates='orderDetails',
+        overlaps='items_,orders_,orderDetails'
+    )
     

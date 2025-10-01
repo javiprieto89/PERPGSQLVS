@@ -1,40 +1,38 @@
+from datetime import datetime, timezone
 import pytest
-from app.graphql.crud.stockhistory import create_stockhistory, get_stockhistory, update_stockhistory, delete_stockhistory
-from app.graphql.schemas.stockhistory import StockHistoryCreate, StockHistoryUpdate
+from app.graphql.crud.stockhistories import (
+    create_stockhistories as create_stockhistory,
+    get_stockhistories as get_stockhistory,
+    update_stockhistories as update_stockhistory,
+    delete_stockhistories as delete_stockhistory,
+)
+from app.graphql.schemas.stockhistories import StockHistoriesCreate, StockHistoriesUpdate
 
 
 def test_create_get_update_delete_stockhistory(db_session):
     from sqlalchemy import text
     # Buscar FKs reales
     company_id = db_session.execute(
-        text('SELECT TOP 1 CompanyID FROM CompanyData')).scalar() or 1
+        text('SELECT TOP 1 CompanyID FROM Company')).scalar() or 1
     branch_id = db_session.execute(
         text('SELECT TOP 1 BranchID FROM Branches')).scalar() or 1
     user_id = db_session.execute(
         text('SELECT TOP 1 UserID FROM Users')).scalar() or 1
-    item_id = db_session.execute(
-        text('SELECT TOP 1 ItemID FROM Items')).scalar() or 1
-    warehouse_id = db_session.execute(
-        text('SELECT TOP 1 WarehouseID FROM Warehouses')).scalar() or 1
+    # Campos de item/warehouse ya no están en el schema de StockHistories (detalles se manejan aparte)
     # Crear
-    data = StockHistoryCreate(
+    from datetime import datetime
+    data = StockHistoriesCreate(
         CompanyID=company_id,
         BranchID=branch_id,
         UserID=user_id,
-        ItemID=item_id,
-        WarehouseID=warehouse_id,
-        QuantityUpdate=10,
-        QuantityBefore=0,
-        QuantityAfter=10,
+        TransactionDate=datetime.utcnow(),
         Reason="Alta",
-        TransactionType="Ingreso",
-        Notes="Test"
+        Notes="Test",
     )
     obj = create_stockhistory(db_session, data)
     assert obj is not None
     obj_dict = vars(obj)
-    assert obj_dict["CompanyID"] == company_id and obj_dict["BranchID"] == branch_id and obj_dict[
-        "UserID"] == user_id and obj_dict["ItemID"] == item_id and obj_dict["WarehouseID"] == warehouse_id
+    assert obj_dict["CompanyID"] == company_id and obj_dict["BranchID"] == branch_id and obj_dict["UserID"] == user_id
     # Obtener
     all_objs = get_stockhistory(db_session)
     obj_id = obj_dict.get("StockHistoryID") or obj_dict.get("id")
@@ -44,7 +42,7 @@ def test_create_get_update_delete_stockhistory(db_session):
     obj_id = int(obj_id)
     assert any(vars(o)["StockHistoryID"] == obj_id for o in all_objs)
     # Actualizar
-    update = StockHistoryUpdate(Notes="Modificado")
+    update = StockHistoriesUpdate(Notes="Modificado")
     updated = update_stockhistory(db_session, obj_id, update)
     assert updated is not None
     updated_dict = vars(updated)

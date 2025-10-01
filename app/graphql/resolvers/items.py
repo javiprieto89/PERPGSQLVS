@@ -15,6 +15,7 @@ from app.db import get_db
 from app.graphql.crud.items import get_items, get_items_by_id
 from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
+from app.utils.item_helpers import safe_int, safe_str, safe_bool, safe_float, _safe_str_required, _safe_str_optional
 
 @strawberry.input
 class ItemFilters:
@@ -28,8 +29,8 @@ class ItemFilters:
     isActive: Optional[bool] = None
     isOffer: Optional[bool] = None
     controlStock: Optional[bool] = None
-    code: Optional[str] = None
-    description: Optional[str] = None
+    itemCode: Optional[str] = None
+    itemDescription: Optional[str] = None
     search: Optional[str] = None
 
 @strawberry.input
@@ -47,33 +48,33 @@ class ItemsResponse:
     has_next: bool
     has_prev: bool
 
-def safe_int(value: Any, default: int = 0) -> int:
-    """Convierte de forma segura cualquier valor a int"""
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return default
+# def safe_int(value: Any, default: int = 0) -> int:
+#     """Convierte de forma segura cualquier valor a int"""
+#     try:
+#         return int(value)
+#     except (TypeError, ValueError):
+#         return default
 
-def safe_str(value: Any, default: str = "") -> str:
-    """Convierte de forma segura cualquier valor a str"""
-    try:
-        return str(value) if value is not None else default
-    except:
-        return default
+# def safe_str(value: Any, default: str = "") -> str:
+#     """Convierte de forma segura cualquier valor a str"""
+#     try:
+#         return str(value) if value is not None else default
+#     except:
+#         return default
 
-def safe_bool(value: Any, default: bool = False) -> bool:
-    """Convierte de forma segura cualquier valor a bool"""
-    try:
-        return bool(value)
-    except:
-        return default
+# def safe_bool(value: Any, default: bool = False) -> bool:
+#     """Convierte de forma segura cualquier valor a bool"""
+#     try:
+#         return bool(value)
+#     except:
+#         return default
 
-def safe_float(value: Any, default: float = 0.0) -> float:
-    """Convierte de forma segura cualquier valor a float"""
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return default
+# def safe_float(value: Any, default: float = 0.0) -> float:
+#     """Convierte de forma segura cualquier valor a float"""
+#     try:
+#         return float(value)
+#     except (TypeError, ValueError):
+#         return default
 
 @strawberry.type
 class ItemsQuery:
@@ -89,11 +90,11 @@ class ItemsQuery:
             db_gen.close()
 
     @strawberry.field
-    def items_by_id(self, info: Info, id: int) -> Optional[ItemsInDB]:
+    def items_by_id(self, info: Info, companyID: int, id: int) -> Optional[ItemsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            item = get_items_by_id(db, id)
+            item = get_items_by_id(db, companyID, id)
             return obj_to_schema(ItemsInDB, item) if item else None
         finally:
             db_gen.close()
@@ -156,15 +157,15 @@ class ItemsQuery:
                     query = query.filter(Items.IsOffer == filters.isOffer)
                 if filters.controlStock is not None:
                     query = query.filter(Items.ControlStock == filters.controlStock)
-                if filters.code:
-                    query = query.filter(Items.Code.ilike(f"%{filters.code}%"))
-                if filters.description:
-                    query = query.filter(Items.Description.ilike(f"%{filters.description}%"))
+                if filters.itemCode:
+                    query = query.filter(Items.ItemCode.ilike(f"%{filters.itemCode}%"))
+                if filters.itemDescription:
+                    query = query.filter(Items.ItemDescription.ilike(f"%{filters.itemDescription}%"))
                 if filters.search:
                     search_term = f"%{filters.search}%"
                     query = query.filter(or_(
-                        Items.Code.ilike(search_term),
-                        Items.Description.ilike(search_term),
+                        Items.ItemCode.ilike(search_term),
+                        Items.ItemDescription.ilike(search_term),
                         Items.OEM.ilike(search_term)
                     ))
             
@@ -172,7 +173,7 @@ class ItemsQuery:
             total = query.count()
             
             # Aplicar paginación y orden
-            items = query.order_by(Items.Code).offset(offset).limit(limit).all()
+            items = query.order_by(Items.ItemCode).offset(offset).limit(limit).all()
             
             # Convertir a formato de respuesta
             items_result = []
@@ -225,8 +226,8 @@ class ItemsQuery:
                 
                 items_result.append(ItemSearchResult(
                     ItemID=safe_int(getattr(item, 'ItemID', 0)),
-                    Code=safe_str(getattr(item, 'Code', '')),
-                    Description=safe_str(getattr(item, 'Description', '')),
+                    ItemCode=safe_str(getattr(item, 'ItemCode', getattr(item, 'Code', ''))),
+                    ItemDescription=safe_str(getattr(item, 'ItemDescription', getattr(item, 'Description', ''))),
                     Brand=brand_data,
                     Category=category_data,
                     Subcategory=subcategory_data,
@@ -300,11 +301,12 @@ class ItemsQuery:
                 category_data = None
                 if hasattr(item, 'itemCategories_') and item.itemCategories_:
                     category_data = obj_to_schema(ItemCategoriesInDB, item.itemCategories_)
-                
+          
+          
                 result.append(ItemSearchResult(
                     ItemID=safe_int(getattr(item, 'ItemID', 0)),
-                    Code=safe_str(getattr(item, 'Code', '')),
-                    Description=safe_str(getattr(item, 'Description', '')),
+                    ItemCode=safe_str(getattr(item, 'Code', '')),
+                    ItemDescription=safe_str(getattr(item, 'Description', '')),
                     Brand=brand_data,
                     Category=category_data,
                     Subcategory=None,

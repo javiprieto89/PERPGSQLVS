@@ -1,23 +1,28 @@
 # app/graphql/schemas/warehouses.py
 
 import strawberry
+from app.graphql.schemas.company import CompanyInDB
 from typing import Optional
 
 
 @strawberry.input
 class WarehousesCreate:
-    Name: str
-    Addres: Optional[str] = None
+    CompanyID: int
+    WarehouseName: str
+    Address: Optional[str] = None
 
 
 @strawberry.input
 class WarehousesUpdate:
-    Name: Optional[str] = None
-    Addres: Optional[str] = None
+    CompanyID: Optional[int] = None
+    WarehouseName: Optional[str] = None
+    Address: Optional[str] = None
 
 
 @strawberry.type
 class WarehousesInDB:
+    CompanyID: int
     WarehouseID: int
-    Name: str
-    Addres: Optional[str] = None
+    WarehouseName: str
+    Address: Optional[str] = None
+    CompanCompanyData: Optional[CompanyInDB] = None

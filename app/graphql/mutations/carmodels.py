@@ -23,11 +23,11 @@ class CarModelsMutations:
             db_gen.close()
 
     @strawberry.mutation
-    def update_carmodel(self, info: Info, carModelID: int, data: CarModelsUpdate) -> Optional[CarModelsInDB]:
+    def update_carmodel(self, info: Info, companyID: int, carBrandID: int, carModelID: int, data: CarModelsUpdate) -> Optional[CarModelsInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            updated = update_carmodels(db, carModelID, data)
+            updated = update_carmodels(db, companyID, carBrandID, carModelID, data)
             if not updated:
                 return None
             return obj_to_schema(CarModelsInDB, updated)
@@ -35,11 +35,11 @@ class CarModelsMutations:
             db_gen.close()
 
     @strawberry.mutation
-    def delete_carmodel(self, info: Info, carModelID: int) -> bool:
+    def delete_carmodel(self, info: Info, companyID: int, carBrandID: int, carModelID: int) -> bool:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            deleted = delete_carmodels(db, carModelID)
+            deleted = delete_carmodels(db, companyID, carBrandID, carModelID)
             return deleted is not None
         finally:
             db_gen.close()

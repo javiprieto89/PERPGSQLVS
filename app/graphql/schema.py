@@ -1,4 +1,4 @@
-﻿# app/graphql/schema.py - VERSIÓN FINAL SIN ERRORES
+# app/graphql/schema.py - VERSIÓN FINAL SIN ERRORES
 
 import strawberry
 from typing import List, Optional
@@ -12,46 +12,45 @@ from app.graphql.resolvers.branches import BranchesQuery
 from app.graphql.resolvers.brands import BrandsQuery
 from app.graphql.resolvers.carbrands import CarbrandsQuery
 from app.graphql.resolvers.carmodels import CarmodelsQuery
+from app.graphql.resolvers.sysidentitydoctypes import SysIdentityDocTypesQuery
+from app.graphql.resolvers.sysfiscaldoctypes import SysFiscalDocTypesQuery
 from app.graphql.resolvers.cars import CarsQuery
 from app.graphql.resolvers.clients import ClientsQuery
-from app.graphql.resolvers.companydata import CompanydataQuery
+from app.graphql.resolvers.company import CompanyQuery
 from app.graphql.resolvers.countries import CountriesQuery
 from app.graphql.resolvers.creditcardgroups import CreditcardgroupsQuery
 from app.graphql.resolvers.creditcards import CreditcardsQuery
 from app.graphql.resolvers.discounts import DiscountsQuery
-from app.graphql.resolvers.sysdoctypes import SysdoctypesQuery
-from app.graphql.resolvers.documents import DocumentsQuery
-from app.graphql.resolvers.sysdocumenttypes import SysdocumenttypesQuery
+from app.graphql.resolvers.documents import CommercialdocumentsQuery
 from app.graphql.resolvers.cashboxes import CashboxesQuery
 from app.graphql.resolvers.cashboxmovements import CashboxmovementsQuery
 from app.graphql.resolvers.itemcategories import ItemcategoriesQuery
-from app.graphql.resolvers.itempricehistory import ItempricehistoryQuery
+from app.graphql.resolvers.itempricehistories import ItempricehistoriesQuery
 from app.graphql.resolvers.items import ItemsQuery
 from app.graphql.resolvers.itemstock import ItemstockQuery
+from app.graphql.resolvers.itemstocks import ItemstocksQuery
 from app.graphql.resolvers.itemsubcategories import ItemsubcategoriesQuery
 from app.graphql.resolvers.orderdetails import OrderdetailsQuery
 from app.graphql.resolvers.orderhistory import OrderhistoryQuery
 from app.graphql.resolvers.orderhistorydetails import OrderhistorydetailsQuery
 from app.graphql.resolvers.orders import OrdersQuery
-from app.graphql.resolvers.sysorderstatus import SysorderstatusQuery
 from app.graphql.resolvers.pricelistitems import PricelistitemsQuery
 from app.graphql.resolvers.pricelists import PricelistsQuery
 from app.graphql.resolvers.provinces import ProvincesQuery
 from app.graphql.resolvers.roles import RolesQuery
 from app.graphql.resolvers.saleconditions import SaleconditionsQuery
 from app.graphql.resolvers.servicetype import ServicetypeQuery
-from app.graphql.resolvers.stockhistory import StockhistoryQuery
+from app.graphql.resolvers.stockhistories import StockhistoriesQuery
+from app.graphql.resolvers.stockhistorydetails import StockHistoryDetailsQuery
 from app.graphql.resolvers.suppliers import SuppliersQuery
-from app.graphql.resolvers.temporderdetails import TemporderdetailsQuery
-from app.graphql.resolvers.tempstockhistorydetails import TempstockhistorydetailsQuery
 from app.graphql.resolvers.transactions import TransactionsQuery
-from app.graphql.resolvers.systransactiontypes import SystransactiontypesQuery
-from app.graphql.resolvers.useraccess import UseraccessQuery
-from app.graphql.resolvers.sysuseractions import SysuseractionsQuery
+from app.graphql.resolvers.userpermissions import UserPermissionsQuery
 from app.graphql.resolvers.users import UsersQuery
 from app.graphql.resolvers.warehouses import WarehousesQuery
 from app.graphql.resolvers.vendors import VendorsQuery
 from app.graphql.resolvers.afip import AfipQuery
+from app.graphql.resolvers.rmas import RMAQuery
+from app.graphql.resolvers.rmadetails import RMADetailQuery
 from app.graphql.mutations.clients import ClientsMutations
 from app.graphql.mutations.suppliers import SuppliersMutations
 from app.graphql.mutations.brands import BrandsMutations
@@ -66,25 +65,24 @@ from app.graphql.mutations.discounts import DiscountsMutations
 from app.graphql.mutations.carmodels import CarModelsMutations
 from app.graphql.mutations.cars import CarsMutations
 from app.graphql.mutations.branches import BranchesMutations
-from app.graphql.mutations.companydata import CompanydataMutations
+from app.graphql.mutations.company import CompanyMutations
 from app.graphql.mutations.warehouses import WarehousesMutations
 from app.graphql.mutations.pricelists import PricelistsMutations
 from app.graphql.mutations.pricelistitems import PricelistitemsMutations
-from app.graphql.mutations.temporderdetails import TempOrderDetailsMutations
+from app.graphql.mutations.itempricehistories import ItemPriceHistoriesMutations
 from app.graphql.mutations.orders import OrdersMutations
-from app.graphql.mutations.tempstockhistorydetails import TempStockHistoryDetailsMutations
 from app.graphql.mutations.cashboxes import CashBoxesMutations
 from app.graphql.mutations.cashboxmovements import CashBoxMovementsMutations
-from app.graphql.mutations.stockhistory import StockHistoryMutations
+from app.graphql.mutations.stockhistories import StockHistoriesMutations
+from app.graphql.mutations.rmas import RMAMutations
+from app.graphql.mutations.rmadetails import RMADetailMutations
+from app.graphql.mutations.stockhistorydetails import StockHistoryDetailsMutations
 from app.graphql.mutations.servicetype import ServiceTypeMutations
-from app.graphql.mutations.sysdoctypes import SysDocTypesMutations
-from app.graphql.mutations.sysdocumenttypes import SysDocumentTypesMutations
 from app.graphql.mutations.documents import DocumentsMutations
-from app.graphql.mutations.sysuseractions import SysUserActionsMutations
 from app.graphql.mutations.roles import RolesMutations
 from app.graphql.mutations.users import UsersMutations
 from app.graphql.mutations.vendors import VendorsMutations
-from app.graphql.mutations.useraccess import UserAccessMutation
+from app.graphql.mutations.userpermissions import UserPermissionsMutation
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
 from app.graphql.resolvers.auth import AuthQuery
@@ -190,7 +188,8 @@ class AdvancedResolver:
 
             total_items = db.query(Items).filter(company_filter).count()
             active_items = (
-                db.query(Items).filter(company_filter, Items.IsActive == True).count()
+                db.query(Items).filter(company_filter,
+                                       Items.IsActive == True).count()
             )
 
             low_stock_items = (
@@ -206,23 +205,28 @@ class AdvancedResolver:
             )
 
             total_clients = db.query(Clients).count()
-            active_clients = db.query(Clients).filter(Clients.IsActive == True).count()
+            active_clients = db.query(Clients).filter(
+                Clients.IsActive == True).count()
 
             orders_query = db.query(Orders).filter(orders_company_filter)
             if filters.date_from:
-                orders_query = orders_query.filter(Orders.Date_ >= filters.date_from)
+                orders_query = orders_query.filter(
+                    Orders.OrderDate >= filters.date_from)
             if filters.date_to:
-                orders_query = orders_query.filter(Orders.Date_ <= filters.date_to)
+                orders_query = orders_query.filter(
+                    Orders.OrderDate <= filters.date_to)
 
             total_orders = orders_query.count()
             pending_orders = orders_query.filter(
                 Orders.OrderStatusID.in_([1, 2])
             ).count()
-            completed_orders = orders_query.filter(Orders.OrderStatusID == 3).count()
+            completed_orders = orders_query.filter(
+                Orders.OrderStatusID == 3).count()
 
             sales_query = orders_query.filter(Orders.Total.isnot(None))
             monthly_sales = (
-                sales_query.with_entities(func.sum(Orders.Total)).scalar() or 0.0
+                sales_query.with_entities(
+                    func.sum(Orders.Total)).scalar() or 0.0
             )
 
             return DashboardStats(
@@ -264,8 +268,8 @@ class AdvancedResolver:
                 .filter(
                     Items.CompanyID == company_id,
                     (
-                        Items.Code.ilike(search_term)
-                        | Items.Description.ilike(search_term)
+                        Items.ItemCode.ilike(search_term)
+                        | Items.ItemDescription.ilike(search_term)
                     ),
                 )
                 .limit(limit // 3)
@@ -302,7 +306,8 @@ class AdvancedResolver:
                 stats=SearchStats(
                     total_results=total_results,
                     search_time_ms=search_time,
-                    filters_applied=[f"company_id:{company_id}", f"query:{query}"],
+                    filters_applied=[
+                        f"company_id:{company_id}", f"query:{query}"],
                 ),
             )
         finally:
@@ -319,43 +324,47 @@ class Query(
     CarmodelsQuery,
     CarsQuery,
     ClientsQuery,
-    CompanydataQuery,
+    CompanyQuery,
     CountriesQuery,
+    SysIdentityDocTypesQuery,
+    SysFiscalDocTypesQuery,
     CreditcardgroupsQuery,
     CreditcardsQuery,
     DiscountsQuery,
-    SysdoctypesQuery,
-    DocumentsQuery,
-    SysdocumenttypesQuery,
+    CommercialdocumentsQuery,
+
     ItemcategoriesQuery,
-    ItempricehistoryQuery,
+    ItempricehistoriesQuery,
     ItemsQuery,
     ItemstockQuery,
+    ItemstocksQuery,
     ItemsubcategoriesQuery,
     OrderdetailsQuery,
     OrderhistoryQuery,
     OrderhistorydetailsQuery,
     OrdersQuery,
-    SysorderstatusQuery,
+
     PricelistitemsQuery,
     PricelistsQuery,
     ProvincesQuery,
     RolesQuery,
     SaleconditionsQuery,
     ServicetypeQuery,
-    StockhistoryQuery,
+    StockhistoriesQuery,
+    StockHistoryDetailsQuery,
     SuppliersQuery,
-    TemporderdetailsQuery,
-    TempstockhistorydetailsQuery,
+
     CashboxesQuery,
     CashboxmovementsQuery,
     TransactionsQuery,
-    SystransactiontypesQuery,
-    UseraccessQuery,
-    SysuseractionsQuery,
+
+    UserPermissionsQuery,
+
     UsersQuery,
     WarehousesQuery,
     VendorsQuery,
+    RMAQuery,
+    RMADetailQuery,
     AfipQuery,
     AuthQuery,  # AGREGADO: Queries de autenticación
 ):
@@ -423,26 +432,28 @@ class Mutation(
     CreditCardGroupsMutations,
     CreditCardsMutations,
     DiscountsMutations,
-    SysDocTypesMutations,
+
     VendorsMutations,
     BranchesMutations,
-    CompanydataMutations,
+    CompanyMutations,
     WarehousesMutations,
     PricelistsMutations,
     PricelistitemsMutations,
-    TempOrderDetailsMutations,
-    TempStockHistoryDetailsMutations,
+    ItemPriceHistoriesMutations,
+    RMAMutations,
+    RMADetailMutations,
+
     CashBoxesMutations,
     CashBoxMovementsMutations,
-    StockHistoryMutations,
+    StockHistoriesMutations,
+    StockHistoryDetailsMutations,
     OrdersMutations,
     ServiceTypeMutations,
     DocumentsMutations,
-    SysDocumentTypesMutations,
-    SysUserActionsMutations,
+
     RolesMutations,
     UsersMutations,
-    UserAccessMutation,
+    UserPermissionsMutation,
 ):
     """Mutaciones principales"""
 
@@ -466,7 +477,6 @@ class Mutation(
                     user=None,
                 )
 
-            # Crear token
             token = create_user_token(user)
 
             # Obtener información del usuario
@@ -544,7 +554,8 @@ class Mutation(
                 )
 
             # Actualizar contraseña
-            success = update_user_password(db, input.user_id, input.new_password)
+            success = update_user_password(
+                db, input.user_id, input.new_password)
 
             if success:
                 return AuthResponse(

@@ -21,11 +21,11 @@ class OrdersQuery:
             db_gen.close()
 
     @strawberry.field
-    def orders_by_id(self, info: Info, id: int) -> Optional[OrdersInDB]:
+    def orders_by_id(self, info: Info, companyID: int, branchID: int, id: int) -> Optional[OrdersInDB]:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            order = get_orders_by_id(db, id)
+            order = get_orders_by_id(db, companyID, branchID, id)
             return obj_to_schema(OrdersInDB, order) if order else None
         finally:
             db_gen.close()

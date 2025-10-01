@@ -19,7 +19,7 @@ class CountriesUpdate:
 @strawberry.type
 class CountriesInDB:
     CountryID: int
-    Name: str
+    CountryName: str
 
     # Relaciones
     #provinces: Optional[List[ProvincesInDB]] = None

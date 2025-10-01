@@ -1,21 +1,29 @@
 # app/graphql/schemas/carmodels.py
 import strawberry
 from typing import Optional
+from app.graphql.schemas.company import CompanyInDB
 from app.graphql.schemas.carbrands import CarBrandsInDB
+
 
 @strawberry.input
 class CarModelsCreate:
+    CompanyID: int
     CarBrandID: int
-    Model: str
+    CarModelName: str
+
 
 @strawberry.input
 class CarModelsUpdate:
+    CompanyID: Optional[int] = None
     CarBrandID: Optional[int] = None
-    Model: Optional[str] = None
+    CarModelName: Optional[str] = None
+
 
 @strawberry.type
 class CarModelsInDB:
-    CarModelID: int
+    CompanyID: int
     CarBrandID: int
-    Model: str
+    CarModelID: int
+    CarModelName: str
+    CompanyData: Optional[CompanyInDB] = None
     CarBrandData: Optional[CarBrandsInDB] = None
