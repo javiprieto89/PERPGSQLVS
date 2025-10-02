@@ -54,10 +54,12 @@ def test_create_get_update_delete_orderdetails(db_session, order_base_dependenci
     assert any(d.OrderDetailID == detail.OrderDetailID for d in all_details)
 
     # Actualizar cantidad
-    updated = update_orderdetails(db_session, detail.OrderDetailID, OrderDetailsUpdate(Quantity=3))
+    updated = update_orderdetails(
+        db_session, detail.OrderDetailID, OrderDetailsUpdate(Quantity=3))
     assert updated is not None and updated.Quantity == 3
 
     # Eliminar
     deleted = delete_orderdetails(db_session, detail.OrderDetailID)
     assert deleted is not None and deleted.OrderDetailID == detail.OrderDetailID
-    assert all(d.OrderDetailID != detail.OrderDetailID for d in get_orderdetails(db_session))
+    assert all(d.OrderDetailID !=
+               detail.OrderDetailID for d in get_orderdetails(db_session))

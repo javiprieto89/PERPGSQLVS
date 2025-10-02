@@ -9,12 +9,14 @@ def test_create_get_update_delete_branches(db_session):
     # Crear dependencia Company
     company = db_session.query(Company).first()
     if not company:
-        company = Company(CompanyName="Test Company", Address="Addr", CUIT="1", GrossIncome="GI", StartDate=datetime.now(timezone.utc).date(), Logo=b"-")
+        company = Company(CompanyName="Test Company", Address="Addr", CUIT="1",
+                          GrossIncome="GI", StartDate=datetime.now(timezone.utc).date(), Logo=b"-")
         db_session.add(company)
         db_session.commit()
         db_session.refresh(company)
     # Crear
-    data = BranchesCreate(CompanyID=company.CompanyID, BranchName="Sucursal Test")
+    data = BranchesCreate(CompanyID=company.CompanyID,
+                          BranchName="Sucursal Test")
     obj = create_branches(db_session, data)
     assert obj.BranchName == "Sucursal Test"
     # Obtener

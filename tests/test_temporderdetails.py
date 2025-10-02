@@ -40,7 +40,8 @@ def test_create_get_update_delete_temporderdetails(db_session, order_base_depend
 
     # Actualizar cantidad usando session + item
     update_payload = {"Quantity": 3}
-    updated = update_temporderdetails(db_session, session_id, deps["ItemID"], update_payload)
+    updated = update_temporderdetails(
+        db_session, session_id, deps["ItemID"], update_payload)
     assert updated is not None
     assert updated.Quantity == 3
 

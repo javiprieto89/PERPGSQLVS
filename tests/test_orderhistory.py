@@ -47,9 +47,11 @@ def test_create_get_update_delete_orderhistory(db_session, order_base_dependenci
     all_hist = get_orderhistory(db_session)
     assert any(h.OrderHistoryID == hist.OrderHistoryID for h in all_hist)
 
-    updated = update_orderhistory(db_session, hist.OrderHistoryID, OrderHistoryUpdate(Status="Cerrado"))
+    updated = update_orderhistory(
+        db_session, hist.OrderHistoryID, OrderHistoryUpdate(Status="Cerrado"))
     assert updated is not None and updated.Status == "Cerrado"
 
     deleted = delete_orderhistory(db_session, hist.OrderHistoryID)
     assert deleted is not None and deleted.OrderHistoryID == hist.OrderHistoryID
-    assert all(h.OrderHistoryID != hist.OrderHistoryID for h in get_orderhistory(db_session))
+    assert all(h.OrderHistoryID !=
+               hist.OrderHistoryID for h in get_orderhistory(db_session))

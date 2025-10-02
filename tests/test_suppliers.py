@@ -9,16 +9,19 @@ from app.graphql.schemas.suppliers import SuppliersCreate, SuppliersUpdate
 def test_create_get_update_delete_suppliers(db_session, tenant_ids):
     company_id, _ = tenant_ids
     # DocType mínimo
-    doctype_id = db_session.execute(text('SELECT TOP 1 DocTypeID FROM SysIdentityDocTypes ORDER BY DocTypeID')).scalar()
+    doctype_id = db_session.execute(text(
+        'SELECT TOP 1 DocTypeID FROM SysIdentityDocTypes ORDER BY DocTypeID')).scalar()
     if not doctype_id:
         # Intentar insertar un DocType mínimo. Si otro test ya lo creó, ignorar el error de clave duplicada.
         try:
-            db_session.execute(text("INSERT INTO SysIdentityDocTypes (DocTypeID, DocTypeName, IsActive) VALUES (1,'DNI',1)"))
+            db_session.execute(text(
+                "INSERT INTO SysIdentityDocTypes (DocTypeID, DocTypeName, IsActive) VALUES (1,'DNI',1)"))
             db_session.commit()
         except IntegrityError:
             db_session.rollback()
         finally:
-            doctype_id = db_session.execute(text('SELECT TOP 1 DocTypeID FROM SysIdentityDocTypes ORDER BY DocTypeID')).scalar()
+            doctype_id = db_session.execute(text(
+                'SELECT TOP 1 DocTypeID FROM SysIdentityDocTypes ORDER BY DocTypeID')).scalar()
 
     data = SuppliersCreate(
         DocTypeID=doctype_id,

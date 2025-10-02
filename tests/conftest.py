@@ -60,54 +60,70 @@ def _seed_min_refs_util(db):
     # Company & Branch (some tables reference them)
     if Company and not db.query(Company).first():
         comp = Company(CompanyName="Test Company")
-        db.add(comp); db.commit(); db.refresh(comp)
+        db.add(comp)
+        db.commit()
+        db.refresh(comp)
     else:
         comp = db.query(Company).first() if Company else None
 
     if Branches and not db.query(Branches).first():
         if comp and hasattr(Branches, "CompanyID"):
-            br = Branches(CompanyID=getattr(comp, "CompanyID"), BranchName="Main Branch")
+            br = Branches(CompanyID=getattr(comp, "CompanyID"),
+                          BranchName="Main Branch")
         else:
             br = Branches(BranchName="Main Branch")
-        db.add(br); db.commit()
+        db.add(br)
+        db.commit()
     # Countries
     if Countries and not db.query(Countries).first():
         c = Countries(CountryName="Test Country")
-        db.add(c); db.commit(); db.refresh(c)
+        db.add(c)
+        db.commit()
+        db.refresh(c)
     else:
         c = db.query(Countries).first() if Countries else None
     # Provinces
     if Provinces and not db.query(Provinces).first():
         if c and hasattr(Provinces, "CountryID"):
-            p = Provinces(CountryID=getattr(c, "CountryID"), ProvinceName="Test Province")
+            p = Provinces(CountryID=getattr(c, "CountryID"),
+                          ProvinceName="Test Province")
         else:
             p = Provinces(ProvinceName="Test Province")
-        db.add(p); db.commit()
+        db.add(p)
+        db.commit()
     # Currencies
     if Currencies and not db.query(Currencies).first():
-        cur = Currencies(Code="USD", Name="US Dollar") if hasattr(Currencies, "Code") else Currencies(CurrencyName="US Dollar")
-        db.add(cur); db.commit()
+        cur = Currencies(Code="USD", Name="US Dollar") if hasattr(
+            Currencies, "Code") else Currencies(CurrencyName="US Dollar")
+        db.add(cur)
+        db.commit()
     # PriceLists
     if PriceLists and not db.query(PriceLists).first():
         if c and hasattr(PriceLists, "CountryID"):
-            db.add(PriceLists(PriceListName="Base", CountryID=getattr(c, "CountryID")))
+            db.add(PriceLists(PriceListName="Base",
+                   CountryID=getattr(c, "CountryID")))
         else:
             db.add(PriceLists(PriceListName="Base"))
         db.commit()
     # Vendors
     if Vendors and not db.query(Vendors).first():
-        db.add(Vendors(VendorName="Default Vendor")); db.commit()
+        db.add(Vendors(VendorName="Default Vendor"))
+        db.commit()
     # SysIdentityDocTypes
     if SysIdentityDocTypes and not db.query(SysIdentityDocTypes).first():
-        db.add(SysIdentityDocTypes(DocTypeName="DNI")); db.commit()
+        db.add(SysIdentityDocTypes(DocTypeName="DNI"))
+        db.commit()
 
 # ---- Common FK getters ----
+
+
 def _get_fk_ids(db):
     out = {}
     try:
         from app.models.countries import Countries
         c = db.query(Countries).first()
-        if c: out["CountryID"] = getattr(c, "CountryID", None)
+        if c:
+            out["CountryID"] = getattr(c, "CountryID", None)
     except Exception:
         pass
     try:
@@ -122,19 +138,22 @@ def _get_fk_ids(db):
     try:
         from app.models.pricelists import PriceLists
         pl = db.query(PriceLists).first()
-        if pl: out["PriceListID"] = getattr(pl, "PriceListID", None)
+        if pl:
+            out["PriceListID"] = getattr(pl, "PriceListID", None)
     except Exception:
         pass
     try:
         from app.models.vendors import Vendors
         v = db.query(Vendors).first()
-        if v: out["VendorID"] = getattr(v, "VendorID", None)
+        if v:
+            out["VendorID"] = getattr(v, "VendorID", None)
     except Exception:
         pass
     try:
         from app.models.sysidentitydoctypes import SysIdentityDocTypes
         d = db.query(SysIdentityDocTypes).first()
-        if d: out["DocTypeID"] = getattr(d, "DocTypeID", None)
+        if d:
+            out["DocTypeID"] = getattr(d, "DocTypeID", None)
     except Exception:
         pass
     return out
@@ -150,7 +169,8 @@ def db_session(engine):
     """
     connection = engine.connect()
     trans = connection.begin()
-    SessionLocal = sessionmaker(bind=connection, autoflush=False, autocommit=False, future=True)
+    SessionLocal = sessionmaker(
+        bind=connection, autoflush=False, autocommit=False, future=True)
     session = SessionLocal()
     # Sembrar referencias mínimas para que no fallen las inserciones iniciales
     try:
@@ -177,12 +197,19 @@ def tenant_ids(db_session):
     from app.models.branches import Branches
     company = db_session.query(Company).first()
     if not company:
-        company = Company(CompanyName="Test Company", Address="Addr", CUIT="1", GrossIncome="GI", StartDate=datetime.now(timezone.utc).date(), Logo=b"-")
-        db_session.add(company); db_session.commit(); db_session.refresh(company)
-    branch = db_session.query(Branches).filter(Branches.CompanyID==company.CompanyID).first()
+        company = Company(CompanyName="Test Company", Address="Addr", CUIT="1",
+                          GrossIncome="GI", StartDate=datetime.now(timezone.utc).date(), Logo=b"-")
+        db_session.add(company)
+        db_session.commit()
+        db_session.refresh(company)
+    branch = db_session.query(Branches).filter(
+        Branches.CompanyID == company.CompanyID).first()
     if not branch:
-        branch = Branches(CompanyID=company.CompanyID, BranchName="Main", Address="Addr", Phone="000", Logo=b"-")
-        db_session.add(branch); db_session.commit(); db_session.refresh(branch)
+        branch = Branches(CompanyID=company.CompanyID,
+                          BranchName="Main", Address="Addr", Phone="000", Logo=b"-")
+        db_session.add(branch)
+        db_session.commit()
+        db_session.refresh(branch)
     return company.CompanyID, branch.BranchID
 
 
@@ -299,7 +326,8 @@ def order_base_dependencies(db_session, seeded_dependencies):
         )
     except IntegrityError:
         # Ya existe, recuperar
-        doctype_id = db_session.execute(text("SELECT TOP 1 DocTypeID FROM SysIdentityDocTypes")) .scalar()
+        doctype_id = db_session.execute(
+            text("SELECT TOP 1 DocTypeID FROM SysIdentityDocTypes")) .scalar()
     # Vendor
     vendor_id = scalar_or_insert(
         f"SELECT TOP 1 VendorID FROM Vendors WHERE CompanyID={company_id}",
@@ -357,4 +385,3 @@ def order_base_dependencies(db_session, seeded_dependencies):
         "UserID": user_id,
         "DocumentID": document_id,
     }
-

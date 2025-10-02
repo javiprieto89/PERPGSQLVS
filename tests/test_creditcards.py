@@ -13,8 +13,10 @@ def test_create_get_update_delete_creditcards(db_session):
     if not company:
         company = Company(CompanyName="SeedCo")
         db_session.add(company)
-        db_session.commit(); db_session.refresh(company)
-    group = CreditCardGroups(CompanyID=getattr(company, 'CompanyID'), GroupName="Grupo Test")
+        db_session.commit()
+        db_session.refresh(company)
+    group = CreditCardGroups(CompanyID=getattr(
+        company, 'CompanyID'), GroupName="Grupo Test")
     db_session.add(group)
     db_session.commit()
     db_session.refresh(group)

@@ -14,26 +14,43 @@ def test_create_get_update_delete_items(db_session, tenant_ids):
     company_id, branch_id = tenant_ids
 
     # Crear dependencias mínimas requeridas
-    brand = db_session.query(Brands).filter(Brands.CompanyID==company_id).first()
+    brand = db_session.query(Brands).filter(
+        Brands.CompanyID == company_id).first()
     if not brand:
         brand = Brands(CompanyID=company_id, BrandName="BrandTest")
-        db_session.add(brand); db_session.commit(); db_session.refresh(brand)
-    cat = db_session.query(ItemCategories).filter(ItemCategories.CompanyID==company_id).first()
+        db_session.add(brand)
+        db_session.commit()
+        db_session.refresh(brand)
+    cat = db_session.query(ItemCategories).filter(
+        ItemCategories.CompanyID == company_id).first()
     if not cat:
         cat = ItemCategories(CompanyID=company_id, ItemCategoryName="CatTest")
-        db_session.add(cat); db_session.commit(); db_session.refresh(cat)
-    sub = db_session.query(ItemSubcategories).filter(ItemSubcategories.CompanyID==company_id).first()
+        db_session.add(cat)
+        db_session.commit()
+        db_session.refresh(cat)
+    sub = db_session.query(ItemSubcategories).filter(
+        ItemSubcategories.CompanyID == company_id).first()
     if not sub:
-        sub = ItemSubcategories(CompanyID=company_id, ItemCategoryID=cat.ItemCategoryID, ItemSubcategoryName="SubTest")
-        db_session.add(sub); db_session.commit(); db_session.refresh(sub)
-    supplier = db_session.query(Suppliers).filter(Suppliers.CompanyID==company_id).first()
+        sub = ItemSubcategories(
+            CompanyID=company_id, ItemCategoryID=cat.ItemCategoryID, ItemSubcategoryName="SubTest")
+        db_session.add(sub)
+        db_session.commit()
+        db_session.refresh(sub)
+    supplier = db_session.query(Suppliers).filter(
+        Suppliers.CompanyID == company_id).first()
     if not supplier:
         supplier = Suppliers(CompanyID=company_id, SupplierName="SuppTest")
-        db_session.add(supplier); db_session.commit(); db_session.refresh(supplier)
-    wh = db_session.query(Warehouses).filter(Warehouses.CompanyID==company_id).first()
+        db_session.add(supplier)
+        db_session.commit()
+        db_session.refresh(supplier)
+    wh = db_session.query(Warehouses).filter(
+        Warehouses.CompanyID == company_id).first()
     if not wh:
-        wh = Warehouses(CompanyID=company_id, BranchID=branch_id, WarehouseName="Main WH")
-        db_session.add(wh); db_session.commit(); db_session.refresh(wh)
+        wh = Warehouses(CompanyID=company_id,
+                        BranchID=branch_id, WarehouseName="Main WH")
+        db_session.add(wh)
+        db_session.commit()
+        db_session.refresh(wh)
 
     data = ItemsCreate(
         CompanyID=company_id,

@@ -62,10 +62,12 @@ def test_create_get_update_delete_pricelistitems(db_session, tenant_ids):
         EffectiveDate=datetime(2025, 8, 16, 0, 0, 0),
     )
     obj = create_pricelistitem(db_session, data)
-    assert obj and obj.PriceListID == pricelist_id and obj.ItemID == item_id and float(obj.Price) == 100.0
+    assert obj and obj.PriceListID == pricelist_id and obj.ItemID == item_id and float(
+        obj.Price) == 100.0
 
     all_objs = get_pricelistitems(db_session)
-    assert any(o.PriceListID == pricelist_id and o.ItemID == item_id for o in all_objs)
+    assert any(o.PriceListID == pricelist_id and o.ItemID ==
+               item_id for o in all_objs)
 
     update = PriceListItemsUpdate(Price=200.0)
     updated = update_pricelistitem(db_session, pricelist_id, item_id, update)
@@ -73,4 +75,5 @@ def test_create_get_update_delete_pricelistitems(db_session, tenant_ids):
 
     deleted = delete_pricelistitem(db_session, pricelist_id, item_id)
     assert deleted and deleted.PriceListID == pricelist_id and deleted.ItemID == item_id
-    assert all(not (o.PriceListID == pricelist_id and o.ItemID == item_id) for o in get_pricelistitems(db_session))
+    assert all(not (o.PriceListID == pricelist_id and o.ItemID == item_id)
+               for o in get_pricelistitems(db_session))

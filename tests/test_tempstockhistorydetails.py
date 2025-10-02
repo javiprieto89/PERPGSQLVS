@@ -37,7 +37,8 @@ def test_create_get_update_delete_tempstockhistorydetails(db_session, order_base
 
     # Actualizar cantidad
     update_data = TempStockHistoryDetailsUpdate(Quantity=9, Reason="Ajuste")
-    updated = update_tempstockhistorydetails(db_session, obj.TempStockEntryID, update_data)
+    updated = update_tempstockhistorydetails(
+        db_session, obj.TempStockEntryID, update_data)
     assert updated is not None
     assert updated.Quantity == 9
     assert updated.Reason == "Ajuste"
@@ -46,5 +47,6 @@ def test_create_get_update_delete_tempstockhistorydetails(db_session, order_base
     deleted = delete_tempstockhistorydetails(db_session, obj.TempStockEntryID)
     assert deleted is not None
     assert deleted.TempStockEntryID == obj.TempStockEntryID
-    remaining_ids = [o.TempStockEntryID for o in get_tempstockhistorydetails(db_session)]
+    remaining_ids = [
+        o.TempStockEntryID for o in get_tempstockhistorydetails(db_session)]
     assert obj.TempStockEntryID not in remaining_ids

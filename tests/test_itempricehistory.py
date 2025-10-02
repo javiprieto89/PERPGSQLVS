@@ -28,12 +28,15 @@ def test_create_get_update_delete_itempricehistory(db_session, seeded_dependenci
     obj = create_itempricehistory(db_session, data)
     assert obj.Price == 100.0
 
-    assert any(o.PriceHistoryID == obj.PriceHistoryID for o in get_itempricehistory(db_session))
+    assert any(o.PriceHistoryID ==
+               obj.PriceHistoryID for o in get_itempricehistory(db_session))
 
-    update = ItemPriceHistoriesUpdate(PriceHistoryID=obj.PriceHistoryID, Price=200.0)
+    update = ItemPriceHistoriesUpdate(
+        PriceHistoryID=obj.PriceHistoryID, Price=200.0)
     updated = update_itempricehistory(db_session, obj.PriceHistoryID, update)
     assert updated.Price == 200.0
 
     deleted = delete_itempricehistory(db_session, obj.PriceHistoryID)
     assert deleted.PriceHistoryID == obj.PriceHistoryID
-    assert all(o.PriceHistoryID != obj.PriceHistoryID for o in get_itempricehistory(db_session))
+    assert all(o.PriceHistoryID !=
+               obj.PriceHistoryID for o in get_itempricehistory(db_session))

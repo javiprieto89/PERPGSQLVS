@@ -6,7 +6,8 @@ from app.graphql.schemas.itemcategories import ItemCategoriesCreate, ItemCategor
 @pytest.mark.usefixtures("tenant_ids")
 def test_create_get_update_delete_itemcategories(db_session, tenant_ids):
     company_id, _ = tenant_ids
-    data = ItemCategoriesCreate(CompanyID=company_id, CategoryName="Categoría Test")
+    data = ItemCategoriesCreate(
+        CompanyID=company_id, CategoryName="Categoría Test")
     obj = create_itemcategories(db_session, data)
     assert obj.CategoryName == "Categoría Test"
     # Obtener
@@ -19,4 +20,5 @@ def test_create_get_update_delete_itemcategories(db_session, tenant_ids):
     # Eliminar
     deleted = delete_itemcategories(db_session, obj.ItemCategoryID)
     assert deleted and deleted.ItemCategoryID == obj.ItemCategoryID
-    assert all(o.ItemCategoryID != obj.ItemCategoryID for o in get_itemcategories(db_session))
+    assert all(o.ItemCategoryID !=
+               obj.ItemCategoryID for o in get_itemcategories(db_session))
