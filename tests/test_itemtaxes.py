@@ -52,17 +52,22 @@ def test_create_get_update_delete_itemtaxes(db_session, tenant_ids):
     )
     db_session.commit()
 
-    data = ItemTaxesCreate(CompanyID=company_id, BranchID=branch_id, ItemID=item_id, TaxID=tax_id)
+    data = ItemTaxesCreate(CompanyID=company_id,
+                           BranchID=branch_id, ItemID=item_id, TaxID=tax_id)
     obj = create_itemtaxes(db_session, data)
     assert obj and obj.ItemID == item_id and obj.TaxID == tax_id
 
     all_objs = get_itemtaxes(db_session)
-    assert any(o.CompanyID == company_id and o.BranchID == branch_id and o.ItemID == item_id and o.TaxID == tax_id for o in all_objs)
+    assert any(o.CompanyID == company_id and o.BranchID ==
+               branch_id and o.ItemID == item_id and o.TaxID == tax_id for o in all_objs)
 
     update = ItemTaxesUpdate()  # no cambio
-    updated = update_itemtaxes(db_session, company_id, branch_id, item_id, tax_id, update)
+    updated = update_itemtaxes(
+        db_session, company_id, branch_id, item_id, tax_id, update)
     assert updated and updated.ItemID == item_id
 
-    deleted = delete_itemtaxes(db_session, company_id, branch_id, item_id, tax_id)
+    deleted = delete_itemtaxes(
+        db_session, company_id, branch_id, item_id, tax_id)
     assert deleted and deleted.ItemID == item_id and deleted.TaxID == tax_id
-    assert all(not (o.CompanyID == company_id and o.BranchID == branch_id and o.ItemID == item_id and o.TaxID == tax_id) for o in get_itemtaxes(db_session))
+    assert all(not (o.CompanyID == company_id and o.BranchID == branch_id and o.ItemID ==
+               item_id and o.TaxID == tax_id) for o in get_itemtaxes(db_session))

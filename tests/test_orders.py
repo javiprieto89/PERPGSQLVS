@@ -59,7 +59,8 @@ def test_create_finalize_update_delete_orders(db_session, order_base_dependencie
     temp_items = get_temporderdetails_by_order(db_session, order_id)
     assert len(temp_items) == 1
     # Finalizar la orden (mueve de temporales a OrderDetails)
-    finalized = finalize_order(db_session, company_id, branch_id, order_id, getattr(order, "_temp_session_id", ""))
+    finalized = finalize_order(db_session, company_id, branch_id, order_id, getattr(
+        order, "_temp_session_id", ""))
     assert finalized is not None and finalized.OrderID == order_id
     # Ahora los temporales deberían haberse migrado
     temp_items_after = get_temporderdetails_by_order(db_session, order_id)
@@ -75,7 +76,8 @@ def test_create_finalize_update_delete_orders(db_session, order_base_dependencie
     all_orders = get_orders(db_session)
     assert any(o.OrderID == order_id for o in all_orders)
     # Actualizar una nota
-    updated = update_orders(db_session, company_id, branch_id, order_id, OrdersUpdate(Notes="nota actualizada"))
+    updated = update_orders(db_session, company_id, branch_id,
+                            order_id, OrdersUpdate(Notes="nota actualizada"))
     assert updated is not None and updated.Notes == "nota actualizada"
     # Eliminar
     deleted = delete_orders(db_session, company_id, branch_id, order_id)
@@ -133,19 +135,23 @@ def test_add_remove_items_flow(db_session, order_base_dependencies):
     assert temp_b.Quantity == 1
 
     # Listar items en progreso (solo 1 por upsert de mismo ItemID)
-    progress_items = get_order_items_in_progress(db_session, session_id_effective)
+    progress_items = get_order_items_in_progress(
+        db_session, session_id_effective)
     assert len(progress_items) == 1
 
     # Eliminar uno (usar itemID del segundo)
-    removed = remove_item_from_order(db_session, session_id_effective, temp_b.ItemID)
+    removed = remove_item_from_order(
+        db_session, session_id_effective, temp_b.ItemID)
     assert removed is True
 
     # Verificar eliminación deja 0
-    progress_after = get_order_items_in_progress(db_session, session_id_effective)
+    progress_after = get_order_items_in_progress(
+        db_session, session_id_effective)
     assert len(progress_after) == 0
 
     # Finalizar (no debe fallar aunque no haya temporales)
-    finalized = finalize_order(db_session, company_id, branch_id, order_id, session_id_effective)
+    finalized = finalize_order(
+        db_session, company_id, branch_id, order_id, session_id_effective)
     assert finalized is not None and finalized.OrderID == order_id
 
 
@@ -209,10 +215,12 @@ def test_finalize_with_multiple_items(db_session, order_base_dependencies):
     assert len(progress) == 2
 
     # Finalizar migrando ambos
-    finalize_order(db_session, company_id, branch_id, order_id, session_id_effective)
+    finalize_order(db_session, company_id, branch_id,
+                   order_id, session_id_effective)
 
     # Ya no debería haber temporales
-    assert len(get_order_items_in_progress(db_session, session_id_effective)) == 0
+    assert len(get_order_items_in_progress(
+        db_session, session_id_effective)) == 0
 
     # Deben existir 2 OrderDetails para la orden
     details = db_session.query(OrderDetails).filter(
@@ -223,7 +231,8 @@ def test_finalize_with_multiple_items(db_session, order_base_dependencies):
     assert len(details) == 2
 
     # Idempotencia: volver a finalizar no duplica
-    finalize_order(db_session, company_id, branch_id, order_id, session_id_effective)
+    finalize_order(db_session, company_id, branch_id,
+                   order_id, session_id_effective)
     details_after = db_session.query(OrderDetails).filter(
         OrderDetails.CompanyID == company_id,
         OrderDetails.BranchID == branch_id,

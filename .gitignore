@@ -16,3 +16,4 @@ svgr
 bkp/
 *.http
 .vercel
+*.zip

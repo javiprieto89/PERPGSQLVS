@@ -23,12 +23,15 @@ def test_create_get_update_delete_pricelists(db_session, tenant_ids):
     assert obj and obj.PriceListName == "Lista Test" and obj.CompanyID == company_id
 
     all_objs = get_pricelists(db_session)
-    assert any(o.PriceListID == obj.PriceListID and o.CompanyID == company_id for o in all_objs)
+    assert any(o.PriceListID == obj.PriceListID and o.CompanyID ==
+               company_id for o in all_objs)
 
     update = PriceListsUpdate(PriceListName="Lista Modificada")
-    updated = update_pricelists(db_session, company_id, obj.PriceListID, update)
+    updated = update_pricelists(
+        db_session, company_id, obj.PriceListID, update)
     assert updated and updated.PriceListName == "Lista Modificada"
 
     deleted = delete_pricelists(db_session, company_id, obj.PriceListID)
     assert deleted and deleted.PriceListID == obj.PriceListID
-    assert all(o.PriceListID != obj.PriceListID for o in get_pricelists(db_session))
+    assert all(o.PriceListID !=
+               obj.PriceListID for o in get_pricelists(db_session))

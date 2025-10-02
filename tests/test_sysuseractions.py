@@ -11,7 +11,8 @@ def test_create_get_update_delete_sysuseractions(db_session):
     assert obj.ActionName == "Acción Test"
     # Obtener
     all_objs = get_sysuseractions(db_session)
-    assert any(getattr(o, 'UserActionID', None) == getattr(obj, 'UserActionID', None) for o in all_objs)
+    assert any(getattr(o, 'UserActionID', None) == getattr(
+        obj, 'UserActionID', None) for o in all_objs)
     # Actualizar
     update = SysUserActionsUpdate(ActionName="Acción Modificada")
     updated = update_sysuseractions(db_session, obj.UserActionID, update)
@@ -21,4 +22,5 @@ def test_create_get_update_delete_sysuseractions(db_session):
     deleted = delete_sysuseractions(db_session, obj.UserActionID)
     assert deleted is not None
     assert deleted.UserActionID == obj.UserActionID
-    assert all(getattr(o, 'UserActionID', None) != getattr(obj, 'UserActionID', None) for o in get_sysuseractions(db_session))
+    assert all(getattr(o, 'UserActionID', None) != getattr(
+        obj, 'UserActionID', None) for o in get_sysuseractions(db_session))

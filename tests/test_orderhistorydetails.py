@@ -60,12 +60,17 @@ def test_create_get_update_delete_orderhistorydetails(db_session, order_base_dep
     ))
     assert detail.Quantity == 1
 
-    all_details = get_orderhistorydetails(db_session, company_id=deps["CompanyID"], branch_id=deps["BranchID"], orderhistory_id=history_id)
-    assert any(d.OrderHistoryDetailID == detail.OrderHistoryDetailID for d in all_details)
+    all_details = get_orderhistorydetails(
+        db_session, company_id=deps["CompanyID"], branch_id=deps["BranchID"], orderhistory_id=history_id)
+    assert any(d.OrderHistoryDetailID ==
+               detail.OrderHistoryDetailID for d in all_details)
 
-    updated = update_orderhistorydetails(db_session, detail.OrderHistoryDetailID, OrderHistoryDetailsUpdate(Quantity=2))
+    updated = update_orderhistorydetails(
+        db_session, detail.OrderHistoryDetailID, OrderHistoryDetailsUpdate(Quantity=2))
     assert updated is not None and updated.Quantity == 2
 
-    deleted = delete_orderhistorydetails(db_session, detail.OrderHistoryDetailID)
+    deleted = delete_orderhistorydetails(
+        db_session, detail.OrderHistoryDetailID)
     assert deleted is not None and deleted.OrderHistoryDetailID == detail.OrderHistoryDetailID
-    assert all(d.OrderHistoryDetailID != detail.OrderHistoryDetailID for d in get_orderhistorydetails(db_session))
+    assert all(d.OrderHistoryDetailID !=
+               detail.OrderHistoryDetailID for d in get_orderhistorydetails(db_session))
