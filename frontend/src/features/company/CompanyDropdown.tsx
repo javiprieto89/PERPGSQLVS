@@ -28,7 +28,7 @@ export function CompanyDropdown({ ...props }) {
               key={c.CompanyID}
               value={String(c.CompanyID)}
             >
-              {c.Name}
+              {c.CompanyName}
             </SelectItem>
           ))}
         </SelectGroup>

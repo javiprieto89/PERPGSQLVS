@@ -1,9 +1,6 @@
 ﻿// frontend/src/components/CarModelSearchModal.jsx
 import { useEffect, useState } from "react";
-import {
-  carBrandOperations,
-  carModelOperations,
-} from "~/graphql/operations.js";
+import { carBrandOperations, carModelOperations } from "~/services/car.service";
 import TableFilters from "./TableFilters";
 
 export default function CarModelSearchModal({

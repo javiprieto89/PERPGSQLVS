@@ -1,0 +1,8 @@
+schema: src/graphql.schema.json
+documents: src/graphql/**/*.graphql
+extensions:
+  endpoints:
+    default:
+      url: ${VITE_GRAPHQL_API}
+      headers:
+        Authorization: Bearer ${VITE_GRAPHQL_TOKEN}

@@ -1,6 +1,6 @@
 ﻿// frontend/src/pages/DiscountCreate.jsx
 import { useEffect, useState } from "react";
-import { discountOperations } from "~/graphql/operations.js";
+import { discountOperations } from "~/services/discount.service";
 
 export default function DiscountCreate({
   onClose,

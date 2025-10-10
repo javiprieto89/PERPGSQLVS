@@ -1,6 +1,6 @@
 // frontend/src/pages/UserForm.jsx
 import { useEffect, useState } from "react";
-import { userOperations } from "~/graphql/operations.js";
+import { userService } from "~/services/user.service";
 
 export default function UserForm({
   onClose,
@@ -31,14 +31,14 @@ export default function UserForm({
     try {
       let result;
       if (isEdit) {
-        result = await userOperations.updateUser(initialUser.UserID, {
+        result = await userService.updateUser(initialUser.UserID, {
           Nickname: nickname,
           FullName: fullName,
           Password: password || undefined,
           IsActive: isActive,
         });
       } else {
-        result = await userOperations.createUser({
+        result = await userService.createUser({
           Nickname: nickname,
           FullName: fullName,
           Password: password,

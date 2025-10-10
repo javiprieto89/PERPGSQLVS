@@ -32,5 +32,20 @@
     "youtube",
     "zustand"
   ],
-  "cSpell.language": "en,es"
+  "css.lint.unknownAtRules": "ignore",
+  "cSpell.language": "en,es",
+  "[windows]": {
+    "terminal.integrated.profiles.windows": {
+      "PowerShell": {
+        "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+      }
+    },
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.shellIntegration.enabled": true,
+    "terminal.integrated.shellArgs.windows": [
+      "-NoExit",
+      "-Command",
+      "& 'C:\\Users\\javie\\OneDrive\\_Development\\PERPGSQLVS\\venv\\Scripts\\Activate.ps1'"
+    ]
+  }
 }

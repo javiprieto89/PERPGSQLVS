@@ -2,14 +2,14 @@
 // TODO: recreate Graphql query to reduce the amount of queries
 // TODO: change Documents to CommercialDocuments
 import { useEffect, useState } from "react";
+import TableFilters from "~/components/TableFilters";
+import { branchOperations } from "~/services/branch.service";
+import { companyOperations } from "~/services/company.service";
 import {
-  branchOperations,
-  companyOperations,
   documentOperations,
   sysDocumentTypeOperations,
-} from "~/graphql/operations";
-import TableFilters from "../components/TableFilters";
-import { openReactWindow } from "../utils/openReactWindow";
+} from "~/services/document.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import DocumentCreate from "./DocumentCreate";
 
 export default function Documents() {

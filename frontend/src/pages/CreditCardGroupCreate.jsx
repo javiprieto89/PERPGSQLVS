@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { creditCardGroupOperations } from "~/graphql/operations.js";
+import { creditCardGroupOperations } from "~/services/credit-card.service";
 
 export default function CreditCardGroupCreate({
   onClose,

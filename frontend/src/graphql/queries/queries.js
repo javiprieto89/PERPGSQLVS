@@ -307,7 +307,7 @@ export const QUERIES = {
             }
         }
     `,
-    // ROLES Y USUARIOS (UserAccess)
+    // ROLES Y USUARIOS (UserPermissions)
     GET_ALL_USERACCESS: `
         query GetAllUseraccess {
             allUseraccess {

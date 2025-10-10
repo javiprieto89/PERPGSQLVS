@@ -1,6 +1,6 @@
 ﻿// frontend/src/components/BranchSearchModal.jsx
 import { useEffect, useState } from "react";
-import { branchOperations } from "~/graphql/operations.js";
+import { branchOperations } from "~/services/branch.service";
 import TableFilters from "./TableFilters";
 
 export default function BranchSearchModal({

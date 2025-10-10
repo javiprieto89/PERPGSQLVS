@@ -8,14 +8,14 @@ import {
   TableActionButton,
   TableIsActiveCell,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 import { useGetAllCreditCardsQuery } from "~/graphql/_generated/graphql";
-import { creditCardOperations } from "~/graphql/operations.js";
-import TableFilters from "../components/TableFilters";
-import { openReactWindow } from "../utils/openReactWindow";
+import { creditCardOperations } from "~/services/credit-card.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import CreditCardCreate from "./CreditCardCreate";
 
 export default function CreditCards() {

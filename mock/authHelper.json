@@ -1,0 +1,16 @@
+{
+  "UserID": null,
+  "CompanyID": null,
+  "Company": "Sin empresa",
+  "BranchID": null,
+  "Branch": "Sin sucursal",
+  "RoleID": null,
+  "Role": "Sin rol",
+  "userID": null,
+  "companyID": null,
+  "companyName": "Sin empresa",
+  "branchID": null,
+  "branchName": "Sin sucursal",
+  "roleID": null,
+  "roleName": "Sin rol"
+}

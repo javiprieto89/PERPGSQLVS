@@ -1,6 +1,6 @@
 ﻿// frontend/src/pages/ServiceTypeCreate.jsx
 import { useEffect, useState } from "react";
-import { serviceTypeOperations } from "~/graphql/operations.js";
+import { serviceTypeOperations } from "~/services/service-type.service";
 
 export default function ServiceTypeCreate({
   onClose,

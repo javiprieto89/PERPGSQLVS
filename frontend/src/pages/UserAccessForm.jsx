@@ -1,10 +1,10 @@
 // frontend/src/pages/UserAccessForm.jsx
 import { useEffect, useState } from "react";
 
-import { graphqlClient } from "~/graphql/graphqlClient.js";
-import { userAccessOperations } from "~/graphql/operations.js";
+import { graphqlClient } from "~/graphql/graphql-client";
 
 import CompanySearchModal from "~/features/company/CompanySearchModal";
+import { userPermissionsOperations } from "~/services/user.service";
 import BranchSearchModal from "../components/BranchSearchModal";
 import RoleSearchModal from "../components/RoleSearchModal";
 
@@ -90,7 +90,7 @@ export default function UserAccessForm({
     try {
       let result;
       if (isEdit) {
-        result = await userAccessOperations.update(
+        result = await userPermissionsOperations.update(
           {
             oldUserID: initialRecord.UserID,
             oldCompanyID: initialRecord.CompanyID,
@@ -105,7 +105,7 @@ export default function UserAccessForm({
           }
         );
       } else {
-        result = await userAccessOperations.create({
+        result = await userPermissionsOperations.create({
           UserID: parseInt(userID),
           CompanyID: parseInt(companyID),
           BranchID: parseInt(branchID),

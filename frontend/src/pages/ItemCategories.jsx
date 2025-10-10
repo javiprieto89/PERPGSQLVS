@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useGetAllItemCategoriesQuery } from "~/graphql/_generated/graphql";
-import { itemCategoryOperations } from "~/graphql/operations.js";
-import { openReactWindow } from "../utils/openReactWindow";
+import { openReactWindow } from "~/utils/openReactWindow";
 
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { DataTable } from "~/components/table/DataTable";
@@ -10,12 +9,13 @@ import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
-import TableFilters from "../components/TableFilters";
+import { itemCategoryOperations } from "~/services/item.service";
 import ItemCategoryCreate from "./ItemCategoryCreate";
 
 export default function ItemCategories() {

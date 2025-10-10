@@ -1,5 +1,15 @@
 import { cn } from "~/lib/utils"
 
 export const Fieldset = ({ className, ...props }: React.FieldsetHTMLAttributes<HTMLFieldSetElement>) => {
-  return <fieldset className={cn("bg-card border-1 rounded-md p-4 my-2", className)} {...props} />
+  return (
+    <>
+      <div className="bg-card shadow-xs rounded-md px-4 py-6">
+        <fieldset
+          data-slot="fieldset"
+          className={cn("space-y-2", className)}
+          {...props}
+        />
+      </div>
+    </>
+  )
 }

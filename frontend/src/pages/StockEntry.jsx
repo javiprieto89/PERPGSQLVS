@@ -1,16 +1,17 @@
 // frontend/src/pages/StockEntry.jsx
 import { useEffect, useState } from "react";
+
 import { Button } from "~/components/ui/button";
-import CompanySearchModal from "~/features/company/CompanySearchModal";
-import {
-  branchOperations,
-  companyOperations,
-  tempStockOperations,
-  warehouseOperations,
-} from "~/graphql/operations";
 import BranchSearchModal from "../components/BranchSearchModal";
 import ItemConfirmationModal from "../components/ItemConfirmationModal";
 import ItemSearchModal from "../components/ItemSearchModal";
+
+import CompanySearchModal from "~/features/company/CompanySearchModal";
+
+import { branchOperations } from "~/services/branch.service";
+import { companyOperations } from "~/services/company.service";
+import { tempStockOperations } from "~/services/stock.service";
+import { warehouseOperations } from "~/services/warehouse.service";
 
 export default function StockEntry({ onClose, windowRef, userInfo }) {
   const [sessionId] = useState(() => crypto.randomUUID());

@@ -6,15 +6,15 @@ import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { useGetAllUseraccessQuery } from "~/graphql/_generated/graphql";
-import { userAccessOperations } from "~/graphql/operations";
-import TableFilters from "../components/TableFilters";
-import { openReactWindow } from "../utils/openReactWindow";
+import { userPermissionsOperations } from "~/services/user.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import UserAccessForm from "./UserAccessForm";
 
 export default function RolesUsers() {
@@ -46,7 +46,6 @@ export default function RolesUsers() {
 
   const handleEdit = useCallback(
     (record) => {
-      console.log("record", record);
       openReactWindow(
         (popup) => (
           <UserAccessForm
@@ -71,7 +70,7 @@ export default function RolesUsers() {
     async (record) => {
       if (!confirm("¿Borrar asignación?")) return;
       try {
-        await userAccessOperations.delete({
+        await userPermissionsOperations.delete({
           userID: record.UserID,
           companyID: record.CompanyID,
           branchID: record.BranchID,

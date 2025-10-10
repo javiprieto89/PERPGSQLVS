@@ -1,6 +1,5 @@
 import { ApolloProvider } from "@apollo/client";
 import AdvancedFilter from "~/components/filter/AdvancedFilter";
-import TableFilters from "~/components/TableFilters";
 import allClientsMock from "~/graphql/mockups/getAllClientsExtended.json";
 import apolloClient from "~/lib/apollo";
 
@@ -14,13 +13,13 @@ export default function UiPage() {
             data={allClientsMock.allClients}
             onFilterChange={console.log}
           />
-          <TableFilters
+          {/* <TableFilters
             modelName="clients"
             // lista original sin filtrar
             data={allClientsMock.allClients}
             onFilterChange={console.log}
-          />
-          <div className="my-20">
+          /> */}
+          {/* <div className="my-20">
             <hr />
           </div>
           <AdvancedFilter
@@ -57,7 +56,7 @@ export default function UiPage() {
             onFilterChange={(value) => {
               console.log("UI CALLBACK onFilterChange", value);
             }}
-          />
+          /> */}
           {/*
           <ClientDropdown />
           <CarDropdown />

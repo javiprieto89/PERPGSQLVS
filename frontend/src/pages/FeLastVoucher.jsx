@@ -1,6 +1,6 @@
 ﻿// frontend/src/pages/FeLastVoucher.jsx
 import { useEffect, useState } from "react";
-import { afipOperations } from "../graphql/afipOperations";
+import { afipOperations } from "~/services/afip.service";
 
 export default function FeLastVoucher() {
   const [ptoVta, setPtoVta] = useState("1");

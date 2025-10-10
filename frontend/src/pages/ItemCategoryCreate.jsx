@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { itemCategoryOperations } from "~/graphql/operations.js";
+import { itemCategoryOperations } from "~/services/item.service";
 
 export default function ItemCategoryCreate({
   onClose,

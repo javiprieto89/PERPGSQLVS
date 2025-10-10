@@ -1,6 +1,6 @@
 // frontend/src/pages/CompanyCreate.jsx
 import { useEffect, useState } from "react";
-import { companyOperations } from "~/graphql/operations.js";
+import { companyOperations } from "~/services/company.service";
 
 export default function CompanyCreate({
   onClose,

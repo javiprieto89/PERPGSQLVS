@@ -4,13 +4,13 @@ import { forwardRef } from "react";
 import { cn } from "~/lib/utils";
 
 import { Label } from "~/components/ui/label";
-import { ErrorMessage, type InputErrorMessage } from "./ErrorMessage";
+import { ErrorMessage, type FieldError } from "./ErrorMessage";
 
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   placeholder?: string;
   labelProps?: React.LabelHTMLAttributes<HTMLLabelElement>;
-  error?: InputErrorMessage;
+  error?: FieldError;
   defaultValue?: string | undefined
 }
 
@@ -33,7 +33,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({ label, label
         />
         <ChevronDown className={cn("absolute top-1/2 right-[1rem] -translate-y-1/2")} />
       </div>
-      <ErrorMessage name={name} error={error} />
+      <ErrorMessage error={error} />
     </>
   )
 })

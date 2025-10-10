@@ -1,6 +1,6 @@
 // frontend/src/pages/WarehouseCreate.jsx
 import { useEffect, useState } from "react";
-import { warehouseOperations } from "~/graphql/operations.js";
+import { warehouseOperations } from "~/services/warehouse.service";
 
 export default function WarehouseCreate({
   onClose,

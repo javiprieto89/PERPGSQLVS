@@ -1,6 +1,6 @@
 ﻿// frontend/src/pages/RoleForm.jsx
 import { useEffect, useState } from "react";
-import { roleOperations } from "~/graphql/operations.js";
+import { roleOperations } from "~/services/role.service";
 
 export default function RoleForm({
   onClose,

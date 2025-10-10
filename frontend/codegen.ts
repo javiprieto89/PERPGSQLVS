@@ -3,7 +3,13 @@ import "dotenv/config";
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: process.env.VITE_GRAPHQL_API,
+  schema: {
+    [process.env.VITE_GRAPHQL_API as string]: {
+      headers: {
+        Authorization: `Bearer ${process.env.VITE_GRAPHQL_TOKEN}`,
+      },
+    },
+  },
   documents: "src/graphql/**/*.graphql",
   generates: {
     "src/graphql/_generated/graphql.ts": {

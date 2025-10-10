@@ -1,11 +1,10 @@
-import { FilterField } from "../types";
+import type { TEXT_OPERATORS } from "../constants";
+import { type FilterField } from "../types";
 
-function switchTextOperator(operator: string, field: string, data: FilterField[], value: string) {
+function filterText(operator: keyof typeof TEXT_OPERATORS, field: string, data: FilterField[], value: string) {
   if (!data) {
     return [];
   }
-
-  console.log("switchTextOperator", { data, field });
 
   switch (operator) {
     case "startsWith":
@@ -51,12 +50,10 @@ function switchTextOperator(operator: string, field: string, data: FilterField[]
 }
 
 export default function useFilterOperator() {
-
-  function filterOperation(type: string, operator: string, field: string, filtered: FilterField[], value: string) {
-    console.log("filterOperation", { operator, field, filtered, value })
+  function filterOperation(type: "text" | "number" | "boolean" | "select", operator: keyof typeof TEXT_OPERATORS, field: string, filtered: FilterField[], value: string) {
     switch (type) {
       case "text":
-        return switchTextOperator(operator, field, filtered, value);
+        return filterText(operator, field, filtered, value);
 
       case "number":
         return filtered.filter((item) => parseInt(item.label) === parseInt(value));

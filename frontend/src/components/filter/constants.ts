@@ -1,13 +1,13 @@
 export const TEXT_OPERATORS = {
   all: "Todos",
-  startWith: "Comienza con",
+  startsWith: "Comienza con",
   contains: "Contiene",
   equals: "Es igual a",
   notEquals: "Es distinto a",
   notContains: "No contiene",
 } as const;
 
-export const nameFieldMap = {
+export const MODEL_NAME_MAP = {
   Vendor: "VendorName",
   Client: "FirstName", // Para clientes, usar FirstName como campo principal
   CreditCard: "CardName",
@@ -21,7 +21,7 @@ export const nameFieldMap = {
   User: "Fullname",
 } as const;
 
-export type NameFieldMap = keyof typeof nameFieldMap;
+export type ModelNameMap = keyof typeof MODEL_NAME_MAP | null | undefined;
 
 export const pluralMap = {
   Country: "Countries",
@@ -50,3 +50,41 @@ export const pluralMap = {
   ServiceType: "Servicetypes",
   User: "Users",
 } as const;
+
+// query GetClientsFormData2 {
+//   allSysdoctypes {
+//     DocTypeID
+//     Name
+//   }
+//   allCompany {
+//     CompanyID
+//     Name
+//   }
+//   allCountries {
+//     CountryID
+//     Name
+//   }
+//   allPricelists {
+//     PriceListID
+//     Name
+//   }
+//   allVendors {
+//     VendorID
+//     VendorName
+//   }
+// }
+// export const relationModel = {
+//   Branch: "withBranch",
+//   Company: "withCompany",
+//   Country: "withCountry",
+//   CreditCard: "withCreditCard",
+//   DocType: "withDocType",
+//   PriceList: "withPricelist",
+//   Province: "withProvince",
+//   Vendor: "withVendor",
+// } as const;
+
+// export type RelationFlags = Record<
+//   (typeof relationModel)[keyof typeof relationModel],
+//   boolean
+// >;

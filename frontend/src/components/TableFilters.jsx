@@ -1,6 +1,6 @@
 ﻿// frontend/src/components/TableFilters.jsx
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { graphqlClient } from "~/graphql/graphqlClient.js";
+import { graphqlClient } from "~/graphql/graphql-client";
 
 const TEXT_OPERATORS = [
   { value: "all", label: "Todos" },

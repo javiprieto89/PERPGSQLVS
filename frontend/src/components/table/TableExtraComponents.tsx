@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { Label } from '~/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select';
 
-export function TableIsActiveCell({ getValue }: { getValue: () => string }) {
+export function TableIsActiveCell({ getValue }: { getValue: () => any }) {
   return (
     <Badge variant="outline" className="text-muted-foreground px-1.5">
       {getValue() ? (

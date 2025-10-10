@@ -1,0 +1,18 @@
+query GetSuppliersById($id: Int!) {
+  suppliersById(id: $id) {
+    SupplierID
+    Address
+    City
+    CompanyID
+    CountryID
+    DocNumber
+    DocTypeID
+    Email
+    FirstName
+    IsActive
+    LastName
+    Phone
+    PostalCode
+    ProvinceID
+  }
+}

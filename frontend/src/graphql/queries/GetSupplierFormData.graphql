@@ -12,4 +12,8 @@ query GetSupplierFormData {
     CountryID
     ProvinceName
   }
+  companies: allCompany {
+    CompanyID
+    CompanyName
+  }
 }

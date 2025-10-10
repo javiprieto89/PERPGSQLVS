@@ -12,12 +12,14 @@
     "allowJs": true,
     "checkJs": false,
     "noEmit": true,
+    "verbatimModuleSyntax": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
     },
     "resolveJsonModule": true,
-    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]
+    "types": ["vitest/globals"]
   },
-  "include": ["src", "vite-env.d.ts"]
+  "include": ["src", "vite-env.d.ts", "**/*.graphql"],
+  "exclude": ["**/*.bkp.*", "./bkp/**"]
 }

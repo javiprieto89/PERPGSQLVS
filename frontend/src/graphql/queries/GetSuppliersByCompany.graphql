@@ -1,0 +1,22 @@
+query GetSuppliersByCompany($companyID: Int!) {
+  suppliersByCompany(companyID: $companyID) {
+    SupplierID
+    DocTypeID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    Address
+    IsActive
+    CountryID
+    ProvinceID
+    City
+    PostalCode
+    CompanyID
+    #BranchData {
+    #  BranchID
+    #  BranchName
+    #}
+  }
+}

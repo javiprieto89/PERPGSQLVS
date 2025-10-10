@@ -1,8 +1,5 @@
 ﻿import { useEffect, useState } from "react";
-import {
-  carBrandOperations,
-  carModelOperations,
-} from "~/graphql/operations.js";
+import { carBrandOperations, carModelOperations } from "~/services/car.service";
 
 export default function CarModelCreate({
   onClose,

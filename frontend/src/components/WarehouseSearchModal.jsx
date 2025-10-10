@@ -1,6 +1,6 @@
 // frontend/src/components/WarehouseSearchModal.jsx
 import { useEffect, useState } from "react";
-import { warehouseOperations } from "~/graphql/operations";
+import { warehouseOperations } from "~/services/warehouse.service";
 import TableFilters from "./TableFilters";
 
 export default function WarehouseSearchModal({ isOpen, onClose, onSelect }) {

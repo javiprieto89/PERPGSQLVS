@@ -6,6 +6,7 @@ query GetAllBranches {
     Address
     Phone
     CompanyData {
+      CompanyID
       CompanyName
     }
   }

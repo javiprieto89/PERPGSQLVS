@@ -1,4 +1,4 @@
-import z from "zod";
+import z, { type ZodError } from "zod";
 
 export const numberSchema = z
   .string()
@@ -33,3 +33,55 @@ export const imageSchema = fileSchema
     (files) => (files.size > 0 ? files.type.startsWith("image/") : true),
     "Only .jpg, .jpeg, .png and .webp formats are supported."
   );
+
+export const passwordSchema = z
+  .string()
+  .min(8, { message: "Password must be at least 8 characters long" })
+  .max(20, { message: "Password must be at most 20 characters long" })
+  .regex(/[A-Z]/, {
+    message: "Password must contain at least one uppercase letter",
+  })
+  .regex(/[a-z]/, {
+    message: "Password must contain at least one lowercase letter",
+  });
+
+export const documentIdentitySchema = z.coerce
+  .number()
+  .int()
+  .refine((val) => val.toString().length >= 8 && val.toString().length <= 11, {
+    message: "El DNI o CUIT debe tener entre 8 y 11 dígitos",
+  })
+  .refine(
+    (val) => val.toString().length === 8 || val.toString().length === 11,
+    {
+      message: "El formato no es correcto",
+    }
+  ) as z.ZodType<number, number>;
+
+// .regex(/[0-9]/, { message: "Password must contain at least one number" })
+// .regex(/[!@#$%^&*]/, { message: "Password must contain at least one special character" }),
+
+type FieldErrors<T> = { [K in keyof T]?: string[] };
+
+export function validateFieldsInAction<
+  FormSchema extends Record<string, any>
+>(result: { error: ZodError<FormSchema> }) {
+  const validation: FieldErrors<FormSchema> = {};
+
+  for (const issue of result.error.issues) {
+    const field = issue.path[0] as keyof FormSchema;
+    (validation[field] ??= []).push(issue.message);
+  }
+
+  return validation;
+}
+
+export function errorsFromActions<T extends Record<string, any>>(
+  validation?: FieldErrors<T>
+) {
+  function getError<K extends keyof T>(name: K): string | undefined {
+    return validation?.[name]?.join(". ");
+  }
+
+  return { getError };
+}

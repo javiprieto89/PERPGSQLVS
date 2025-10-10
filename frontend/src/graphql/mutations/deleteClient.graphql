@@ -1,5 +1,5 @@
-mutation DeleteClient($clientID: Int!) {
-  deleteClient(clientID: $clientID) {
+mutation DeleteClient($ClientID: Int!) {
+  deleteClient(clientID: $ClientID) {
     success
     message
   }

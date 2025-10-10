@@ -15,13 +15,13 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { brandOperations } from "~/services/brand.service";
 import {
-  brandOperations,
   itemCategoryOperations,
   itemOperations,
   itemSubcategoryOperations,
-  supplierOperations,
-} from "~/graphql/operations.js";
+} from "~/services/item.service";
+import { supplierOperations } from "~/services/supplier.service";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";

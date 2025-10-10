@@ -5,20 +5,20 @@ import { useUser } from "~/hooks/useUser";
 import { Badge } from "~/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import { SidebarMenuButton, useSidebar } from "~/components/ui/sidebar";
+import type { UserPermissionsInfo } from "~/graphql/_generated/graphql";
 import { cn } from "~/lib/utils";
-import { type UserAccess } from "~/utils/authHelper";
 
-export function BranchAccessDropdown({ onAccessChange }: { onAccessChange?: (access: UserAccess) => void }) {
+export function BranchAccessDropdown({ onAccessChange }: { onAccessChange?: (access: UserPermissionsInfo) => void }) {
   const { changeSelectedAccess, selectedAccess, userAccesses, loading } = useUser();
   const { state, isMobile } = useSidebar()
 
-  function getIsSelected(access: UserAccess) {
-    const company = access.Company || "Sin empresa";
-    const branch = access.Branch || "Sin sucursal";
-    const role = access.Role || "Sin rol";
-    return company === selectedAccess?.Company &&
-      branch === selectedAccess?.Branch &&
-      role === selectedAccess?.Role;
+  function getIsSelected(access: UserPermissionsInfo) {
+    const company = access.CompanyName || "Sin empresa";
+    const branch = access.BranchName || "Sin sucursal";
+    const role = access.RoleName || "Sin rol";
+    return company === selectedAccess?.CompanyName &&
+      branch === selectedAccess?.BranchName &&
+      role === selectedAccess?.RoleName;
   }
 
   return (
@@ -37,16 +37,16 @@ export function BranchAccessDropdown({ onAccessChange }: { onAccessChange?: (acc
             <LoaderCircle className="animate-spin -ml-1" />
           ) : (
             state === "collapsed" && !isMobile ?
-              selectedAccess?.Company ? selectedAccess?.Company.slice(0, 3).toUpperCase() : "N/A"
+              selectedAccess?.CompanyName ? selectedAccess?.CompanyName.slice(0, 3).toUpperCase() : "N/A"
               :
               <>
                 <div className="flex justify-left flex-col w-full">
-                  <div className="text-left">{selectedAccess?.Company}</div>
+                  <div className="text-left">{selectedAccess?.CompanyName}</div>
                   <div className="text-left text-xs text-muted-foreground">
-                    {selectedAccess?.Branch}
+                    {selectedAccess?.BranchName}
                   </div>
                 </div>
-                <Badge className="m-l-auto">{selectedAccess?.Role}</Badge>
+                <Badge className="m-l-auto">{selectedAccess?.RoleName}</Badge>
                 <ChevronsUpDown className="ml-auto size-4" />
               </>
           )}
@@ -61,7 +61,7 @@ export function BranchAccessDropdown({ onAccessChange }: { onAccessChange?: (acc
       >
         <DropdownMenuGroup>
           {userAccesses ? (
-            userAccesses.map((access, index) => {
+            userAccesses.map((access) => {
               const isSelected = getIsSelected(access);
               return (
                 <DropdownMenuItem
@@ -75,13 +75,13 @@ export function BranchAccessDropdown({ onAccessChange }: { onAccessChange?: (acc
                   <>
                     <div className="w-full flex justify-between items-center">
                       <div className="flex justify-left flex-col w-full">
-                        <div className="text-sm/4">{access.Company || "Sin empresa"}</div>
+                        <div className="text-sm/4">{access.CompanyName || "Sin empresa"}</div>
                         <div className="text-left text-xs text-muted-foreground">
-                          {access.Branch || "Sin sucursal"}
+                          {access.BranchName || "Sin sucursal"}
                         </div>
                       </div>
                       <div className="text-right">
-                        <Badge className="m-l-auto">{access.Role || "Sin rol"}</Badge>
+                        <Badge className="m-l-auto">{access.RoleName || "Sin rol"}</Badge>
                       </div>
                     </div>
                     <div className="flex items-center mt-1 shrink-0 w-4 ml-auto">

@@ -6,15 +6,15 @@ import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 import { useGetAllCarsQuery } from "~/graphql/_generated/graphql";
-import { carOperations } from "~/graphql/operations.js";
-import TableFilters from "../components/TableFilters";
-import { openReactWindow } from "../utils/openReactWindow";
+import { carOperations } from "~/services/car.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import CarCreate from "./CarCreate";
 
 export default function Cars() {

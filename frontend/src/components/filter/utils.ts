@@ -1,35 +1,15 @@
-import { type NameFieldMap, nameFieldMap, pluralMap } from "./constants";
-import { FilterField } from "./types";
+import { MODEL_NAME_MAP, pluralMap, type ModelNameMap } from "./constants";
+import { type FilterField } from "./types";
 
-export const getNameField = (model?: NameFieldMap) => {
-  console.log(
-    "getNameField",
-    model,
-    nameFieldMap,
-    model && nameFieldMap[model] ? nameFieldMap[model] : "Name"
+export const filterOperators = (filters: Record<string, string>) =>
+  Object.keys(filters).filter(
+    (key) =>
+      !key.endsWith("_op") && filters[key] !== "" && filters[key] !== null
   );
-  return model && nameFieldMap[model] ? nameFieldMap[model] : "Name";
+
+export const getNameField = (model?: ModelNameMap) => {
+  return model && MODEL_NAME_MAP[model] ? MODEL_NAME_MAP[model] : "Name";
 };
-
-export const getQueryName = (model: string) => {
-  const plural = pluralMap[model as keyof typeof pluralMap] || `${model}s`;
-  return `all${plural}`;
-};
-
-// Construir la query dinámicamente basada en el modelo
-export function prepareRelationalModelQuery(
-  queryName: string,
-  relationModel: FilterField["relationModel"]
-) {
-  if (!queryName || !relationModel) return;
-
-  const nameField =
-    relationModel === "Client"
-      ? "FirstName LastName"
-      : getNameField(relationModel as NameFieldMap);
-
-  return `{ ${queryName} { ${relationModel}ID ${nameField} } }`;
-}
 
 export const formatClientName = (client: Record<string, string>) => {
   if (client.FirstName && client.LastName) {
@@ -38,14 +18,29 @@ export const formatClientName = (client: Record<string, string>) => {
   return client.FirstName || client.LastName || `Cliente ${client.ClientID}`;
 };
 
-// Función para formatear el nombre del cliente
-// export const formatClientName = (client: {
-//   FirstName: string;
-//   LastName: string;
-//   ClientID: string;
-// }) => {
-//   if (client.FirstName && client.LastName) {
-//     return `${client.FirstName} ${client.LastName}`;
-//   }
-//   return client.FirstName || client.LastName || `Cliente ${client.ClientID}`;
-// };
+/**
+ * @example
+ * allSysdoctypes | allCompany | allCountries | allPricelists | allVendors
+ * allCreditcards | allCreditcard
+ */
+export const getQueryName = (model: string) => {
+  const plural = pluralMap[model as keyof typeof pluralMap] || `${model}s`;
+  return `all${plural}`;
+};
+
+// Construir la query dinámicamente basada en el modelo
+export function prepareRelationalModelQuery(
+  queryName: string,
+  relationModel: FilterField["relationModel"],
+  isMultiple?: boolean
+) {
+  if (!queryName || !relationModel) return;
+
+  const extraFields =
+    relationModel === "Client"
+      ? "FirstName LastName"
+      : getNameField(relationModel as ModelNameMap);
+
+  if (isMultiple) return `${queryName} { ${relationModel}ID ${extraFields} }`;
+  return `{ ${queryName} { ${relationModel}ID ${extraFields} } }`;
+}

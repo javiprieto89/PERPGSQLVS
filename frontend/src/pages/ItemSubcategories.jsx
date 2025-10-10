@@ -5,15 +5,15 @@ import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { useGetAllItemSubcategoriesQuery } from "~/graphql/_generated/graphql";
-import { itemSubcategoryOperations } from "~/graphql/operations.js";
-import TableFilters from "../components/TableFilters";
-import { openReactWindow } from "../utils/openReactWindow";
+import { itemSubcategoryOperations } from "~/services/item.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import ItemSubcategoryCreate from "./ItemSubcategoryCreate";
 
 export default function ItemSubcategories() {

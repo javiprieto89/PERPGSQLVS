@@ -9,7 +9,7 @@
         "Nickname": "javierp",
         "FullName": "Javier Prieto",
         "IsActive": true,
-        "UserAccess": [
+        "UserPermissions": [
           {
             "UserID": 1,
             "CompanyID": 1,

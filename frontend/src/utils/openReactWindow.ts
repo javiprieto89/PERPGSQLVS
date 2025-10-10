@@ -1,5 +1,6 @@
 // src/utils/openReactWindow.js
 import { createRoot } from "react-dom/client";
+import { toast } from "sonner";
 
 /**
  * Abre una ventana nueva y monta allí un componente React.
@@ -61,4 +62,46 @@ export function openReactWindow(
     // Pasar referencia de la ventana al componente
     root.render(ComponentFn(newWindow));
   }
+}
+
+/**
+ * Abre una ventana nueva y monta allí un componente React.
+ * @param {() => React.ReactNode} ComponentFn – función que devuelve tu componente
+ * @param {string} title – título de la ventana
+ * @param {{ width?: number, height?: number }} options
+ */
+export function openNewWindow(
+  url: string,
+  options: { width: number; height: number } = { width: 500, height: 500 }
+) {
+  const width = options.width || 1000;
+  const height = options.height || 700;
+
+  // 1) Abro ventana en blanco
+  const windowContext = window.open(
+    url,
+    "_blank",
+    `width=${width},height=${height},left=200,top=200`
+  );
+
+  if (!windowContext) {
+    toast("Could not open the url", {
+      description: "Nop, no lo pude abrir che",
+    });
+    return null;
+  }
+
+  // Copiar sessionStorage para mantener autenticación en la nueva ventana
+  try {
+    for (const key of Object.keys(sessionStorage)) {
+      windowContext.sessionStorage.setItem(
+        key,
+        sessionStorage.getItem(key) as string
+      );
+    }
+  } catch (err) {
+    console.warn("No se pudo copiar sessionStorage:", err);
+  }
+
+  return windowContext;
 }

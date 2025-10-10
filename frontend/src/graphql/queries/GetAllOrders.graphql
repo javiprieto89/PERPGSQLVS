@@ -16,7 +16,7 @@ query GetAllOrders {
     Subtotal
     Total
     # Taxes
-    VatAmount
+    TotalTaxAmount
     UserID
     DocumentID
     PriceListID
@@ -41,6 +41,10 @@ query GetAllOrders {
       DiscountID
       DiscountName
       Percentage
+    }
+    VendorData {
+      VendorID
+      VendorName
     }
   }
 }

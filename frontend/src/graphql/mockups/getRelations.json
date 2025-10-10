@@ -1,82 +1,183 @@
 {
   "data": {
-    "DocType": [
+    "Company": [
       {
-        "DocTypeID": 1,
-        "Name": "DNI"
+        "CompanyID": 1,
+        "CompanyName": "CT"
       },
       {
-        "DocTypeID": 2,
-        "Name": "CUIT"
+        "CompanyID": 2,
+        "CompanyName": "CT2"
       }
     ],
     "Country": [
       {
         "CountryID": 51,
-        "Name": "Peru"
+        "CountryName": "Peru"
       },
       {
         "CountryID": 54,
-        "Name": "Argentina"
+        "CountryName": "Argentina"
       }
     ],
-    "Province": [
+    "DocType": [
       {
-        "ProvinceID": 3,
-        "CountryID": 51,
-        "Name": "Lima"
+        "DocTypeID": 93,
+        "DocTypeName": "Acta Nacimiento"
       },
       {
-        "ProvinceID": 1,
-        "CountryID": 54,
-        "Name": "CABA"
+        "DocTypeID": 87,
+        "DocTypeName": "CDI"
       },
       {
-        "ProvinceID": 2,
-        "CountryID": 54,
-        "Name": "Santa Fe"
-      }
-    ],
-    "PriceList": [
-      {
-        "PriceListID": 1,
-        "Name": "Lista 1",
-        "Description": "Descripción lista 1",
-        "IsActive": true
+        "DocTypeID": 95,
+        "DocTypeName": "CI Bs. As. RNP"
       },
       {
-        "PriceListID": 2,
-        "Name": "Lista 2",
-        "Description": "Lista 2",
-        "IsActive": true
+        "DocTypeID": 1,
+        "DocTypeName": "CI Buenos Aires"
       },
       {
-        "PriceListID": 3,
-        "Name": "Lista 33",
-        "Description": "",
-        "IsActive": true
+        "DocTypeID": 2,
+        "DocTypeName": "CI Catamarca"
+      },
+      {
+        "DocTypeID": 16,
+        "DocTypeName": "CI Chaco"
+      },
+      {
+        "DocTypeID": 17,
+        "DocTypeName": "CI Chubut"
+      },
+      {
+        "DocTypeID": 3,
+        "DocTypeName": "CI Córdoba"
+      },
+      {
+        "DocTypeID": 4,
+        "DocTypeName": "CI Corrientes"
+      },
+      {
+        "DocTypeID": 5,
+        "DocTypeName": "CI Entre Ríos"
+      },
+      {
+        "DocTypeID": 91,
+        "DocTypeName": "CI Extranjera"
+      },
+      {
+        "DocTypeID": 18,
+        "DocTypeName": "CI Formosa"
+      },
+      {
+        "DocTypeID": 6,
+        "DocTypeName": "CI Jujuy"
+      },
+      {
+        "DocTypeID": 21,
+        "DocTypeName": "CI La Pampa"
+      },
+      {
+        "DocTypeID": 8,
+        "DocTypeName": "CI La Rioja"
+      },
+      {
+        "DocTypeID": 7,
+        "DocTypeName": "CI Mendoza"
+      },
+      {
+        "DocTypeID": 19,
+        "DocTypeName": "CI Misiones"
+      },
+      {
+        "DocTypeID": 20,
+        "DocTypeName": "CI Neuquén"
+      },
+      {
+        "DocTypeID": 0,
+        "DocTypeName": "CI Policía Federal"
+      },
+      {
+        "DocTypeID": 22,
+        "DocTypeName": "CI Río Negro"
+      },
+      {
+        "DocTypeID": 9,
+        "DocTypeName": "CI Salta"
+      },
+      {
+        "DocTypeID": 10,
+        "DocTypeName": "CI San Juan"
+      },
+      {
+        "DocTypeID": 11,
+        "DocTypeName": "CI San Luis"
+      },
+      {
+        "DocTypeID": 23,
+        "DocTypeName": "CI Santa Cruz"
+      },
+      {
+        "DocTypeID": 12,
+        "DocTypeName": "CI Santa Fe"
+      },
+      {
+        "DocTypeID": 13,
+        "DocTypeName": "CI Santiago del Estero"
+      },
+      {
+        "DocTypeID": 24,
+        "DocTypeName": "CI Tierra del Fuego"
+      },
+      {
+        "DocTypeID": 14,
+        "DocTypeName": "CI Tucumán"
+      },
+      {
+        "DocTypeID": 86,
+        "DocTypeName": "CUIL"
+      },
+      {
+        "DocTypeID": 80,
+        "DocTypeName": "CUIT"
+      },
+      {
+        "DocTypeID": 96,
+        "DocTypeName": "DNI"
+      },
+      {
+        "DocTypeID": 99,
+        "DocTypeName": "Doc. (Otro)"
+      },
+      {
+        "DocTypeID": 92,
+        "DocTypeName": "en trámite"
+      },
+      {
+        "DocTypeID": 1001,
+        "DocTypeName": "Indefinido"
+      },
+      {
+        "DocTypeID": 90,
+        "DocTypeName": "LC"
+      },
+      {
+        "DocTypeID": 89,
+        "DocTypeName": "LE"
+      },
+      {
+        "DocTypeID": 94,
+        "DocTypeName": "Pasaporte"
       }
     ],
     "Vendor": [
       {
         "VendorID": 1,
-        "VendorName": "Vendedor 1",
-        "IsActive": true
+        "VendorName": "Vendedor 1"
       },
       {
         "VendorID": 2,
-        "VendorName": "Pepe",
-        "IsActive": true
-      }
-    ],
-    "Company": [
-      {
-        "CompanyID": 1,
-        "Name": "CT"
-      },
-      {
-        "CompanyID": 2,
-        "Name": "CT2"
+        "VendorName": "Pepe"
       }
     ]
   }

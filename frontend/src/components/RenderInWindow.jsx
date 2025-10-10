@@ -1,12 +1,13 @@
 // src/components/RenderInWindow.jsx
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function RenderInWindow({
-  children,  
+  children,
   title,
   width = 800,
   height = 600,
+  onClose = () => {},
 }) {
   const [container, setContainer] = useState(null);
   const newWindow = useRef(null);
@@ -34,7 +35,10 @@ export default function RenderInWindow({
 
     // Cleanup: cerrar ventana si el componente se desmonta
     const cur = newWindow.current;
-    return () => cur.close();
+    return () => {
+      cur.close();
+      onClose();
+    };
   }, [container, title, width, height]);
 
   // 3) Renderizamos el portal

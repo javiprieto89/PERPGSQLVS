@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { TabSessionHelper } from "~/utils/tabSessionHelper";
+import { TabSessionHelper } from "~/utils/tab.session";
 
 export function useTabSession() {
   useEffect(() => {

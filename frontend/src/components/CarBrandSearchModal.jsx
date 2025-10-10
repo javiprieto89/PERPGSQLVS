@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { carBrandOperations } from "~/graphql/operations";
+import { carBrandOperations } from "~/services/car.service";
 import TableFilters from "./TableFilters";
 
 export default function CarBrandSearchModal({

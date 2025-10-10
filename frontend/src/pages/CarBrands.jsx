@@ -5,15 +5,15 @@ import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { useGetAllCarBrandsQuery } from "~/graphql/_generated/graphql";
-import { carBrandOperations } from "~/graphql/operations.js";
-import TableFilters from "../components/TableFilters";
-import { openReactWindow } from "../utils/openReactWindow";
+import { carBrandOperations } from "~/services/car.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import CarBrandCreate from "./CarBrandCreate";
 
 export default function CarBrands() {

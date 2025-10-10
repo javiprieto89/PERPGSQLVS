@@ -1,6 +1,6 @@
 // frontend/src/components/ClientSearchModal.jsx
 import { useEffect, useState } from "react";
-import { graphqlClient } from "~/graphql/graphqlClient.js";
+import { graphqlClient } from "~/graphql/graphql-client";
 import { QUERIES } from "~/graphql/queries/queries.js";
 import TableFilters from "./TableFilters";
 

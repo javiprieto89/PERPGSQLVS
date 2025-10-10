@@ -7,15 +7,15 @@ import {
   TableActionButton,
   TableIsActiveCell,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { useGetPriceListsQuery } from "~/graphql/_generated/graphql";
-import { pricelistOperations } from "~/graphql/operations.js";
-import TableFilters from "../components/TableFilters";
-import { openReactWindow } from "../utils/openReactWindow";
+import { pricelistOperations } from "~/services/price-list.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import PriceListCreate from "./PriceListCreate";
 
 export default function PriceLists() {

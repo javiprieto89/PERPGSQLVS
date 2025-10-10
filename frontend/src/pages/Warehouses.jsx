@@ -7,16 +7,16 @@ import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
-import TableFilters from "../components/TableFilters";
 
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { useGetWarehousesQuery } from "~/graphql/_generated/graphql";
-import { warehouseOperations } from "~/graphql/operations.js";
-import { openReactWindow } from "../utils/openReactWindow";
+import { warehouseOperations } from "~/services/warehouse.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import WarehouseCreate from "./WarehouseCreate";
 
 export default function Warehouses() {

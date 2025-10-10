@@ -1,6 +1,6 @@
 // frontend/src/pages/VendorCreate.jsx
 import { useEffect, useState } from "react";
-import { vendorOperations } from "~/graphql/operations.js";
+import { vendorOperations } from "~/services/vendor.service";
 
 export default function VendorCreate({
   onClose,

@@ -1,7 +1,7 @@
 // frontend/src/components/CompanySearchModal.jsx
 import { useEffect, useState } from "react";
 import TableFilters from "~/components/TableFilters";
-import { companyOperations } from "~/graphql/operations.js";
+import { companyOperations } from "~/services/company.service";
 
 export default function CompanySearchModal({ isOpen, onClose, onSelect }) {
   const [companies, setCompanies] = useState([]);

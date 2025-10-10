@@ -1,6 +1,6 @@
 // frontend/src/components/ItemSelectWindow.jsx
 import { useEffect, useState } from "react";
-import { itemOperations } from "~/graphql/operations.js";
+import { itemOperations } from "~/services/item.service";
 
 export default function ItemSelectWindow({ onSelect, onClose }) {
   const [items, setItems] = useState([]);

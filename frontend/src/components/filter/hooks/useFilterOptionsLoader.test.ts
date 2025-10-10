@@ -10,7 +10,6 @@ vi.mock("~/graphql/graphqlClient", () => ({
 }));
 
 import { graphqlClient } from "~/graphql/graphqlClient";
-import { nameFieldMap } from "../constants";
 import { useFilterOptionsLoader } from "./useFilterOptionsLoader";
 
 describe("useFilterOptionsLoader", () => {
@@ -30,7 +29,7 @@ describe("useFilterOptionsLoader", () => {
       dependsOn: null,
       field: "DocTypeID",
       label: "Tipo de documento",
-      relationModel: nameFieldMap.DocType,
+      relationModel: "DocType", // TODO: verify if this is correct, previous ModelName .DocType,
       type: "select",
     };
 

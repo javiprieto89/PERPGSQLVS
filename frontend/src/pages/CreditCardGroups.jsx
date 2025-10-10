@@ -7,14 +7,14 @@ import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 import { useGetAllCreditCardGroupsQuery } from "~/graphql/_generated/graphql";
-import { creditCardGroupOperations } from "~/graphql/operations.js";
-import TableFilters from "../components/TableFilters";
-import { openReactWindow } from "../utils/openReactWindow";
+import { creditCardGroupOperations } from "~/services/credit-card.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import CreditCardGroupCreate from "./CreditCardGroupCreate";
 
 export default function CreditCardGroups() {

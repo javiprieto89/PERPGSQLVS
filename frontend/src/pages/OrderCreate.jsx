@@ -1,33 +1,35 @@
 // src/pages/OrderCreate.jsx
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
+import { branchOperations } from "~/services/branch.service";
+import { carOperations } from "~/services/car.service";
+import { clientOperations } from "~/services/client.service";
+import { companyOperations } from "~/services/company.service";
+import { discountOperations } from "~/services/discount.service";
+import { itemOperations } from "~/services/item.service";
 import {
-  branchOperations,
-  carOperations,
-  clientOperations,
-  companyOperations,
-  discountOperations,
-  itemOperations,
   orderOperations,
-  pricelistItemOperations,
-  pricelistOperations,
-  saleConditionOperations,
-  serviceTypeOperations,
   sysOrderStatusOperations,
   tempOrderOperations,
-  warehouseOperations,
-} from "~/graphql/operations";
+} from "~/services/order.service";
+import {
+  pricelistItemOperations,
+  pricelistOperations,
+} from "~/services/price-list.service";
+import { saleConditionOperations } from "~/services/sale.service";
+import { serviceTypeOperations } from "~/services/service-type.service";
+import { warehouseOperations } from "~/services/warehouse.service";
 import ClientSearchModal from "../components/ClientSearchModal";
 import ItemConfirmationModal from "../components/ItemConfirmationModal";
 import ItemSearchModal from "../components/ItemSearchModal";
 import SaleConditionSearchModal from "../components/SaleConditionSearchModal";
 
 export default function OrderCreate({
-  onClose,
-  onSave,
+  onClose = () => {},
+  onSave = () => {},
   order: initialOrder = null,
-  userInfo,
-  windowRef,
+  userInfo = null,
+  windowRef = null,
 }) {
   const [formData, setFormData] = useState({
     companyId: userInfo?.companyId || "1",

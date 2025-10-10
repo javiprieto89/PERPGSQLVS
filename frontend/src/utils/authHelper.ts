@@ -1,25 +1,8 @@
 ﻿// utils/authHelper.js
-
-import z from "zod";
-
-export type UserAccess = {
-  UserID: number;
-  CompanyID: number;
-  Company: string;
-  BranchID: number;
-  Branch: string;
-  RoleID: number;
-  Role: string;
-};
-
-// original From DB
-export type UserData = {
-  UserID: number;
-  Nickname: string;
-  FullName?: string | null;
-  IsActive: boolean;
-  UserAccess: UserAccess[];
-};
+import type {
+  UserInfo,
+  UserPermissionsInfo,
+} from "~/graphql/_generated/graphql";
 
 export class AuthHelper {
   static TOKEN_KEY = "token";
@@ -79,7 +62,7 @@ export class AuthHelper {
   }
 
   // Función de login
-  static setUserData(user: UserData) {
+  static setUserData(user: UserInfo) {
     try {
       if (!user) throw new Error("Login response not defined");
 
@@ -99,11 +82,11 @@ export class AuthHelper {
   static getUserData() {
     const userData = sessionStorage.getItem(this.USER_KEY);
     localStorage.setItem(this.USER_KEY, JSON.stringify(userData));
-    return userData ? (JSON.parse(userData) as UserData) : null;
+    return userData ? (JSON.parse(userData) as UserInfo) : null;
   }
 
   // Establecer acceso seleccionado
-  static setSelectedAccess(access: UserAccess | undefined) {
+  static setSelectedAccess(access: UserPermissionsInfo | undefined) {
     try {
       if (!access) throw new Error("Intentando establecer un acceso nulo");
 
@@ -130,15 +113,16 @@ export class AuthHelper {
   }
 
   // Obtener acceso seleccionado - CORREGIDO
-  static getSelectedAccess(): UserAccess | null {
+  static getSelectedAccess(): UserPermissionsInfo | null {
     try {
       // const selectedAccess = sessionStorage.getItem(this.SELECTED_ACCESS_KEY);
       const selectedAccess = localStorage.getItem(this.SELECTED_ACCESS_KEY);
       if (!selectedAccess) throw new Error("Not found");
-      return JSON.parse(selectedAccess) as UserAccess;
+      return JSON.parse(selectedAccess) as UserPermissionsInfo;
     } catch (error) {
+      console.error((error as Error).message);
       // Si no hay acceso seleccionado, intentar usar el primer acceso disponible
-      const userAccesses = this.getAccesses();
+      const userAccesses = this.getPermissions();
       if (userAccesses) {
         this.setSelectedAccess(userAccesses[0]);
         return userAccesses[0];
@@ -153,7 +137,7 @@ export class AuthHelper {
     localStorage.removeItem(this.SELECTED_ACCESS_KEY);
   }
 
-  static setAccesses(accesses: UserAccess[] | undefined) {
+  static setAccesses(accesses: UserPermissionsInfo[] | undefined) {
     try {
       if (!accesses) throw new Error("Intentando establecer un acceso nulo");
       // Guardar accesos del usuario
@@ -168,12 +152,12 @@ export class AuthHelper {
   }
 
   // Obtener accesos del usuario
-  static getAccesses() {
+  static getPermissions() {
     // const accessData = sessionStorage.getItem(this.ACCESS_KEY);
     const accessData = localStorage.getItem(this.ACCESS_KEY);
     if (accessData) {
       // Asegurar que todos los accesos estén normalizados
-      return JSON.parse(accessData) as UserAccess[];
+      return JSON.parse(accessData) as UserPermissionsInfo[];
     }
     return null;
   }
@@ -181,28 +165,6 @@ export class AuthHelper {
   // Obtener accesos del usuario
   static removeAccesses() {
     localStorage.removeItem(this.ACCESS_KEY);
-  }
-
-  static setRedirectAfterLogin(url: string | undefined) {
-    try {
-      if (!url || !z.url().parse(url)) return undefined;
-      sessionStorage.setItem(this.REDIRECT_AFTER_LOGIN_KEY, String(url));
-      return true;
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error("Error in redirect:", message);
-      return false;
-    }
-  }
-
-  static getRedirectAfterLogin() {
-    try {
-      return sessionStorage.getItem(this.REDIRECT_AFTER_LOGIN_KEY) || "/";
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error("Error getting redirect", message);
-      return "/";
-    }
   }
 
   static removeRedirectAfterLogin() {
@@ -222,7 +184,7 @@ export class AuthHelper {
 
     return {
       ...userData,
-      UserAccess: this.getAccesses(),
+      UserPermissions: this.getPermissions(),
       selectedAccess: this.getSelectedAccess(),
     };
   }
@@ -233,38 +195,41 @@ export class AuthHelper {
     if (!selectedAccess) return false;
 
     // Aquí puedes implementar lógica más compleja de permisos
-    return selectedAccess.Role === requiredRole;
+    return selectedAccess.RoleName === requiredRole;
   }
 
   // Verificar si el usuario pertenece a una empresa específica
   static belongsToCompany(companyId: number) {
-    const userAccess = this.getAccesses();
+    const userAccess = this.getPermissions();
     if (!userAccess) return [];
     return userAccess.some((access: any) => access.CompanyID === companyId);
   }
 
   // Verificar si el usuario pertenece a una sucursal específica
   static belongsToBranch(branchId: number) {
-    const userAccess = this.getAccesses();
+    const userAccess = this.getPermissions();
     if (!userAccess) return [];
     return userAccess.some((access: any) => access.BranchID === branchId);
   }
 
   // Obtener todas las empresas a las que tiene acceso el usuario
   static getUserCompanies() {
-    const userAccess = this.getAccesses();
+    const userAccess = this.getPermissions();
     if (!userAccess) return [];
 
     const companies = new Map<
       string,
-      { id: UserAccess["CompanyID"]; name: UserAccess["Company"] }
+      {
+        id: UserPermissionsInfo["CompanyID"];
+        name: UserPermissionsInfo["CompanyName"];
+      }
     >();
 
     userAccess.forEach((access) => {
       if (access.CompanyID && !companies.has(String(access.CompanyID))) {
         companies.set(String(access.CompanyID), {
           id: access.CompanyID,
-          name: access.Company,
+          name: access.CompanyName,
         });
       }
     });
@@ -274,7 +239,7 @@ export class AuthHelper {
 
   // Obtener todas las sucursales de una empresa específica
   static getBranchesForCompany(companyId: number) {
-    const userAccess = this.getAccesses();
+    const userAccess = this.getPermissions();
     if (!userAccess) return [];
 
     const branches = new Map();
@@ -309,7 +274,7 @@ export class AuthHelper {
     console.log("=== DEBUG AUTH STATE ===");
     console.log("Token exists:", !!this.getToken());
     console.log("User data:", this.getUserData());
-    console.log("User access:", this.getAccesses());
+    console.log("User access:", this.getPermissions());
     console.log("Selected access:", this.getSelectedAccess());
     console.log("========================");
   }

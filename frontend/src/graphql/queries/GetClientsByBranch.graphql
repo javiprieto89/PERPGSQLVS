@@ -1,0 +1,21 @@
+query GetClientsByBranch($companyID: Int!, $branchID: Int!) {
+  clientsByBranch(companyID: $companyID, branchID: $branchID) {
+    ClientID
+    DocTypeID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    Address
+    City
+    PostalCode
+    IsActive
+    CountryID
+    ProvinceID
+    PriceListID
+    VendorID
+    CompanyID
+    BranchID
+  }
+}

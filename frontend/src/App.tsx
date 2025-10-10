@@ -9,12 +9,13 @@ import { useTabSession } from "./hooks/useTabSession";
 import { AdminLayout } from "./layout/Layout";
 
 import { UserProvider } from "./context/UserContext";
-import Branches from "./pages/Branches";
+import { BranchForm } from "./pages/branch/form";
+import Branches from "./pages/branch/list";
 import Brands from "./pages/Brands";
 import CarBrands from "./pages/CarBrands";
 import CarModels from "./pages/CarModels";
 import Cars from "./pages/Cars";
-import { ClientsForm } from "./pages/clients/form-new";
+import { ClientsForm } from "./pages/clients/form";
 import { Clients } from "./pages/clients/list";
 import CompanyData from "./pages/CompanyData";
 import CreditCardGroups from "./pages/CreditCardGroups";
@@ -30,7 +31,7 @@ import Items from "./pages/Items";
 import ItemSubcategories from "./pages/ItemSubcategories";
 import PriceListCreateLab from "./pages/lab/PriceListCreateLab";
 import UiPage from "./pages/lab/ui";
-import Login from "./pages/Login";
+import Login from "./pages/login";
 import LogoutSuccess from "./pages/LogoutSuccess";
 import NotFound from "./pages/NotFound";
 import OrderCreate from "./pages/OrderCreate";
@@ -41,7 +42,8 @@ import Roles from "./pages/Roles";
 import RolesUsers from "./pages/RolesUsers";
 import SaleConditions from "./pages/SaleConditions";
 import ServiceTypes from "./pages/ServiceTypes";
-import Suppliers from "./pages/Suppliers";
+import { SupplierForm } from "./pages/suppliers/form";
+import Suppliers from "./pages/suppliers/list";
 import Users from "./pages/Users";
 import Vendors from "./pages/Vendors";
 import Warehouses from "./pages/Warehouses";
@@ -92,10 +94,12 @@ export default function App() {
             />
             <Route path="clients">
               <Route index element={<Clients />} />
-              {/* <Route path=":city" element={<City />} /> */}
               <Route path="form/:id?" element={<ClientsForm />} />
             </Route>
-            <Route path="suppliers" element={<Suppliers />} />
+            <Route path="suppliers">
+              <Route index element={<Suppliers />} />
+              <Route path="form/:id?" element={<SupplierForm />} />
+            </Route>
             <Route path="brands" element={<Brands />} />
             <Route path="saleconditions" element={<SaleConditions />} />
             <Route path="creditcardgroups" element={<CreditCardGroups />} />
@@ -109,7 +113,10 @@ export default function App() {
             <Route path="pricelists" element={<PriceLists />} />
             <Route path="pricelistitems" element={<PriceListItemsBrowser />} />
             <Route path="warehouses" element={<Warehouses />} />
-            <Route path="branches" element={<Branches />} />
+            <Route path="branches">
+              <Route index element={<Branches />} />
+              <Route path="form/:id?" element={<BranchForm />} />
+            </Route>
             <Route path="companydata" element={<CompanyData />} />
             <Route path="carbrands" element={<CarBrands />} />
             <Route path="carmodels" element={<CarModels />} />

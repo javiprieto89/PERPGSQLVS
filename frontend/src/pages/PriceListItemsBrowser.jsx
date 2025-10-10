@@ -19,9 +19,9 @@ import {
   useGetAllPricelistItemsQuery,
   useGetPricelistItemsFilteredLazyQuery,
 } from "~/graphql/_generated/graphql";
-import { pricelistItemOperations } from "~/graphql/operations.js";
+import { pricelistItemOperations } from "~/services/price-list.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import ItemSearchModal from "../components/ItemSearchModal";
-import { openReactWindow } from "../utils/openReactWindow";
 import PriceListCreate from "./PriceListCreate";
 import PriceListItems from "./PriceListItems";
 

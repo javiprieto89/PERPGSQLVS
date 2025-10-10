@@ -21,11 +21,12 @@ import {
 import { useGetAllBranchesQuery } from "~/graphql/_generated/graphql"
 import { cn } from "~/lib/utils"
 
-export function BranchCombo({ onSelect, companyID, id, value }: {
+export function BranchCombo({ onSelect, companyID, id, value, className }: {
   onSelect: (value: string) => void;
   companyID?: string | undefined;
   id?: string;
   value?: string | null;
+  className?: string;
 }) {
   const { data, loading, error } = useGetAllBranchesQuery();
   const [open, setOpen] = useState(false);
@@ -47,17 +48,17 @@ export function BranchCombo({ onSelect, companyID, id, value }: {
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-[200px] justify-between"
+            className={cn("w-full justify-between", className)}
           >
             {loading ? "Loading..." : (
               value && selectedValue
-                ? selectedValue?.Name
-                : "Select branch..."
+                ? selectedValue?.BranchName
+                : "Seleccione..."
             )}
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0">
+        <PopoverContent className="min-w-[280px] p-0" align="start">
           <Command>
             <CommandInput placeholder="Search company..." className="h-9" />
             <CommandList>
@@ -66,14 +67,14 @@ export function BranchCombo({ onSelect, companyID, id, value }: {
                 {availableBranches.map((row) => (
                   <CommandItem
                     key={row.BranchID}
-                    value={String(row.Name)}
+                    value={String(row.BranchName)}
                     onSelect={(currentValue) => {
                       const newValue = value === String(row.BranchID) ? "" : String(row.BranchID);
                       onSelect(newValue);
                       setOpen(false)
                     }}
                   >
-                    {row.Name}
+                    {row.BranchName}
                     <Check
                       className={cn(
                         "ml-auto",

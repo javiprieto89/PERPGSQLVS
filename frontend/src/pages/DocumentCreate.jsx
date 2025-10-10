@@ -1,11 +1,11 @@
 // frontend/src/pages/DocumentCreate.jsx
 import { useEffect, useState } from "react";
+import { branchOperations } from "~/services/branch.service";
+import { companyOperations } from "~/services/company.service";
 import {
-  branchOperations,
-  companyOperations,
   documentOperations,
   sysDocumentTypeOperations,
-} from "~/graphql/operations";
+} from "~/services/document.service";
 
 export default function DocumentCreate({
   onClose,

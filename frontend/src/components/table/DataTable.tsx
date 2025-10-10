@@ -3,12 +3,13 @@ import { ArrowDown, ArrowUp } from 'lucide-react';
 import { useState } from 'react';
 import { Fragment } from 'react/jsx-runtime';
 
-import { DebouncedInput } from '~/components/form/debounced-input';
+import { DebouncedInput } from '~/components/form/DebouncedInput';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table';
 import { TableColumnVisibility, TablePagination } from './TableExtraComponents';
 
 import { cn } from '~/lib/utils';
 import { ColumnsSession } from './columnsHelper';
+import { getSelected, type HighLightRow } from './rowHelpers';
 
 export type ColumnMap = { [key: string]: object };
 
@@ -22,21 +23,21 @@ const getColumnClassName = <TData,>(columnDef: ColumnDef<TData, unknown>, column
   },
 );
 
-interface AdminTable<TData> extends Omit<TableOptions<TData>, 'getCoreRowModel'> {
+interface AdminTable<TData> extends Omit<TableOptions<TData>, 'getCoreRowModel'>, HighLightRow<TData> {
   caption?: string;
   columnStyles?: ColumnMap;
   columnClassName?: ColumnMap;
   renderSubComponent?: (props: { row: Row<TData> }) => React.ReactElement;
   getRowCanExpand?: (row: Row<TData>) => boolean;
-  defaultColumnVisibility: VisibilityState;
-  columnGroupName: string;
+  defaultColumnVisibility?: VisibilityState;
+  id: string;
 }
 
-export function DataTable<TData>({ columnGroupName, columns, data, caption, columnClassName, getRowCanExpand, renderSubComponent, defaultColumnVisibility }: AdminTable<TData>) {
+export function DataTable<TData>({ id, columns, data, caption, columnClassName, getRowCanExpand, renderSubComponent, defaultColumnVisibility, highlightKey, highlightValue }: AdminTable<TData>) {
   const [globalFilter, setGlobalFilter] = useState<string>('');
 
-  const columnsHelper = new ColumnsSession(columnGroupName);
-  const [columnVisibility, setColumnVisibility] = useState(columnsHelper.getAll() || defaultColumnVisibility);
+  const columnsHelper = new ColumnsSession(id);
+  const [columnVisibility, setColumnVisibility] = useState(columnsHelper.getAll() || defaultColumnVisibility || {});
 
   const table = useReactTable({
     columns,
@@ -134,7 +135,8 @@ export function DataTable<TData>({ columnGroupName, columns, data, caption, colu
           <TableBody >
             {table.getRowModel().rows.map((row, index) => (
               <Fragment key={`table-row-${row.id || index}`}>
-                <TableRow>
+                {/* className={getRowClassName(row, highlightKey, highlightValue)} */}
+                <TableRow data-state={getSelected(row, highlightKey, highlightValue)}>
                   {row.getVisibleCells().map(cell => (
                     <TableCell key={cell.id} className={getColumnClassName(cell.column.columnDef, columnClassName, cell.column.id)}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}

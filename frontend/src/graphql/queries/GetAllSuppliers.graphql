@@ -13,5 +13,10 @@ query GetAllSuppliers {
     ProvinceID
     City
     PostalCode
+    CompanyID
+    CompanyData {
+      CompanyID
+      CompanyName
+    }
   }
 }

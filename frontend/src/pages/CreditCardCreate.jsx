@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   creditCardGroupOperations,
   creditCardOperations,
-} from "~/graphql/operations.js";
+} from "~/services/credit-card.service";
 
 export default function CreditCardCreate({
   onClose,

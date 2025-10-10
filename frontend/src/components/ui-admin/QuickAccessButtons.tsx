@@ -98,37 +98,37 @@ export function QuickAccessButtons(props: React.HTMLAttributes<HTMLDivElement>) 
       <Button asChild variant='ghost' size="sm" className="hidden md:flex">
         <LinkWithTooltip to="/clients" target="_blank" tooltip='clients'>
           <UserRoundCog />
-          <span className="hidden lg:flex">Clientes</span>
+          <span className="hidden xl:flex">Clientes</span>
         </LinkWithTooltip>
       </Button>
       <Button asChild variant='ghost' size="sm" className="hidden md:flex">
         <LinkWithTooltip to="/suppliers" target="_blank" tooltip='suppliers'>
           <Ship />
-          <span className="hidden lg:flex">Proveedores</span>
+          <span className="hidden xl:flex">Proveedores</span>
         </LinkWithTooltip>
       </Button>
       <Button asChild variant='ghost' size="sm" className="hidden md:flex">
         <LinkWithTooltip to="/orders" target="_blank" tooltip='orders'>
           <PackagePlus />
-          <span className="hidden lg:flex">Nueva Orden</span>
+          <span className="hidden xl:flex">Nueva Orden</span>
         </LinkWithTooltip>
       </Button>
       <Button asChild variant='ghost' size="sm" className="hidden md:flex">
         <LinkWithTooltip to="/items" target="_blank" tooltip='items'>
           <Boxes />
-          <span className="hidden lg:flex">Items</span>
+          <span className="hidden xl:flex">Items</span>
         </LinkWithTooltip>
       </Button>
       <Button asChild variant='ghost' size="sm" className="hidden md:flex">
         <LinkWithTooltip to="/reports" target="_blank" tooltip='reports'>
           <ChartColumnBig />
-          <span className="hidden lg:flex">Reportes</span>
+          <span className="hidden xl:flex">Reportes</span>
         </LinkWithTooltip>
       </Button>
       <Button asChild variant='ghost' size="sm" className="hidden md:flex">
         <LinkWithTooltip to="/settings" target="_blank" tooltip='settings'>
           <Settings />
-          <span className="hidden lg:flex">Configuración</span>
+          <span className="hidden xl:flex">Configuración</span>
         </LinkWithTooltip>
       </Button>
       <DiagnosticButton variant='ghost' size="sm" className="hidden md:flex" />

@@ -1,0 +1,21 @@
+query GetClientsByCompany($companyID: Int!) {
+  clientsByCompany(companyID: $companyID) {
+    ClientID
+    DocTypeID
+    DocNumber
+    FirstName
+    LastName
+    Phone
+    Email
+    Address
+    City
+    PostalCode
+    IsActive
+    CountryID
+    ProvinceID
+    PriceListID
+    VendorID
+    CompanyID
+    BranchID
+  }
+}

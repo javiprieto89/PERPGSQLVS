@@ -5,6 +5,7 @@ __pycache__/
 *.db
 node_modules/
 Errores-terminal.txt
+frontend-rr
 
 # Allow .env.example but exclude all others
 !.env.example

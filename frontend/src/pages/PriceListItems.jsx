@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   pricelistItemOperations,
   pricelistOperations,
-} from "~/graphql/operations.js";
+} from "~/services/price-list.service";
 import ItemSearchModal from "../components/ItemSearchModal";
 
 export default function PriceListItems({ onClose, onSaved }) {

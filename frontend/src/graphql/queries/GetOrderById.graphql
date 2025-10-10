@@ -15,8 +15,8 @@ query GetOrderById($id: Int!, $branchId: Int!, $companyId: Int!) {
     DiscountID
     Subtotal
     Total
-    # TODO: VatAmount should be replaced by Taxes
-    VatAmount
+    # TODO: TotalTaxAmount should be replaced by Taxes
+    TotalTaxAmount
     UserID
     DocumentID
     PriceListID

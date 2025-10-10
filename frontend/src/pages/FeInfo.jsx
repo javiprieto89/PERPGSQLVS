@@ -1,6 +1,6 @@
 ﻿// frontend/src/pages/FeInfo.jsx
 import { useEffect, useState } from "react";
-import { afipOperations } from "../graphql/afipOperations";
+import { afipOperations } from "~/services/afip.service";
 
 export default function FeInfo() {
   const [form, setForm] = useState({

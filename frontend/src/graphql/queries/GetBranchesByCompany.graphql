@@ -1,6 +1,13 @@
 query GetBranchesByCompany($companyID: Int!) {
   branchesByCompany(companyID: $companyID) {
     BranchID
+    CompanyID
     BranchName
+    Address
+    Phone
+    CompanyData {
+      CompanyID
+      CompanyName
+    }
   }
 }

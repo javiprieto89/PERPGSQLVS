@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { InputQuickSearch } from "~/components/InputQuickSearch";
 import { DataTable } from "~/components/table/DataTable";
@@ -8,20 +9,21 @@ import {
   TableActionButton,
   TableIsActiveCell,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import SaleConditionCreate from "./SaleConditionCreate";
+
 import { useGetAllSaleConditionsQuery } from "~/graphql/_generated/graphql";
 import {
   creditCardGroupOperations,
   creditCardOperations,
-  saleConditionOperations,
-} from "~/graphql/operations.js";
-import TableFilters from "../components/TableFilters";
-import { openReactWindow } from "../utils/openReactWindow";
-import SaleConditionCreate from "./SaleConditionCreate";
+} from "~/services/credit-card.service";
+import { saleConditionOperations } from "~/services/sale.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 
 export default function SaleConditions() {
   // TODO: Sale conditions debería traer en 1 sola query AllConditions + Cards + Groups asociados

@@ -1,15 +1,11 @@
 import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "~/lib/utils";
 
-const formBlockVariants = cva(
-  'mb-2', {
+const formBlockVariants = cva('', {
   variants: {
     variant: {
-      block: "[&>label]:flex [&>label]:items-center [&>label]:gap-2 [&>label]:mb-2",
+      block: "space-y-2 w-full mb-4",
       inline: 'inline-flex flex-between items-center gap-2',
-    },
-    width: {
-      fixed: 'w-2/3',
-      full: 'w-full'
     },
     align: {
       center: 'items-center',
@@ -18,7 +14,6 @@ const formBlockVariants = cva(
   },
   defaultVariants: {
     variant: "block",
-    width: "fixed"
   },
 })
 
@@ -26,5 +21,8 @@ interface FormBlockProps extends React.HTMLAttributes<HTMLDivElement>,
   VariantProps<typeof formBlockVariants> { }
 
 export const FormBlock = ({ variant, className, ...props }: FormBlockProps) => {
-  return <div className={formBlockVariants({ variant, className })} {...props} />
+  return <div
+    data-slot="form-block"
+    className={cn(formBlockVariants({ variant }), className)} {...props}
+  />
 }

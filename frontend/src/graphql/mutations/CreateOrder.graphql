@@ -16,8 +16,8 @@ mutation CreateOrder($input: OrdersCreate!) {
       DiscountID
       Subtotal
       Total
-      # TODO: replace VatAmount to Taxes
-      VatAmount
+      # TODO: replace TotalTaxAmount to Taxes
+      TotalTaxAmount
       UserID
       DocumentID
       PriceListID

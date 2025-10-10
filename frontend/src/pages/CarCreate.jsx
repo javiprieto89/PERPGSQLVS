@@ -1,6 +1,6 @@
 ﻿// frontend/src/pages/CarCreate.jsx
 import { useCallback, useEffect, useState } from "react";
-import { carOperations } from "~/graphql/operations";
+import { carOperations } from "~/services/car.service";
 import CarBrandSearchModal from "../components/CarBrandSearchModal";
 import CarModelSearchModal from "../components/CarModelSearchModal";
 import ClientSearchModal from "../components/ClientSearchModal";

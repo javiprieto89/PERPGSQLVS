@@ -1,6 +1,7 @@
 // frontend/src/graphql/diagnostic.js
-import { graphqlClient } from "~/graphql/graphqlClient.js";
-import { clientOperations, orderOperations } from "./operations.js";
+import { graphqlClient } from "~/graphql/graphql-client";
+import { clientOperations } from "~/services/client.service";
+import { orderOperations } from "~/services/order.service";
 
 // ===== DIAGNÓSTICO =====
 export const diagnosticGraphQL = () => {

@@ -1,6 +1,6 @@
 ﻿// frontend/src/components/RoleSearchModal.jsx
 import { useEffect, useState } from "react";
-import { roleOperations } from "~/graphql/operations.js";
+import { roleOperations } from "~/services/role.service";
 import TableFilters from "./TableFilters";
 
 export default function RoleSearchModal({ isOpen, onClose, onSelect }) {

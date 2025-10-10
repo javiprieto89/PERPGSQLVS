@@ -1,10 +1,7 @@
 
-export type InputErrorMessage = string | null;
+export type FieldError = string | undefined;
 
-export const ErrorMessage = (({ error }: { error?: InputErrorMessage; name?: string | null; }) => {
-  return (
-    <>
-      {Boolean(error) ? <p className={"text-destructive w-full mb-0 py-1 text-xs"}>{error}</p> : null}
-    </>
-  )
+export const ErrorMessage = (({ error }: { error?: FieldError; }) => {
+  if (!error) return <></>;
+  return <p data-slot="error-message" className={"text-destructive w-full mb-0 py-1 text-xs"}>{error}</p>
 })

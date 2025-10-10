@@ -42,11 +42,11 @@
 /* .dark { */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: oklch(0.14 0 0);
+    --background: oklch(18.381% 0.00258 325.303);
     --foreground: oklch(0.985 0 0);
     --sidebar: oklch(0.22 0 0);
     /* --card: oklch(.205 0 0); */
-    --card: oklch(0.17 0 0);
+    --card: oklch(20.661% 0.00421 308.045);
     --card-foreground: oklch(0.985 0 0);
     --popover: oklch(0.21 0.006 285.885);
     --popover-foreground: oklch(0.985 0 0);
@@ -68,6 +68,7 @@
     --chart-4: oklch(0.627 0.265 303.9);
     --chart-5: oklch(0.645 0.246 16.439);
     --sidebar: oklch(0.21 0.006 285.885);
+    --sidebar: oklch(23.694% 0.00407 308.045);
     --sidebar-foreground: oklch(0.985 0 0);
     --sidebar-primary: oklch(0.541 0.281 293.009);
     --sidebar-primary-foreground: oklch(0.969 0.016 293.756);

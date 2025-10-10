@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  creditCardOperations,
-  saleConditionOperations,
-} from "~/graphql/operations.js";
+import { creditCardOperations } from "~/services/credit-card.service";
+import { saleConditionOperations } from "~/services/sale.service";
 
 export default function SaleConditionCreate({
   onClose,

@@ -29,3 +29,7 @@ export function AdminTopBar({ title, children, quickAccessHidden, className, ...
     </header>
   )
 }
+
+export function Title({ children }: React.PropsWithChildren) {
+  return <h1 className="text-base">{children}</h1>
+}

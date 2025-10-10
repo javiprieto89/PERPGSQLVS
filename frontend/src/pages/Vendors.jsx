@@ -10,15 +10,15 @@ import {
   TableActionButton,
   TableIsActiveCell,
 } from "~/components/table/TableExtraComponents";
+import TableFilters from "~/components/TableFilters";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
-import TableFilters from "../components/TableFilters";
 
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { useGetAllVendorsQuery } from "~/graphql/_generated/graphql";
-import { vendorOperations } from "~/graphql/operations.js";
-import { openReactWindow } from "../utils/openReactWindow";
+import { vendorOperations } from "~/services/vendor.service";
+import { openReactWindow } from "~/utils/openReactWindow";
 import VendorCreate from "./VendorCreate";
 
 export default function Vendors() {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   itemCategoryOperations,
   itemSubcategoryOperations,
-} from "~/graphql/operations.js";
+} from "~/services/item.service";
 
 export default function ItemSubcategoryCreate({
   onClose,

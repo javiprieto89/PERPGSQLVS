@@ -4,8 +4,7 @@ import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGetAllOrdersQuery } from "~/graphql/_generated/graphql";
 
-import { orderOperations } from "~/graphql/operations";
-import { openReactWindow } from "../utils/openReactWindow";
+import { openReactWindow } from "~/utils/openReactWindow";
 
 import { NavLink } from "react-router-dom";
 import AdvancedFilter from "~/components/filter/AdvancedFilter";
@@ -22,6 +21,7 @@ import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
+import { orderOperations } from "~/services/order.service";
 import OrderCreate from "./OrderCreate";
 
 export default function Orders() {
@@ -127,6 +127,7 @@ export default function Orders() {
       {
         header: "Cliente",
         accessorKey: "ClientData.FirstName",
+        id: "Client",
         cell: ({ getValue, row }) => {
           return `${getValue()} ${row.original.ClientData.LastName || ""}`;
         },
@@ -138,11 +139,13 @@ export default function Orders() {
       },
       {
         header: "Condición",
+        id: "Condition",
         accessorKey: "SaleConditionData.Name",
       },
       {
         header: "Usuario",
         accessorKey: "UserData.FullName",
+        id: "User",
         cell: ({ getValue, row }) => {
           return getValue() || row.original.UserData.Nickname || "";
         },
@@ -150,15 +153,16 @@ export default function Orders() {
       {
         header: "Fecha",
         accessorKey: "OrderDate",
+        id: "Date",
         cell: ({ getValue }) => getValue()?.slice(0, 10),
       },
       {
         header: "Vendedor",
-        accessorKey: "ClientData.VendorID",
+        accessorKey: "VendorData.VendorName",
+        id: "Vendor",
         cell: ({ getValue }) => {
           // TODO: VendorID o VendorName debería venir en orders query
-          const vendor = vendors.find((v) => v.VendorID === getValue());
-          return vendor?.VendorName || "";
+          return getValue();
         },
       },
       {

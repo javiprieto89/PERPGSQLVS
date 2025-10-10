@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 
 import { useGetAllOrdersQuery } from "~/graphql/_generated/graphql";
+import { carOperations } from "~/services/car.service";
+import { discountOperations } from "~/services/discount.service";
+import { itemOperations } from "~/services/item.service";
 import {
-  carOperations,
-  discountOperations,
-  itemOperations,
   orderOperations,
-  orderStatusOperations,
+  sysOrderStatusOperations,
+  tempOrderOperations,
+} from "~/services/order.service";
+import {
   pricelistItemOperations,
   pricelistOperations,
-  saleConditionOperations,
-  serviceTypeOperations,
-  tempOrderOperations,
-  warehouseOperations,
-} from "~/graphql/operations.js";
+} from "~/services/price-list.service";
+import { saleConditionOperations } from "~/services/sale.service";
+import { serviceTypeOperations } from "~/services/service-type.service";
+import { warehouseOperations } from "~/services/warehouse.service";
 
 export default function useGraphql() {
   // TODO WIP -----
@@ -104,7 +106,7 @@ export default function useGraphql() {
         serviceTypeOperations.getAllServicetypes(),
         saleConditionOperations.getAllSaleConditions(),
         discountOperations.getAllDiscounts(),
-        orderStatusOperations.getAllOrderstatus(),
+        sysOrderStatusOperations.getAllOrderstatus(),
         pricelistOperations.getAllPricelists(),
         warehouseOperations.getAllWarehouses(),
       ]);

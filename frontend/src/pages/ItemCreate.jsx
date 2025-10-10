@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
+import { brandOperations } from "~/services/brand.service";
 import {
-  brandOperations,
   itemCategoryOperations,
   itemOperations,
   itemSubcategoryOperations,
-  supplierOperations,
-} from "~/graphql/operations.js";
+} from "~/services/item.service";
+import { supplierOperations } from "~/services/supplier.service";
 
 export default function ItemCreate({
   onClose,
