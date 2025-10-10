@@ -22,11 +22,11 @@ class ClientsCreate:
     Address: Optional[str] = None
     City: Optional[str] = None
     PostalCode: Optional[str] = None
-    IsActive: bool = True
-    CountryID: int
-    ProvinceID: int
-    PriceListID: int
-    VendorID: int = 1  # Valor por defecto según la DB
+    IsActive: Optional[bool] = None
+    CountryID: Optional[int] = None
+    ProvinceID: Optional[int] = None
+    PriceListID: Optional[int] = None
+    VendorID: Optional[int] = None
 
 
 @strawberry.input
@@ -63,7 +63,7 @@ class ClientsInDB:
     Phone: Optional[str]
     Email: Optional[str]
     Address: Optional[str]
-    IsActive: bool
+    IsActive: Optional[bool]
     CountryID: int
     ProvinceID: int
     City: Optional[str]

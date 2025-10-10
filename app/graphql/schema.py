@@ -6,6 +6,11 @@ from sqlalchemy import func, and_
 from sqlalchemy.orm import joinedload
 from datetime import datetime
 
+from app.graphql.middlewares.auth_claims import (
+    AuthClaimsExtension,
+    relax_auth_arguments,
+)
+
 # Importar todos los resolvers existentes
 from app.graphql.resolvers.accountbalances import AccountbalancesQuery
 from app.graphql.resolvers.branches import BranchesQuery
@@ -618,4 +623,10 @@ class Mutation(
 
 
 # Schema principal con Query y Mutation
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+schema = strawberry.Schema(
+    query=Query,
+    mutation=Mutation,
+    extensions=[AuthClaimsExtension],
+)
+
+relax_auth_arguments(schema)

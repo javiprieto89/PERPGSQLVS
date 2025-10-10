@@ -101,19 +101,30 @@ def authenticate_user(db: Session, nickname: str, password: str) -> Users | None
         return None
 
 
+def decode_token(token: str) -> dict:
+    """Decodificar un token JWT y retornar sus claims"""
+    try:
+        return jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM]
+        )
+    except JWTError as exc:
+        raise AuthenticationError(
+            "Token inválido: error en la decodificación"
+        ) from exc
+
+
 def get_user_model(token: str, db: Session) -> Users:
     """Obtener modelo de usuario desde token JWT"""
     try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
-        )
+        payload = decode_token(token)
         username = payload.get("sub")
         if not isinstance(username, str):
             raise AuthenticationError(
                 "Token inválido: campo 'sub' no es un string")
-    except JWTError as exc:
-        raise AuthenticationError(
-            "Token inválido: error en la decodificación") from exc
+    except AuthenticationError:
+        raise
 
     # Buscar usuario por nickname
     user = db.query(Users).filter(Users.Nickname == username).first()
@@ -171,17 +182,25 @@ def get_userinfo_from_token(token: str) -> UserInfo | None:
         db_gen.close()
 
 
-def create_user_token(user: Users, company_id: int | None = None, branch_id: int | None = None) -> str:
+def create_user_token(
+    user: Users,
+    company_id: int | None = None,
+    branch_id: int | None = None,
+    role_id: int | None = None,
+) -> str:
     """Crear token JWT; company/branch son opcionales y se agregan si se proveen"""
     user_dict = user.__dict__
     token_data = {"sub": user_dict['Nickname']}
 
     if company_id is None:
         company_id = 1
-    token_data["company_id"] = company_id
+    token_data["CompanyID"] = company_id
     if branch_id is None:
         branch_id = 1
-    token_data["branch_id"] = branch_id
+    token_data["BranchID"] = branch_id
+    if role_id is None:
+        role_id = 1
+    token_data["RoleID"] = role_id
     return create_access_token(token_data)
 
 # Funciones de utilidad para manejo de usuarios

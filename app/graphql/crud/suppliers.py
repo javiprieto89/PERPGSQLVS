@@ -18,8 +18,8 @@ def get_suppliers(db: Session):
     )
 
 
-def get_suppliers_by_company(db: Session, company_id: int):
-    """Retrieve suppliers filtered by CompanyID"""
+def get_suppliers_by_company(db: Session, company_id: int):    
+    """Obtener Proveedores filtrados por CompanyID"""
     return (
         db.query(Suppliers)
         .options(
@@ -33,19 +33,19 @@ def get_suppliers_by_company(db: Session, company_id: int):
     )
 
 
-def get_suppliers_by_branch(db: Session, company_id: int, branch_id: int):
-    """Retrieve suppliers filtered by CompanyID and BranchID"""
-    return (
-        db.query(Suppliers)
-        .options(
-            joinedload(Suppliers.docTypes_),
-            joinedload(Suppliers.countries_),
-            joinedload(Suppliers.provinces_),
-            joinedload(Suppliers.company_),
-        )
-        .filter(Suppliers.CompanyID == company_id, Suppliers.BranchID == branch_id)
-        .all()
-    )
+# def get_suppliers_by_branch(db: Session, company_id: int, branch_id: int):
+#     """Obtener Proveedores filtrados por CompanyID y BranchID"""
+#     return (
+#         db.query(Suppliers)
+#         .options(
+#             joinedload(Suppliers.docTypes_),
+#             joinedload(Suppliers.countries_),
+#             joinedload(Suppliers.provinces_),
+#             joinedload(Suppliers.company_),
+#         )
+#         .filter(Suppliers.CompanyID == company_id, Suppliers.BranchID == branch_id)
+#         .all()
+#     )
 
 
 def get_suppliers_by_id(db: Session, supplierid: int):
@@ -92,6 +92,7 @@ def delete_suppliers(db: Session, supplierid: int):
         if linked_items or linked_accounts:
             raise ValueError(
                 "Cannot delete supplier because it is referenced by other records"
+                
             )
         db.delete(obj)
         db.commit()

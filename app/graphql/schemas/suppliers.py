@@ -9,8 +9,8 @@ from app.graphql.schemas.provinces import ProvincesInDB
 
 @strawberry.input
 class SuppliersCreate:
-    DocTypeID: Optional[int] = None
     CompanyID: Optional[int] = None
+    DocTypeID: Optional[int] = None
     DocNumber: Optional[str] = None
     FirstName: str
     LastName: Optional[str] = None
@@ -26,8 +26,8 @@ class SuppliersCreate:
 
 @strawberry.input
 class SuppliersUpdate:
-    DocTypeID: Optional[int] = None
     CompanyID: Optional[int] = None
+    DocTypeID: Optional[int] = None
     DocNumber: Optional[str] = None
     FirstName: Optional[str] = None
     LastName: Optional[str] = None
@@ -43,6 +43,7 @@ class SuppliersUpdate:
 
 @strawberry.type
 class SuppliersInDB:
+    CompanyID: Optional[int] = None
     SupplierID: int
     DocTypeID: Optional[int] = None
     DocNumber: Optional[str] = None
@@ -56,9 +57,7 @@ class SuppliersInDB:
     ProvinceID: Optional[int] = None
     City: Optional[str] = None
     PostalCode: Optional[str] = None
-    CompanyID: Optional[int] = None
-    BranchData: Optional[BranchesInDB] = None
+    # BranchData: Optional[BranchesInDB] = None
     CompanyData: Optional[CompanyInDB] = None
-    # DocTypeData removed: sys types are not exposed
     CountryData: Optional[CountriesInDB] = None
     ProvinceData: Optional[ProvincesInDB] = None

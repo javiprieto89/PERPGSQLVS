@@ -4,6 +4,7 @@ __pycache__/
 *.pyc
 *.db
 node_modules/
+Errores-terminal.txt
 
 # Allow .env.example but exclude all others
 !.env.example

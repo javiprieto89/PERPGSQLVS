@@ -6,7 +6,7 @@ from app.graphql.crud.suppliers import (
     get_suppliers,
     get_suppliers_by_id,
     get_suppliers_by_company,
-    get_suppliers_by_branch,
+    #get_suppliers_by_branch,
 )
 from app.db import get_db
 from app.utils import list_to_schema, obj_to_schema
@@ -48,18 +48,18 @@ class SuppliersQuery:
         finally:
             db_gen.close()
 
-    @strawberry.field
-    def suppliers_by_branch(
-        self, info: Info, companyID: int, branchID: int
-    ) -> List[SuppliersInDB]:
-        """Obtener proveedores filtrados por CompanyID y BranchID"""
-        db_gen = get_db()
-        db = next(db_gen)
-        try:
-            suppliers = get_suppliers_by_branch(db, companyID, branchID)
-            return list_to_schema(SuppliersInDB, suppliers)
-        finally:
-            db_gen.close()
+    # @strawberry.field
+    # def suppliers_by_branch(
+    #     self, info: Info, companyID: int, branchID: int
+    # ) -> List[SuppliersInDB]:
+    #     """Obtener proveedores filtrados por CompanyID y BranchID"""
+    #     db_gen = get_db()
+    #     db = next(db_gen)
+    #     try:
+    #         suppliers = get_suppliers_by_branch(db, companyID, branchID)
+    #         return list_to_schema(SuppliersInDB, suppliers)
+    #     finally:
+    #         db_gen.close()
 
 
 suppliersQuery = SuppliersQuery()
