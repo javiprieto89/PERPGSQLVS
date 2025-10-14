@@ -9,9 +9,9 @@ export class AuthHelper {
   static USER_KEY = "user_data";
   static SELECTED_ACCESS_KEY = "selected_access";
   static ACCESS_KEY = "access_data";
-  static REDIRECT_AFTER_LOGIN_KEY = "redirectAfterLogin";
+  static REFRESH_TOKEN = "refresh_token";
 
-  static setToken(token: string | null | undefined) {
+  static setTokenCookie(token: string | null | undefined) {
     try {
       if (!token) throw new Error("Login response not defined");
 
@@ -29,7 +29,7 @@ export class AuthHelper {
   }
 
   // Obtener token de las cookies
-  static getToken() {
+  static getTokenCookie() {
     const cookies = document.cookie.split("; ");
     const tokenCookie = cookies.find((row) =>
       row.startsWith(`${this.TOKEN_KEY}=`)
@@ -38,15 +38,15 @@ export class AuthHelper {
   }
 
   // Eliminar token
-  static deleteToken() {
+  static deleteTokenCookie() {
     document.cookie = `${this.TOKEN_KEY}=; path=/; max-age=0`;
   }
 
-  static setTokenSession(token: string | null | undefined) {
+  static setToken(token: string | null | undefined) {
     try {
       if (!token) throw new Error("Login response not defined");
 
-      sessionStorage.setItem(this.TOKEN_KEY, token);
+      localStorage.setItem(this.TOKEN_KEY, token);
 
       return true;
     } catch (error: unknown) {
@@ -57,8 +57,35 @@ export class AuthHelper {
   }
 
   // Obtener token
-  static getTokenSession() {
-    return sessionStorage.getItem(this.TOKEN_KEY);
+  static getToken() {
+    return localStorage.getItem(this.TOKEN_KEY);
+  }
+
+  static deleteToken() {
+    return localStorage.removeItem(this.TOKEN_KEY);
+  }
+
+  static setRefreshToken(token: string | null | undefined) {
+    try {
+      if (!token) throw new Error("Login response not defined");
+
+      localStorage.setItem(this.REFRESH_TOKEN, token);
+
+      return true;
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error("Session Error:", message);
+      return false;
+    }
+  }
+
+  // Obtener token
+  static getRefreshToken() {
+    return localStorage.getItem(this.REFRESH_TOKEN);
+  }
+
+  static deleteRefreshToken() {
+    return localStorage.removeItem(this.REFRESH_TOKEN);
   }
 
   // Función de login
@@ -167,10 +194,6 @@ export class AuthHelper {
     localStorage.removeItem(this.ACCESS_KEY);
   }
 
-  static removeRedirectAfterLogin() {
-    sessionStorage.removeItem(this.REDIRECT_AFTER_LOGIN_KEY);
-  }
-
   // Verificar si el usuario está autenticado
   static isAuthenticated() {
     return !!this.getToken();
@@ -263,7 +286,7 @@ export class AuthHelper {
     sessionStorage.removeItem(this.USER_KEY);
     sessionStorage.removeItem(this.ACCESS_KEY);
     sessionStorage.removeItem(this.SELECTED_ACCESS_KEY);
-    sessionStorage.removeItem(this.REDIRECT_AFTER_LOGIN_KEY);
+    sessionStorage.removeItem(this.REFRESH_TOKEN);
     this.deleteToken();
     // Limpiar todo el sessionStorage
     // sessionStorage.clear();

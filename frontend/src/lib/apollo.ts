@@ -10,6 +10,7 @@ import { onError } from "@apollo/client/link/error";
 import { Observable } from "@apollo/client/utilities";
 import { refreshToken } from "~/utils/api-fetch";
 import { AuthHelper } from "~/utils/authHelper";
+import { Referrer } from "~/utils/referrer.session";
 
 const httpLink = createHttpLink({
   uri: import.meta.env.VITE_GRAPHQL_API,
@@ -35,17 +36,17 @@ const errorLink = onError(
         (err) => err.extensions?.code === "UNAUTHENTICATED"
       ) || networkError;
 
+    // Save current URL to return after login
+    Referrer.save(window.location.href);
+
     // TODO Add status code when is unauthenticated
     // &&
     //   "statusCode" in networkError &&
     //   networkError.statusCode === 401
 
     if (unauthenticated) {
-      AuthHelper.deleteToken();
-      // TODO HARDCODED FOLLOWING LINE, WAITING FOR LOGOUT ENDPOINT
-      window.location.reload();
-      console.warn("LOGOUT, RELOAD....");
-      return;
+      console.warn("Unauthenticated, refreshing token...");
+
       return new Observable((observer) => {
         refreshToken()
           .then((success) => {
@@ -68,12 +69,14 @@ const errorLink = onError(
 
               forward(operation).subscribe(subscriber);
             } else {
-              AuthHelper.logout();
               observer.error(new Error("Unable to refresh token"));
+              window.location.href = "/login";
             }
           })
           .catch((error) => {
             observer.error(error);
+            console.error("Refresh token error:", error);
+            window.location.href = "/login";
           });
       });
     }

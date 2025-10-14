@@ -1,0 +1,20 @@
+query GetItemsFormData {
+  brands: allBrands {
+    BrandID
+    BrandName
+  }
+  categories: allItemcategories {
+    ItemCategoryID
+    CategoryName
+  }
+  subcategories: allItemsubcategories {
+    ItemSubcategoryID
+    ItemCategoryID
+    SubcategoryName
+  }
+  suppliers: allSuppliers {
+    SupplierID
+    FirstName
+    LastName
+  }
+}

@@ -1,4 +1,6 @@
+import type { ColumnDef } from "@tanstack/react-table";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { DataTable } from "~/components/table/DataTable";
 import {
@@ -11,76 +13,47 @@ import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
-import { useGetAllItemSubcategoriesQuery } from "~/graphql/_generated/graphql";
+import { useGetAllItemSubcategoriesQuery, type ItemSubcategoriesInDb } from "~/graphql/_generated/graphql";
 import { itemSubcategoryOperations } from "~/services/item.service";
-import { openReactWindow } from "~/utils/openReactWindow";
-import ItemSubcategoryCreate from "./ItemSubcategoryCreate";
+
+type DataInDB = ItemSubcategoriesInDb;
 
 export default function ItemSubcategories() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { highlight } = location.state || {};
+
   const { data, error, loading, refetch } = useGetAllItemSubcategoriesQuery();
 
-  const [subcategories, setSubcategories] = useState([]);
+  const [dataState, setDataState] = useState<DataInDB[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const handleFilterChange = useCallback((filtered) => {
-    setSubcategories(filtered);
-  }, []);
+  const handleFilterChange = (filtered: DataInDB[]) => {
+    setDataState(filtered);
+  };
 
-  const handleCreate = useCallback(() => {
-    openReactWindow(
-      (popup) => (
-        <ItemSubcategoryCreate
-          onSave={() => {
-            popup.opener.postMessage("reload-itemsubcategories", "*");
-            popup.close();
-          }}
-          onClose={() => {
-            popup.close();
-            refetch();
-          }}
-        />
-      ),
-      "Nueva Subcategoría"
-    );
-  }, [refetch]);
+  const handleCreate = useCallback(() => navigate(`form`), []);
 
   const handleEdit = useCallback(
-    (subcat) => {
-      openReactWindow(
-        (popup) => (
-          <ItemSubcategoryCreate
-            subcategory={subcat}
-            onSave={() => {
-              popup.opener.postMessage("reload-itemsubcategories", "*");
-              popup.close();
-            }}
-            onClose={() => {
-              popup.close();
-              refetch();
-            }}
-          />
-        ),
-        "Editar Subcategoría"
-      );
-    },
-    [refetch]
+    (row: DataInDB) => navigate(`form/${row.ItemSubcategoryID}`),
+    []
   );
 
   const handleDelete = useCallback(
-    async (id) => {
+    async (id: number) => {
       if (!confirm("¿Borrar subcategoría?")) return;
       try {
-        await itemSubcategoryOperations.deleteItemSubcategory(id);
+        await itemSubcategoryOperations.deleteItemSubcategory(String(id));
         refetch();
       } catch (err) {
-        alert("Error al borrar subcategoría: " + err.message);
+        alert("Error al borrar subcategoría: " + (err as Error).message);
       }
     },
     [refetch]
   );
 
   useEffect(() => {
-    const handler = (e) => {
+    const handler = (e: MessageEvent) => {
       if (e.data === "reload-itemsubcategories") {
         refetch();
       }
@@ -91,11 +64,11 @@ export default function ItemSubcategories() {
 
   useEffect(() => {
     if (data?.allItemsubcategories) {
-      setSubcategories(data.allItemsubcategories);
+      setDataState(data.allItemsubcategories as DataInDB[]);
     }
   }, [data]);
 
-  const columns = useMemo(
+  const columns = useMemo<ColumnDef<DataInDB>[]>(
     () => [
       {
         header: "ID",
@@ -119,7 +92,7 @@ export default function ItemSubcategories() {
         cell: ({ row, getValue }) => (
           <TableActionButton
             row={row}
-            onDelete={() => handleDelete(getValue())}
+            onDelete={() => handleDelete(getValue() as number)}
             onEdit={() => handleEdit(row.original)}
           />
         ),
@@ -149,15 +122,21 @@ export default function ItemSubcategories() {
           <div className="mb-6">
             <TableFilters
               modelName="itemsubcategories"
-              data={data?.allSubcategories || []}
+              data={data?.allItemsubcategories || []}
               onFilterChange={handleFilterChange}
             />
           </div>
         )}
         {error && <ApiErrorMessage error={error} />}
         {loading && <AlertLoading />}
-        {subcategories.length > 0 && (
-          <DataTable columns={columns} data={subcategories || []} />
+        {dataState.length > 0 && (
+          <DataTable
+            id="itemsubcategories"
+            columns={columns}
+            data={dataState}
+            highlightValue={highlight}
+            highlightKey="ItemSubcategoryID"
+          />
         )}
         {loading && <AdminTableLoading />}
       </div>

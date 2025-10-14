@@ -1,30 +1,21 @@
 query GetClientFormData {
-  docTypes: sysIdentityDocTypes {
-    DocTypeID
-    DocTypeName
+  companies: allCompany {
+    CompanyID
+    CompanyName
   }
-  countries: allCountries {
-    CountryID
-    CountryName
+  branches: allBranches {
+    BranchID
+    CompanyID
+    BranchName
   }
   provinces: allProvinces {
     ProvinceID
     CountryID
     ProvinceName
   }
-  priceLists: allPricelists {
-    PriceListID
-    PriceListName
-    PriceListDescription
-    IsActive
-  }
-  vendors: allVendors {
-    VendorID
-    VendorName
-    IsActive
-  }
-  companies: allCompany {
-    CompanyID
-    CompanyName
+  warehouses: allWarehouses {
+    WarehouseID
+    WarehouseName
+    Address
   }
 }

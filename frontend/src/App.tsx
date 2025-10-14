@@ -4,11 +4,11 @@ import { type PropsWithChildren } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import apolloClient from "~/lib/apollo";
-import { useTabSession } from "./hooks/useTabSession";
-
-import { AdminLayout } from "./layout/Layout";
-
 import { UserProvider } from "./context/UserContext";
+import { useTabSession } from "./hooks/useTabSession";
+import { AdminLayout } from "./layout/Layout";
+import { AuthHelper } from "./utils/authHelper";
+
 import { BranchForm } from "./pages/branch/form";
 import Branches from "./pages/branch/list";
 import Brands from "./pages/Brands";
@@ -26,9 +26,12 @@ import Documents from "./pages/Documents";
 import FeInfo from "./pages/FeInfo";
 import FeLastVoucher from "./pages/FeLastVoucher";
 import FeLessInfo from "./pages/FeLessInfo";
-import ItemCategories from "./pages/ItemCategories";
-import Items from "./pages/Items";
-import ItemSubcategories from "./pages/ItemSubcategories";
+import { ItemCategoryForm } from "./pages/items/categories/form";
+import ItemCategories from "./pages/items/categories/list";
+import { ItemForm } from "./pages/items/form";
+import Items from "./pages/items/list";
+import ItemSubcategoriesForm from "./pages/items/subcategories/form";
+import ItemSubcategories from "./pages/items/subcategories/list";
 import PriceListCreateLab from "./pages/lab/PriceListCreateLab";
 import UiPage from "./pages/lab/ui";
 import Login from "./pages/login";
@@ -42,12 +45,12 @@ import Roles from "./pages/Roles";
 import RolesUsers from "./pages/RolesUsers";
 import SaleConditions from "./pages/SaleConditions";
 import ServiceTypes from "./pages/ServiceTypes";
+import StockEntry from "./pages/stock/form";
 import { SupplierForm } from "./pages/suppliers/form";
 import Suppliers from "./pages/suppliers/list";
 import Users from "./pages/Users";
 import Vendors from "./pages/Vendors";
 import Warehouses from "./pages/Warehouses";
-import { AuthHelper } from "./utils/authHelper";
 
 export function RedirectRoot() {
   return (
@@ -92,44 +95,57 @@ export default function App() {
                 <Dashboard />
               }
             />
+            <Route path="branches">
+              <Route index element={<Branches />} />
+              <Route path="form/:id?" element={<BranchForm />} />
+            </Route>
             <Route path="clients">
               <Route index element={<Clients />} />
               <Route path="form/:id?" element={<ClientsForm />} />
+            </Route>
+            <Route path="brands" element={<Brands />} />
+            <Route path="carbrands" element={<CarBrands />} />
+            <Route path="carmodels" element={<CarModels />} />
+            <Route path="cars" element={<Cars />} />
+            <Route path="companydata" element={<CompanyData />} />
+            <Route path="creditcardgroups" element={<CreditCardGroups />} />
+            <Route path="creditcards" element={<CreditCards />} />
+            <Route path="discounts" element={<Discounts />} />
+            <Route path="documents" element={<Documents />} />
+            <Route path="fe-info" element={<FeInfo />} />
+            <Route path="fe-last" element={<FeLastVoucher />} />
+            <Route path="fe-less-info" element={<FeLessInfo />} />
+            <Route path="items">
+              <Route index element={<Items />} />
+              <Route path="form/:id?" element={<ItemForm />} />
+            </Route>
+            <Route path="items/categories">
+              <Route index element={<ItemCategories />} />
+              <Route path="form/:id?" element={<ItemCategoryForm />} />
+            </Route>
+            <Route path="items/subcategories">
+              <Route index element={<ItemSubcategories />} />
+              <Route path="form/:id?" element={<ItemSubcategoriesForm />} />
+            </Route>
+            <Route path="orders" element={<Orders />} />
+            <Route path="orders/form/:id?" element={<OrderCreate />} />
+            <Route path="pricelistitems" element={<PriceListItemsBrowser />} />
+            <Route path="pricelists" element={<PriceLists />} />
+            <Route path="roles" element={<Roles />} />
+            <Route path="rolesusers" element={<RolesUsers />} />
+            <Route path="saleconditions" element={<SaleConditions />} />
+            <Route path="servicetypes" element={<ServiceTypes />} />
+            <Route path="stock">
+              <Route index element={<Items />} />
+              <Route path="form/:id?" element={<StockEntry />} />
             </Route>
             <Route path="suppliers">
               <Route index element={<Suppliers />} />
               <Route path="form/:id?" element={<SupplierForm />} />
             </Route>
-            <Route path="brands" element={<Brands />} />
-            <Route path="saleconditions" element={<SaleConditions />} />
-            <Route path="creditcardgroups" element={<CreditCardGroups />} />
-            <Route path="creditcards" element={<CreditCards />} />
-            <Route path="discounts" element={<Discounts />} />
             <Route path="vendors" element={<Vendors />} />
-            <Route path="servicetypes" element={<ServiceTypes />} />
-            <Route path="itemcategories" element={<ItemCategories />} />
-            <Route path="itemsubcategories" element={<ItemSubcategories />} />
-            <Route path="items" element={<Items />} />
-            <Route path="pricelists" element={<PriceLists />} />
-            <Route path="pricelistitems" element={<PriceListItemsBrowser />} />
             <Route path="warehouses" element={<Warehouses />} />
-            <Route path="branches">
-              <Route index element={<Branches />} />
-              <Route path="form/:id?" element={<BranchForm />} />
-            </Route>
-            <Route path="companydata" element={<CompanyData />} />
-            <Route path="carbrands" element={<CarBrands />} />
-            <Route path="carmodels" element={<CarModels />} />
-            <Route path="cars" element={<Cars />} />
-            <Route path="documents" element={<Documents />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="orders/form/:id?" element={<OrderCreate />} />
-            <Route path="roles" element={<Roles />} />
             <Route path="users" element={<Users />} />
-            <Route path="rolesusers" element={<RolesUsers />} />
-            <Route path="fe-last" element={<FeLastVoucher />} />
-            <Route path="fe-info" element={<FeInfo />} />
-            <Route path="fe-less-info" element={<FeLessInfo />} />
           </Route>
           <Route path="lab/ui" element={<UiPage />} />
           <Route path="lab/price-list-form" element={<PriceListCreateLab />} />

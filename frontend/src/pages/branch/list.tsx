@@ -1,4 +1,3 @@
-// frontend/src/pages/Branches.jsx
 import type { ColumnDef } from "@tanstack/react-table";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router";

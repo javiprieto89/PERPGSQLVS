@@ -1,19 +1,39 @@
 query GetAllItems {
   allItems {
-    ItemID
-    CompanyID
     BranchID
     BrandID
+    CompanyID
+    ControlStock
+    IsActive
+    IsOffer
     ItemCategoryID
-    ItemSubcategoryID
     ItemCode
     ItemDescription
-    SupplierID
-    ControlStock
-    ReplenishmentStock
-    IsActive
-    OEM
-    WarehouseID
+    ItemID
+    ItemSubcategoryID
     LastModified
+    OEM
+    ReplenishmentStock
+    SupplierID
+    WarehouseID
+    BranchData {
+      BranchName
+    }
+    BrandData {
+      BrandName
+    }
+    CompanyData {
+      CompanyName
+    }
+    CategoryData {
+      CategoryName
+    }
+    SupplierData {
+      FirstName
+      LastName
+    }
+    WarehouseData {
+      WarehouseName
+    }
   }
 }

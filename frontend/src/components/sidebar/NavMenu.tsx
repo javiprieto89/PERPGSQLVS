@@ -1,14 +1,17 @@
 // src/components/Sidebar.jsx
-import { IconFileDescription, IconUsers, type Icon } from "@tabler/icons-react";
+import { IconFileDescription, IconShoppingCartCog, IconUserHexagon, IconUsers, type Icon } from "@tabler/icons-react";
 import {
+  Building,
   Car,
   ChevronRight,
   ExternalLink,
   Home,
+  MapPin,
   PackageCheck,
   Plus,
   Ship,
   Tag,
+  Users,
   type LucideProps
 } from "lucide-react";
 import { Fragment, useContext } from "react";
@@ -17,9 +20,10 @@ import { openReactWindow } from "~/utils/openReactWindow";
 
 import { DrawerContext } from "~/components/ui/drawer/Drawer";
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuLink, SidebarMenuSub, SidebarMenuSubItem, useSidebar } from "~/components/ui/sidebar";
-import StockEntry from "~/pages/StockEntry";
+import StockEntry from "~/pages/stock/StockEntry";
 
 import { CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible";
+import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import OrderCreate from "~/pages/OrderCreate";
@@ -78,7 +82,7 @@ const sections: SideMenu[] = [
             rightButton: {
               title: "Cargar Stock",
               icon: Plus,
-              action: () => openPopup(StockEntry, "Ingreso de Stock", 1000, 700),
+              url: "/stock/form",
             }
           },
           {
@@ -86,8 +90,8 @@ const sections: SideMenu[] = [
             action: () => openPopup(StockEntry, "Ingreso de Stock", 1000, 700),
           },
           { title: "Historial de stock (N/A)", url: "/stockhistory" },
-          { title: "Categorías", url: "/itemcategories" },
-          { title: "Subcategorías", url: "/itemsubcategories" },
+          { title: "Categorías", url: "/items/categories" },
+          { title: "Subcategorías", url: "/items/subcategories" },
           { title: "Marcas", url: "/brands" },
           { title: "Depósitos", url: "/warehouses" },
           { title: "Listas de precios", url: "/pricelists" },
@@ -144,18 +148,22 @@ const sections: SideMenu[] = [
     key: "configuration",
     title: "Configuración",
     items: [
-      { title: "Sucursales", url: "/branches" },
-      { title: "Empresa", url: "/companydata" },
+      { title: "Sucursales", url: "/branches", icon: MapPin },
+      { title: "Empresa", url: "/companydata", icon: Building },
       {
         title: "Usuarios",
+        url: "/users",
+        icon: Users,
         items: [
-          { title: "Usuarios", url: "/users" },
-          { title: "Roles", url: "/roles" },
+          { title: "Usuarios", url: "/users", icon: Users },
+          { title: "Roles", url: "/roles", icon: IconUserHexagon },
           { title: "Roles y Usuarios", url: "/rolesusers" },
         ],
       },
       {
         title: "Ventas",
+        url: "/documents",
+        icon: IconShoppingCartCog,
         items: [
           { title: "Grupos Tarjetas", url: "/creditcardgroups" },
           { title: "Tarjetas", url: "/creditcards" },
@@ -187,7 +195,33 @@ function Item(item: SideNav) {
               <span className="truncate">{item.title}</span>
             </SidebarMenuLink>
           </SidebarMenuButton>
-          {item.rightButton && (
+          {item.rightButton && item.rightButton.url && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="sm"
+                  className="size-8 group-data-[collapsible=icon]:opacity-0"
+                  variant="ghost"
+                  asChild
+                >
+                  <Link to={item.rightButton.url} onClick={close} className="flex items-center">
+                    {item.rightButton.icon && <item.rightButton.icon />}
+                    {item.rightButton.title && <span className="sr-only">{item.rightButton.title}</span>}
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              {item.rightButton.title && (
+                <TooltipContent
+                  side="bottom"
+                  align="center"
+                  hidden={false}
+                >
+                  {item.rightButton.title}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          )}
+          {item.rightButton && item.rightButton.action && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

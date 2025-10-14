@@ -107,8 +107,12 @@ export function UserProvider({ children }: PropsWithChildren) {
     try {
       if (!user || typeof window === "undefined") return;
 
+      console.log("UserContext useEffect - user changed:", user);
+      console.log("data?.login:", data?.login);
+
       // Usar AuthHelper para el login
       AuthHelper.setToken(data?.login.token);
+      AuthHelper.setRefreshToken(data?.login.refreshToken);
       AuthHelper.setUserData(user);
       setUserData(user || null);
 

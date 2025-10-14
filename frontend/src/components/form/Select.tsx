@@ -15,6 +15,8 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(({ label, labelProps, id, name, error, className, ...rest }, ref) => {
+  const selectId = id || name
+
   return (
     <>
       {label && <Label htmlFor={id || name} {...labelProps}>{label}</Label>}
@@ -29,6 +31,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(({ label, label
             "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
             className
           )}
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${selectId}-error` : label ? `${selectId}-helper` : undefined}
           {...rest}
         />
         <ChevronDown className={cn("absolute top-1/2 right-[1rem] -translate-y-1/2")} />

@@ -1,5 +1,5 @@
-query GetBrandById($id: Int!, $companyId: Int!) {
-  brandsById(id: $id, companyID: $companyId) {
+query GetBrandsByCompany($companyID: Int!) {
+  brandsByCompany(companyID: $companyID) {
     BrandID
     BrandName
     CompanyID

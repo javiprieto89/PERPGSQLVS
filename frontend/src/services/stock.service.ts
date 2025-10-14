@@ -19,10 +19,15 @@ export const tempStockOperations = {
   async getSessionEntries(
     sessionID: string
   ): Promise<TempStockHistoryDetailsInDb[]> {
-    const res = await graphqlClient.query(MUTATIONS.GET_TEMP_STOCK_BY_SESSION, {
-      sessionID,
-    });
-    return res.tempstockhistorydetailsBySession || [];
+    console.log("Session ID in getSessionEntries: ", sessionID);
+    // StockHistoryDetailsCreate
+    const res = await graphqlClient.query<TempStockHistoryDetailsInDb>(
+      MUTATIONS.GET_TEMP_STOCK_BY_SESSION,
+      {
+        sessionID,
+      }
+    );
+    return res.allStockhistorydetails.nodes || [];
   },
 
   async processSession(sessionID: string): Promise<any> {

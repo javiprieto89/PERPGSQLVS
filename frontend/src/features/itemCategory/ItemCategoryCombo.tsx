@@ -4,19 +4,19 @@ import { useEffect, useState } from "react"
 import { SelectWithSearch } from "~/components/form/SelectWithSearch"
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage"
 
-import { useGetAllCompaniesQuery } from "~/graphql/_generated/graphql"
+import { useGetAllItemCategoriesQuery } from "~/graphql/_generated/graphql"
 
-export function CompanyCombo({ onSelect, defaultValue, label, placeholder, ...props }: {
+export function ItemCategoryCombo({ onSelect, id, defaultValue, className, label, placeholder, ...props }: {
   onSelect: (value: string) => void;
   defaultValue?: string | null;
   id?: string;
+  value?: string | null;
   className?: string;
   labelProps?: React.LabelHTMLAttributes<HTMLLabelElement>;
   label?: string;
-  name?: string;
   placeholder?: string;
 }) {
-  const { data, loading, error: apolloError } = useGetAllCompaniesQuery();
+  const { data, loading, error: apolloError } = useGetAllItemCategoriesQuery();
 
   const [value, setValue] = useState(defaultValue || "")
 
@@ -30,7 +30,7 @@ export function CompanyCombo({ onSelect, defaultValue, label, placeholder, ...pr
 
   return (
     <SelectWithSearch
-      label={label || "Compañía"}
+      label={label || "Categoría"}
       placeholder={loading ? "Loading..." : placeholder}
       onSelect={(val) => {
         const newValue = value === String(val) ? "" : String(val);
@@ -38,9 +38,9 @@ export function CompanyCombo({ onSelect, defaultValue, label, placeholder, ...pr
         onSelect(newValue);
       }}
       defaultValue={defaultValue}
-      accessor="CompanyID"
-      display="CompanyName"
-      data={data?.allCompany}
+      accessor="ItemCategoryID"
+      display="CategoryName"
+      data={data?.allItemcategories}
       loading={loading}
       {...props}
     />

@@ -1,5 +1,7 @@
+import type { ColumnDef } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { DataTable } from "~/components/table/DataTable";
 import {
@@ -12,77 +14,50 @@ import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
-import { useGetAllItemsQuery } from "~/graphql/_generated/graphql";
+import { useGetAllItemsQuery, type ItemsInDb } from "~/graphql/_generated/graphql";
 import { itemOperations } from "~/services/item.service";
-import { openReactWindow } from "~/utils/openReactWindow";
-import ItemCreate from "./ItemCreate";
+
+type DataInDB = ItemsInDb;
 
 export default function Items() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { highlight } = location.state || {};
+
   const { data, error, loading, refetch } = useGetAllItemsQuery({
     notifyOnNetworkStatusChange: true,
   });
-  const [items, setItems] = useState([]);
+  const [dataState, setDataState] = useState<DataInDB[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const handleCreate = useCallback(() => {
-    openReactWindow(
-      (popup) => (
-        <ItemCreate
-          onSave={() => {
-            popup.opener.postMessage("reload-items", "*");
-            popup.close();
-          }}
-          onClose={() => {
-            popup.close();
-            refetch();
-          }}
-        />
-      ),
-      "Nuevo Ítem"
-    );
-  }, [refetch]);
+  const allData = data?.allItems || [];
 
-  const handleFilterChange = (filtered) => {
-    setItems(filtered);
+  const handleFilterChange = (filtered: DataInDB[]) => {
+    setDataState(filtered);
   };
 
+  const handleCreate = useCallback(() => navigate(`form`), []);
+
   const handleEdit = useCallback(
-    (item) => {
-      openReactWindow(
-        (popup) => (
-          <ItemCreate
-            item={item}
-            onSave={() => {
-              popup.opener.postMessage("reload-items", "*");
-              popup.close();
-            }}
-            onClose={() => {
-              popup.close();
-              refetch();
-            }}
-          />
-        ),
-        "Editar Ítem"
-      );
-    },
-    [refetch]
+    (row: DataInDB) => navigate(`form/${row.ItemID}`),
+    []
   );
 
   const handleDelete = useCallback(
-    async (id) => {
+    async (id: number) => {
       if (!confirm("¿Borrar ítem?")) return;
       try {
-        await itemOperations.deleteItem(id);
+        await itemOperations.deleteItem(String(id));
         refetch();
       } catch (err) {
-        alert("Error al borrar ítem: " + err.message);
+        alert("Error al borrar ítem: " + (err as Error).message);
       }
     },
     [refetch]
   );
 
   useEffect(() => {
-    const handler = (e) => {
+    const handler = (e: MessageEvent) => {
       if (e.data === "reload-items") {
         refetch();
       }
@@ -92,12 +67,12 @@ export default function Items() {
   }, [refetch]);
 
   useEffect(() => {
-    if (data?.allItems) {
-      setItems(data.allItems);
+    if (allData.length > 0 && dataState.length === 0) {
+      setDataState(allData as DataInDB[]);
     }
-  }, [data]);
+  }, [allData]);
 
-  const columns = useMemo(
+  const columns = useMemo<ColumnDef<DataInDB>[]>(
     () => [
       {
         header: "ID",
@@ -107,21 +82,38 @@ export default function Items() {
       },
       {
         header: "Description",
-        accessorKey: "Description",
+        id: "Descripción",
+        accessorKey: "ItemDescription",
       },
       {
         header: "Code",
-        accessorKey: "Code",
+        id: "Código",
+        accessorKey: "ItemCode",
+      },
+      {
+        header: "Brand",
+        id: "Marca",
+        accessorKey: "BrandData.BrandName",
+      },
+      {
+        header: "Company",
+        id: "Compañía",
+        accessorKey: "CompanyData.CompanyName",
+      },
+      {
+        header: "Supplier",
+        id: "Proveedor",
+        accessorKey: "SupplierData.FirstName",
       },
       {
         header: "",
         id: "actions",
         enableHiding: false,
         accessorKey: "ItemID",
-        cell: ({ row, getValue }) => (
+        cell: ({ row }) => (
           <TableActionButton
             row={row}
-            onDelete={() => handleDelete(getValue())}
+            onDelete={() => handleDelete(row.original.ItemID)}
             onEdit={() => handleEdit(row.original)}
           />
         ),
@@ -167,7 +159,13 @@ export default function Items() {
         )}
         {error && <ApiErrorMessage error={error} />}
         {loading && <AlertLoading />}
-        {items.length > 0 && <DataTable columns={columns} data={items} />}
+        {dataState.length > 0 && <DataTable
+          id="items"
+          columns={columns}
+          data={dataState}
+          highlightValue={highlight}
+          highlightKey="ItemID"
+        />}
         {loading && <AdminTableLoading />}
       </div>
     </div>

@@ -241,6 +241,53 @@ export type CashBoxesUpdate = {
   UserID?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type ChecksCreate = {
+  Amount: Scalars['Float']['input'];
+  BankID?: InputMaybe<Scalars['Int']['input']>;
+  CheckStatusID?: InputMaybe<Scalars['Int']['input']>;
+  CompanyID: Scalars['Int']['input'];
+  CreatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  CurrencyID: Scalars['Int']['input'];
+  DrawerName?: InputMaybe<Scalars['String']['input']>;
+  DueDate?: InputMaybe<Scalars['Date']['input']>;
+  HolderName?: InputMaybe<Scalars['String']['input']>;
+  IssueDate: Scalars['Date']['input'];
+  Number: Scalars['String']['input'];
+  StatusAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
+export type ChecksInDb = {
+  __typename?: 'ChecksInDB';
+  Amount: Scalars['Float']['output'];
+  BankID?: Maybe<Scalars['Int']['output']>;
+  CheckID: Scalars['Int']['output'];
+  CheckStatusID?: Maybe<Scalars['Int']['output']>;
+  CompanyID: Scalars['Int']['output'];
+  CreatedAt?: Maybe<Scalars['DateTime']['output']>;
+  CurrencyID: Scalars['Int']['output'];
+  DrawerName?: Maybe<Scalars['String']['output']>;
+  DueDate?: Maybe<Scalars['Date']['output']>;
+  HolderName?: Maybe<Scalars['String']['output']>;
+  IssueDate: Scalars['Date']['output'];
+  Number: Scalars['String']['output'];
+  StatusAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type ChecksUpdate = {
+  Amount?: InputMaybe<Scalars['Float']['input']>;
+  BankID?: InputMaybe<Scalars['Int']['input']>;
+  CheckStatusID?: InputMaybe<Scalars['Int']['input']>;
+  CompanyID?: InputMaybe<Scalars['Int']['input']>;
+  CreatedAt?: InputMaybe<Scalars['DateTime']['input']>;
+  CurrencyID?: InputMaybe<Scalars['Int']['input']>;
+  DrawerName?: InputMaybe<Scalars['String']['input']>;
+  DueDate?: InputMaybe<Scalars['Date']['input']>;
+  HolderName?: InputMaybe<Scalars['String']['input']>;
+  IssueDate?: InputMaybe<Scalars['Date']['input']>;
+  Number?: InputMaybe<Scalars['String']['input']>;
+  StatusAt?: InputMaybe<Scalars['DateTime']['input']>;
+};
+
 export type ClientsCreate = {
   Address?: InputMaybe<Scalars['String']['input']>;
   BranchID?: InputMaybe<Scalars['Int']['input']>;
@@ -740,6 +787,9 @@ export type LoginInput = {
 export type LoginResponse = {
   __typename?: 'LoginResponse';
   message: Scalars['String']['output'];
+  refreshExpiresAt?: Maybe<Scalars['DateTime']['output']>;
+  refreshToken?: Maybe<Scalars['String']['output']>;
+  sessionId?: Maybe<Scalars['Int']['output']>;
   success: Scalars['Boolean']['output'];
   token?: Maybe<Scalars['String']['output']>;
   user?: Maybe<UserInfo>;
@@ -758,6 +808,7 @@ export type Mutation = {
   createCarmodel: CarModelsInDb;
   createCashbox: CashBoxesInDb;
   createCashboxmovement: CashBoxMovementsInDb;
+  createCheck: ChecksInDb;
   createClient: ClientsInDb;
   createCompany: CompanyInDb;
   createCreditcard: CreditCardsInDb;
@@ -791,6 +842,7 @@ export type Mutation = {
   deleteCarmodel: Scalars['Boolean']['output'];
   deleteCashbox: Scalars['Boolean']['output'];
   deleteCashboxmovement: Scalars['Boolean']['output'];
+  deleteCheck: Scalars['Boolean']['output'];
   deleteClient: DeleteResponse;
   deleteCompany: Scalars['Boolean']['output'];
   deleteCreditcard: Scalars['Boolean']['output'];
@@ -829,6 +881,7 @@ export type Mutation = {
   updateCarmodel?: Maybe<CarModelsInDb>;
   updateCashbox?: Maybe<CashBoxesInDb>;
   updateCashboxmovement?: Maybe<CashBoxMovementsInDb>;
+  updateCheck?: Maybe<ChecksInDb>;
   updateClient?: Maybe<ClientsInDb>;
   updateCompany?: Maybe<CompanyInDb>;
   updateCreditcard?: Maybe<CreditCardsInDb>;
@@ -910,6 +963,11 @@ export type MutationCreateCashboxArgs = {
 
 export type MutationCreateCashboxmovementArgs = {
   data: CashBoxMovementsCreate;
+};
+
+
+export type MutationCreateCheckArgs = {
+  data: ChecksCreate;
 };
 
 
@@ -1081,6 +1139,12 @@ export type MutationDeleteCashboxArgs = {
 
 export type MutationDeleteCashboxmovementArgs = {
   movementID: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteCheckArgs = {
+  checkID: Scalars['Int']['input'];
+  companyID?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -1307,6 +1371,13 @@ export type MutationUpdateCashboxArgs = {
 export type MutationUpdateCashboxmovementArgs = {
   data: CashBoxMovementsUpdate;
   movementID: Scalars['Int']['input'];
+};
+
+
+export type MutationUpdateCheckArgs = {
+  checkID: Scalars['Int']['input'];
+  companyID?: InputMaybe<Scalars['Int']['input']>;
+  data: ChecksUpdate;
 };
 
 
@@ -1712,6 +1783,7 @@ export type Query = {
   allCars: Array<CarsInDb>;
   allCashboxes: Array<CashBoxesInDb>;
   allCashboxmovements: Array<CashBoxMovementsInDb>;
+  allChecks: Array<ChecksInDb>;
   allClients: Array<ClientsInDb>;
   allCommercialdocuments: Array<CommercialDocumentsInDb>;
   allCompany: Array<CompanyInDb>;
@@ -1756,6 +1828,8 @@ export type Query = {
   carsById?: Maybe<CarsInDb>;
   cashboxesById?: Maybe<CashBoxesInDb>;
   cashboxmovementsById?: Maybe<CashBoxMovementsInDb>;
+  checkById?: Maybe<ChecksInDb>;
+  checksByCompany: Array<ChecksInDb>;
   clientsByBranch: Array<ClientsInDb>;
   clientsByCompany: Array<ClientsInDb>;
   clientsById?: Maybe<ClientsInDb>;
@@ -1898,6 +1972,17 @@ export type QueryCashboxesByIdArgs = {
 
 export type QueryCashboxmovementsByIdArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryCheckByIdArgs = {
+  checkID: Scalars['Int']['input'];
+  companyID?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryChecksByCompanyArgs = {
+  companyID?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -2546,6 +2631,7 @@ export type UserInfo = {
   __typename?: 'UserInfo';
   FullName?: Maybe<Scalars['String']['output']>;
   IsActive: Scalars['Boolean']['output'];
+  IsFullAdmin: Scalars['Boolean']['output'];
   Nickname: Scalars['String']['output'];
   UserID: Scalars['Int']['output'];
   UserPermissions: Array<UserPermissionsInfo>;
@@ -3039,6 +3125,11 @@ export type DeleteWarehouseMutationVariables = Exact<{
 
 export type DeleteWarehouseMutation = { __typename?: 'Mutation', deleteWarehouse: boolean };
 
+export type GetStockEntryFormDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetStockEntryFormDataQuery = { __typename?: 'Query', docTypes: Array<{ __typename?: 'SysIdentityDocTypesInDB', DocTypeID: number, DocTypeName: string }>, countries: Array<{ __typename?: 'CountriesInDB', CountryID: number, CountryName: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, companies: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }>, warehouses: Array<{ __typename?: 'WarehousesInDB', WarehouseID: number, WarehouseName: string, Address?: string | null }>, branches: Array<{ __typename?: 'BranchesInDB', BranchID: number, BranchName: string, CompanyID: number }> };
+
 export type ToggleClientStatusMutationVariables = Exact<{
   clientID: Scalars['Int']['input'];
   isActive: Scalars['Boolean']['input'];
@@ -3311,7 +3402,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', success: boolean, message: string, token?: string | null, user?: { __typename?: 'UserInfo', UserID: number, Nickname: string, FullName?: string | null, IsActive: boolean, UserPermissions: Array<{ __typename?: 'UserPermissionsInfo', UserID: number, CompanyID: number, CompanyName: string, BranchID: number, BranchName: string, RoleID: number, RoleName: string }> } | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', success: boolean, message: string, token?: string | null, refreshToken?: string | null, refreshExpiresAt?: any | null, sessionId?: number | null, user?: { __typename?: 'UserInfo', UserID: number, Nickname: string, FullName?: string | null, IsActive: boolean, IsFullAdmin: boolean, UserPermissions: Array<{ __typename?: 'UserPermissionsInfo', UserID: number, CompanyID: number, CompanyName: string, BranchID: number, BranchName: string, RoleID: number, RoleName: string }> } | null } };
 
 export type UpdateBrandMutationVariables = Exact<{
   brandID: Scalars['Int']['input'];
@@ -3325,7 +3416,7 @@ export type UpdateBrandMutation = { __typename?: 'Mutation', updateBrand?: { __t
 export type GetAllBranchesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllBranchesQuery = { __typename?: 'Query', allBranches: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string, Address?: string | null, Phone?: string | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null } | null }> };
+export type GetAllBranchesQuery = { __typename?: 'Query', allBranches: Array<{ __typename?: 'BranchesInDB', Address?: string | null, BranchID: number, BranchName: string, CompanyID: number, Phone?: string | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null } | null }> };
 
 export type GetAllBrandsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3390,7 +3481,7 @@ export type GetAllItemSubcategoriesQuery = { __typename?: 'Query', allItemsubcat
 export type GetAllItemsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllItemsQuery = { __typename?: 'Query', allItems: Array<{ __typename?: 'ItemsInDB', ItemID: number, CompanyID: number, BranchID: number, BrandID: number, ItemCategoryID: number, ItemSubcategoryID: number, ItemCode: string, ItemDescription: string, SupplierID: number, ControlStock: boolean, ReplenishmentStock: number, IsActive: boolean, OEM?: string | null, WarehouseID: number, LastModified?: any | null }> };
+export type GetAllItemsQuery = { __typename?: 'Query', allItems: Array<{ __typename?: 'ItemsInDB', BranchID: number, BrandID: number, CompanyID: number, ControlStock: boolean, IsActive: boolean, IsOffer: boolean, ItemCategoryID: number, ItemCode: string, ItemDescription: string, ItemID: number, ItemSubcategoryID: number, LastModified?: any | null, OEM?: string | null, ReplenishmentStock: number, SupplierID: number, WarehouseID: number, BranchData?: { __typename?: 'BranchesInDB', BranchName: string } | null, BrandData?: { __typename?: 'BrandsInDB', BrandName: string } | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyName?: string | null } | null, CategoryData?: { __typename?: 'ItemCategoriesInDB', CategoryName: string } | null, SupplierData?: { __typename?: 'SuppliersInDB', FirstName: string, LastName?: string | null } | null, WarehouseData?: { __typename?: 'WarehousesInDB', WarehouseName: string } | null }> };
 
 export type GetAllOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3457,7 +3548,14 @@ export type GetBrandByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetBrandByIdQuery = { __typename?: 'Query', brandsById?: { __typename?: 'BrandsInDB', BrandID: number, BrandName: string, IsActive?: boolean | null } | null };
+export type GetBrandByIdQuery = { __typename?: 'Query', brandsById?: { __typename?: 'BrandsInDB', BrandID: number, BrandName: string, CompanyID?: number | null, IsActive?: boolean | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyName?: string | null } | null } | null };
+
+export type GetBrandsByCompanyQueryVariables = Exact<{
+  companyID: Scalars['Int']['input'];
+}>;
+
+
+export type GetBrandsByCompanyQuery = { __typename?: 'Query', brandsByCompany: Array<{ __typename?: 'BrandsInDB', BrandID: number, BrandName: string, CompanyID?: number | null, IsActive?: boolean | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyName?: string | null } | null }> };
 
 export type GetCarBrandByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -3507,7 +3605,7 @@ export type GetClientByIdQuery = { __typename?: 'Query', clientsById?: { __typen
 export type GetClientFormDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetClientFormDataQuery = { __typename?: 'Query', docTypes: Array<{ __typename?: 'SysIdentityDocTypesInDB', DocTypeID: number, DocTypeName: string }>, countries: Array<{ __typename?: 'CountriesInDB', CountryID: number, CountryName: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, priceLists: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, PriceListName: string, PriceListDescription?: string | null, IsActive?: boolean | null }>, vendors: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string, IsActive: boolean }>, companies: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }> };
+export type GetClientFormDataQuery = { __typename?: 'Query', companies: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }>, branches: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, warehouses: Array<{ __typename?: 'WarehousesInDB', WarehouseID: number, WarehouseName: string, Address?: string | null }> };
 
 export type GetClientsByBranchQueryVariables = Exact<{
   companyID: Scalars['Int']['input'];
@@ -3609,6 +3707,11 @@ export type GetItemSubcategoryByIdQueryVariables = Exact<{
 
 
 export type GetItemSubcategoryByIdQuery = { __typename?: 'Query', itemsubcategoriesById?: { __typename?: 'ItemSubcategoriesInDB', ItemSubcategoryID: number, ItemCategoryID: number, SubcategoryName: string, CategoryData?: { __typename?: 'ItemCategoriesInDB', CategoryName: string } | null } | null };
+
+export type GetItemsFormDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetItemsFormDataQuery = { __typename?: 'Query', brands: Array<{ __typename?: 'BrandsInDB', BrandID: number, BrandName: string }>, categories: Array<{ __typename?: 'ItemCategoriesInDB', ItemCategoryID: number, CategoryName: string }>, subcategories: Array<{ __typename?: 'ItemSubcategoriesInDB', ItemSubcategoryID: number, ItemCategoryID: number, SubcategoryName: string }>, suppliers: Array<{ __typename?: 'SuppliersInDB', SupplierID: number, FirstName: string, LastName?: string | null }> };
 
 export type GetOrderByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -5567,6 +5670,69 @@ export function useDeleteWarehouseMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteWarehouseMutationHookResult = ReturnType<typeof useDeleteWarehouseMutation>;
 export type DeleteWarehouseMutationResult = Apollo.MutationResult<DeleteWarehouseMutation>;
 export type DeleteWarehouseMutationOptions = Apollo.BaseMutationOptions<DeleteWarehouseMutation, DeleteWarehouseMutationVariables>;
+export const GetStockEntryFormDataDocument = gql`
+    query GetStockEntryFormData {
+  docTypes: sysIdentityDocTypes {
+    DocTypeID
+    DocTypeName
+  }
+  countries: allCountries {
+    CountryID
+    CountryName
+  }
+  provinces: allProvinces {
+    ProvinceID
+    CountryID
+    ProvinceName
+  }
+  companies: allCompany {
+    CompanyID
+    CompanyName
+  }
+  warehouses: allWarehouses {
+    WarehouseID
+    WarehouseName
+    Address
+  }
+  branches: allBranches {
+    BranchID
+    BranchName
+    CompanyID
+  }
+}
+    `;
+
+/**
+ * __useGetStockEntryFormDataQuery__
+ *
+ * To run a query within a React component, call `useGetStockEntryFormDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStockEntryFormDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStockEntryFormDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetStockEntryFormDataQuery(baseOptions?: Apollo.QueryHookOptions<GetStockEntryFormDataQuery, GetStockEntryFormDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetStockEntryFormDataQuery, GetStockEntryFormDataQueryVariables>(GetStockEntryFormDataDocument, options);
+      }
+export function useGetStockEntryFormDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStockEntryFormDataQuery, GetStockEntryFormDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetStockEntryFormDataQuery, GetStockEntryFormDataQueryVariables>(GetStockEntryFormDataDocument, options);
+        }
+export function useGetStockEntryFormDataSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetStockEntryFormDataQuery, GetStockEntryFormDataQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetStockEntryFormDataQuery, GetStockEntryFormDataQueryVariables>(GetStockEntryFormDataDocument, options);
+        }
+export type GetStockEntryFormDataQueryHookResult = ReturnType<typeof useGetStockEntryFormDataQuery>;
+export type GetStockEntryFormDataLazyQueryHookResult = ReturnType<typeof useGetStockEntryFormDataLazyQuery>;
+export type GetStockEntryFormDataSuspenseQueryHookResult = ReturnType<typeof useGetStockEntryFormDataSuspenseQuery>;
+export type GetStockEntryFormDataQueryResult = Apollo.QueryResult<GetStockEntryFormDataQuery, GetStockEntryFormDataQueryVariables>;
 export const ToggleClientStatusDocument = gql`
     mutation ToggleClientStatus($clientID: Int!, $isActive: Boolean!) {
   updateClient(clientID: $clientID, data: {IsActive: $isActive}) {
@@ -6837,11 +7003,15 @@ export const LoginDocument = gql`
     success
     message
     token
+    refreshToken
+    refreshExpiresAt
+    sessionId
     user {
       UserID
       Nickname
       FullName
       IsActive
+      IsFullAdmin
       UserPermissions {
         UserID
         CompanyID
@@ -6921,10 +7091,10 @@ export type UpdateBrandMutationOptions = Apollo.BaseMutationOptions<UpdateBrandM
 export const GetAllBranchesDocument = gql`
     query GetAllBranches {
   allBranches {
-    BranchID
-    CompanyID
-    BranchName
     Address
+    BranchID
+    BranchName
+    CompanyID
     Phone
     CompanyData {
       CompanyID
@@ -7520,21 +7690,41 @@ export type GetAllItemSubcategoriesQueryResult = Apollo.QueryResult<GetAllItemSu
 export const GetAllItemsDocument = gql`
     query GetAllItems {
   allItems {
-    ItemID
-    CompanyID
     BranchID
     BrandID
+    CompanyID
+    ControlStock
+    IsActive
+    IsOffer
     ItemCategoryID
-    ItemSubcategoryID
     ItemCode
     ItemDescription
-    SupplierID
-    ControlStock
-    ReplenishmentStock
-    IsActive
-    OEM
-    WarehouseID
+    ItemID
+    ItemSubcategoryID
     LastModified
+    OEM
+    ReplenishmentStock
+    SupplierID
+    WarehouseID
+    BranchData {
+      BranchName
+    }
+    BrandData {
+      BrandName
+    }
+    CompanyData {
+      CompanyName
+    }
+    CategoryData {
+      CategoryName
+    }
+    SupplierData {
+      FirstName
+      LastName
+    }
+    WarehouseData {
+      WarehouseName
+    }
   }
 }
     `;
@@ -8115,7 +8305,11 @@ export const GetBrandByIdDocument = gql`
   brandsById(id: $id, companyID: $companyId) {
     BrandID
     BrandName
+    CompanyID
     IsActive
+    CompanyData {
+      CompanyName
+    }
   }
 }
     `;
@@ -8153,6 +8347,52 @@ export type GetBrandByIdQueryHookResult = ReturnType<typeof useGetBrandByIdQuery
 export type GetBrandByIdLazyQueryHookResult = ReturnType<typeof useGetBrandByIdLazyQuery>;
 export type GetBrandByIdSuspenseQueryHookResult = ReturnType<typeof useGetBrandByIdSuspenseQuery>;
 export type GetBrandByIdQueryResult = Apollo.QueryResult<GetBrandByIdQuery, GetBrandByIdQueryVariables>;
+export const GetBrandsByCompanyDocument = gql`
+    query GetBrandsByCompany($companyID: Int!) {
+  brandsByCompany(companyID: $companyID) {
+    BrandID
+    BrandName
+    CompanyID
+    IsActive
+    CompanyData {
+      CompanyName
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBrandsByCompanyQuery__
+ *
+ * To run a query within a React component, call `useGetBrandsByCompanyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBrandsByCompanyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBrandsByCompanyQuery({
+ *   variables: {
+ *      companyID: // value for 'companyID'
+ *   },
+ * });
+ */
+export function useGetBrandsByCompanyQuery(baseOptions: Apollo.QueryHookOptions<GetBrandsByCompanyQuery, GetBrandsByCompanyQueryVariables> & ({ variables: GetBrandsByCompanyQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBrandsByCompanyQuery, GetBrandsByCompanyQueryVariables>(GetBrandsByCompanyDocument, options);
+      }
+export function useGetBrandsByCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBrandsByCompanyQuery, GetBrandsByCompanyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBrandsByCompanyQuery, GetBrandsByCompanyQueryVariables>(GetBrandsByCompanyDocument, options);
+        }
+export function useGetBrandsByCompanySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetBrandsByCompanyQuery, GetBrandsByCompanyQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetBrandsByCompanyQuery, GetBrandsByCompanyQueryVariables>(GetBrandsByCompanyDocument, options);
+        }
+export type GetBrandsByCompanyQueryHookResult = ReturnType<typeof useGetBrandsByCompanyQuery>;
+export type GetBrandsByCompanyLazyQueryHookResult = ReturnType<typeof useGetBrandsByCompanyLazyQuery>;
+export type GetBrandsByCompanySuspenseQueryHookResult = ReturnType<typeof useGetBrandsByCompanySuspenseQuery>;
+export type GetBrandsByCompanyQueryResult = Apollo.QueryResult<GetBrandsByCompanyQuery, GetBrandsByCompanyQueryVariables>;
 export const GetCarBrandByIdDocument = gql`
     query GetCarBrandById($id: Int!, $companyId: Int!) {
   carbrandsById(id: $id, companyID: $companyId) {
@@ -8458,33 +8698,24 @@ export type GetClientByIdSuspenseQueryHookResult = ReturnType<typeof useGetClien
 export type GetClientByIdQueryResult = Apollo.QueryResult<GetClientByIdQuery, GetClientByIdQueryVariables>;
 export const GetClientFormDataDocument = gql`
     query GetClientFormData {
-  docTypes: sysIdentityDocTypes {
-    DocTypeID
-    DocTypeName
+  companies: allCompany {
+    CompanyID
+    CompanyName
   }
-  countries: allCountries {
-    CountryID
-    CountryName
+  branches: allBranches {
+    BranchID
+    CompanyID
+    BranchName
   }
   provinces: allProvinces {
     ProvinceID
     CountryID
     ProvinceName
   }
-  priceLists: allPricelists {
-    PriceListID
-    PriceListName
-    PriceListDescription
-    IsActive
-  }
-  vendors: allVendors {
-    VendorID
-    VendorName
-    IsActive
-  }
-  companies: allCompany {
-    CompanyID
-    CompanyName
+  warehouses: allWarehouses {
+    WarehouseID
+    WarehouseName
+    Address
   }
 }
     `;
@@ -9233,6 +9464,60 @@ export type GetItemSubcategoryByIdQueryHookResult = ReturnType<typeof useGetItem
 export type GetItemSubcategoryByIdLazyQueryHookResult = ReturnType<typeof useGetItemSubcategoryByIdLazyQuery>;
 export type GetItemSubcategoryByIdSuspenseQueryHookResult = ReturnType<typeof useGetItemSubcategoryByIdSuspenseQuery>;
 export type GetItemSubcategoryByIdQueryResult = Apollo.QueryResult<GetItemSubcategoryByIdQuery, GetItemSubcategoryByIdQueryVariables>;
+export const GetItemsFormDataDocument = gql`
+    query GetItemsFormData {
+  brands: allBrands {
+    BrandID
+    BrandName
+  }
+  categories: allItemcategories {
+    ItemCategoryID
+    CategoryName
+  }
+  subcategories: allItemsubcategories {
+    ItemSubcategoryID
+    ItemCategoryID
+    SubcategoryName
+  }
+  suppliers: allSuppliers {
+    SupplierID
+    FirstName
+    LastName
+  }
+}
+    `;
+
+/**
+ * __useGetItemsFormDataQuery__
+ *
+ * To run a query within a React component, call `useGetItemsFormDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetItemsFormDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetItemsFormDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetItemsFormDataQuery(baseOptions?: Apollo.QueryHookOptions<GetItemsFormDataQuery, GetItemsFormDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetItemsFormDataQuery, GetItemsFormDataQueryVariables>(GetItemsFormDataDocument, options);
+      }
+export function useGetItemsFormDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetItemsFormDataQuery, GetItemsFormDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetItemsFormDataQuery, GetItemsFormDataQueryVariables>(GetItemsFormDataDocument, options);
+        }
+export function useGetItemsFormDataSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetItemsFormDataQuery, GetItemsFormDataQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetItemsFormDataQuery, GetItemsFormDataQueryVariables>(GetItemsFormDataDocument, options);
+        }
+export type GetItemsFormDataQueryHookResult = ReturnType<typeof useGetItemsFormDataQuery>;
+export type GetItemsFormDataLazyQueryHookResult = ReturnType<typeof useGetItemsFormDataLazyQuery>;
+export type GetItemsFormDataSuspenseQueryHookResult = ReturnType<typeof useGetItemsFormDataSuspenseQuery>;
+export type GetItemsFormDataQueryResult = Apollo.QueryResult<GetItemsFormDataQuery, GetItemsFormDataQueryVariables>;
 export const GetOrderByIdDocument = gql`
     query GetOrderById($id: Int!, $branchId: Int!, $companyId: Int!) {
   ordersById(id: $id, branchID: $branchId, companyID: $companyId) {

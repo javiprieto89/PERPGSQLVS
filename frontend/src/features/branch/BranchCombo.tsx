@@ -1,93 +1,58 @@
 "use client"
 
-import { Check, ChevronsUpDown } from "lucide-react"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { SelectWithSearch } from "~/components/form/SelectWithSearch"
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage"
 
-import { Button } from "~/components/ui/button"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "~/components/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover"
 import { useGetAllBranchesQuery } from "~/graphql/_generated/graphql"
-import { cn } from "~/lib/utils"
 
-export function BranchCombo({ onSelect, companyID, id, value, className }: {
+export function BranchCombo({ onSelect, companyID, id, defaultValue, className, label, placeholder, ...props }: {
   onSelect: (value: string) => void;
+  defaultValue?: string | null;
   companyID?: string | undefined;
   id?: string;
   value?: string | null;
   className?: string;
+  labelProps?: React.LabelHTMLAttributes<HTMLLabelElement>;
+  label?: string;
+  placeholder?: string;
 }) {
-  const { data, loading, error } = useGetAllBranchesQuery();
-  const [open, setOpen] = useState(false);
+  const { data, loading, error: apolloError } = useGetAllBranchesQuery();
 
   const availableBranches = useMemo(() =>
     companyID && data?.allBranches ? data?.allBranches.filter(
       (b) => b.CompanyID === parseInt(companyID)
     ) : [], [companyID, data?.allBranches]);
 
+  const [value, setValue] = useState(defaultValue || "")
+
+  useEffect(() => {
+    if (defaultValue) {
+      setValue(defaultValue);
+    }
+  }, [defaultValue])
+
   const selectedValue = availableBranches.find((row) => String(row.BranchID) === value);
 
-  { error && <ApiErrorMessage error={error} /> }
+  { apolloError && <ApiErrorMessage error={apolloError} /> }
 
   return (
     <>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger id={id} asChild disabled={availableBranches.length === 0}>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className={cn("w-full justify-between", className)}
-          >
-            {loading ? "Loading..." : (
-              value && selectedValue
-                ? selectedValue?.BranchName
-                : "Seleccione..."
-            )}
-            <ChevronsUpDown className="opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="min-w-[280px] p-0" align="start">
-          <Command>
-            <CommandInput placeholder="Search company..." className="h-9" />
-            <CommandList>
-              <CommandEmpty>No framework found.</CommandEmpty>
-              <CommandGroup>
-                {availableBranches.map((row) => (
-                  <CommandItem
-                    key={row.BranchID}
-                    value={String(row.BranchName)}
-                    onSelect={(currentValue) => {
-                      const newValue = value === String(row.BranchID) ? "" : String(row.BranchID);
-                      onSelect(newValue);
-                      setOpen(false)
-                    }}
-                  >
-                    {row.BranchName}
-                    <Check
-                      className={cn(
-                        "ml-auto",
-                        value === String(row.BranchID) ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      <SelectWithSearch
+        label={label || "Sucursal"}
+        placeholder={loading ? "Loading..." : placeholder}
+        onSelect={(val) => {
+          const newValue = value === String(val) ? "" : String(val);
+          setValue(newValue)
+          onSelect(newValue);
+        }}
+        defaultValue={defaultValue}
+        accessor="BranchID"
+        display="BranchName"
+        data={availableBranches}
+        loading={loading}
+        {...props}
+      />
     </>
   )
 }

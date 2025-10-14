@@ -88,7 +88,7 @@ export const branchHelpers = {
   },
 
   // Formatear cliente para mostrar
-  formatClientForDisplay(client: Record<string, string>) {
+  formatForDisplay(client: Record<string, string>) {
     return {
       ...client,
       StatusText: client.IsActive ? "Activo" : "Inactivo",

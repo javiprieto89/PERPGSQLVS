@@ -1,0 +1,29 @@
+query GetStockEntryFormData {
+  docTypes: sysIdentityDocTypes {
+    DocTypeID
+    DocTypeName
+  }
+  countries: allCountries {
+    CountryID
+    CountryName
+  }
+  provinces: allProvinces {
+    ProvinceID
+    CountryID
+    ProvinceName
+  }
+  companies: allCompany {
+    CompanyID
+    CompanyName
+  }
+  warehouses: allWarehouses {
+    WarehouseID
+    WarehouseName
+    Address
+  }
+  branches: allBranches {
+    BranchID
+    BranchName
+    CompanyID
+  }
+}

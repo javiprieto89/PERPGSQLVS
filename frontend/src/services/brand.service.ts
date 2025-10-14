@@ -6,13 +6,21 @@ import type {
   BrandsCreate,
   BrandsInDb,
   BrandsUpdate,
+  CreateBrand2Mutation,
+  DeleteBrandMutation,
+  GetAllBrandsQuery,
+  GetBrandByIdQuery,
+  GetBrandsByCompanyQuery,
+  UpdateBrandMutation,
 } from "~/graphql/_generated/graphql";
 
 // ===== FUNCIONES DE MARCAS =====
 export const brandOperations = {
   async getAllBrands(): Promise<BrandsInDb[]> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_BRANDS);
+      const data = await graphqlClient.query<GetAllBrandsQuery>(
+        QUERIES.GET_ALL_BRANDS
+      );
       return data.allBrands || [];
     } catch (error) {
       console.error("Error obteniendo marcas:", error);
@@ -20,9 +28,12 @@ export const brandOperations = {
     }
   },
 
-  async getBrandById(id: string): Promise<BrandsInDb> {
+  async getBrandById(id: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_BRAND_BY_ID, { id });
+      const data = await graphqlClient.query<GetBrandByIdQuery>(
+        QUERIES.GET_BRAND_BY_ID,
+        { id }
+      );
       return data.brandsById;
     } catch (error) {
       console.error("Error obteniendo marca:", error);
@@ -30,11 +41,14 @@ export const brandOperations = {
     }
   },
 
-  async getBrandsByCompany(companyID: string): Promise<BrandsInDb[]> {
+  async getBrandsByCompany(companyID: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_BRANDS_BY_COMPANY, {
-        companyID: parseInt(companyID),
-      });
+      const data = await graphqlClient.query<GetBrandsByCompanyQuery>(
+        QUERIES.GET_BRANDS_BY_COMPANY,
+        {
+          companyID: parseInt(companyID),
+        }
+      );
       return data.brandsByCompany || [];
     } catch (error) {
       console.error("Error obteniendo marcas por compañía:", error);
@@ -44,9 +58,12 @@ export const brandOperations = {
 
   async createBrand(brandData: BrandsCreate): Promise<BrandsInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_BRAND, {
-        input: brandData,
-      });
+      const data = await graphqlClient.mutation<CreateBrand2Mutation>(
+        MUTATIONS.CREATE_BRAND,
+        {
+          input: brandData,
+        }
+      );
       return data.createBrand;
     } catch (error) {
       console.error("Error creando marca:", error);
@@ -54,12 +71,15 @@ export const brandOperations = {
     }
   },
 
-  async updateBrand(id: string, brandData: BrandsUpdate): Promise<BrandsInDb> {
+  async updateBrand(id: string, brandData: BrandsUpdate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_BRAND, {
-        brandID: id,
-        input: brandData,
-      });
+      const data = await graphqlClient.mutation<UpdateBrandMutation>(
+        MUTATIONS.UPDATE_BRAND,
+        {
+          brandID: id,
+          input: brandData,
+        }
+      );
       return data.updateBrand;
     } catch (error) {
       console.error("Error actualizando marca:", error);
@@ -67,11 +87,14 @@ export const brandOperations = {
     }
   },
 
-  async deleteBrand(id: string): Promise<BrandsInDb> {
+  async deleteBrand(id: string) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_BRAND, {
-        brandID: id,
-      });
+      const data = await graphqlClient.mutation<DeleteBrandMutation>(
+        MUTATIONS.DELETE_BRAND,
+        {
+          brandID: id,
+        }
+      );
       return data.deleteBrand;
     } catch (error) {
       console.error("Error eliminando marca:", error);

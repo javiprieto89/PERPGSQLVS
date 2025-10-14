@@ -3,6 +3,7 @@ query GetItemSubcategoryById($id: Int!) {
     ItemSubcategoryID
     ItemCategoryID
     SubcategoryName
+    CompanyID
     CategoryData {
       CategoryName
     }

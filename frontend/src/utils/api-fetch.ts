@@ -43,15 +43,30 @@ export const apiFetch = async <T = unknown>(
 };
 
 export const refreshToken = async (): Promise<boolean> => {
-  const res = await fetch(`${import.meta.env.VITE_GRAPHQL_API}/auth/refresh`, {
+  console.log("Refreshing token...");
+  console.log("old", AuthHelper.getRefreshToken());
+  const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/refresh`, {
     method: "POST",
     credentials: "include",
+    body: JSON.stringify({
+      refreshToken: AuthHelper.getRefreshToken(),
+    }),
+    headers: { Authorization: `Bearer ${AuthHelper.getRefreshToken()}` },
   });
   if (res.ok) {
+    console.log("Refresh token successful");
     const data = await res.json();
-    AuthHelper.setToken(data.access_token);
+    console.log("DATA", data);
+    if (!data.success || !data.token || !data.refreshToken) {
+      AuthHelper.logout();
+      return false;
+    }
+
+    AuthHelper.setToken(data.token);
+    AuthHelper.setRefreshToken(data.refreshToken);
+    console.log("new", AuthHelper.getRefreshToken());
     return true;
   }
-  AuthHelper.deleteToken();
+  AuthHelper.logout();
   return false;
 };

@@ -3,11 +3,15 @@ mutation Login($input: LoginInput!) {
     success
     message
     token
+    refreshToken
+    refreshExpiresAt
+    sessionId
     user {
       UserID
       Nickname
       FullName
       IsActive
+      IsFullAdmin
       UserPermissions {
         UserID
         CompanyID
