@@ -1,6 +1,10 @@
+import GetAllBrandsGQL from "~/graphql/queries/GetAllBrands.graphql";
+import GetBrandByIdGQL from "~/graphql/queries/GetBrandById.graphql";
+import GetBrandsByCompanyGQL from "~/graphql/queries/GetBrandsByCompany.graphql";
+import CreateBrandGQL from "~/graphql/mutations/createBrand.graphql";
+import UpdateBrandGQL from "~/graphql/mutations/updateBrand.graphql";
+import DeleteBrandGQL from "~/graphql/mutations/deleteBrand.graphql";
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
 import type {
   BrandsCreate,
@@ -19,7 +23,7 @@ export const brandOperations = {
   async getAllBrands(): Promise<BrandsInDb[]> {
     try {
       const data = await graphqlClient.query<GetAllBrandsQuery>(
-        QUERIES.GET_ALL_BRANDS
+        GetAllBrandsGQL
       );
       return data.allBrands || [];
     } catch (error) {
@@ -31,7 +35,7 @@ export const brandOperations = {
   async getBrandById(id: string) {
     try {
       const data = await graphqlClient.query<GetBrandByIdQuery>(
-        QUERIES.GET_BRAND_BY_ID,
+        GetBrandByIdGQL,
         { id }
       );
       return data.brandsById;
@@ -44,7 +48,7 @@ export const brandOperations = {
   async getBrandsByCompany(companyID: string) {
     try {
       const data = await graphqlClient.query<GetBrandsByCompanyQuery>(
-        QUERIES.GET_BRANDS_BY_COMPANY,
+        GetBrandsByCompanyGQL,
         {
           companyID: parseInt(companyID),
         }
@@ -59,7 +63,7 @@ export const brandOperations = {
   async createBrand(brandData: BrandsCreate): Promise<BrandsInDb> {
     try {
       const data = await graphqlClient.mutation<CreateBrand2Mutation>(
-        MUTATIONS.CREATE_BRAND,
+        CreateBrandGQL,
         {
           input: brandData,
         }
@@ -74,7 +78,7 @@ export const brandOperations = {
   async updateBrand(id: string, brandData: BrandsUpdate) {
     try {
       const data = await graphqlClient.mutation<UpdateBrandMutation>(
-        MUTATIONS.UPDATE_BRAND,
+        UpdateBrandGQL,
         {
           brandID: id,
           input: brandData,
@@ -90,7 +94,7 @@ export const brandOperations = {
   async deleteBrand(id: string) {
     try {
       const data = await graphqlClient.mutation<DeleteBrandMutation>(
-        MUTATIONS.DELETE_BRAND,
+        DeleteBrandGQL,
         {
           brandID: id,
         }

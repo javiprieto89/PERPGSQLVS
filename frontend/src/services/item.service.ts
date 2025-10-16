@@ -1,23 +1,54 @@
+import GetAllItemCategoriesGQL from "~/graphql/queries/GetAllItemCategories.graphql";
+import GetItemCategoryByIdGQL from "~/graphql/queries/GetItemCategoryById.graphql";
+import CreateItemCategoryGQL from "~/graphql/mutations/CreateItemCategory.graphql";
+import UpdateItemCategoryGQL from "~/graphql/mutations/UpdateItemCategory.graphql";
+import DeleteItemCategoryGQL from "~/graphql/mutations/DeleteItemCategory.graphql";
+import GetAllItemSubcategoriesGQL from "~/graphql/queries/GetAllItemSubcategories.graphql";
+import GetItemSubcategoryByIdGQL from "~/graphql/queries/GetItemSubcategoryById.graphql";
+import GetItemSubcategoriesByCategoryGQL from "~/graphql/queries/GetItemSubcategoriesByCategory.graphql";
+import CreateItemSubcategoryGQL from "~/graphql/mutations/CreateItemSubcategory.graphql";
+import UpdateItemSubcategoryGQL from "~/graphql/mutations/UpdateItemSubcategory.graphql";
+import DeleteItemSubcategoryGQL from "~/graphql/mutations/DeleteItemSubcategory.graphql";
+import GetAllItemsGQL from "~/graphql/queries/GetAllItems.graphql";
+import GetItemByIdGQL from "~/graphql/queries/GetItemById.graphql";
+import SearchItemsGQL from "~/graphql/queries/SearchItems.graphql";
+import CreateItemGQL from "~/graphql/mutations/CreateItem.graphql";
+import UpdateItemGQL from "~/graphql/mutations/UpdateItem.graphql";
+import DeleteItemGQL from "~/graphql/mutations/DeleteItem.graphql";
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
 import type {
+  CreateItemCategoryMutation,
+  CreateItemMutation,
+  CreateItemSubcategoryMutation,
+  DeleteItemCategoryMutation,
+  DeleteItemMutation,
+  DeleteItemSubcategoryMutation,
+  GetAllItemCategoriesQuery,
+  GetAllItemsQuery,
+  GetAllItemSubcategoriesQuery,
+  GetItemByIdQuery,
+  GetItemCategoryByIdQuery,
+  GetItemSubcategoriesByCategoryQuery,
+  GetItemSubcategoryByIdQuery,
   ItemCategoriesCreate,
-  ItemCategoriesInDb,
   ItemCategoriesUpdate,
   ItemsCreate,
-  ItemsInDb,
   ItemSubcategoriesCreate,
-  ItemSubcategoriesInDb,
   ItemSubcategoriesUpdate,
   ItemsUpdate,
+  SearchItemsQuery,
+  UpdateItemCategoryMutation,
+  UpdateItemMutation,
+  UpdateItemSubcategoryMutation,
 } from "~/graphql/_generated/graphql";
 
 export const itemCategoryOperations = {
-  async getAllItemCategories(): Promise<ItemCategoriesInDb[]> {
+  async getAllItemCategories() {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_ITEMCATEGORIES);
+      const data = await graphqlClient.query<GetAllItemCategoriesQuery>(
+        GetAllItemCategoriesGQL
+      );
       return data.allItemcategories || [];
     } catch (error) {
       console.error("Error obteniendo categorías:", error);
@@ -25,11 +56,14 @@ export const itemCategoryOperations = {
     }
   },
 
-  async getItemCategoryById(id: string): Promise<ItemCategoriesInDb> {
+  async getItemCategoryById(id: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ITEMCATEGORY_BY_ID, {
-        id,
-      });
+      const data = await graphqlClient.query<GetItemCategoryByIdQuery>(
+        GetItemCategoryByIdGQL,
+        {
+          id,
+        }
+      );
       return data.itemcategoriesById;
     } catch (error) {
       console.error("Error obteniendo categoría:", error);
@@ -37,13 +71,14 @@ export const itemCategoryOperations = {
     }
   },
 
-  async createItemCategory(
-    categoryData: ItemCategoriesCreate
-  ): Promise<ItemCategoriesInDb> {
+  async createItemCategory(categoryData: ItemCategoriesCreate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_ITEMCATEGORY, {
-        input: categoryData,
-      });
+      const data = await graphqlClient.mutation<CreateItemCategoryMutation>(
+        CreateItemCategoryGQL,
+        {
+          input: categoryData,
+        }
+      );
       return data.createItemcategory;
     } catch (error) {
       console.error("Error creando categoría:", error);
@@ -51,15 +86,15 @@ export const itemCategoryOperations = {
     }
   },
 
-  async updateItemCategory(
-    id: string,
-    categoryData: ItemCategoriesUpdate
-  ): Promise<ItemCategoriesInDb> {
+  async updateItemCategory(id: string, categoryData: ItemCategoriesUpdate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_ITEMCATEGORY, {
-        categoryID: id,
-        input: categoryData,
-      });
+      const data = await graphqlClient.mutation<UpdateItemCategoryMutation>(
+        UpdateItemCategoryGQL,
+        {
+          categoryID: id,
+          input: categoryData,
+        }
+      );
       return data.updateItemcategory;
     } catch (error) {
       console.error("Error actualizando categoría:", error);
@@ -67,11 +102,14 @@ export const itemCategoryOperations = {
     }
   },
 
-  async deleteItemCategory(id: string): Promise<ItemCategoriesInDb> {
+  async deleteItemCategory(id: string) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_ITEMCATEGORY, {
-        categoryID: id,
-      });
+      const data = await graphqlClient.mutation<DeleteItemCategoryMutation>(
+        DeleteItemCategoryGQL,
+        {
+          categoryID: id,
+        }
+      );
       return data.deleteItemcategory;
     } catch (error) {
       console.error("Error eliminando categoría:", error);
@@ -81,9 +119,11 @@ export const itemCategoryOperations = {
 };
 
 export const itemSubcategoryOperations = {
-  async getAllItemSubcategories(): Promise<ItemSubcategoriesInDb[]> {
+  async getAllItemSubcategories() {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_ITEMSUBCATEGORIES);
+      const data = await graphqlClient.query<GetAllItemSubcategoriesQuery>(
+        GetAllItemSubcategoriesGQL
+      );
       return data.allItemsubcategories || [];
     } catch (error) {
       console.error("Error obteniendo subcategorías:", error);
@@ -91,10 +131,10 @@ export const itemSubcategoryOperations = {
     }
   },
 
-  async getItemSubcategoryById(id: string): Promise<ItemSubcategoriesInDb> {
+  async getItemSubcategoryById(id: string) {
     try {
-      const data = await graphqlClient.query(
-        QUERIES.GET_ITEMSUBCATEGORY_BY_ID,
+      const data = await graphqlClient.query<GetItemSubcategoryByIdQuery>(
+        GetItemSubcategoryByIdGQL,
         { id }
       );
       return data.itemsubcategoriesById;
@@ -105,16 +145,15 @@ export const itemSubcategoryOperations = {
   },
 
   // NUEVA FUNCIÓN AGREGADA
-  async getItemSubcategoriesByCategory(
-    categoryID: string
-  ): Promise<ItemSubcategoriesInDb[]> {
+  async getItemSubcategoriesByCategory(categoryID: string) {
     try {
-      const data = await graphqlClient.query(
-        QUERIES.GET_ITEMSUBCATEGORIES_BY_CATEGORY,
-        {
-          categoryID: parseInt(categoryID),
-        }
-      );
+      const data =
+        await graphqlClient.query<GetItemSubcategoriesByCategoryQuery>(
+          GetItemSubcategoriesByCategoryGQL,
+          {
+            categoryID: parseInt(categoryID),
+          }
+        );
       return data.itemsubcategoriesByCategory || [];
     } catch (error) {
       console.error("Error obteniendo subcategorías por categoría:", error);
@@ -122,12 +161,10 @@ export const itemSubcategoryOperations = {
     }
   },
 
-  async createItemSubcategory(
-    subcategoryData: ItemSubcategoriesCreate
-  ): Promise<ItemSubcategoriesInDb> {
+  async createItemSubcategory(subcategoryData: ItemSubcategoriesCreate) {
     try {
-      const data = await graphqlClient.mutation(
-        MUTATIONS.CREATE_ITEMSUBCATEGORY,
+      const data = await graphqlClient.mutation<CreateItemSubcategoryMutation>(
+        CreateItemSubcategoryGQL,
         {
           input: subcategoryData,
         }
@@ -142,10 +179,10 @@ export const itemSubcategoryOperations = {
   async updateItemSubcategory(
     id: string,
     subcategoryData: ItemSubcategoriesUpdate
-  ): Promise<ItemSubcategoriesInDb> {
+  ) {
     try {
-      const data = await graphqlClient.mutation(
-        MUTATIONS.UPDATE_ITEMSUBCATEGORY,
+      const data = await graphqlClient.mutation<UpdateItemSubcategoryMutation>(
+        UpdateItemSubcategoryGQL,
         {
           subcategoryID: id,
           input: subcategoryData,
@@ -158,10 +195,10 @@ export const itemSubcategoryOperations = {
     }
   },
 
-  async deleteItemSubcategory(id: string): Promise<ItemSubcategoriesInDb> {
+  async deleteItemSubcategory(id: string) {
     try {
-      const data = await graphqlClient.mutation(
-        MUTATIONS.DELETE_ITEMSUBCATEGORY,
+      const data = await graphqlClient.mutation<DeleteItemSubcategoryMutation>(
+        DeleteItemSubcategoryGQL,
         {
           subcategoryID: id,
         }
@@ -175,9 +212,11 @@ export const itemSubcategoryOperations = {
 };
 
 export const itemOperations = {
-  async getAllItems(): Promise<ItemsInDb[]> {
+  async getAllItems() {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_ITEMS);
+      const data = await graphqlClient.query<GetAllItemsQuery>(
+        GetAllItemsGQL
+      );
       return data.allItems || [];
     } catch (error) {
       console.error("Error obteniendo ítems:", error);
@@ -185,9 +224,12 @@ export const itemOperations = {
     }
   },
 
-  async getItemById(id: string): Promise<ItemsInDb> {
+  async getItemById(id: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ITEM_BY_ID, { id });
+      const data = await graphqlClient.query<GetItemByIdQuery>(
+        GetItemByIdGQL,
+        { id }
+      );
       return data.itemsById;
     } catch (error) {
       console.error("Error obteniendo ítem:", error);
@@ -195,11 +237,14 @@ export const itemOperations = {
     }
   },
 
-  async createItem(itemData: ItemsCreate): Promise<ItemsInDb> {
+  async createItem(itemData: ItemsCreate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_ITEM, {
-        input: itemData,
-      });
+      const data = await graphqlClient.mutation<CreateItemMutation>(
+        CreateItemGQL,
+        {
+          input: itemData,
+        }
+      );
       return data.createItem;
     } catch (error) {
       console.error("Error creando ítem:", error);
@@ -207,12 +252,15 @@ export const itemOperations = {
     }
   },
 
-  async updateItem(id: string, itemData: ItemsUpdate): Promise<ItemsInDb> {
+  async updateItem(id: string, itemData: ItemsUpdate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_ITEM, {
-        itemID: id,
-        input: itemData,
-      });
+      const data = await graphqlClient.mutation<UpdateItemMutation>(
+        UpdateItemGQL,
+        {
+          itemID: id,
+          input: itemData,
+        }
+      );
       return data.updateItem;
     } catch (error) {
       console.error("Error actualizando ítem:", error);
@@ -220,11 +268,14 @@ export const itemOperations = {
     }
   },
 
-  async deleteItem(id: string): Promise<ItemsInDb> {
+  async deleteItem(id: string) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_ITEM, {
-        itemID: id,
-      });
+      const data = await graphqlClient.mutation<DeleteItemMutation>(
+        DeleteItemGQL,
+        {
+          itemID: id,
+        }
+      );
       return data.deleteItem;
     } catch (error) {
       console.error("Error eliminando ítem:", error);
@@ -232,17 +283,16 @@ export const itemOperations = {
     }
   },
 
-  async searchItems(
-    search: string = "",
-    page: number = 1,
-    limit: number = 50
-  ): Promise<ItemsInDb[]> {
+  async searchItems(search: string = "", page: number = 1, limit: number = 50) {
     try {
       const variables = {
         filters: search ? { search } : null,
         pagination: { page, limit },
       };
-      const data = await graphqlClient.query(QUERIES.SEARCH_ITEMS, variables);
+      const data = await graphqlClient.query<SearchItemsQuery>(
+        SearchItemsGQL,
+        variables
+      );
       return data.searchItems?.items || [];
     } catch (error) {
       console.error("Error buscando ítems:", error);

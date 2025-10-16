@@ -17,4 +17,8 @@ query GetCarFormData {
     DiscountID
     DiscountName
   }
+  companies: allCompany {
+    CompanyID
+    CompanyName
+  }
 }

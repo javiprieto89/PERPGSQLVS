@@ -8,7 +8,6 @@ import {
 import { useUser } from "~/hooks/useUser";
 
 import { ChevronsUpDown } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import {
   Avatar,
   AvatarFallback,
@@ -32,7 +31,6 @@ import {
 
 export function NavUser() {
   const { isMobile } = useSidebar()
-  const navigate = useNavigate();
 
   const {
     logout,
@@ -42,13 +40,8 @@ export function NavUser() {
 
   const user = {
     name: userInfo?.FullName || userInfo?.Nickname || "Usuario",
-    role: selectedAccess?.Role,
+    role: selectedAccess?.RoleName,
     avatar: "/mockups/avatar.webp",
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/logout");
   };
 
   return (
@@ -71,7 +64,7 @@ export function NavUser() {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
-                  {selectedAccess?.Role && (
+                  {selectedAccess?.RoleName && (
                     <span className="text-muted-foreground truncate text-xs">
                       {user.role}
                     </span>
@@ -120,7 +113,7 @@ export function NavUser() {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+              <DropdownMenuItem variant="destructive" onClick={logout}>
                 <IconLogout />
                 Log out
               </DropdownMenuItem>

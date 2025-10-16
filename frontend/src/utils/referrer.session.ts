@@ -4,8 +4,8 @@ export class Referrer {
 
   private static readonly referrerSchema = z.url();
 
-  static get(): string {
-    return sessionStorage.getItem(this.REFERRER_KEY) || "/";
+  static get() {
+    return sessionStorage.getItem(this.REFERRER_KEY);
   }
 
   static getOnce(): string {
@@ -14,7 +14,7 @@ export class Referrer {
     return ref;
   }
 
-  static save(referrer: string = "/") {
+  static set(referrer: string = "/") {
     if (window.name) return;
 
     const result = this.referrerSchema.safeParse(referrer);

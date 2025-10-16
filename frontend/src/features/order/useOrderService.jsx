@@ -107,7 +107,7 @@ export default function useGraphql() {
         saleConditionOperations.getAllSaleConditions(),
         discountOperations.getAllDiscounts(),
         sysOrderStatusOperations.getAllOrderstatus(),
-        pricelistOperations.getAllPricelists(),
+        pricelistOperations.getAllPriceLists(),
         warehouseOperations.getAllWarehouses(),
       ]);
       setServiceTypes(st);

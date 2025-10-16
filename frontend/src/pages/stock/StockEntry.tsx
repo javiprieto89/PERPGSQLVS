@@ -1,10 +1,10 @@
 // frontend/src/pages/stock/StockEntry.tsx
 
-import BranchSearchModal from "~/components/BranchSearchModal";
-import ItemConfirmationModal from "~/components/ItemConfirmationModal";
 import ItemSearchModal from "~/components/ItemSearchModal";
 import { Button } from "~/components/ui/button";
+import BranchSearchModal from "~/features/branch/BranchSearchModal";
 import CompanySearchModal from "~/features/company/CompanySearchModal";
+import ItemConfirmationModal from "~/features/item/ItemConfirmationModal";
 
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CompanyBranchSelector } from "~/features/stock/CompanyBranchSelector";

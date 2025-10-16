@@ -3,5 +3,9 @@ query GetWarehouses {
     WarehouseID
     WarehouseName
     Address
+    CompanCompanyData {
+      CompanyID
+      CompanyName
+    }
   }
 }

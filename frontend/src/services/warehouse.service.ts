@@ -1,6 +1,9 @@
+import GetWarehousesGQL from "~/graphql/queries/GetWarehouses.graphql";
+import GetWarehouseByIdGQL from "~/graphql/queries/GetWarehouseById.graphql";
+import CreateWarehouseGQL from "~/graphql/mutations/CreateWarehouse.graphql";
+import UpdateWarehouseGQL from "~/graphql/mutations/UpdateWarehouse.graphql";
+import DeleteWarehouseGQL from "~/graphql/mutations/DeleteWarehouse.graphql";
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
 import type {
   CreateWarehouseMutation,
@@ -15,20 +18,20 @@ import type {
 export const warehouseOperations = {
   async getAllWarehouses() {
     const data = await graphqlClient.query<GetWarehousesQuery>(
-      QUERIES.GET_ALL_WAREHOUSES
+      GetWarehousesGQL
     );
     return data.allWarehouses || [];
   },
   async getWarehouseById(id: string) {
     const data = await graphqlClient.query<GetWarehouseByIdQuery>(
-      QUERIES.GET_WAREHOUSE_BY_ID,
+      GetWarehouseByIdGQL,
       { id }
     );
     return data.warehousesById;
   },
   async createWarehouse(input: WarehousesCreate) {
     const data = await graphqlClient.mutation<CreateWarehouseMutation>(
-      MUTATIONS.CREATE_WAREHOUSE,
+      CreateWarehouseGQL,
       {
         input,
       }
@@ -37,7 +40,7 @@ export const warehouseOperations = {
   },
   async updateWarehouse(id: string, input: WarehousesUpdate) {
     const data = await graphqlClient.mutation<UpdateWarehouseMutation>(
-      MUTATIONS.UPDATE_WAREHOUSE,
+      UpdateWarehouseGQL,
       {
         warehouseID: id,
         input,
@@ -47,7 +50,7 @@ export const warehouseOperations = {
   },
   async deleteWarehouse(id: string) {
     const data = await graphqlClient.mutation<DeleteWarehouseMutation>(
-      MUTATIONS.DELETE_WAREHOUSE,
+      DeleteWarehouseGQL,
       {
         warehouseID: id,
       }

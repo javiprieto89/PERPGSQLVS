@@ -1,6 +1,9 @@
+import GetVendorsGQL from "~/graphql/queries/GetVendors.graphql";
+import CreateVendorGQL from "~/graphql/mutations/CreateVendor.graphql";
+import UpdateVendorGQL from "~/graphql/mutations/UpdateVendor.graphql";
+import DeleteVendorGQL from "~/graphql/mutations/DeleteVendor.graphql";
+import ToggleVendorStatusGQL from "~/graphql/mutations/ToggleVendorStatus.graphql";
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
 import type {
   VendorsCreate,
@@ -11,7 +14,7 @@ import type {
 export const vendorOperations = {
   async getAllVendors(): Promise<VendorsInDb[]> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_VENDORS);
+      const data = await graphqlClient.query(GetVendorsGQL);
       return data.allVendors || [];
     } catch (error) {
       console.error("Error obteniendo vendedores:", error);
@@ -20,7 +23,7 @@ export const vendorOperations = {
   },
   async createVendor(vendorData: VendorsCreate): Promise<VendorsInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_VENDOR, {
+      const data = await graphqlClient.mutation(CreateVendorGQL, {
         input: vendorData,
       });
       return data.createVendor;
@@ -34,7 +37,7 @@ export const vendorOperations = {
     vendorData: VendorsUpdate
   ): Promise<VendorsInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_VENDOR, {
+      const data = await graphqlClient.mutation(UpdateVendorGQL, {
         vendorID: id,
         input: vendorData,
       });
@@ -46,7 +49,7 @@ export const vendorOperations = {
   },
   async deleteVendor(id: string): Promise<VendorsInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_VENDOR, {
+      const data = await graphqlClient.mutation(DeleteVendorGQL, {
         vendorID: id,
       });
       return data.deleteVendor;
@@ -61,7 +64,7 @@ export const vendorOperations = {
   ): Promise<VendorsInDb> {
     try {
       const data = await graphqlClient.mutation(
-        MUTATIONS.TOGGLE_VENDOR_STATUS,
+        ToggleVendorStatusGQL,
         {
           vendorID: id,
           isActive,

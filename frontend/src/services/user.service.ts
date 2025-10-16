@@ -1,18 +1,33 @@
-import type { UserCreate, UserUpdate } from "~/graphql/_generated/graphql";
-import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
-
 import type {
-  UseraccessCreate,
-  UseraccessInDb,
-  UseraccessUpdate,
+  CreateUserPermissionsMutation,
+  CreateUserRecordMutation,
+  DeleteUserPermissionsMutation,
+  DeleteUserRecordMutation,
+  GetAllUseraccessQuery,
+  GetAllUsersQuery,
+  GetUserByIdQuery,
+  UpdateUserPermissionsMutation,
+  UpdateUserRecordMutation,
+  UserCreate,
+  UserPermissionsCreate,
+  UserUpdate,
 } from "~/graphql/_generated/graphql";
+import { graphqlClient } from "~/graphql/graphql-client";
+import CreateUserPermissionsGQL from "~/graphql/mutations/CreateUserPermissions.graphql";
+import CreateUserRecordGQL from "~/graphql/mutations/CreateUserRecord.graphql";
+import DeleteUserPermissionsGQL from "~/graphql/mutations/DeleteUserPermissions.graphql";
+import DeleteUserRecordGQL from "~/graphql/mutations/DeleteUserRecord.graphql";
+import UpdateUserPermissionsGQL from "~/graphql/mutations/UpdateUserPermissions.graphql";
+import UpdateUserRecordGQL from "~/graphql/mutations/UpdateUserRecord.graphql";
+import GetAllUseraccessGQL from "~/graphql/queries/GetAllUseraccess.graphql";
+import GetAllUsersGQL from "~/graphql/queries/GetAllUsers.graphql";
+import GetUseraccessByIdGQL from "~/graphql/queries/GetUseraccessById.graphql";
+import GetUserByIdGQL from "~/graphql/queries/GetUserById.graphql";
 
 export const userService = {
   async getAllUsers() {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_USERS);
+      const data = await graphqlClient.query<GetAllUsersQuery>(GetAllUsersGQL);
       return data.allUsers || [];
     } catch (error) {
       console.error("Error obteniendo usuarios:", error);
@@ -22,7 +37,9 @@ export const userService = {
 
   async getUserById(id: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_USER_BY_ID, { id });
+      const data = await graphqlClient.query<GetUserByIdQuery>(GetUserByIdGQL, {
+        id,
+      });
       return data.usersById;
     } catch (error) {
       console.error("Error obteniendo usuario:", error);
@@ -32,9 +49,12 @@ export const userService = {
 
   async createUser(userData: UserCreate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_USER_RECORD, {
-        input: userData,
-      });
+      const data = await graphqlClient.mutation<CreateUserRecordMutation>(
+        CreateUserRecordGQL,
+        {
+          input: userData,
+        }
+      );
       return data.createUserRecord;
     } catch (error) {
       console.error("Error creando usuario:", error);
@@ -45,10 +65,13 @@ export const userService = {
   async updateUser(id: string, userData: Omit<UserUpdate, "UserID">) {
     try {
       // El esquema UserUpdate exige incluir el ID dentro del input
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_USER_RECORD, {
-        userID: id,
-        input: { UserID: id, ...userData },
-      });
+      const data = await graphqlClient.mutation<UpdateUserRecordMutation>(
+        UpdateUserRecordGQL,
+        {
+          userID: id,
+          input: { UserID: id, ...userData },
+        }
+      );
       return data.updateUserRecord;
     } catch (error) {
       console.error("Error actualizando usuario:", error);
@@ -58,9 +81,12 @@ export const userService = {
 
   async deleteUser(id: string) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_USER_RECORD, {
-        userID: id,
-      });
+      const data = await graphqlClient.mutation<DeleteUserRecordMutation>(
+        DeleteUserRecordGQL,
+        {
+          userID: id,
+        }
+      );
       return data.deleteUserRecord;
     } catch (error) {
       console.error("Error eliminando usuario:", error);
@@ -70,10 +96,12 @@ export const userService = {
 };
 
 export const userPermissionsOperations = {
-  async getAllUserPermissions(): Promise<UseraccessInDb[]> {
+  async getAllUserPermissions() {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_USERACCESS);
-      return data.allUseraccess || [];
+      const data = await graphqlClient.query<GetAllUseraccessQuery>(
+        GetAllUseraccessGQL
+      );
+      return data.allUserpermissions || [];
     } catch (error) {
       console.error("Error obteniendo roles y usuarios:", error);
       throw error;
@@ -85,26 +113,32 @@ export const userPermissionsOperations = {
     companyID: string,
     branchID: string,
     roleID: string
-  ): Promise<UseraccessInDb> {
+  ) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_USERACCESS_BY_ID, {
-        userID,
-        companyID,
-        branchID,
-        roleID,
-      });
-      return data.useraccessById;
+      const data = await graphqlClient.query<GetUserByIdQuery>(
+        GetUseraccessByIdGQL,
+        {
+          userID,
+          companyID,
+          branchID,
+          roleID,
+        }
+      );
+      return data.usersById;
     } catch (error) {
       console.error("Error obteniendo asignación:", error);
       throw error;
     }
   },
 
-  async create(data: UseraccessCreate): Promise<UseraccessInDb> {
+  async create(data: UserPermissionsCreate) {
     try {
-      const res = await graphqlClient.mutation(MUTATIONS.CREATE_USERACCESS, {
-        input: data,
-      });
+      const res = await graphqlClient.mutation<CreateUserPermissionsMutation>(
+        CreateUserPermissionsGQL,
+        {
+          input: data,
+        }
+      );
       return res.createUserpermissions;
     } catch (error) {
       console.error("Error creando asignación:", error);
@@ -112,26 +146,26 @@ export const userPermissionsOperations = {
     }
   },
 
-  async update(
-    oldKeys: any,
-    newData: UseraccessUpdate
-  ): Promise<UseraccessInDb> {
+  async update(oldKeys: any, newData: UserPermissionsCreate) {
     try {
-      const res = await graphqlClient.mutation(MUTATIONS.UPDATE_USERACCESS, {
-        ...oldKeys,
-        newData,
-      });
-      return res.updateUseraccess;
+      const res = await graphqlClient.mutation<UpdateUserPermissionsMutation>(
+        UpdateUserPermissionsGQL,
+        {
+          ...oldKeys,
+          newData,
+        }
+      );
+      return res.updateUserpermissions;
     } catch (error) {
       console.error("Error actualizando asignación:", error);
       throw error;
     }
   },
 
-  async delete(keys: any): Promise<UseraccessInDb> {
+  async delete(keys: any) {
     try {
-      const res = await graphqlClient.mutation(
-        MUTATIONS.DELETE_USERACCESS,
+      const res = await graphqlClient.mutation<DeleteUserPermissionsMutation>(
+        DeleteUserPermissionsGQL,
         keys
       );
       return res.deleteUserpermissions;

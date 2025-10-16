@@ -864,8 +864,8 @@ export const MUTATIONS = {
     `,
 
     // USER ACCESS
-    CREATE_USERACCESS: `
-        mutation CreateUseraccess($input: UserPermissionsCreate!) {
+    CREATE_USER_PERMISSIONS: `
+        mutation CreateUserPermissions($input: UserPermissionsCreate!) {
             createUserpermissions(data: $input) {
                 UserID
                 CompanyID
@@ -896,7 +896,7 @@ export const MUTATIONS = {
             }
         }
     `,
-    DELETE_USERACCESS: `
+    DELETE_USER_PERMISSIONS: `
         mutation DeleteUseraccess($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
             deleteUserpermissions(userID: $userID, companyID: $companyID, branchID: $branchID, roleID: $roleID)
         }

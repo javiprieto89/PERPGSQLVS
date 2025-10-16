@@ -2,57 +2,79 @@ import { graphqlClient } from "~/graphql/graphql-client";
 import { MUTATIONS } from "~/graphql/mutations/mutations.js";
 import { QUERIES } from "~/graphql/queries/queries.js";
 
-import type {
-  PriceListItemsCreate,
-  PriceListItemsInDb,
-  PriceListItemsUpdate,
-  PriceListsCreate,
-  PriceListsInDb,
-  PriceListsUpdate,
+import {
+  GetPriceListFormDataDocument,
+  type CreatePricelistMutation,
+  type DeletePricelistItemMutation,
+  type DeletePricelistMutation,
+  type GetAllPricelistItemsQuery,
+  type GetPricelistByIdQuery,
+  type GetPriceListFormDataQuery,
+  type GetPriceListsQuery,
+  type PriceListItemsCreate,
+  type PriceListItemsUpdate,
+  type PriceListsCreate,
+  type PriceListsUpdate,
 } from "~/graphql/_generated/graphql";
 
 export const pricelistOperations = {
-  async getAllPricelists(): Promise<PriceListsInDb[]> {
-    const data = await graphqlClient.query(QUERIES.GET_PRICE_LISTS);
+  async getAllPriceLists() {
+    const data = await graphqlClient.query<GetPriceListsQuery>(
+      QUERIES.GET_PRICE_LISTS
+    );
     return data.allPricelists || [];
   },
-  async getPricelistById(id: string): Promise<PriceListsInDb> {
-    const data = await graphqlClient.query(QUERIES.GET_PRICELIST_BY_ID, { id });
+  async getPriceListsFormData() {
+    const data = await graphqlClient.query<GetPriceListFormDataQuery>(
+      GetPriceListFormDataDocument
+    );
+    return data;
+  },
+  async getPriceListById(id: string) {
+    const data = await graphqlClient.query<GetPricelistByIdQuery>(
+      QUERIES.GET_PRICELIST_BY_ID,
+      { id }
+    );
     return data.pricelistsById;
   },
-  async createPricelist(input: PriceListsCreate): Promise<PriceListsInDb> {
-    const data = await graphqlClient.mutation(MUTATIONS.CREATE_PRICELIST, {
-      input,
-    });
+  async createPriceList(input: PriceListsCreate) {
+    const data = await graphqlClient.mutation<CreatePricelistMutation>(
+      MUTATIONS.CREATE_PRICELIST,
+      {
+        input,
+      }
+    );
     return data.createPricelist;
   },
-  async updatePricelist(
-    id: string,
-    input: PriceListsUpdate
-  ): Promise<PriceListsInDb> {
-    const data = await graphqlClient.mutation(MUTATIONS.UPDATE_PRICELIST, {
-      pricelistID: id,
-      input,
-    });
-    return data.updatePricelist;
+  async updatePricelist(id: string, input: PriceListsUpdate) {
+    const data = await graphqlClient.mutation<PriceListsUpdate>(
+      MUTATIONS.UPDATE_PRICELIST,
+      {
+        pricelistID: id,
+        input,
+      }
+    );
+    return data;
   },
-  async deletePricelist(id: string): Promise<PriceListsInDb> {
-    const data = await graphqlClient.mutation(MUTATIONS.DELETE_PRICELIST, {
-      pricelistID: id,
-    });
+  async deletePricelist(id: string) {
+    const data = await graphqlClient.mutation<DeletePricelistMutation>(
+      MUTATIONS.DELETE_PRICELIST,
+      {
+        pricelistID: id,
+      }
+    );
     return data.deletePricelist;
   },
 };
 
 export const pricelistItemOperations = {
-  async getAllPricelistItems(): Promise<PriceListItemsInDb[]> {
-    const data = await graphqlClient.query(QUERIES.GET_ALL_PRICELIST_ITEMS);
+  async getAllPricelistItems() {
+    const data = await graphqlClient.query<GetAllPricelistItemsQuery>(
+      QUERIES.GET_ALL_PRICELIST_ITEMS
+    );
     return data.allPricelistitems || [];
   },
-  async getFiltered(
-    priceListID?: string,
-    itemID?: string
-  ): Promise<PriceListItemsInDb[]> {
+  async getFiltered(priceListID?: string, itemID?: string) {
     const vars: { priceListID?: number; itemID?: number } = {};
     if (
       priceListID !== undefined &&
@@ -64,40 +86,44 @@ export const pricelistItemOperations = {
     if (itemID !== undefined && itemID !== null && itemID !== "") {
       vars.itemID = Number(itemID);
     }
-    const data = await graphqlClient.query(
+    const data = await graphqlClient.query<GetAllPricelistItemsQuery>(
       QUERIES.GET_PRICELIST_ITEMS_FILTERED,
       vars
     );
-    return data.pricelistitemsFiltered || [];
+    return data.allPricelistitems || [];
   },
-  async createPricelistItem(
-    input: PriceListItemsCreate
-  ): Promise<PriceListItemsInDb> {
-    const data = await graphqlClient.mutation(MUTATIONS.CREATE_PRICELIST_ITEM, {
-      input,
-    });
-    return data.createPricelistitem;
+  async createPricelistItem(input: PriceListItemsCreate) {
+    const data = await graphqlClient.mutation<PriceListItemsCreate>(
+      MUTATIONS.CREATE_PRICELIST_ITEM,
+      {
+        input,
+      }
+    );
+    return data;
   },
   async updatePricelistItem(
     priceListID: string,
     itemID: string,
     input: PriceListItemsUpdate
-  ): Promise<PriceListItemsInDb> {
-    const data = await graphqlClient.mutation(MUTATIONS.UPDATE_PRICELIST_ITEM, {
-      pricelistID: priceListID,
-      itemID,
-      input,
-    });
-    return data.updatePricelistitem;
+  ) {
+    const data = await graphqlClient.mutation<PriceListItemsUpdate>(
+      MUTATIONS.UPDATE_PRICELIST_ITEM,
+      {
+        pricelistID: priceListID,
+        itemID,
+        input,
+      }
+    );
+    return data;
   },
-  async deletePricelistItem(
-    priceListID: string,
-    itemID: string
-  ): Promise<PriceListItemsInDb> {
-    const data = await graphqlClient.mutation(MUTATIONS.DELETE_PRICELIST_ITEM, {
-      pricelistID: priceListID,
-      itemID,
-    });
+  async deletePricelistItem(priceListID: string, itemID: string) {
+    const data = await graphqlClient.mutation<DeletePricelistItemMutation>(
+      MUTATIONS.DELETE_PRICELIST_ITEM,
+      {
+        pricelistID: priceListID,
+        itemID,
+      }
+    );
     return data.deletePricelistitem;
   },
 };

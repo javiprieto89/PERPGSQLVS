@@ -1,26 +1,58 @@
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
+import CreateCarGQL from "~/graphql/mutations/CreateCar.graphql";
+import CreateCarBrandGQL from "~/graphql/mutations/CreateCarBrand.graphql";
+import CreateCarModelGQL from "~/graphql/mutations/CreateCarModel.graphql";
+import DeleteCarGQL from "~/graphql/mutations/DeleteCar.graphql";
+import DeleteCarBrandGQL from "~/graphql/mutations/DeleteCarBrand.graphql";
+import DeleteCarModelGQL from "~/graphql/mutations/DeleteCarModel.graphql";
+import UpdateCarGQL from "~/graphql/mutations/UpdateCar.graphql";
+import UpdateCarBrandGQL from "~/graphql/mutations/UpdateCarBrand.graphql";
+import UpdateCarModelGQL from "~/graphql/mutations/UpdateCarModel.graphql";
+import GetAllCarBrandsGQL from "~/graphql/queries/GetAllCarBrands.graphql";
+import GetAllCarModelsGQL from "~/graphql/queries/GetAllCarModels.graphql";
+import GetAllCarsGQL from "~/graphql/queries/GetAllCars.graphql";
+import GetCarBrandByIdGQL from "~/graphql/queries/GetCarBrandById.graphql";
+import GetCarByIdGQL from "~/graphql/queries/GetCarById.graphql";
+import GetCarFormDataGQL from "~/graphql/queries/GetCarFormData.graphql";
+import GetCarModelByIdGQL from "~/graphql/queries/GetCarModelById.graphql";
+import GetCarModelsByBrandGQL from "~/graphql/queries/GetCarModelsByBrand.graphql";
 
 import type {
   CarBrandsCreate,
   CarBrandsInDb,
   CarBrandsUpdate,
   CarModelsCreate,
-  CarModelsInDb,
   CarModelsUpdate,
   CarsCreate,
   CarsInDb,
   CarsUpdate,
-  ClientsInDb,
-  CompanyInDb,
-  DiscountsInDb,
+  CreateCarBrandMutation,
+  CreateCarModelMutation,
+  CreateCarMutation,
+  DeleteCarBrandMutation,
+  DeleteCarModelMutation,
+  DeleteCarMutation,
+  GetAllCarBrandsQuery,
+  GetAllCarModelsQuery,
+  GetAllCarsQuery,
+  GetCarBrandByIdQuery,
+  GetCarBrandsByCompanyQuery,
+  GetCarByIdQuery,
+  GetCarFormDataQuery,
+  GetCarModelByIdQuery,
+  GetCarModelsByBrandQuery,
+  UpdateCarBrandMutation,
+  UpdateCarModelMutation,
+  UpdateCarMutation,
 } from "~/graphql/_generated/graphql";
+import { AuthHelper } from "~/utils/authHelper";
 
 export const carBrandOperations = {
   async getAllCarBrands(): Promise<CarBrandsInDb[]> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_CARBRANDS);
+      const data = await graphqlClient.query<GetAllCarBrandsQuery>(
+        GetAllCarBrandsGQL
+      );
       return data.allCarbrands || [];
     } catch (error) {
       console.error("Error obteniendo marcas de auto:", error);
@@ -28,11 +60,16 @@ export const carBrandOperations = {
     }
   },
 
-  async getCarBrandById(id: string): Promise<CarBrandsInDb> {
+  async getCarBrandById(id?: number) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_CARBRAND_BY_ID, {
-        id,
-      });
+      if (!id) throw new Error("ID de marca de auto es requerido");
+      const data = await graphqlClient.query<GetCarBrandByIdQuery>(
+        GetCarBrandByIdGQL,
+        {
+          companyId: AuthHelper.getSelectedAccess()?.CompanyID as number,
+          id,
+        }
+      );
       return data.carbrandsById;
     } catch (error) {
       console.error("Error obteniendo marca de auto:", error);
@@ -42,9 +79,12 @@ export const carBrandOperations = {
 
   async getCarBrandsByCompany(companyID: string): Promise<CarBrandsInDb[]> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_CARBRANDS_BY_COMPANY, {
-        companyID: parseInt(companyID),
-      });
+      const data = await graphqlClient.query<GetCarBrandsByCompanyQuery>(
+        GetCarModelsByBrandGQL,
+        {
+          companyID: parseInt(companyID),
+        }
+      );
       return data.carbrandsByCompany || [];
     } catch (error) {
       console.error("Error obteniendo marcas de auto por compañía:", error);
@@ -52,11 +92,14 @@ export const carBrandOperations = {
     }
   },
 
-  async createCarBrand(carBrandData: CarBrandsCreate): Promise<CarBrandsInDb> {
+  async createCarBrand(carBrandData: CarBrandsCreate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_CARBRAND, {
-        input: carBrandData,
-      });
+      const data = await graphqlClient.mutation<CreateCarBrandMutation>(
+        CreateCarBrandGQL,
+        {
+          input: carBrandData,
+        }
+      );
       return data.createCarbrand;
     } catch (error) {
       console.error("Error creando marca de auto:", error);
@@ -64,15 +107,16 @@ export const carBrandOperations = {
     }
   },
 
-  async updateCarBrand(
-    id: string,
-    carBrandData: CarBrandsUpdate
-  ): Promise<CarBrandsInDb> {
+  async updateCarBrand(id: number, carBrandData: CarBrandsUpdate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CARBRAND, {
-        carBrandID: id,
-        input: carBrandData,
-      });
+      const data = await graphqlClient.mutation<UpdateCarBrandMutation>(
+        UpdateCarBrandGQL,
+        {
+          companyId: AuthHelper.getSelectedAccess()?.CompanyID as number,
+          carBrandID: Number(id),
+          input: carBrandData,
+        }
+      );
       return data.updateCarbrand;
     } catch (error) {
       console.error("Error actualizando marca de auto:", error);
@@ -80,11 +124,14 @@ export const carBrandOperations = {
     }
   },
 
-  async deleteCarBrand(id: string): Promise<CarBrandsInDb> {
+  async deleteCarBrand(id: string) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_CARBRAND, {
-        carBrandID: id,
-      });
+      const data = await graphqlClient.mutation<DeleteCarBrandMutation>(
+        DeleteCarBrandGQL,
+        {
+          carBrandID: id,
+        }
+      );
       return data.deleteCarbrand;
     } catch (error) {
       console.error("Error eliminando marca de auto:", error);
@@ -94,9 +141,11 @@ export const carBrandOperations = {
 };
 
 export const carModelOperations = {
-  async getAllCarModels(): Promise<CarModelsInDb[]> {
+  async getAllCarModels() {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_CARMODELS);
+      const data = await graphqlClient.query<GetAllCarModelsQuery>(
+        GetAllCarModelsGQL
+      );
       return data.allCarmodels || [];
     } catch (error) {
       console.error("Error obteniendo modelos de auto:", error);
@@ -104,11 +153,14 @@ export const carModelOperations = {
     }
   },
 
-  async getCarModelById(id: string): Promise<CarModelsInDb> {
+  async getCarModelById(id: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_CARMODEL_BY_ID, {
-        id,
-      });
+      const data = await graphqlClient.query<GetCarModelByIdQuery>(
+        GetCarModelByIdGQL,
+        {
+          id,
+        }
+      );
       return data.carmodelsById;
     } catch (error) {
       console.error("Error obteniendo modelo de auto:", error);
@@ -116,11 +168,14 @@ export const carModelOperations = {
     }
   },
 
-  async getCarModelsByBrand(brandID: string): Promise<CarModelsInDb[]> {
+  async getCarModelsByBrand(brandID: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_CARMODELS_BY_BRAND, {
-        brandID: parseInt(brandID),
-      });
+      const data = await graphqlClient.query<GetCarModelsByBrandQuery>(
+        GetCarModelsByBrandGQL,
+        {
+          brandID: parseInt(brandID),
+        }
+      );
       return data.carmodelsByBrand || [];
     } catch (error) {
       console.error("Error obteniendo modelos de auto por marca:", error);
@@ -128,11 +183,14 @@ export const carModelOperations = {
     }
   },
 
-  async createCarModel(carmodelData: CarModelsCreate): Promise<CarModelsInDb> {
+  async createCarModel(carmodelData: CarModelsCreate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_CARMODEL, {
-        input: carmodelData,
-      });
+      const data = await graphqlClient.mutation<CreateCarModelMutation>(
+        CreateCarModelGQL,
+        {
+          input: carmodelData,
+        }
+      );
       return data.createCarmodel;
     } catch (error) {
       console.error("Error creando modelo de auto:", error);
@@ -140,15 +198,15 @@ export const carModelOperations = {
     }
   },
 
-  async updateCarModel(
-    id: string,
-    carmodelData: CarModelsUpdate
-  ): Promise<CarModelsInDb> {
+  async updateCarModel(id: string, carmodelData: CarModelsUpdate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CARMODEL, {
-        carModelID: id,
-        input: carmodelData,
-      });
+      const data = await graphqlClient.mutation<UpdateCarModelMutation>(
+        UpdateCarModelGQL,
+        {
+          carModelID: id,
+          input: carmodelData,
+        }
+      );
       return data.updateCarmodel;
     } catch (error) {
       console.error("Error actualizando modelo de auto:", error);
@@ -156,11 +214,14 @@ export const carModelOperations = {
     }
   },
 
-  async deleteCarModel(id: string): Promise<CarModelsInDb> {
+  async deleteCarModel(id: string) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_CARMODEL, {
-        carModelID: id,
-      });
+      const data = await graphqlClient.mutation<DeleteCarModelMutation>(
+        DeleteCarModelGQL,
+        {
+          carModelID: id,
+        }
+      );
       return data.deleteCarmodel;
     } catch (error) {
       console.error("Error eliminando modelo de auto:", error);
@@ -195,9 +256,9 @@ function sanitizeCarPayload(
 }
 
 export const carOperations = {
-  async getAllCars(): Promise<CarsInDb[]> {
+  async getAllCars() {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_CARS);
+      const data = await graphqlClient.query<GetAllCarsQuery>(GetAllCarsGQL);
       return data.allCars || [];
     } catch (error) {
       console.error("Error obteniendo autos:", error);
@@ -205,15 +266,11 @@ export const carOperations = {
     }
   },
 
-  async getCarFormData(): Promise<{
-    companies: CompanyInDb[];
-    carBrands: CarBrandsInDb[];
-    carModels: CarModelsInDb[];
-    clients: ClientsInDb[];
-    discounts: DiscountsInDb[];
-  }> {
+  async getCarFormData() {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_CAR_FORM_DATA);
+      const data = await graphqlClient.query<GetCarFormDataQuery>(
+        GetCarFormDataGQL
+      );
       return {
         companies: data.companies || [],
         carBrands: data.carBrands || [],
@@ -227,9 +284,11 @@ export const carOperations = {
     }
   },
 
-  async getCarById(id: string): Promise<CarsInDb> {
+  async getCarById(id: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_CAR_BY_ID, { id });
+      const data = await graphqlClient.query<GetCarByIdQuery>(GetCarByIdGQL, {
+        id,
+      });
       return data.carsById;
     } catch (error) {
       console.error("Error obteniendo auto:", error);
@@ -237,12 +296,13 @@ export const carOperations = {
     }
   },
 
-  async getCarsByCompany(companyID: string): Promise<CarsInDb[]> {
+  async getCarsByCompany(companyID: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_CARS_BY_COMPANY, {
-        companyID: parseInt(companyID),
-      });
-      return data.carsByCompany || [];
+      const data = await graphqlClient.query<GetCarBrandsByCompanyQuery>(
+        GetCarModelsByBrandGQL,
+        { companyID: parseInt(companyID) }
+      );
+      return data.carbrandsByCompany || [];
     } catch (error) {
       console.error("Error obteniendo autos por compañía:", error);
       throw error;
@@ -251,9 +311,12 @@ export const carOperations = {
 
   async createCar(carData: CarsCreate): Promise<CarsInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_CAR, {
-        input: sanitizeCarPayload(carData),
-      });
+      const data = await graphqlClient.mutation<CreateCarMutation>(
+        CreateCarGQL,
+        {
+          input: sanitizeCarPayload(carData),
+        }
+      );
       return data.createCar;
     } catch (error) {
       console.error("Error creando auto:", error);
@@ -261,12 +324,15 @@ export const carOperations = {
     }
   },
 
-  async updateCar(id: string, carData: CarsUpdate): Promise<CarsInDb> {
+  async updateCar(id: string, carData: CarsUpdate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CAR, {
-        carID: id,
-        input: sanitizeCarPayload(carData),
-      });
+      const data = await graphqlClient.mutation<UpdateCarMutation>(
+        UpdateCarGQL,
+        {
+          carID: id,
+          input: sanitizeCarPayload(carData),
+        }
+      );
       return data.updateCar;
     } catch (error) {
       console.error("Error actualizando auto:", error);
@@ -274,11 +340,14 @@ export const carOperations = {
     }
   },
 
-  async deleteCar(id: string): Promise<CarsInDb> {
+  async deleteCar(id: string) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_CAR, {
-        carID: id,
-      });
+      const data = await graphqlClient.mutation<DeleteCarMutation>(
+        DeleteCarGQL,
+        {
+          carID: id,
+        }
+      );
       return data.deleteCar;
     } catch (error) {
       console.error("Error eliminando auto:", error);

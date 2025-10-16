@@ -1,0 +1,7 @@
+query GetCarBrandsByCompany($companyID: Int!) {
+  carbrandsByCompany(companyID: $companyID) {
+    CarBrandID
+    CompanyID
+    CarBrandName
+  }
+}

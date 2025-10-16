@@ -8,6 +8,7 @@ import type {
   DeleteSupplierMutation,
   GetAllSuppliersQuery,
   GetSupplierFormDataQuery,
+  GetSuppliersByCompanyQuery,
   SuppliersCreate,
   SuppliersInDb,
   SuppliersUpdate,
@@ -31,9 +32,12 @@ export const supplierOperations = {
 
   async getSuppliersByCompany(companyID: string): Promise<SuppliersInDb[]> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_SUPPLIERS_BY_COMPANY, {
-        companyID: parseInt(companyID),
-      });
+      const data = await graphqlClient.query<GetSuppliersByCompanyQuery>(
+        QUERIES.GET_SUPPLIERS_BY_COMPANY,
+        {
+          companyID: parseInt(companyID),
+        }
+      );
       return data.suppliersByCompany || [];
     } catch (error) {
       console.error("Error obteniendo proveedores por compañía:", error);
