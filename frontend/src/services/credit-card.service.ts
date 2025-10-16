@@ -1,6 +1,14 @@
+import GetAllCreditCardGroupsGQL from "~/graphql/queries/GetAllCreditCardGroups.graphql";
+import GetCreditCardGroupByIdGQL from "~/graphql/queries/GetCreditCardGroupById.graphql";
+import CreateCreditCardGroupGQL from "~/graphql/mutations/CreateCreditCardGroup.graphql";
+import UpdateCreditCardGroupGQL from "~/graphql/mutations/UpdateCreditCardGroup.graphql";
+import DeleteCreditCardGroupGQL from "~/graphql/mutations/DeleteCreditCardGroup.graphql";
+import GetAllCreditCardsGQL from "~/graphql/queries/GetAllCreditCards.graphql";
+import GetCreditCardByIdGQL from "~/graphql/queries/GetCreditCardById.graphql";
+import CreateCreditCardGQL from "~/graphql/mutations/CreateCreditCard.graphql";
+import UpdateCreditCardGQL from "~/graphql/mutations/UpdateCreditCard.graphql";
+import DeleteCreditCardGQL from "~/graphql/mutations/DeleteCreditCard.graphql";
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
 import type {
   CreditCardGroupsCreate,
@@ -13,12 +21,12 @@ import type {
 
 export const creditCardGroupOperations = {
   async getAllGroups(): Promise<CreditCardGroupsInDb[]> {
-    const data = await graphqlClient.query(QUERIES.GET_ALL_CREDITCARDGROUPS);
+    const data = await graphqlClient.query(GetAllCreditCardGroupsGQL);
     return data.allCreditcardgroups || [];
   },
 
   async getGroupById(id: string): Promise<CreditCardGroupsInDb> {
-    const data = await graphqlClient.query(QUERIES.GET_CREDITCARDGROUP_BY_ID, {
+    const data = await graphqlClient.query(GetCreditCardGroupByIdGQL, {
       id,
     });
     return data.creditcardgroupById;
@@ -28,7 +36,7 @@ export const creditCardGroupOperations = {
     input: CreditCardGroupsCreate
   ): Promise<CreditCardGroupsInDb> {
     const data = await graphqlClient.mutation(
-      MUTATIONS.CREATE_CREDITCARDGROUP,
+      CreateCreditCardGroupGQL,
       {
         input,
       }
@@ -41,7 +49,7 @@ export const creditCardGroupOperations = {
     input: CreditCardGroupsUpdate
   ): Promise<CreditCardGroupsInDb> {
     const data = await graphqlClient.mutation(
-      MUTATIONS.UPDATE_CREDITCARDGROUP,
+      UpdateCreditCardGroupGQL,
       {
         id,
         input,
@@ -52,7 +60,7 @@ export const creditCardGroupOperations = {
 
   async deleteGroup(id: string): Promise<CreditCardGroupsInDb> {
     const data = await graphqlClient.mutation(
-      MUTATIONS.DELETE_CREDITCARDGROUP,
+      DeleteCreditCardGroupGQL,
       { id }
     );
     return data.deleteCreditcardgroup;
@@ -61,19 +69,19 @@ export const creditCardGroupOperations = {
 
 export const creditCardOperations = {
   async getAllCards(): Promise<CreditCardsInDb[]> {
-    const data = await graphqlClient.query(QUERIES.GET_ALL_CREDITCARDS);
+    const data = await graphqlClient.query(GetAllCreditCardsGQL);
     return data.allCreditcards || [];
   },
 
   async getCardById(id: string): Promise<CreditCardsInDb> {
-    const data = await graphqlClient.query(QUERIES.GET_CREDITCARD_BY_ID, {
+    const data = await graphqlClient.query(GetCreditCardByIdGQL, {
       id,
     });
     return data.creditcardById;
   },
 
   async createCard(input: CreditCardsCreate): Promise<CreditCardsInDb> {
-    const data = await graphqlClient.mutation(MUTATIONS.CREATE_CREDITCARD, {
+    const data = await graphqlClient.mutation(CreateCreditCardGQL, {
       input,
     });
     return data.createCreditcard;
@@ -83,7 +91,7 @@ export const creditCardOperations = {
     id: string,
     input: CreditCardsUpdate
   ): Promise<CreditCardsInDb> {
-    const data = await graphqlClient.mutation(MUTATIONS.UPDATE_CREDITCARD, {
+    const data = await graphqlClient.mutation(UpdateCreditCardGQL, {
       id,
       input,
     });
@@ -91,7 +99,7 @@ export const creditCardOperations = {
   },
 
   async deleteCard(id: string): Promise<CreditCardsInDb> {
-    const data = await graphqlClient.mutation(MUTATIONS.DELETE_CREDITCARD, {
+    const data = await graphqlClient.mutation(DeleteCreditCardGQL, {
       id,
     });
     return data.deleteCreditcard;

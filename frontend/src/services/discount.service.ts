@@ -1,6 +1,9 @@
+import GetAllDiscountsGQL from "~/graphql/queries/GetAllDiscounts.graphql";
+import GetDiscountByIdGQL from "~/graphql/queries/GetDiscountById.graphql";
+import CreateDiscountGQL from "~/graphql/mutations/CreateDiscount.graphql";
+import UpdateDiscountGQL from "~/graphql/mutations/UpdateDiscount.graphql";
+import DeleteDiscountGQL from "~/graphql/mutations/DeleteDiscount.graphql";
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
 import type {
   DiscountsCreate,
@@ -11,7 +14,7 @@ import type {
 export const discountOperations = {
   async getAllDiscounts(): Promise<DiscountsInDb[]> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_DISCOUNTS);
+      const data = await graphqlClient.query(GetAllDiscountsGQL);
       return data.allDiscounts || [];
     } catch (error) {
       console.error("Error obteniendo descuentos:", error);
@@ -21,7 +24,7 @@ export const discountOperations = {
 
   async getDiscountById(id: string): Promise<DiscountsInDb> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_DISCOUNT_BY_ID, {
+      const data = await graphqlClient.query(GetDiscountByIdGQL, {
         id,
       });
       return data.discountsById;
@@ -33,7 +36,7 @@ export const discountOperations = {
 
   async createDiscount(discountData: DiscountsCreate): Promise<DiscountsInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_DISCOUNT, {
+      const data = await graphqlClient.mutation(CreateDiscountGQL, {
         input: discountData,
       });
       return data.createDiscount;
@@ -48,7 +51,7 @@ export const discountOperations = {
     discountData: DiscountsUpdate
   ): Promise<DiscountsInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_DISCOUNT, {
+      const data = await graphqlClient.mutation(UpdateDiscountGQL, {
         id,
         input: discountData,
       });
@@ -61,7 +64,7 @@ export const discountOperations = {
 
   async deleteDiscount(id: string): Promise<DiscountsInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_DISCOUNT, {
+      const data = await graphqlClient.mutation(DeleteDiscountGQL, {
         id,
       });
       return data.deleteDiscount;

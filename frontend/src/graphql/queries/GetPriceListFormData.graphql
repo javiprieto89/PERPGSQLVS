@@ -1,0 +1,20 @@
+query GetPriceListFormData {
+  companies: allCompany {
+    CompanyID
+    CompanyName
+  }
+  branches: allBranches {
+    BranchID
+    CompanyID
+    BranchName
+  }
+  provinces: allProvinces {
+    ProvinceID
+    CountryID
+    ProvinceName
+  }
+  documentTypes: sysIdentityDocTypes {
+    DocTypeID
+    DocTypeName
+  }
+}

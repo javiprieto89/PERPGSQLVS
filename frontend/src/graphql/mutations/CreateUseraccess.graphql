@@ -1,8 +1,0 @@
-mutation CreateUseraccess($input: UserPermissionsCreate!) {
-  createUserpermissions(data: $input) {
-    UserID
-    CompanyID
-    BranchID
-    RoleID
-  }
-}

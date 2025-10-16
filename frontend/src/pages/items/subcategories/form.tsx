@@ -10,7 +10,7 @@ import { Form } from "~/components/ui/form";
 import { ItemCategoryCombo } from "~/features/itemCategory/ItemCategoryCombo";
 import { BASE_ROUTE, useItemSubCategoryForm } from "~/features/itemSubCategory/useItemSubCategoryForm";
 
-export default function ItemSubcategoryCreate() {
+export function ItemSubcategoryForm() {
   const params = useParams();
   const id = params.id ? Number(params.id) : undefined;
 
@@ -34,6 +34,7 @@ export default function ItemSubcategoryCreate() {
               <FormBlock>
                 <ItemCategoryCombo
                   {...form.register('ItemCategoryID')}
+                  defaultValue={String(originalData?.ItemCategoryID ?? undefined)}
                   onSelect={(value) => {
                     form.setValue("ItemCategoryID", Number(value), { shouldTouch: true, shouldDirty: true });
                     form.clearErrors("ItemCategoryID");

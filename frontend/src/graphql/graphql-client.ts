@@ -1,123 +1,71 @@
-import { print, type DocumentNode } from "graphql";
-import { AuthHelper } from "~/utils/authHelper";
+import type { DocumentNode } from "graphql";
+import type { FetchResult, ApolloQueryResult } from "@apollo/client";
+import apolloClient from "~/lib/apollo";
 
+/**
+ * GraphQL Client wrapper that uses Apollo Client internally
+ * This provides a consistent API for all services while leveraging Apollo's features:
+ * - Automatic token refresh via error link
+ * - Smart caching and cache invalidation
+ * - Optimistic updates
+ * - Better error handling
+ */
 class GraphQLClient {
-  endpoint: string;
-
-  constructor() {
-    this.endpoint = import.meta.env.VITE_GRAPHQL_API as string;
-  }
-
-  async query<T extends {}>(
-    query: string | DocumentNode,
-    variables = {},
-    fetchOptions = {}
+  /**
+   * Execute a GraphQL query using Apollo Client
+   */
+  async query<T>(
+    query: DocumentNode,
+    variables: Record<string, unknown> = {}
   ): Promise<T> {
-    // Convertir DocumentNode a string si es necesario
-    const queryString = typeof query === "string" ? query : print(query);
-    const token = AuthHelper.getToken();
-
-    console.log("GraphQL Request:", {
-      endpoint: this.endpoint,
-      query: queryString.substring(0, 100) + "...",
-      variables,
-      hasToken: !!token,
-    });
-
     try {
-      const response = await fetch(this.endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        body: JSON.stringify({
-          query: queryString,
-          variables,
-        }),
-        ...fetchOptions,
+      const result: ApolloQueryResult<T> = await apolloClient.query({
+        query,
+        variables,
+        fetchPolicy: "network-only", // Always fetch fresh data
       });
-
-      console.log("Response Status:", response.status, response.statusText);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("HTTP Error Response:", errorText);
-        throw new Error(
-          `HTTP ${response.status}: ${response.statusText}\n${errorText}`
-        );
-      }
-
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        const responseText = await response.text();
-        console.error("Invalid Content-Type:", contentType);
-        throw new Error(
-          `Expected JSON but got ${contentType}. Response: ${responseText.substring(
-            0,
-            500
-          )}...`
-        );
-      }
-
-      const responseText = await response.text();
-      let result;
-
-      try {
-        result = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("JSON Parse Error:", parseError);
-        throw new Error(
-          `Failed to parse JSON: ${(parseError as Error).message}`
-        );
-      }
-
-      console.log("GraphQL Response:", result);
-
-      if (result.errors && result.errors.length > 0) {
-        console.error("GraphQL Errors:", result.errors);
-        throw new Error(`GraphQL Error: ${result.errors[0].message}`);
-      }
 
       return result.data;
     } catch (error) {
-      console.error("GraphQL Client Error:", error);
-
-      if (
-        (error as Error).name === "TypeError" &&
-        (error as Error).message.includes("fetch")
-      ) {
-        throw new Error(
-          `No se pudo conectar al servidor GraphQL en ${this.endpoint}. Verifica que el servidor esté ejecutándose.`
-        );
-      }
-
+      console.error("GraphQL Query Error:", error);
       throw error;
     }
   }
 
-  async mutation<T extends {}>(
-    mutation: string | DocumentNode,
-    variables = {},
-    fetchOptions = {}
-  ) {
-    return this.query<T>(mutation, variables, fetchOptions);
-  }
-
-  async checkConnection() {
+  /**
+   * Execute a GraphQL mutation using Apollo Client
+   */
+  async mutation<T>(
+    mutation: DocumentNode,
+    variables: Record<string, unknown> = {}
+  ): Promise<T> {
     try {
-      const response = await fetch(this.endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: `query { __typename }`,
-        }),
+      const result: FetchResult<T> = await apolloClient.mutate({
+        mutation,
+        variables,
       });
 
-      console.log("Connection check:", response.status);
-      return response.status === 200;
+      if (!result.data) {
+        throw new Error("Mutation returned no data");
+      }
+
+      return result.data;
+    } catch (error) {
+      console.error("GraphQL Mutation Error:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Check connection to GraphQL endpoint
+   */
+  async checkConnection(): Promise<boolean> {
+    try {
+      await apolloClient.query({
+        query: apolloClient.cache.readQuery({ query: {} as any }) as any,
+        fetchPolicy: "network-only",
+      });
+      return true;
     } catch (error) {
       console.error("Connection check failed:", error);
       return false;

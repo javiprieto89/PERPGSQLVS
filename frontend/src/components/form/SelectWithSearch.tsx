@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, ChevronsUpDown } from "lucide-react";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { cn } from "~/lib/utils";
 
@@ -111,18 +111,18 @@ export const SelectWithSearch = forwardRef(<T extends Record<string, unknown>>(
     }
   }, [open]);
 
-  const selectedItem = data.find(
+  const selectedItem = useMemo(() => data.find(
     (item) => String(item[accessor]) === String(value)
-  );
+  ), [data, accessor, value]) || null;
 
-  const handleSelect = (item: T) => {
+  const handleSelect = useCallback((item: T) => {
     const newValue = value === String(item[accessor]) ? "" : String(item[accessor]);
     setValue(newValue);
     onSelect(newValue);
     setOpen(false);
     // Return focus to the trigger button after selection
     buttonRef.current?.focus();
-  };
+  }, [value, accessor, onSelect]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     // Handle arrow keys and enter for selection

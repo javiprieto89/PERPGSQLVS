@@ -8,9 +8,12 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { Observable } from "@apollo/client/utilities";
-import { refreshToken } from "~/utils/api-fetch";
-import { AuthHelper } from "~/utils/authHelper";
-import { Referrer } from "~/utils/referrer.session";
+import {
+  handleAuthError,
+  hasGraphQLAuthErrors,
+  getAuthToken,
+  getAuthHeader,
+} from "~/utils/auth-middleware";
 
 const httpLink = createHttpLink({
   uri: import.meta.env.VITE_GRAPHQL_API,
@@ -18,46 +21,36 @@ const httpLink = createHttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = AuthHelper.getToken();
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : "",
+      ...getAuthHeader(),
     },
   };
 });
 
 const errorLink = onError(
   ({ graphQLErrors, networkError, operation, forward }) => {
-    console.log({ graphQLErrors, networkError, operation, forward });
-    console.log("-------------");
-    const unauthenticated =
-      graphQLErrors?.some(
-        (err) => err.extensions?.code === "UNAUTHENTICATED"
-      ) || networkError;
+    if (import.meta.env.DEV) {
+      console.log("[Apollo Client] Error:", { graphQLErrors, networkError });
+    }
 
-    // Save current URL to return after login
-    Referrer.save(window.location.href);
-
-    // TODO Add status code when is unauthenticated
-    // &&
-    //   "statusCode" in networkError &&
-    //   networkError.statusCode === 401
+    // Check for authentication errors
+    const unauthenticated = hasGraphQLAuthErrors(graphQLErrors) || networkError;
 
     if (unauthenticated) {
-      console.warn("Unauthenticated, refreshing token...");
+      console.warn("[Apollo Client] Unauthenticated, refreshing token...");
 
       return new Observable((observer) => {
-        refreshToken()
+        handleAuthError("Apollo Client")
           .then((success) => {
             if (success) {
               const oldHeaders = operation.getContext().headers;
-              const newToken = AuthHelper.getToken();
 
               operation.setContext({
                 headers: {
                   ...oldHeaders,
-                  authorization: newToken ? `Bearer ${newToken}` : "",
+                  ...getAuthHeader(),
                 },
               });
 
@@ -70,13 +63,10 @@ const errorLink = onError(
               forward(operation).subscribe(subscriber);
             } else {
               observer.error(new Error("Unable to refresh token"));
-              window.location.href = "/login";
             }
           })
           .catch((error) => {
             observer.error(error);
-            console.error("Refresh token error:", error);
-            window.location.href = "/login";
           });
       });
     }

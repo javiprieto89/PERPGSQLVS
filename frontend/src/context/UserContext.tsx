@@ -1,9 +1,11 @@
 // src/context/UserContext.jsx
 import { type ApolloError } from "@apollo/client";
 import { atom, useAtom } from 'jotai';
-import { createContext, useContext, useEffect, type PropsWithChildren } from "react";
+import { createContext, useEffect, type PropsWithChildren } from "react";
+import { useNavigate } from "react-router";
 import { useLoginMutation, type UserInfo, type UserPermissionsInfo } from '~/graphql/_generated/graphql';
 import { AuthHelper } from "~/utils/authHelper";
+import { Referrer } from "~/utils/referrer.session";
 
 export type AuthContextProps = {
   userInfo: UserInfo | null;
@@ -11,6 +13,7 @@ export type AuthContextProps = {
   loading: boolean;
   login: (nickname: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  checkAuth: () => void;
   getSelectedAccess: () => any;
   selectedAccess: UserPermissionsInfo | null;
   getAccessData: () => UserPermissionsInfo[];
@@ -29,6 +32,8 @@ const userAccessesAtom = atom(AuthHelper.getPermissions());
 AuthHelper.debugAuthState()
 
 export function UserProvider({ children }: PropsWithChildren) {
+  const navigate = useNavigate();
+
   const [mutate, { data, loading, error }] = useLoginMutation();
   const [userData, setUserData] = useAtom(userDataAtom);
   const [selectedAccess, setSelectedAccess] = useAtom(selectedAccessAtom);
@@ -45,27 +50,20 @@ export function UserProvider({ children }: PropsWithChildren) {
     await mutate({ variables: { input: { nickname, password } } });
   };
 
-  const logout = async () => {
-    try {
-      AuthHelper.logout();
-      // TODO: Backend needs to catchup the current session and turn it down
-      // await fetch(`${import.meta.env.VITE_API_BASE_URL}/logout`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // }).catch(() => {
-      //   // Si falla el logout del servidor, continuar con el logout local
-      //   console.warn("No se pudo notificar al servidor del logout");
-      // });
-    } finally {
-      // Siempre limpiar el estado local
-      setUserData(null);
-      setSelectedAccess(null);
-      setUserPermissions([]);
-      window.location.href = "/";
+  const isAuthenticated = () => {
+    return !!AuthHelper.isAuthenticated() || !!userData;
+  };
+
+  const checkAuth = () => {
+    if (!AuthHelper.isAuthenticated() || !!userData) {
+      if (Referrer.get() === null) Referrer.set(window.location.pathname);
+      navigate("/login");
     }
+  }
+
+  const logout = async () => {
+    AuthHelper.logout();
+    navigate("/login");
   };
 
   // Manejar cambio de acceso
@@ -96,10 +94,6 @@ export function UserProvider({ children }: PropsWithChildren) {
       console.error("Error parsing access data:", error);
       return [];
     }
-  };
-
-  const isAuthenticated = () => {
-    return !!AuthHelper.isAuthenticated() || !!userData;
   };
 
   // Manejar login exitoso
@@ -138,6 +132,7 @@ export function UserProvider({ children }: PropsWithChildren) {
     loading,
     login,
     logout,
+    checkAuth,
     getSelectedAccess,
     selectedAccess,
     getAccessData,
@@ -150,17 +145,6 @@ export function UserProvider({ children }: PropsWithChildren) {
   return (
     <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
   );
-}
-
-// Hook personalizado para React (opcional)
-export const useUser = () => {
-  const context = useContext(UserContext);
-
-  if (!context) {
-    console.error('useUser must be used within AuthProvider');
-  }
-
-  return context;
 }
 
 export default UserContext;

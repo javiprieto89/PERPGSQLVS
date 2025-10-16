@@ -2,11 +2,12 @@ import { type ApolloError } from "@apollo/client";
 import { type ReactNode } from "react";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
+import { ErrorMessage } from "./ErrorMessage";
 import { FormSkeleton } from "./FormSkeleton";
 
 interface FormStateProps {
   loading?: boolean;
-  errors?: (ApolloError | undefined)[];
+  errors?: (ApolloError | Error | null | undefined)[];
   loadingSkeleton?: ReactNode;
 }
 
@@ -31,5 +32,7 @@ export function FormState({ loading, errors = [], loadingSkeleton }: FormStatePr
     );
   }
 
-  return null;
+  return errors.map((error, index) =>
+    error ? <ErrorMessage key={index} error={error.message} /> : null
+  );
 }

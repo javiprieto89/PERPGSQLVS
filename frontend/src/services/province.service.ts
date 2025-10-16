@@ -1,5 +1,6 @@
+import GetProvincesGQL from "~/graphql/queries/GetProvinces.graphql";
+import GetProvincesByCountryGQL from "~/graphql/queries/GetProvincesByCountry.graphql";
 import { graphqlClient } from "~/graphql/graphql-client";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
 import type { ProvincesInDb } from "~/graphql/_generated/graphql";
 
@@ -7,7 +8,7 @@ import type { ProvincesInDb } from "~/graphql/_generated/graphql";
 export const provinceOperations = {
   async getAllProvinces(): Promise<ProvincesInDb[]> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_PROVINCES);
+      const data = await graphqlClient.query(GetProvincesGQL);
       return data.allProvinces || [];
     } catch (error) {
       console.error("Error obteniendo provincias:", error);
@@ -17,7 +18,7 @@ export const provinceOperations = {
 
   async getProvincesByCountry(countryID: string): Promise<ProvincesInDb[]> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_PROVINCES_BY_COUNTRY, {
+      const data = await graphqlClient.query(GetProvincesByCountryGQL, {
         countryID: parseInt(countryID),
       });
       return data.provincesByCountry || [];

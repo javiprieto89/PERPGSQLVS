@@ -26,8 +26,7 @@ import { CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsi
 import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
-import OrderCreate from "~/pages/OrderCreate";
-import PriceListItemsPage from "~/pages/PriceListItems";
+import PriceListItemsPage from "~/pages/pricelistitems/form";
 import { Collapsible } from "../ui/collapsible";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { SidebarHelper } from "./sidebarHelper";

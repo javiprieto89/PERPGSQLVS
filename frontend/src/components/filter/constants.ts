@@ -1,11 +1,24 @@
 export const TEXT_OPERATORS = {
   all: "Todos",
-  startsWith: "Comienza con",
   contains: "Contiene",
+  endsWith: "Termina con",
   equals: "Es igual a",
-  notEquals: "Es distinto a",
   notContains: "No contiene",
+  notEquals: "Es distinto a",
+  startsWith: "Comienza con",
 } as const;
+
+export const MATCH_TYPES = {
+  all: "all",
+  contains: "contains",
+  endsWith: "endsWith",
+  equals: "equals",
+  notContains: "notContains",
+  notEquals: "notEquals",
+  startsWith: "startsWith",
+} as const;
+
+export type MatchType = keyof typeof MATCH_TYPES;
 
 export const MODEL_NAME_MAP = {
   Vendor: "VendorName",

@@ -23,7 +23,9 @@ export default function ItemSubcategories() {
   const navigate = useNavigate();
   const { highlight } = location.state || {};
 
-  const { data, error, loading, refetch } = useGetAllItemSubcategoriesQuery();
+  const { data, error, loading, refetch } = useGetAllItemSubcategoriesQuery({
+    notifyOnNetworkStatusChange: true,
+  });
 
   const [dataState, setDataState] = useState<DataInDB[]>([]);
   const [showFilters, setShowFilters] = useState(false);

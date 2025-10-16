@@ -52,7 +52,7 @@ export function Clients() {
     async (id: string) => {
       if (!confirm("¿Borrar cliente?")) return;
       try {
-        await clientOperations.deleteClient(id);
+        await clientOperations.deleteClient(String(id));
         refetch();
       } catch (err) {
         alert("Error al borrar cliente: " + (err as Error).message);

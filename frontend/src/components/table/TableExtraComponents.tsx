@@ -234,7 +234,7 @@ export function TableColumnVisibility<TData>({ table, onChange, onToggleAll, onR
 }
 
 
-export function TableActionDropdown({ onDelete, onEdit }: { onDelete: () => void, onEdit?: () => void }) {
+export function TableActionDropdown({ onDelete, onEdit }: { onDelete?: () => void, onEdit?: () => void }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -327,7 +327,7 @@ export function DropdownMenuItemLink(props: NavLinkProps) {
   )
 }
 
-export function TableActionButton({ row, onEdit, onDelete, onExpanded }: { row: any, onEdit?: () => void, onDelete: () => void, onExpanded?: () => void }) {
+export function TableActionButton({ row, onEdit, onDelete, onExpanded }: { row: any, onEdit?: () => void, onDelete?: () => void, onExpanded?: () => void }) {
   const toggle = row.getToggleExpandedHandler();
 
   return (

@@ -1,0 +1,13 @@
+mutation DeleteUserPermissions(
+  $userID: Int!
+  $companyID: Int!
+  $branchID: Int!
+  $roleID: Int!
+) {
+  deleteUserpermissions(
+    userID: $userID
+    companyID: $companyID
+    branchID: $branchID
+    roleID: $roleID
+  )
+}

@@ -2908,19 +2908,19 @@ export type CreateSupplierMutationVariables = Exact<{
 
 export type CreateSupplierMutation = { __typename?: 'Mutation', createSupplier: { __typename?: 'SuppliersInDB', SupplierID: number, DocTypeID?: number | null, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, IsActive?: boolean | null, CountryID?: number | null, ProvinceID?: number | null, City?: string | null, PostalCode?: string | null } };
 
+export type CreateUserPermissionsMutationVariables = Exact<{
+  input: UserPermissionsCreate;
+}>;
+
+
+export type CreateUserPermissionsMutation = { __typename?: 'Mutation', createUserpermissions: { __typename?: 'UserPermissionsInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number } };
+
 export type CreateUserRecordMutationVariables = Exact<{
   input: UserCreate;
 }>;
 
 
 export type CreateUserRecordMutation = { __typename?: 'Mutation', createUserRecord: { __typename?: 'UsersInDB', UserID: number, Nickname?: string | null, FullName?: string | null, IsActive?: boolean | null } };
-
-export type CreateUseraccessMutationVariables = Exact<{
-  input: UserPermissionsCreate;
-}>;
-
-
-export type CreateUseraccessMutation = { __typename?: 'Mutation', createUserpermissions: { __typename?: 'UserPermissionsInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number } };
 
 export type CreateVendorMutationVariables = Exact<{
   input: VendorsCreate;
@@ -3094,14 +3094,7 @@ export type DeleteSupplierMutationVariables = Exact<{
 
 export type DeleteSupplierMutation = { __typename?: 'Mutation', deleteSupplier: boolean };
 
-export type DeleteUserRecordMutationVariables = Exact<{
-  userID: Scalars['Int']['input'];
-}>;
-
-
-export type DeleteUserRecordMutation = { __typename?: 'Mutation', deleteUserRecord: boolean };
-
-export type DeleteUseraccessMutationVariables = Exact<{
+export type DeleteUserPermissionsMutationVariables = Exact<{
   userID: Scalars['Int']['input'];
   companyID: Scalars['Int']['input'];
   branchID: Scalars['Int']['input'];
@@ -3109,7 +3102,14 @@ export type DeleteUseraccessMutationVariables = Exact<{
 }>;
 
 
-export type DeleteUseraccessMutation = { __typename?: 'Mutation', deleteUserpermissions: boolean };
+export type DeleteUserPermissionsMutation = { __typename?: 'Mutation', deleteUserpermissions: boolean };
+
+export type DeleteUserRecordMutationVariables = Exact<{
+  userID: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteUserRecordMutation = { __typename?: 'Mutation', deleteUserRecord: boolean };
 
 export type DeleteVendorMutationVariables = Exact<{
   vendorID: Scalars['Int']['input'];
@@ -3563,7 +3563,14 @@ export type GetCarBrandByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetCarBrandByIdQuery = { __typename?: 'Query', carbrandsById?: { __typename?: 'CarBrandsInDB', CarBrandID: number, CarBrandName: string } | null };
+export type GetCarBrandByIdQuery = { __typename?: 'Query', carbrandsById?: { __typename?: 'CarBrandsInDB', CarBrandID: number, CarBrandName: string, CompanyID: number } | null };
+
+export type GetCarBrandsByCompanyQueryVariables = Exact<{
+  companyID: Scalars['Int']['input'];
+}>;
+
+
+export type GetCarBrandsByCompanyQuery = { __typename?: 'Query', carbrandsByCompany: Array<{ __typename?: 'CarBrandsInDB', CarBrandID: number, CompanyID: number, CarBrandName: string }> };
 
 export type GetCarByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -3576,7 +3583,7 @@ export type GetCarByIdQuery = { __typename?: 'Query', carsById?: { __typename?: 
 export type GetCarFormDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCarFormDataQuery = { __typename?: 'Query', carBrands: Array<{ __typename?: 'CarBrandsInDB', CarBrandID: number, CarBrandName: string }>, carModels: Array<{ __typename?: 'CarModelsInDB', CarModelID: number, CarBrandID: number, CarModelName: string }>, clients: Array<{ __typename?: 'ClientsInDB', ClientID: number, FirstName: string, LastName?: string | null }>, discounts: Array<{ __typename?: 'DiscountsInDB', DiscountID: number, DiscountName: string }> };
+export type GetCarFormDataQuery = { __typename?: 'Query', carBrands: Array<{ __typename?: 'CarBrandsInDB', CarBrandID: number, CarBrandName: string }>, carModels: Array<{ __typename?: 'CarModelsInDB', CarModelID: number, CarBrandID: number, CarModelName: string }>, clients: Array<{ __typename?: 'ClientsInDB', ClientID: number, FirstName: string, LastName?: string | null }>, discounts: Array<{ __typename?: 'DiscountsInDB', DiscountID: number, DiscountName: string }>, companies: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }> };
 
 export type GetCarModelByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -3605,7 +3612,7 @@ export type GetClientByIdQuery = { __typename?: 'Query', clientsById?: { __typen
 export type GetClientFormDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetClientFormDataQuery = { __typename?: 'Query', companies: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }>, branches: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, warehouses: Array<{ __typename?: 'WarehousesInDB', WarehouseID: number, WarehouseName: string, Address?: string | null }> };
+export type GetClientFormDataQuery = { __typename?: 'Query', allCompany: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }>, allBranches: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string }>, allProvinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, allWarehouses: Array<{ __typename?: 'WarehousesInDB', WarehouseID: number, WarehouseName: string, Address?: string | null }>, sysIdentityDocTypes: Array<{ __typename?: 'SysIdentityDocTypesInDB', DocTypeID: number, DocTypeName: string }>, allCountries: Array<{ __typename?: 'CountriesInDB', CountryID: number, CountryName: string }>, allPricelists: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, PriceListName: string, PriceListDescription?: string | null }>, allVendors: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string }> };
 
 export type GetClientsByBranchQueryVariables = Exact<{
   companyID: Scalars['Int']['input'];
@@ -3706,7 +3713,7 @@ export type GetItemSubcategoryByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetItemSubcategoryByIdQuery = { __typename?: 'Query', itemsubcategoriesById?: { __typename?: 'ItemSubcategoriesInDB', ItemSubcategoryID: number, ItemCategoryID: number, SubcategoryName: string, CategoryData?: { __typename?: 'ItemCategoriesInDB', CategoryName: string } | null } | null };
+export type GetItemSubcategoryByIdQuery = { __typename?: 'Query', itemsubcategoriesById?: { __typename?: 'ItemSubcategoriesInDB', ItemSubcategoryID: number, ItemCategoryID: number, SubcategoryName: string, CompanyID: number, CategoryData?: { __typename?: 'ItemCategoriesInDB', CategoryName: string } | null } | null };
 
 export type GetItemsFormDataQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3721,6 +3728,11 @@ export type GetOrderByIdQueryVariables = Exact<{
 
 
 export type GetOrderByIdQuery = { __typename?: 'Query', ordersById?: { __typename?: 'OrdersInDB', OrderID: number, CompanyID: number, BranchID: number, OrderDate: any, ClientID: number, CarID?: number | null, IsService?: boolean | null, ServiceTypeID?: number | null, Mileage?: number | null, NextServiceMileage?: number | null, Notes?: string | null, SaleConditionID?: number | null, DiscountID?: number | null, Subtotal: number, Total: number, TotalTaxAmount: number, UserID?: number | null, DocumentID?: number | null, PriceListID?: number | null, OrderStatusID?: number | null, WarehouseID?: number | null, Items?: Array<{ __typename?: 'OrderDetailsInDB', OrderDetailID: number, ItemID: number, Quantity: number, UnitPrice: number, LineDescription?: string | null }> | null } | null };
+
+export type GetPriceListFormDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPriceListFormDataQuery = { __typename?: 'Query', companies: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }>, branches: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string }>, provinces: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, documentTypes: Array<{ __typename?: 'SysIdentityDocTypesInDB', DocTypeID: number, DocTypeName: string }> };
 
 export type GetPriceListsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3815,6 +3827,11 @@ export type GetSuppliersByIdQueryVariables = Exact<{
 
 export type GetSuppliersByIdQuery = { __typename?: 'Query', suppliersById?: { __typename?: 'SuppliersInDB', SupplierID: number, Address?: string | null, City?: string | null, CompanyID?: number | null, CountryID?: number | null, DocNumber?: string | null, DocTypeID?: number | null, Email?: string | null, FirstName: string, IsActive?: boolean | null, LastName?: string | null, Phone?: string | null, PostalCode?: string | null, ProvinceID?: number | null } | null };
 
+export type GetTempStockHistoryBySessionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTempStockHistoryBySessionQuery = { __typename?: 'Query', allStockhistorydetails: Array<{ __typename?: 'StockHistoryDetailsInDB', ItemID: number, WarehouseID: number, Reason?: string | null, BranchID: number, CompanyID: number, QuantityAfter: number, QuantityBefore: number, QuantityUpdate: number, StockHistoryID: number, TransactionDate: any, UserID: number }> };
+
 export type GetUserByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
@@ -3847,7 +3864,7 @@ export type GetWarehouseByIdQuery = { __typename?: 'Query', warehousesById?: { _
 export type GetWarehousesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetWarehousesQuery = { __typename?: 'Query', allWarehouses: Array<{ __typename?: 'WarehousesInDB', WarehouseID: number, WarehouseName: string, Address?: string | null }> };
+export type GetWarehousesQuery = { __typename?: 'Query', allWarehouses: Array<{ __typename?: 'WarehousesInDB', WarehouseID: number, WarehouseName: string, Address?: string | null, CompanCompanyData?: { __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null } | null }> };
 
 export type SearchClientsQueryVariables = Exact<{
   searchTerm: Scalars['String']['input'];
@@ -4720,6 +4737,42 @@ export function useCreateSupplierMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateSupplierMutationHookResult = ReturnType<typeof useCreateSupplierMutation>;
 export type CreateSupplierMutationResult = Apollo.MutationResult<CreateSupplierMutation>;
 export type CreateSupplierMutationOptions = Apollo.BaseMutationOptions<CreateSupplierMutation, CreateSupplierMutationVariables>;
+export const CreateUserPermissionsDocument = gql`
+    mutation CreateUserPermissions($input: UserPermissionsCreate!) {
+  createUserpermissions(data: $input) {
+    UserID
+    CompanyID
+    BranchID
+    RoleID
+  }
+}
+    `;
+export type CreateUserPermissionsMutationFn = Apollo.MutationFunction<CreateUserPermissionsMutation, CreateUserPermissionsMutationVariables>;
+
+/**
+ * __useCreateUserPermissionsMutation__
+ *
+ * To run a mutation, you first call `useCreateUserPermissionsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserPermissionsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserPermissionsMutation, { data, loading, error }] = useCreateUserPermissionsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateUserPermissionsMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserPermissionsMutation, CreateUserPermissionsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserPermissionsMutation, CreateUserPermissionsMutationVariables>(CreateUserPermissionsDocument, options);
+      }
+export type CreateUserPermissionsMutationHookResult = ReturnType<typeof useCreateUserPermissionsMutation>;
+export type CreateUserPermissionsMutationResult = Apollo.MutationResult<CreateUserPermissionsMutation>;
+export type CreateUserPermissionsMutationOptions = Apollo.BaseMutationOptions<CreateUserPermissionsMutation, CreateUserPermissionsMutationVariables>;
 export const CreateUserRecordDocument = gql`
     mutation CreateUserRecord($input: UserCreate!) {
   createUserRecord(data: $input) {
@@ -4756,42 +4809,6 @@ export function useCreateUserRecordMutation(baseOptions?: Apollo.MutationHookOpt
 export type CreateUserRecordMutationHookResult = ReturnType<typeof useCreateUserRecordMutation>;
 export type CreateUserRecordMutationResult = Apollo.MutationResult<CreateUserRecordMutation>;
 export type CreateUserRecordMutationOptions = Apollo.BaseMutationOptions<CreateUserRecordMutation, CreateUserRecordMutationVariables>;
-export const CreateUseraccessDocument = gql`
-    mutation CreateUseraccess($input: UserPermissionsCreate!) {
-  createUserpermissions(data: $input) {
-    UserID
-    CompanyID
-    BranchID
-    RoleID
-  }
-}
-    `;
-export type CreateUseraccessMutationFn = Apollo.MutationFunction<CreateUseraccessMutation, CreateUseraccessMutationVariables>;
-
-/**
- * __useCreateUseraccessMutation__
- *
- * To run a mutation, you first call `useCreateUseraccessMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateUseraccessMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createUseraccessMutation, { data, loading, error }] = useCreateUseraccessMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateUseraccessMutation(baseOptions?: Apollo.MutationHookOptions<CreateUseraccessMutation, CreateUseraccessMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateUseraccessMutation, CreateUseraccessMutationVariables>(CreateUseraccessDocument, options);
-      }
-export type CreateUseraccessMutationHookResult = ReturnType<typeof useCreateUseraccessMutation>;
-export type CreateUseraccessMutationResult = Apollo.MutationResult<CreateUseraccessMutation>;
-export type CreateUseraccessMutationOptions = Apollo.BaseMutationOptions<CreateUseraccessMutation, CreateUseraccessMutationVariables>;
 export const CreateVendorDocument = gql`
     mutation CreateVendor($input: VendorsCreate!) {
   createVendor(data: $input) {
@@ -5538,6 +5555,45 @@ export function useDeleteSupplierMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteSupplierMutationHookResult = ReturnType<typeof useDeleteSupplierMutation>;
 export type DeleteSupplierMutationResult = Apollo.MutationResult<DeleteSupplierMutation>;
 export type DeleteSupplierMutationOptions = Apollo.BaseMutationOptions<DeleteSupplierMutation, DeleteSupplierMutationVariables>;
+export const DeleteUserPermissionsDocument = gql`
+    mutation DeleteUserPermissions($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
+  deleteUserpermissions(
+    userID: $userID
+    companyID: $companyID
+    branchID: $branchID
+    roleID: $roleID
+  )
+}
+    `;
+export type DeleteUserPermissionsMutationFn = Apollo.MutationFunction<DeleteUserPermissionsMutation, DeleteUserPermissionsMutationVariables>;
+
+/**
+ * __useDeleteUserPermissionsMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserPermissionsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserPermissionsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserPermissionsMutation, { data, loading, error }] = useDeleteUserPermissionsMutation({
+ *   variables: {
+ *      userID: // value for 'userID'
+ *      companyID: // value for 'companyID'
+ *      branchID: // value for 'branchID'
+ *      roleID: // value for 'roleID'
+ *   },
+ * });
+ */
+export function useDeleteUserPermissionsMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserPermissionsMutation, DeleteUserPermissionsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteUserPermissionsMutation, DeleteUserPermissionsMutationVariables>(DeleteUserPermissionsDocument, options);
+      }
+export type DeleteUserPermissionsMutationHookResult = ReturnType<typeof useDeleteUserPermissionsMutation>;
+export type DeleteUserPermissionsMutationResult = Apollo.MutationResult<DeleteUserPermissionsMutation>;
+export type DeleteUserPermissionsMutationOptions = Apollo.BaseMutationOptions<DeleteUserPermissionsMutation, DeleteUserPermissionsMutationVariables>;
 export const DeleteUserRecordDocument = gql`
     mutation DeleteUserRecord($userID: Int!) {
   deleteUserRecord(userID: $userID)
@@ -5569,45 +5625,6 @@ export function useDeleteUserRecordMutation(baseOptions?: Apollo.MutationHookOpt
 export type DeleteUserRecordMutationHookResult = ReturnType<typeof useDeleteUserRecordMutation>;
 export type DeleteUserRecordMutationResult = Apollo.MutationResult<DeleteUserRecordMutation>;
 export type DeleteUserRecordMutationOptions = Apollo.BaseMutationOptions<DeleteUserRecordMutation, DeleteUserRecordMutationVariables>;
-export const DeleteUseraccessDocument = gql`
-    mutation DeleteUseraccess($userID: Int!, $companyID: Int!, $branchID: Int!, $roleID: Int!) {
-  deleteUserpermissions(
-    userID: $userID
-    companyID: $companyID
-    branchID: $branchID
-    roleID: $roleID
-  )
-}
-    `;
-export type DeleteUseraccessMutationFn = Apollo.MutationFunction<DeleteUseraccessMutation, DeleteUseraccessMutationVariables>;
-
-/**
- * __useDeleteUseraccessMutation__
- *
- * To run a mutation, you first call `useDeleteUseraccessMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteUseraccessMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteUseraccessMutation, { data, loading, error }] = useDeleteUseraccessMutation({
- *   variables: {
- *      userID: // value for 'userID'
- *      companyID: // value for 'companyID'
- *      branchID: // value for 'branchID'
- *      roleID: // value for 'roleID'
- *   },
- * });
- */
-export function useDeleteUseraccessMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUseraccessMutation, DeleteUseraccessMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteUseraccessMutation, DeleteUseraccessMutationVariables>(DeleteUseraccessDocument, options);
-      }
-export type DeleteUseraccessMutationHookResult = ReturnType<typeof useDeleteUseraccessMutation>;
-export type DeleteUseraccessMutationResult = Apollo.MutationResult<DeleteUseraccessMutation>;
-export type DeleteUseraccessMutationOptions = Apollo.BaseMutationOptions<DeleteUseraccessMutation, DeleteUseraccessMutationVariables>;
 export const DeleteVendorDocument = gql`
     mutation DeleteVendor($vendorID: Int!) {
   deleteVendor(vendorID: $vendorID)
@@ -8398,6 +8415,7 @@ export const GetCarBrandByIdDocument = gql`
   carbrandsById(id: $id, companyID: $companyId) {
     CarBrandID
     CarBrandName
+    CompanyID
   }
 }
     `;
@@ -8435,6 +8453,48 @@ export type GetCarBrandByIdQueryHookResult = ReturnType<typeof useGetCarBrandByI
 export type GetCarBrandByIdLazyQueryHookResult = ReturnType<typeof useGetCarBrandByIdLazyQuery>;
 export type GetCarBrandByIdSuspenseQueryHookResult = ReturnType<typeof useGetCarBrandByIdSuspenseQuery>;
 export type GetCarBrandByIdQueryResult = Apollo.QueryResult<GetCarBrandByIdQuery, GetCarBrandByIdQueryVariables>;
+export const GetCarBrandsByCompanyDocument = gql`
+    query GetCarBrandsByCompany($companyID: Int!) {
+  carbrandsByCompany(companyID: $companyID) {
+    CarBrandID
+    CompanyID
+    CarBrandName
+  }
+}
+    `;
+
+/**
+ * __useGetCarBrandsByCompanyQuery__
+ *
+ * To run a query within a React component, call `useGetCarBrandsByCompanyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCarBrandsByCompanyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCarBrandsByCompanyQuery({
+ *   variables: {
+ *      companyID: // value for 'companyID'
+ *   },
+ * });
+ */
+export function useGetCarBrandsByCompanyQuery(baseOptions: Apollo.QueryHookOptions<GetCarBrandsByCompanyQuery, GetCarBrandsByCompanyQueryVariables> & ({ variables: GetCarBrandsByCompanyQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCarBrandsByCompanyQuery, GetCarBrandsByCompanyQueryVariables>(GetCarBrandsByCompanyDocument, options);
+      }
+export function useGetCarBrandsByCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCarBrandsByCompanyQuery, GetCarBrandsByCompanyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCarBrandsByCompanyQuery, GetCarBrandsByCompanyQueryVariables>(GetCarBrandsByCompanyDocument, options);
+        }
+export function useGetCarBrandsByCompanySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCarBrandsByCompanyQuery, GetCarBrandsByCompanyQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCarBrandsByCompanyQuery, GetCarBrandsByCompanyQueryVariables>(GetCarBrandsByCompanyDocument, options);
+        }
+export type GetCarBrandsByCompanyQueryHookResult = ReturnType<typeof useGetCarBrandsByCompanyQuery>;
+export type GetCarBrandsByCompanyLazyQueryHookResult = ReturnType<typeof useGetCarBrandsByCompanyLazyQuery>;
+export type GetCarBrandsByCompanySuspenseQueryHookResult = ReturnType<typeof useGetCarBrandsByCompanySuspenseQuery>;
+export type GetCarBrandsByCompanyQueryResult = Apollo.QueryResult<GetCarBrandsByCompanyQuery, GetCarBrandsByCompanyQueryVariables>;
 export const GetCarByIdDocument = gql`
     query GetCarById($id: Int!, $companyId: Int!) {
   carsById(id: $id, companyID: $companyId) {
@@ -8512,6 +8572,10 @@ export const GetCarFormDataDocument = gql`
   discounts: allDiscounts {
     DiscountID
     DiscountName
+  }
+  companies: allCompany {
+    CompanyID
+    CompanyName
   }
 }
     `;
@@ -8698,24 +8762,41 @@ export type GetClientByIdSuspenseQueryHookResult = ReturnType<typeof useGetClien
 export type GetClientByIdQueryResult = Apollo.QueryResult<GetClientByIdQuery, GetClientByIdQueryVariables>;
 export const GetClientFormDataDocument = gql`
     query GetClientFormData {
-  companies: allCompany {
+  allCompany {
     CompanyID
     CompanyName
   }
-  branches: allBranches {
+  allBranches {
     BranchID
     CompanyID
     BranchName
   }
-  provinces: allProvinces {
+  allProvinces {
     ProvinceID
     CountryID
     ProvinceName
   }
-  warehouses: allWarehouses {
+  allWarehouses {
     WarehouseID
     WarehouseName
     Address
+  }
+  sysIdentityDocTypes {
+    DocTypeID
+    DocTypeName
+  }
+  allCountries {
+    CountryID
+    CountryName
+  }
+  allPricelists {
+    PriceListID
+    PriceListName
+    PriceListDescription
+  }
+  allVendors {
+    VendorID
+    VendorName
   }
 }
     `;
@@ -9425,6 +9506,7 @@ export const GetItemSubcategoryByIdDocument = gql`
     ItemSubcategoryID
     ItemCategoryID
     SubcategoryName
+    CompanyID
     CategoryData {
       CategoryName
     }
@@ -9587,6 +9669,60 @@ export type GetOrderByIdQueryHookResult = ReturnType<typeof useGetOrderByIdQuery
 export type GetOrderByIdLazyQueryHookResult = ReturnType<typeof useGetOrderByIdLazyQuery>;
 export type GetOrderByIdSuspenseQueryHookResult = ReturnType<typeof useGetOrderByIdSuspenseQuery>;
 export type GetOrderByIdQueryResult = Apollo.QueryResult<GetOrderByIdQuery, GetOrderByIdQueryVariables>;
+export const GetPriceListFormDataDocument = gql`
+    query GetPriceListFormData {
+  companies: allCompany {
+    CompanyID
+    CompanyName
+  }
+  branches: allBranches {
+    BranchID
+    CompanyID
+    BranchName
+  }
+  provinces: allProvinces {
+    ProvinceID
+    CountryID
+    ProvinceName
+  }
+  documentTypes: sysIdentityDocTypes {
+    DocTypeID
+    DocTypeName
+  }
+}
+    `;
+
+/**
+ * __useGetPriceListFormDataQuery__
+ *
+ * To run a query within a React component, call `useGetPriceListFormDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPriceListFormDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPriceListFormDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPriceListFormDataQuery(baseOptions?: Apollo.QueryHookOptions<GetPriceListFormDataQuery, GetPriceListFormDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPriceListFormDataQuery, GetPriceListFormDataQueryVariables>(GetPriceListFormDataDocument, options);
+      }
+export function useGetPriceListFormDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPriceListFormDataQuery, GetPriceListFormDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPriceListFormDataQuery, GetPriceListFormDataQueryVariables>(GetPriceListFormDataDocument, options);
+        }
+export function useGetPriceListFormDataSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetPriceListFormDataQuery, GetPriceListFormDataQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPriceListFormDataQuery, GetPriceListFormDataQueryVariables>(GetPriceListFormDataDocument, options);
+        }
+export type GetPriceListFormDataQueryHookResult = ReturnType<typeof useGetPriceListFormDataQuery>;
+export type GetPriceListFormDataLazyQueryHookResult = ReturnType<typeof useGetPriceListFormDataLazyQuery>;
+export type GetPriceListFormDataSuspenseQueryHookResult = ReturnType<typeof useGetPriceListFormDataSuspenseQuery>;
+export type GetPriceListFormDataQueryResult = Apollo.QueryResult<GetPriceListFormDataQuery, GetPriceListFormDataQueryVariables>;
 export const GetPriceListsDocument = gql`
     query GetPriceLists {
   allPricelists {
@@ -10221,6 +10357,55 @@ export type GetSuppliersByIdQueryHookResult = ReturnType<typeof useGetSuppliersB
 export type GetSuppliersByIdLazyQueryHookResult = ReturnType<typeof useGetSuppliersByIdLazyQuery>;
 export type GetSuppliersByIdSuspenseQueryHookResult = ReturnType<typeof useGetSuppliersByIdSuspenseQuery>;
 export type GetSuppliersByIdQueryResult = Apollo.QueryResult<GetSuppliersByIdQuery, GetSuppliersByIdQueryVariables>;
+export const GetTempStockHistoryBySessionDocument = gql`
+    query GetTempStockHistoryBySession {
+  allStockhistorydetails {
+    ItemID
+    WarehouseID
+    Reason
+    BranchID
+    CompanyID
+    QuantityAfter
+    QuantityBefore
+    QuantityUpdate
+    StockHistoryID
+    TransactionDate
+    UserID
+  }
+}
+    `;
+
+/**
+ * __useGetTempStockHistoryBySessionQuery__
+ *
+ * To run a query within a React component, call `useGetTempStockHistoryBySessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTempStockHistoryBySessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTempStockHistoryBySessionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTempStockHistoryBySessionQuery(baseOptions?: Apollo.QueryHookOptions<GetTempStockHistoryBySessionQuery, GetTempStockHistoryBySessionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTempStockHistoryBySessionQuery, GetTempStockHistoryBySessionQueryVariables>(GetTempStockHistoryBySessionDocument, options);
+      }
+export function useGetTempStockHistoryBySessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTempStockHistoryBySessionQuery, GetTempStockHistoryBySessionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTempStockHistoryBySessionQuery, GetTempStockHistoryBySessionQueryVariables>(GetTempStockHistoryBySessionDocument, options);
+        }
+export function useGetTempStockHistoryBySessionSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetTempStockHistoryBySessionQuery, GetTempStockHistoryBySessionQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTempStockHistoryBySessionQuery, GetTempStockHistoryBySessionQueryVariables>(GetTempStockHistoryBySessionDocument, options);
+        }
+export type GetTempStockHistoryBySessionQueryHookResult = ReturnType<typeof useGetTempStockHistoryBySessionQuery>;
+export type GetTempStockHistoryBySessionLazyQueryHookResult = ReturnType<typeof useGetTempStockHistoryBySessionLazyQuery>;
+export type GetTempStockHistoryBySessionSuspenseQueryHookResult = ReturnType<typeof useGetTempStockHistoryBySessionSuspenseQuery>;
+export type GetTempStockHistoryBySessionQueryResult = Apollo.QueryResult<GetTempStockHistoryBySessionQuery, GetTempStockHistoryBySessionQueryVariables>;
 export const GetUserByIdDocument = gql`
     query GetUserById($id: Int!) {
   usersById(id: $id) {
@@ -10418,6 +10603,10 @@ export const GetWarehousesDocument = gql`
     WarehouseID
     WarehouseName
     Address
+    CompanCompanyData {
+      CompanyID
+      CompanyName
+    }
   }
 }
     `;

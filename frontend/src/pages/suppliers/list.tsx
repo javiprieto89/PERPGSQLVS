@@ -52,7 +52,7 @@ export default function Suppliers() {
     async (id: string) => {
       if (!confirm("¿Borrar proveedor?")) return;
       try {
-        await supplierOperations.deleteSupplier(id);
+        await supplierOperations.deleteSupplier(String(id));
         refetch();
       } catch (err) {
         alert("Error al borrar proveedor: " + (err as Error).message);

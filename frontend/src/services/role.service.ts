@@ -1,6 +1,9 @@
+import GetAllRolesGQL from "~/graphql/queries/GetAllRoles.graphql";
+import GetRoleByIdGQL from "~/graphql/queries/GetRoleById.graphql";
+import CreateRoleGQL from "~/graphql/mutations/CreateRole.graphql";
+import UpdateRoleGQL from "~/graphql/mutations/UpdateRole.graphql";
+import DeleteRoleGQL from "~/graphql/mutations/DeleteRole.graphql";
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
 import type {
   RolesCreate,
@@ -11,7 +14,7 @@ import type {
 export const roleOperations = {
   async getAllRoles(): Promise<RolesInDb[]> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_ROLES);
+      const data = await graphqlClient.query(GetAllRolesGQL);
       return data.allRoles || [];
     } catch (error) {
       console.error("Error obteniendo roles:", error);
@@ -21,7 +24,7 @@ export const roleOperations = {
 
   async getRoleById(id: string): Promise<RolesInDb> {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ROLE_BY_ID, { id });
+      const data = await graphqlClient.query(GetRoleByIdGQL, { id });
       return data.rolesById;
     } catch (error) {
       console.error("Error obteniendo rol:", error);
@@ -31,7 +34,7 @@ export const roleOperations = {
 
   async createRole(roleData: RolesCreate): Promise<RolesInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_ROLE, {
+      const data = await graphqlClient.mutation(CreateRoleGQL, {
         input: roleData,
       });
       return data.createRole;
@@ -43,7 +46,7 @@ export const roleOperations = {
 
   async updateRole(id: string, roleData: RolesUpdate): Promise<RolesInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_ROLE, {
+      const data = await graphqlClient.mutation(UpdateRoleGQL, {
         roleID: id,
         input: roleData,
       });
@@ -56,7 +59,7 @@ export const roleOperations = {
 
   async deleteRole(id: string): Promise<RolesInDb> {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_ROLE, {
+      const data = await graphqlClient.mutation(DeleteRoleGQL, {
         roleID: id,
       });
       return data.deleteRole;
