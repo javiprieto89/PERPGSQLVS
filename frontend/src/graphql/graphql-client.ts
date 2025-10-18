@@ -1,6 +1,6 @@
+import type { ApolloQueryResult, FetchResult } from "@apollo/client";
 import type { DocumentNode } from "graphql";
-import type { FetchResult, ApolloQueryResult } from "@apollo/client";
-import apolloClient from "~/lib/apollo";
+import { apolloClient } from "~/lib/apollo";
 
 /**
  * GraphQL Client wrapper that uses Apollo Client internally

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import useFilterState from "./hooks/useFilterState";
 
 import { Input } from "~/components/ui/input";
@@ -9,51 +10,78 @@ import { InputTextOperators } from "./inputs/Text";
 
 import type { FilterField, RenderInputsBaseProps } from "./types";
 
-export type RenderInputProps<T> = Omit<RenderInputsBaseProps, "name"> & {
-  filterField: FilterField;
+export type RenderInputProps = Omit<RenderInputsBaseProps, "name"> & {
+  filterField?: FilterField;
   dependsOnLabel?: string | null;
 };
 
-export function RenderInput<T>({ filterField, dependsOnLabel, onChange, ...props }: RenderInputProps<T>) {
-  const { filters, setFilter } = useFilterState<string>()
+/**
+ * Main input renderer that handles different field types
+ * - Automatically selects the correct input component based on field type
+ * - Integrates with global filter state
+ * - Handles dependent field labels and disabled states
+ */
+export function RenderInput({ 
+  filterField, 
+  dependsOnLabel, 
+  onChange, 
+  ...props 
+}: RenderInputProps) {
+  const { filters, setFilter } = useFilterState<string>();
+
+  if (!filterField) return null;
+
+  const handleChange = useMemo(() => 
+    (name: string, value: string) => {
+      onChange?.(name, value);
+      setFilter(name, value);
+    },
+    [onChange, setFilter]
+  );
+
+  const isDependentAndDisabled = useMemo(() => 
+    !!(filterField.dependsOn && !filters[filterField.dependsOn]),
+    [filterField.dependsOn, filters]
+  );
 
   return (
     <div>
       <Label className="mb-3">
         {filterField.label}
-        {filterField.dependsOn && (
-          <span className="text-xs  ml-1">
-            (depende de{" "}{dependsOnLabel})
+        {filterField.dependsOn && dependsOnLabel && (
+          <span className="text-xs text-muted-foreground ml-1">
+            (depende de {dependsOnLabel})
           </span>
         )}
       </Label>
       <InputType
         id={filterField.field}
         name={filterField.field}
-        onChange={(name, value) => {
-          onChange?.(name, value);
-          setFilter(name, value)
-        }}
-        disabled={filterField.dependsOn ? !filters[filterField.dependsOn] : false}
+        onChange={handleChange}
+        disabled={isDependentAndDisabled}
         filterField={filterField}
         {...props}
       />
     </div>
-  )
+  );
 }
-
 
 export type InputTypeProps = RenderInputsBaseProps & {
   filterField?: FilterField;
   label?: string;
 };
 
-
+/**
+ * Input type selector - routes to the correct input component
+ */
 export function InputType({ filterField, ...props }: InputTypeProps) {
-  switch (filterField?.type) {
+  if (!filterField) return null;
+
+  switch (filterField.type) {
     case "number":
       return (
-        <Input {...props}
+        <Input
+          {...props}
           placeholder={`Buscar por ${(props?.label || props.name).toLowerCase()}...`}
           type="number"
           onChange={(e) => props.onChange?.(props.name, e.target.value)}
@@ -66,7 +94,8 @@ export function InputType({ filterField, ...props }: InputTypeProps) {
     case "select":
       return <InputSelect {...props} filterField={filterField} />;
 
-    default: // text
-      return <InputTextOperators {...props} filterField={filterField} />
+    case "text":
+    default:
+      return <InputTextOperators {...props} filterField={filterField} />;
   }
 }

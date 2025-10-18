@@ -11,7 +11,7 @@ export function InputRadio({ id, name, value = "", onChange, className }: Render
       name={name}
       className={cn("flex flex-row gap-4", className)}
       defaultValue={value}
-      onValueChange={(value) => onChange(name, value)}
+      onValueChange={(value) => onChange?.(name, value)}
     >
       <div className="flex flex-row gap-2 items-center">
         <RadioGroupItem value="true" id="yes" />

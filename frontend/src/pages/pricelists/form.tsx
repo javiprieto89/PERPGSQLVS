@@ -1,114 +1,248 @@
-// frontend/src/pages/PriceListCreate.jsx
-import { useEffect, useState } from "react";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import { DevTool } from "@hookform/devtools";
+import { Link, useParams } from "react-router-dom";
+
+import { ErrorMessage } from "~/components/form/ErrorMessage";
+import { Fieldset } from "~/components/form/Fieldset";
+import { FormBlock } from "~/components/form/FormBlock";
+import { FormBreadcrumb } from "~/components/form/FormBreadcrumb";
+import { FormSkeleton } from "~/components/form/FormSkeleton";
+import { FormState } from "~/components/form/FormState";
+import { Input } from "~/components/form/Input";
+import { Submit } from "~/components/form/InputSubmit";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
+import { Checkbox } from "~/components/ui/checkbox";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
 import { Label } from "~/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Separator } from "~/components/ui/separator";
 import { Textarea } from "~/components/ui/textarea";
-import { pricelistOperations } from "~/services/price-list.service";
+import { BASE_ROUTE, usePricelistForm } from "~/features/pricelist/usePricelistForm";
+import { useGetPriceListFormDataQuery } from "~/graphql/_generated/graphql";
 
-export function PriceListForm({
-  onClose = () => { },
-  onSave = () => { },
-  pricelist: data = null,
-}) {
-  console.log("data", JSON.stringify(data));
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [isActive, setIsActive] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [isEdit, setIsEdit] = useState(false);
+/**
+ * Modern PriceList Form Component
+ * 
+ * Features:
+ * - React Hook Form with Zod validation
+ * - Automatic form state management
+ * - Loading states and error handling
+ * - Responsive layout
+ * - Edit and create modes
+ * - Toast notifications
+ * - Breadcrumb navigation
+ */
+export function PriceListForm() {
+  const params = useParams();
+  const id = params.id ? Number(params.id) : undefined;
 
-  useEffect(() => {
-    if (data) {
-      setIsEdit(true);
-      setName(data.PriceListData.Name || "");
-      setDescription(data.PriceListData.Description || "");
-      setIsActive(data.IsActive !== false);
-    }
-  }, [data]);
+  const { form, handleSubmit, data, isEditing, isLoading, isSaving, errors } =
+    usePricelistForm({ id });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      const payload = {
-        Name: name,
-        Description: description,
-        IsActive: isActive,
-      };
-      let result;
-      if (isEdit) {
-        result = await pricelistOperations.updatePricelist(
-          data.PriceListID,
-          payload
-        );
-      } else {
-        result = await pricelistOperations.createPriceList(payload);
-      }
-      onSave && onSave(result);
-      onClose && onClose();
-    } catch (err) {
-      console.error("Error guardando lista:", err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: formData, loading: formDataLoading } =
+    useGetPriceListFormDataQuery();
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">
-        {isEdit ? "Editar Lista" : "Nueva Lista"}
-      </h2>
-      {error && <div className="text-destructive mb-2">{error}</div>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label className="block text-sm font-medium mb-1">Nombre</Label>
-          <Input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+    <>
+      {import.meta.env.DEV && <DevTool control={form.control} />}
+
+      <AdminTopBar>
+        <FormBreadcrumb isEditing={isEditing}>
+          <Link to={BASE_ROUTE}>Listas de Precios</Link>
+        </FormBreadcrumb>
+      </AdminTopBar>
+
+      <div className="container p-6">
+        <div className="flex justify-between items-center gap-2 mb-6 md:max-w-[700px] lg:max-w-[800px]">
+          <h2 className="font-xl font-bold">
+            {isEditing ? "Editar Lista de Precios" : "Nueva Lista de Precios"}
+          </h2>
+          {data?.PriceListID && (
+            <div className="flex gap-4 text-muted-foreground text-sm">
+              <span>ID: {data?.PriceListID}</span>
+              <Separator
+                orientation="vertical"
+                className="mx-2 data-[orientation=vertical]:h-4"
+              />
+              <span className="text-sm">
+                <strong>Estado:</strong> {data.IsActive ? "Activo" : "Inactivo"}
+              </span>
+            </div>
+          )}
         </div>
-        <div>
-          <Label className="block text-sm font-medium mb-1">Descripción</Label>
-          <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div>
-          <Label className="inline-flex items-center">
-            <Input
-              type="checkbox"
-              className="mr-2"
-              checked={isActive}
-              onChange={(e) => setIsActive(e.target.checked)}
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4 md:max-w-[700px] lg:max-w-[800px]"
+          >
+            <FormState
+              errors={[errors.query, errors.update, errors.create]}
+              loading={isLoading}
+              loadingSkeleton={
+                <FormSkeleton className="md:max-w-[700px] lg:max-w-[800px]" />
+              }
             />
-            <span>Activo</span>
-          </Label>
-        </div>
-        <div className="flex justify-between space-x-4 pt-4 border-t">
-          <Button
-            variant="link"
-            type="button"
-            onClick={onClose}
-            disabled={loading}
-          >
-            Cancelar
-          </Button>
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={loading || !name.trim()}
-          >
-            {loading ? "Guardando..." : "Guardar"}
-          </Button>
-        </div>
-      </form>
-    </div>
+
+            {!isLoading && (
+              <>
+                <Fieldset>
+                  <legend className="font-semibold mb-4 text-md">
+                    Información de la Organización
+                  </legend>
+
+                  <FormBlock>
+                    <Label
+                      data-error={!!form.formState.errors.CompanyID?.message}
+                      htmlFor="CompanyID"
+                    >
+                      Compañía*
+                    </Label>
+                    <Select
+                      {...form.register("CompanyID")}
+                      onValueChange={(id: string) => {
+                        form.setValue("CompanyID", id, {
+                          shouldTouch: true,
+                          shouldDirty: true,
+                        });
+                        form.clearErrors("CompanyID");
+                      }}
+                      defaultValue={String(data?.CompanyID || "")}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue
+                          placeholder={
+                            formDataLoading
+                              ? "Cargando..."
+                              : formData?.companies?.length === 0
+                                ? "Sin opciones"
+                                : "Seleccione una compañía..."
+                          }
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {formData?.companies?.map((row) => (
+                            <SelectItem
+                              key={`CompanyID-${row.CompanyID}`}
+                              value={String(row.CompanyID)}
+                            >
+                              {row.CompanyName}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <ErrorMessage
+                      error={form.formState.errors.CompanyID?.message}
+                    />
+                  </FormBlock>
+                </Fieldset>
+
+                <Fieldset>
+                  <legend className="font-semibold mb-4 text-md">
+                    Información de la Lista de Precios
+                  </legend>
+
+                  <FormBlock className="mb-4">
+                    <Input
+                      {...form.register("PriceListName")}
+                      placeholder="Ej: Lista General, Lista Mayorista, etc."
+                      label="Nombre de la Lista*"
+                      error={form.formState.errors.PriceListName?.message}
+                      maxLength={100}
+                    />
+                    <FormDescription className="mt-2">
+                      Nombre descriptivo para identificar la lista de precios
+                    </FormDescription>
+                  </FormBlock>
+
+                  <FormBlock>
+                    <Label htmlFor="PriceListDescription">Descripción</Label>
+                    <FormField
+                      control={form.control}
+                      name="PriceListDescription"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Descripción detallada de la lista de precios (opcional)"
+                              className="min-h-[100px]"
+                              maxLength={500}
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Información adicional sobre esta lista de precios
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </FormBlock>
+                </Fieldset>
+
+                <Fieldset>
+                  <legend className="font-semibold mb-4 text-md">Estado</legend>
+                  <FormBlock className="space-y-2">
+                    <FormField
+                      control={form.control}
+                      name="IsActive"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>Lista de precios activa</FormLabel>
+                            <FormDescription>
+                              Las listas inactivas no estarán disponibles para
+                              asignar a clientes
+                            </FormDescription>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </FormBlock>
+                </Fieldset>
+
+                <Fieldset className="items-center">
+                  <FormBlock className="p-4 space-x-2 flex justify-between bg-card">
+                    <Link className="mt-auto" to={BASE_ROUTE}>
+                      Cancelar
+                    </Link>
+                    <Submit
+                      type="submit"
+                      disabled={isLoading || isSaving}
+                      isSubmitting={isSaving}
+                    >
+                      {isEditing ? "Actualizar" : "Crear"} Lista de Precios
+                    </Submit>
+                  </FormBlock>
+                </Fieldset>
+              </>
+            )}
+          </form>
+        </Form>
+      </div>
+    </>
   );
 }

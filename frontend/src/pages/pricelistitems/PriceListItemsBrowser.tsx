@@ -149,11 +149,11 @@ export default function PriceListItems() {
       },
       {
         header: "Nombre",
-        accessorKey: "PriceListData.Name",
+        accessorKey: "PriceListData.PriceListName",
       },
       {
         header: "Descripción",
-        accessorKey: "PriceListData.Description",
+        accessorKey: "PriceListData.PriceListDescription",
       },
       {
         header: "Precio",

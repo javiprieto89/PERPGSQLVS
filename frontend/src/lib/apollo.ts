@@ -9,11 +9,18 @@ import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import { Observable } from "@apollo/client/utilities";
 import {
+  getAuthHeader,
   handleAuthError,
   hasGraphQLAuthErrors,
-  getAuthToken,
-  getAuthHeader,
 } from "~/utils/auth-middleware";
+
+import { loadDevMessages, loadErrorMessages } from "@apollo/client/dev";
+
+if (import.meta.env.PROD !== true) {
+  // Adds messages only in a dev environment
+  loadDevMessages();
+  loadErrorMessages();
+}
 
 const httpLink = createHttpLink({
   uri: import.meta.env.VITE_GRAPHQL_API,
@@ -73,10 +80,8 @@ const errorLink = onError(
   }
 );
 
-const client = new ApolloClient({
+export const apolloClient = new ApolloClient({
   link: from([errorLink, authLink, httpLink]),
   cache: new InMemoryCache(),
   connectToDevTools: import.meta.env.PROD !== true,
 });
-
-export default client;

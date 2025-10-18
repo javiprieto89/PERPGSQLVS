@@ -17,7 +17,7 @@ const order2 = {
   DiscountID: 1,
   Subtotal: 922,
   Total: 1115.62,
-  VAT: 193.62,
+  TotalTaxAmount: 193.62,
   UserID: 1,
   DocumentID: 1,
   PriceListID: 1,

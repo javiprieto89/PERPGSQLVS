@@ -3443,6 +3443,11 @@ export type GetAllClientsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllClientsQuery = { __typename?: 'Query', allClients: Array<{ __typename?: 'ClientsInDB', ClientID: number, DocTypeID: number, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, City?: string | null, PostalCode?: string | null, IsActive?: boolean | null, CountryID: number, ProvinceID: number, PriceListID: number, VendorID: number }> };
 
+export type GetAllCommercialDocumentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllCommercialDocumentsQuery = { __typename?: 'Query', allCommercialdocuments: Array<{ __typename?: 'CommercialDocumentsInDB', DocumentTypeID: number, BranchID: number, AffectsStock: boolean, CompanyID: number, CurrencyID?: number | null, DocumentDescription: string, DocumentID: number, DocumentNumber: number, FromDate?: string | null, IsActive: boolean, IsElectronic?: boolean | null, IsFiscal?: boolean | null, IsManual?: boolean | null, IsQuotation?: boolean | null, IsTest: boolean, MaxItems?: number | null, PointOfSale: number, ShouldAccount: boolean }>, allCompany: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }>, allBranches: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string }> };
+
 export type GetAllCompaniesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3463,11 +3468,6 @@ export type GetAllDiscountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllDiscountsQuery = { __typename?: 'Query', allDiscounts: Array<{ __typename?: 'DiscountsInDB', DiscountID: number, DiscountName: string, Percentage: number }> };
 
-export type GetAllDocumentsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAllDocumentsQuery = { __typename?: 'Query', allCommercialdocuments: Array<{ __typename?: 'CommercialDocumentsInDB', DocumentID: number, CompanyID: number, BranchID: number, DocumentTypeID: number, DocumentNumber: number, PointOfSale: number, IsActive: boolean, ShouldAccount: boolean, IsFiscal?: boolean | null, IsElectronic?: boolean | null, IsManual?: boolean | null, IsQuotation?: boolean | null, MaxItems?: number | null, DocumentDescription: string, IsTest: boolean, FromDate?: string | null, CurrencyID?: number | null }> };
-
 export type GetAllItemCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3482,6 +3482,11 @@ export type GetAllItemsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllItemsQuery = { __typename?: 'Query', allItems: Array<{ __typename?: 'ItemsInDB', BranchID: number, BrandID: number, CompanyID: number, ControlStock: boolean, IsActive: boolean, IsOffer: boolean, ItemCategoryID: number, ItemCode: string, ItemDescription: string, ItemID: number, ItemSubcategoryID: number, LastModified?: any | null, OEM?: string | null, ReplenishmentStock: number, SupplierID: number, WarehouseID: number, BranchData?: { __typename?: 'BranchesInDB', BranchName: string } | null, BrandData?: { __typename?: 'BrandsInDB', BrandName: string } | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyName?: string | null } | null, CategoryData?: { __typename?: 'ItemCategoriesInDB', CategoryName: string } | null, SupplierData?: { __typename?: 'SuppliersInDB', FirstName: string, LastName?: string | null } | null, WarehouseData?: { __typename?: 'WarehousesInDB', WarehouseName: string } | null }> };
+
+export type GetAllOrderDetailsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllOrderDetailsQuery = { __typename?: 'Query', allOrderdetails: Array<{ __typename?: 'OrderDetailsInDB', CompanyID: number, OrderDetailID: number, OrderID: number, LineDescription?: string | null, ItemData?: { __typename?: 'ItemsInDB', ItemDescription: string } | null }> };
 
 export type GetAllOrdersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3513,10 +3518,10 @@ export type GetAllSuppliersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllSuppliersQuery = { __typename?: 'Query', allSuppliers: Array<{ __typename?: 'SuppliersInDB', SupplierID: number, DocTypeID?: number | null, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, IsActive?: boolean | null, CountryID?: number | null, ProvinceID?: number | null, City?: string | null, PostalCode?: string | null, CompanyID?: number | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null } | null }> };
 
-export type GetAllUseraccessQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllUserPermissionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllUseraccessQuery = { __typename?: 'Query', allUserpermissions: Array<{ __typename?: 'UserPermissionsInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number, UserData?: { __typename?: 'UsersInDB', FullName?: string | null } | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyName?: string | null } | null, BranchData?: { __typename?: 'BranchesInDB', BranchName: string } | null, RoleData?: { __typename?: 'RolesInDB', RoleName: string } | null }> };
+export type GetAllUserPermissionsQuery = { __typename?: 'Query', allUserpermissions: Array<{ __typename?: 'UserPermissionsInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number, UserData?: { __typename?: 'UsersInDB', FullName?: string | null } | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyName?: string | null } | null, BranchData?: { __typename?: 'BranchesInDB', BranchName: string } | null, RoleData?: { __typename?: 'RolesInDB', RoleName: string } | null }> };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3629,6 +3634,13 @@ export type GetClientsByCompanyQueryVariables = Exact<{
 
 export type GetClientsByCompanyQuery = { __typename?: 'Query', clientsByCompany: Array<{ __typename?: 'ClientsInDB', ClientID: number, DocTypeID: number, DocNumber?: string | null, FirstName: string, LastName?: string | null, Phone?: string | null, Email?: string | null, Address?: string | null, City?: string | null, PostalCode?: string | null, IsActive?: boolean | null, CountryID: number, ProvinceID: number, PriceListID: number, VendorID: number, CompanyID?: number | null, BranchID?: number | null }> };
 
+export type GetCommercialDocumentByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetCommercialDocumentByIdQuery = { __typename?: 'Query', commercialdocumentsById?: { __typename?: 'CommercialDocumentsInDB', DocumentID: number, CompanyID: number, BranchID: number, DocumentTypeID: number, DocumentDescription: string, DocumentNumber: number, PointOfSale: number, IsActive: boolean, IsTest: boolean, ShouldAccount: boolean, AffectsStock: boolean, IsFiscal?: boolean | null, IsElectronic?: boolean | null, IsManual?: boolean | null, IsQuotation?: boolean | null, MaxItems?: number | null } | null };
+
 export type GetCompanyByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
@@ -3667,13 +3679,6 @@ export type GetDiscountByIdQueryVariables = Exact<{
 
 export type GetDiscountByIdQuery = { __typename?: 'Query', discountsById?: { __typename?: 'DiscountsInDB', DiscountID: number, DiscountName: string, Percentage: number } | null };
 
-export type GetDocumentByIdQueryVariables = Exact<{
-  id: Scalars['Int']['input'];
-}>;
-
-
-export type GetDocumentByIdQuery = { __typename?: 'Query', commercialdocumentsById?: { __typename?: 'CommercialDocumentsInDB', DocumentID: number, CompanyID: number, BranchID: number, DocumentTypeID: number, DocumentDescription: string, DocumentNumber: number, PointOfSale: number, IsActive: boolean, IsTest: boolean, ShouldAccount: boolean, AffectsStock: boolean, IsFiscal?: boolean | null, IsElectronic?: boolean | null, IsManual?: boolean | null, IsQuotation?: boolean | null, MaxItems?: number | null } | null };
-
 export type GetDocumentTypesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3685,6 +3690,13 @@ export type GetFilterFieldsQueryVariables = Exact<{
 
 
 export type GetFilterFieldsQuery = { __typename?: 'Query', filterFields: Array<{ __typename?: 'FilterField', field: string, label: string, type: string, relationModel?: string | null, dependsOn?: string | null }> };
+
+export type GetFiscalDocumentTypeQueryVariables = Exact<{
+  DocumentTypeID: Scalars['Int']['input'];
+}>;
+
+
+export type GetFiscalDocumentTypeQuery = { __typename?: 'Query', sysFiscalDocType?: { __typename?: 'SysFiscalDocTypesInDB', DocumentTypeID: number, Name: string } | null };
 
 export type GetItemByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -3745,7 +3757,7 @@ export type GetPricelistByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetPricelistByIdQuery = { __typename?: 'Query', pricelistsById?: { __typename?: 'PriceListsInDB', PriceListID: number, PriceListName: string, PriceListDescription?: string | null, IsActive?: boolean | null } | null };
+export type GetPricelistByIdQuery = { __typename?: 'Query', pricelistsById?: { __typename?: 'PriceListsInDB', PriceListID: number, PriceListName: string, PriceListDescription?: string | null, IsActive?: boolean | null, CompanyID: number, CreatedDate?: any | null } | null };
 
 export type GetPricelistItemsFilteredQueryVariables = Exact<{
   priceListID?: InputMaybe<Scalars['Int']['input']>;
@@ -3769,6 +3781,7 @@ export type GetProvincesByCountryQuery = { __typename?: 'Query', provincesByCoun
 
 export type GetRelationsQueryVariables = Exact<{
   Branch?: InputMaybe<Scalars['Boolean']['input']>;
+  Car?: InputMaybe<Scalars['Boolean']['input']>;
   Company?: InputMaybe<Scalars['Boolean']['input']>;
   Country?: InputMaybe<Scalars['Boolean']['input']>;
   CreditCard?: InputMaybe<Scalars['Boolean']['input']>;
@@ -3776,10 +3789,11 @@ export type GetRelationsQueryVariables = Exact<{
   Pricelist?: InputMaybe<Scalars['Boolean']['input']>;
   Province?: InputMaybe<Scalars['Boolean']['input']>;
   Vendor?: InputMaybe<Scalars['Boolean']['input']>;
+  Warehouse?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 
-export type GetRelationsQuery = { __typename?: 'Query', Branch?: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string }>, Company?: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }>, Country?: Array<{ __typename?: 'CountriesInDB', CountryID: number, CountryName: string }>, CreditCard?: Array<{ __typename?: 'CreditCardsInDB', CreditCardID: number, CreditCardGroupID: number, CardName: string }>, DocType?: Array<{ __typename?: 'SysIdentityDocTypesInDB', DocTypeID: number, DocTypeName: string }>, PriceList?: Array<{ __typename?: 'PriceListsInDB', PriceListID: number, PriceListName: string }>, Province?: Array<{ __typename?: 'ProvincesInDB', ProvinceID: number, CountryID: number, ProvinceName: string }>, Vendor?: Array<{ __typename?: 'VendorsInDB', VendorID: number, VendorName: string }> };
+export type GetRelationsQuery = { __typename?: 'Query', Branch?: Array<{ __typename?: 'BranchesInDB', id: number, name: string }>, Car?: Array<{ __typename?: 'CarsInDB', id?: number | null, Name: string }>, Company?: Array<{ __typename?: 'CompanyInDB', id: number, name?: string | null }>, Country?: Array<{ __typename?: 'CountriesInDB', id: number, name: string }>, CreditCard?: Array<{ __typename?: 'CreditCardsInDB', id: number, name: string }>, DocType?: Array<{ __typename?: 'SysIdentityDocTypesInDB', id: number, name: string }>, PriceList?: Array<{ __typename?: 'PriceListsInDB', id: number, name: string }>, Province?: Array<{ __typename?: 'ProvincesInDB', id: number, name: string }>, Vendor?: Array<{ __typename?: 'VendorsInDB', id: number, name: string }>, Warehouse?: Array<{ __typename?: 'WarehousesInDB', id: number, name: string }> };
 
 export type GetRoleByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -3849,6 +3863,13 @@ export type GetUserpermissionsByIdQueryVariables = Exact<{
 
 export type GetUserpermissionsByIdQuery = { __typename?: 'Query', userpermissionsById?: { __typename?: 'UserPermissionsInDB', UserID: number, CompanyID: number, BranchID: number, RoleID: number, UserData?: { __typename?: 'UsersInDB', Nickname?: string | null, FullName?: string | null } | null, CompanyData?: { __typename?: 'CompanyInDB', CompanyName?: string | null } | null, RoleData?: { __typename?: 'RolesInDB', RoleName: string } | null, BranchData?: { __typename?: 'BranchesInDB', BranchName: string } | null } | null };
 
+export type GetUserpermissionsFormDataQueryVariables = Exact<{
+  companyID: Scalars['Int']['input'];
+}>;
+
+
+export type GetUserpermissionsFormDataQuery = { __typename?: 'Query', allUsers: Array<{ __typename?: 'UsersInDB', UserID: number, Nickname?: string | null, FullName?: string | null, IsActive?: boolean | null }>, allCompany: Array<{ __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null }>, allRoles: Array<{ __typename?: 'RolesInDB', RoleID: number, RoleName: string }>, branchesByCompany: Array<{ __typename?: 'BranchesInDB', BranchID: number, CompanyID: number, BranchName: string }> };
+
 export type GetVendorsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3864,7 +3885,7 @@ export type GetWarehouseByIdQuery = { __typename?: 'Query', warehousesById?: { _
 export type GetWarehousesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetWarehousesQuery = { __typename?: 'Query', allWarehouses: Array<{ __typename?: 'WarehousesInDB', WarehouseID: number, WarehouseName: string, Address?: string | null, CompanCompanyData?: { __typename?: 'CompanyInDB', CompanyID: number, CompanyName?: string | null } | null }> };
+export type GetWarehousesQuery = { __typename?: 'Query', allWarehouses: Array<{ __typename?: 'WarehousesInDB', WarehouseID: number, WarehouseName: string, Address?: string | null }> };
 
 export type SearchClientsQueryVariables = Exact<{
   searchTerm: Scalars['String']['input'];
@@ -7392,6 +7413,71 @@ export type GetAllClientsQueryHookResult = ReturnType<typeof useGetAllClientsQue
 export type GetAllClientsLazyQueryHookResult = ReturnType<typeof useGetAllClientsLazyQuery>;
 export type GetAllClientsSuspenseQueryHookResult = ReturnType<typeof useGetAllClientsSuspenseQuery>;
 export type GetAllClientsQueryResult = Apollo.QueryResult<GetAllClientsQuery, GetAllClientsQueryVariables>;
+export const GetAllCommercialDocumentsDocument = gql`
+    query GetAllCommercialDocuments {
+  allCommercialdocuments {
+    DocumentTypeID
+    BranchID
+    AffectsStock
+    CompanyID
+    CurrencyID
+    DocumentDescription
+    DocumentID
+    DocumentNumber
+    FromDate
+    IsActive
+    IsElectronic
+    IsFiscal
+    IsManual
+    IsQuotation
+    IsTest
+    MaxItems
+    PointOfSale
+    ShouldAccount
+  }
+  allCompany {
+    CompanyID
+    CompanyName
+  }
+  allBranches {
+    BranchID
+    CompanyID
+    BranchName
+  }
+}
+    `;
+
+/**
+ * __useGetAllCommercialDocumentsQuery__
+ *
+ * To run a query within a React component, call `useGetAllCommercialDocumentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllCommercialDocumentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllCommercialDocumentsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllCommercialDocumentsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllCommercialDocumentsQuery, GetAllCommercialDocumentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllCommercialDocumentsQuery, GetAllCommercialDocumentsQueryVariables>(GetAllCommercialDocumentsDocument, options);
+      }
+export function useGetAllCommercialDocumentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllCommercialDocumentsQuery, GetAllCommercialDocumentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllCommercialDocumentsQuery, GetAllCommercialDocumentsQueryVariables>(GetAllCommercialDocumentsDocument, options);
+        }
+export function useGetAllCommercialDocumentsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllCommercialDocumentsQuery, GetAllCommercialDocumentsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllCommercialDocumentsQuery, GetAllCommercialDocumentsQueryVariables>(GetAllCommercialDocumentsDocument, options);
+        }
+export type GetAllCommercialDocumentsQueryHookResult = ReturnType<typeof useGetAllCommercialDocumentsQuery>;
+export type GetAllCommercialDocumentsLazyQueryHookResult = ReturnType<typeof useGetAllCommercialDocumentsLazyQuery>;
+export type GetAllCommercialDocumentsSuspenseQueryHookResult = ReturnType<typeof useGetAllCommercialDocumentsSuspenseQuery>;
+export type GetAllCommercialDocumentsQueryResult = Apollo.QueryResult<GetAllCommercialDocumentsQuery, GetAllCommercialDocumentsQueryVariables>;
 export const GetAllCompaniesDocument = gql`
     query GetAllCompanies {
   allCompany {
@@ -7565,61 +7651,6 @@ export type GetAllDiscountsQueryHookResult = ReturnType<typeof useGetAllDiscount
 export type GetAllDiscountsLazyQueryHookResult = ReturnType<typeof useGetAllDiscountsLazyQuery>;
 export type GetAllDiscountsSuspenseQueryHookResult = ReturnType<typeof useGetAllDiscountsSuspenseQuery>;
 export type GetAllDiscountsQueryResult = Apollo.QueryResult<GetAllDiscountsQuery, GetAllDiscountsQueryVariables>;
-export const GetAllDocumentsDocument = gql`
-    query GetAllDocuments {
-  allCommercialdocuments {
-    DocumentID
-    CompanyID
-    BranchID
-    DocumentTypeID
-    DocumentNumber
-    PointOfSale
-    IsActive
-    ShouldAccount
-    IsFiscal
-    IsElectronic
-    IsManual
-    IsQuotation
-    MaxItems
-    DocumentDescription
-    IsTest
-    FromDate
-    CurrencyID
-  }
-}
-    `;
-
-/**
- * __useGetAllDocumentsQuery__
- *
- * To run a query within a React component, call `useGetAllDocumentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllDocumentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllDocumentsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllDocumentsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllDocumentsQuery, GetAllDocumentsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllDocumentsQuery, GetAllDocumentsQueryVariables>(GetAllDocumentsDocument, options);
-      }
-export function useGetAllDocumentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllDocumentsQuery, GetAllDocumentsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllDocumentsQuery, GetAllDocumentsQueryVariables>(GetAllDocumentsDocument, options);
-        }
-export function useGetAllDocumentsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllDocumentsQuery, GetAllDocumentsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetAllDocumentsQuery, GetAllDocumentsQueryVariables>(GetAllDocumentsDocument, options);
-        }
-export type GetAllDocumentsQueryHookResult = ReturnType<typeof useGetAllDocumentsQuery>;
-export type GetAllDocumentsLazyQueryHookResult = ReturnType<typeof useGetAllDocumentsLazyQuery>;
-export type GetAllDocumentsSuspenseQueryHookResult = ReturnType<typeof useGetAllDocumentsSuspenseQuery>;
-export type GetAllDocumentsQueryResult = Apollo.QueryResult<GetAllDocumentsQuery, GetAllDocumentsQueryVariables>;
 export const GetAllItemCategoriesDocument = gql`
     query GetAllItemCategories {
   allItemcategories {
@@ -7777,6 +7808,51 @@ export type GetAllItemsQueryHookResult = ReturnType<typeof useGetAllItemsQuery>;
 export type GetAllItemsLazyQueryHookResult = ReturnType<typeof useGetAllItemsLazyQuery>;
 export type GetAllItemsSuspenseQueryHookResult = ReturnType<typeof useGetAllItemsSuspenseQuery>;
 export type GetAllItemsQueryResult = Apollo.QueryResult<GetAllItemsQuery, GetAllItemsQueryVariables>;
+export const GetAllOrderDetailsDocument = gql`
+    query GetAllOrderDetails {
+  allOrderdetails {
+    CompanyID
+    OrderDetailID
+    OrderID
+    LineDescription
+    ItemData {
+      ItemDescription
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllOrderDetailsQuery__
+ *
+ * To run a query within a React component, call `useGetAllOrderDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllOrderDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllOrderDetailsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllOrderDetailsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllOrderDetailsQuery, GetAllOrderDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllOrderDetailsQuery, GetAllOrderDetailsQueryVariables>(GetAllOrderDetailsDocument, options);
+      }
+export function useGetAllOrderDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllOrderDetailsQuery, GetAllOrderDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllOrderDetailsQuery, GetAllOrderDetailsQueryVariables>(GetAllOrderDetailsDocument, options);
+        }
+export function useGetAllOrderDetailsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllOrderDetailsQuery, GetAllOrderDetailsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllOrderDetailsQuery, GetAllOrderDetailsQueryVariables>(GetAllOrderDetailsDocument, options);
+        }
+export type GetAllOrderDetailsQueryHookResult = ReturnType<typeof useGetAllOrderDetailsQuery>;
+export type GetAllOrderDetailsLazyQueryHookResult = ReturnType<typeof useGetAllOrderDetailsLazyQuery>;
+export type GetAllOrderDetailsSuspenseQueryHookResult = ReturnType<typeof useGetAllOrderDetailsSuspenseQuery>;
+export type GetAllOrderDetailsQueryResult = Apollo.QueryResult<GetAllOrderDetailsQuery, GetAllOrderDetailsQueryVariables>;
 export const GetAllOrdersDocument = gql`
     query GetAllOrders {
   allOrders {
@@ -8087,8 +8163,8 @@ export type GetAllSuppliersQueryHookResult = ReturnType<typeof useGetAllSupplier
 export type GetAllSuppliersLazyQueryHookResult = ReturnType<typeof useGetAllSuppliersLazyQuery>;
 export type GetAllSuppliersSuspenseQueryHookResult = ReturnType<typeof useGetAllSuppliersSuspenseQuery>;
 export type GetAllSuppliersQueryResult = Apollo.QueryResult<GetAllSuppliersQuery, GetAllSuppliersQueryVariables>;
-export const GetAllUseraccessDocument = gql`
-    query GetAllUseraccess {
+export const GetAllUserPermissionsDocument = gql`
+    query GetAllUserPermissions {
   allUserpermissions {
     UserID
     CompanyID
@@ -8111,36 +8187,36 @@ export const GetAllUseraccessDocument = gql`
     `;
 
 /**
- * __useGetAllUseraccessQuery__
+ * __useGetAllUserPermissionsQuery__
  *
- * To run a query within a React component, call `useGetAllUseraccessQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllUseraccessQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAllUserPermissionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllUserPermissionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetAllUseraccessQuery({
+ * const { data, loading, error } = useGetAllUserPermissionsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useGetAllUseraccessQuery(baseOptions?: Apollo.QueryHookOptions<GetAllUseraccessQuery, GetAllUseraccessQueryVariables>) {
+export function useGetAllUserPermissionsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllUserPermissionsQuery, GetAllUserPermissionsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllUseraccessQuery, GetAllUseraccessQueryVariables>(GetAllUseraccessDocument, options);
+        return Apollo.useQuery<GetAllUserPermissionsQuery, GetAllUserPermissionsQueryVariables>(GetAllUserPermissionsDocument, options);
       }
-export function useGetAllUseraccessLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllUseraccessQuery, GetAllUseraccessQueryVariables>) {
+export function useGetAllUserPermissionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllUserPermissionsQuery, GetAllUserPermissionsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllUseraccessQuery, GetAllUseraccessQueryVariables>(GetAllUseraccessDocument, options);
+          return Apollo.useLazyQuery<GetAllUserPermissionsQuery, GetAllUserPermissionsQueryVariables>(GetAllUserPermissionsDocument, options);
         }
-export function useGetAllUseraccessSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllUseraccessQuery, GetAllUseraccessQueryVariables>) {
+export function useGetAllUserPermissionsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllUserPermissionsQuery, GetAllUserPermissionsQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetAllUseraccessQuery, GetAllUseraccessQueryVariables>(GetAllUseraccessDocument, options);
+          return Apollo.useSuspenseQuery<GetAllUserPermissionsQuery, GetAllUserPermissionsQueryVariables>(GetAllUserPermissionsDocument, options);
         }
-export type GetAllUseraccessQueryHookResult = ReturnType<typeof useGetAllUseraccessQuery>;
-export type GetAllUseraccessLazyQueryHookResult = ReturnType<typeof useGetAllUseraccessLazyQuery>;
-export type GetAllUseraccessSuspenseQueryHookResult = ReturnType<typeof useGetAllUseraccessSuspenseQuery>;
-export type GetAllUseraccessQueryResult = Apollo.QueryResult<GetAllUseraccessQuery, GetAllUseraccessQueryVariables>;
+export type GetAllUserPermissionsQueryHookResult = ReturnType<typeof useGetAllUserPermissionsQuery>;
+export type GetAllUserPermissionsLazyQueryHookResult = ReturnType<typeof useGetAllUserPermissionsLazyQuery>;
+export type GetAllUserPermissionsSuspenseQueryHookResult = ReturnType<typeof useGetAllUserPermissionsSuspenseQuery>;
+export type GetAllUserPermissionsQueryResult = Apollo.QueryResult<GetAllUserPermissionsQuery, GetAllUserPermissionsQueryVariables>;
 export const GetAllUsersDocument = gql`
     query GetAllUsers {
   allUsers {
@@ -8945,6 +9021,61 @@ export type GetClientsByCompanyQueryHookResult = ReturnType<typeof useGetClients
 export type GetClientsByCompanyLazyQueryHookResult = ReturnType<typeof useGetClientsByCompanyLazyQuery>;
 export type GetClientsByCompanySuspenseQueryHookResult = ReturnType<typeof useGetClientsByCompanySuspenseQuery>;
 export type GetClientsByCompanyQueryResult = Apollo.QueryResult<GetClientsByCompanyQuery, GetClientsByCompanyQueryVariables>;
+export const GetCommercialDocumentByIdDocument = gql`
+    query GetCommercialDocumentById($id: Int!) {
+  commercialdocumentsById(id: $id) {
+    DocumentID
+    CompanyID
+    BranchID
+    DocumentTypeID
+    DocumentDescription
+    DocumentNumber
+    PointOfSale
+    IsActive
+    IsTest
+    ShouldAccount
+    AffectsStock
+    IsFiscal
+    IsElectronic
+    IsManual
+    IsQuotation
+    MaxItems
+  }
+}
+    `;
+
+/**
+ * __useGetCommercialDocumentByIdQuery__
+ *
+ * To run a query within a React component, call `useGetCommercialDocumentByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommercialDocumentByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCommercialDocumentByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCommercialDocumentByIdQuery(baseOptions: Apollo.QueryHookOptions<GetCommercialDocumentByIdQuery, GetCommercialDocumentByIdQueryVariables> & ({ variables: GetCommercialDocumentByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCommercialDocumentByIdQuery, GetCommercialDocumentByIdQueryVariables>(GetCommercialDocumentByIdDocument, options);
+      }
+export function useGetCommercialDocumentByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommercialDocumentByIdQuery, GetCommercialDocumentByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCommercialDocumentByIdQuery, GetCommercialDocumentByIdQueryVariables>(GetCommercialDocumentByIdDocument, options);
+        }
+export function useGetCommercialDocumentByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCommercialDocumentByIdQuery, GetCommercialDocumentByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCommercialDocumentByIdQuery, GetCommercialDocumentByIdQueryVariables>(GetCommercialDocumentByIdDocument, options);
+        }
+export type GetCommercialDocumentByIdQueryHookResult = ReturnType<typeof useGetCommercialDocumentByIdQuery>;
+export type GetCommercialDocumentByIdLazyQueryHookResult = ReturnType<typeof useGetCommercialDocumentByIdLazyQuery>;
+export type GetCommercialDocumentByIdSuspenseQueryHookResult = ReturnType<typeof useGetCommercialDocumentByIdSuspenseQuery>;
+export type GetCommercialDocumentByIdQueryResult = Apollo.QueryResult<GetCommercialDocumentByIdQuery, GetCommercialDocumentByIdQueryVariables>;
 export const GetCompanyByIdDocument = gql`
     query GetCompanyById($id: Int!) {
   companyById(id: $id) {
@@ -9222,61 +9353,6 @@ export type GetDiscountByIdQueryHookResult = ReturnType<typeof useGetDiscountByI
 export type GetDiscountByIdLazyQueryHookResult = ReturnType<typeof useGetDiscountByIdLazyQuery>;
 export type GetDiscountByIdSuspenseQueryHookResult = ReturnType<typeof useGetDiscountByIdSuspenseQuery>;
 export type GetDiscountByIdQueryResult = Apollo.QueryResult<GetDiscountByIdQuery, GetDiscountByIdQueryVariables>;
-export const GetDocumentByIdDocument = gql`
-    query GetDocumentById($id: Int!) {
-  commercialdocumentsById(id: $id) {
-    DocumentID
-    CompanyID
-    BranchID
-    DocumentTypeID
-    DocumentDescription
-    DocumentNumber
-    PointOfSale
-    IsActive
-    IsTest
-    ShouldAccount
-    AffectsStock
-    IsFiscal
-    IsElectronic
-    IsManual
-    IsQuotation
-    MaxItems
-  }
-}
-    `;
-
-/**
- * __useGetDocumentByIdQuery__
- *
- * To run a query within a React component, call `useGetDocumentByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetDocumentByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetDocumentByIdQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetDocumentByIdQuery(baseOptions: Apollo.QueryHookOptions<GetDocumentByIdQuery, GetDocumentByIdQueryVariables> & ({ variables: GetDocumentByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetDocumentByIdQuery, GetDocumentByIdQueryVariables>(GetDocumentByIdDocument, options);
-      }
-export function useGetDocumentByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDocumentByIdQuery, GetDocumentByIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetDocumentByIdQuery, GetDocumentByIdQueryVariables>(GetDocumentByIdDocument, options);
-        }
-export function useGetDocumentByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetDocumentByIdQuery, GetDocumentByIdQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetDocumentByIdQuery, GetDocumentByIdQueryVariables>(GetDocumentByIdDocument, options);
-        }
-export type GetDocumentByIdQueryHookResult = ReturnType<typeof useGetDocumentByIdQuery>;
-export type GetDocumentByIdLazyQueryHookResult = ReturnType<typeof useGetDocumentByIdLazyQuery>;
-export type GetDocumentByIdSuspenseQueryHookResult = ReturnType<typeof useGetDocumentByIdSuspenseQuery>;
-export type GetDocumentByIdQueryResult = Apollo.QueryResult<GetDocumentByIdQuery, GetDocumentByIdQueryVariables>;
 export const GetDocumentTypesDocument = gql`
     query GetDocumentTypes {
   sysIdentityDocTypes {
@@ -9361,6 +9437,47 @@ export type GetFilterFieldsQueryHookResult = ReturnType<typeof useGetFilterField
 export type GetFilterFieldsLazyQueryHookResult = ReturnType<typeof useGetFilterFieldsLazyQuery>;
 export type GetFilterFieldsSuspenseQueryHookResult = ReturnType<typeof useGetFilterFieldsSuspenseQuery>;
 export type GetFilterFieldsQueryResult = Apollo.QueryResult<GetFilterFieldsQuery, GetFilterFieldsQueryVariables>;
+export const GetFiscalDocumentTypeDocument = gql`
+    query GetFiscalDocumentType($DocumentTypeID: Int!) {
+  sysFiscalDocType(documentTypeId: $DocumentTypeID) {
+    DocumentTypeID
+    Name
+  }
+}
+    `;
+
+/**
+ * __useGetFiscalDocumentTypeQuery__
+ *
+ * To run a query within a React component, call `useGetFiscalDocumentTypeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFiscalDocumentTypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFiscalDocumentTypeQuery({
+ *   variables: {
+ *      DocumentTypeID: // value for 'DocumentTypeID'
+ *   },
+ * });
+ */
+export function useGetFiscalDocumentTypeQuery(baseOptions: Apollo.QueryHookOptions<GetFiscalDocumentTypeQuery, GetFiscalDocumentTypeQueryVariables> & ({ variables: GetFiscalDocumentTypeQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFiscalDocumentTypeQuery, GetFiscalDocumentTypeQueryVariables>(GetFiscalDocumentTypeDocument, options);
+      }
+export function useGetFiscalDocumentTypeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFiscalDocumentTypeQuery, GetFiscalDocumentTypeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFiscalDocumentTypeQuery, GetFiscalDocumentTypeQueryVariables>(GetFiscalDocumentTypeDocument, options);
+        }
+export function useGetFiscalDocumentTypeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetFiscalDocumentTypeQuery, GetFiscalDocumentTypeQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetFiscalDocumentTypeQuery, GetFiscalDocumentTypeQueryVariables>(GetFiscalDocumentTypeDocument, options);
+        }
+export type GetFiscalDocumentTypeQueryHookResult = ReturnType<typeof useGetFiscalDocumentTypeQuery>;
+export type GetFiscalDocumentTypeLazyQueryHookResult = ReturnType<typeof useGetFiscalDocumentTypeLazyQuery>;
+export type GetFiscalDocumentTypeSuspenseQueryHookResult = ReturnType<typeof useGetFiscalDocumentTypeSuspenseQuery>;
+export type GetFiscalDocumentTypeQueryResult = Apollo.QueryResult<GetFiscalDocumentTypeQuery, GetFiscalDocumentTypeQueryVariables>;
 export const GetItemByIdDocument = gql`
     query GetItemById($id: Int!, $companyId: Int!) {
   itemsById(id: $id, companyID: $companyId) {
@@ -9772,6 +9889,8 @@ export const GetPricelistByIdDocument = gql`
     PriceListName
     PriceListDescription
     IsActive
+    CompanyID
+    CreatedDate
   }
 }
     `;
@@ -9941,41 +10060,46 @@ export type GetProvincesByCountryLazyQueryHookResult = ReturnType<typeof useGetP
 export type GetProvincesByCountrySuspenseQueryHookResult = ReturnType<typeof useGetProvincesByCountrySuspenseQuery>;
 export type GetProvincesByCountryQueryResult = Apollo.QueryResult<GetProvincesByCountryQuery, GetProvincesByCountryQueryVariables>;
 export const GetRelationsDocument = gql`
-    query GetRelations($Branch: Boolean = false, $Company: Boolean = false, $Country: Boolean = false, $CreditCard: Boolean = false, $DocType: Boolean = false, $Pricelist: Boolean = false, $Province: Boolean = false, $Vendor: Boolean = false) {
+    query GetRelations($Branch: Boolean = false, $Car: Boolean = false, $Company: Boolean = false, $Country: Boolean = false, $CreditCard: Boolean = false, $DocType: Boolean = false, $Pricelist: Boolean = false, $Province: Boolean = false, $Vendor: Boolean = false, $Warehouse: Boolean = false) {
   Branch: allBranches @include(if: $Branch) {
-    BranchID
-    CompanyID
-    BranchName
+    id: BranchID
+    name: BranchName
+  }
+  Car: allCars @include(if: $Car) {
+    id: CompanyID
+    Name: LicensePlate
   }
   Company: allCompany @include(if: $Company) {
-    CompanyID
-    CompanyName
+    id: CompanyID
+    name: CompanyName
   }
   Country: allCountries @include(if: $Country) {
-    CountryID
-    CountryName
+    id: CountryID
+    name: CountryName
   }
   CreditCard: allCreditcards @include(if: $CreditCard) {
-    CreditCardID
-    CreditCardGroupID
-    CardName
+    id: CreditCardID
+    name: CardName
   }
   DocType: sysIdentityDocTypes @include(if: $DocType) {
-    DocTypeID
-    DocTypeName
+    id: DocTypeID
+    name: DocTypeName
   }
   PriceList: allPricelists @include(if: $Pricelist) {
-    PriceListID
-    PriceListName
+    id: PriceListID
+    name: PriceListName
   }
   Province: allProvinces @include(if: $Province) {
-    ProvinceID
-    CountryID
-    ProvinceName
+    id: ProvinceID
+    name: ProvinceName
   }
   Vendor: allVendors @include(if: $Vendor) {
-    VendorID
-    VendorName
+    id: VendorID
+    name: VendorName
+  }
+  Warehouse: allWarehouses @include(if: $Warehouse) {
+    id: WarehouseID
+    name: WarehouseName
   }
 }
     `;
@@ -9993,6 +10117,7 @@ export const GetRelationsDocument = gql`
  * const { data, loading, error } = useGetRelationsQuery({
  *   variables: {
  *      Branch: // value for 'Branch'
+ *      Car: // value for 'Car'
  *      Company: // value for 'Company'
  *      Country: // value for 'Country'
  *      CreditCard: // value for 'CreditCard'
@@ -10000,6 +10125,7 @@ export const GetRelationsDocument = gql`
  *      Pricelist: // value for 'Pricelist'
  *      Province: // value for 'Province'
  *      Vendor: // value for 'Vendor'
+ *      Warehouse: // value for 'Warehouse'
  *   },
  * });
  */
@@ -10513,6 +10639,62 @@ export type GetUserpermissionsByIdQueryHookResult = ReturnType<typeof useGetUser
 export type GetUserpermissionsByIdLazyQueryHookResult = ReturnType<typeof useGetUserpermissionsByIdLazyQuery>;
 export type GetUserpermissionsByIdSuspenseQueryHookResult = ReturnType<typeof useGetUserpermissionsByIdSuspenseQuery>;
 export type GetUserpermissionsByIdQueryResult = Apollo.QueryResult<GetUserpermissionsByIdQuery, GetUserpermissionsByIdQueryVariables>;
+export const GetUserpermissionsFormDataDocument = gql`
+    query GetUserpermissionsFormData($companyID: Int!) {
+  allUsers {
+    UserID
+    Nickname
+    FullName
+    IsActive
+  }
+  allCompany {
+    CompanyID
+    CompanyName
+  }
+  allRoles {
+    RoleID
+    RoleName
+  }
+  branchesByCompany(companyID: $companyID) {
+    BranchID
+    CompanyID
+    BranchName
+  }
+}
+    `;
+
+/**
+ * __useGetUserpermissionsFormDataQuery__
+ *
+ * To run a query within a React component, call `useGetUserpermissionsFormDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserpermissionsFormDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserpermissionsFormDataQuery({
+ *   variables: {
+ *      companyID: // value for 'companyID'
+ *   },
+ * });
+ */
+export function useGetUserpermissionsFormDataQuery(baseOptions: Apollo.QueryHookOptions<GetUserpermissionsFormDataQuery, GetUserpermissionsFormDataQueryVariables> & ({ variables: GetUserpermissionsFormDataQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserpermissionsFormDataQuery, GetUserpermissionsFormDataQueryVariables>(GetUserpermissionsFormDataDocument, options);
+      }
+export function useGetUserpermissionsFormDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserpermissionsFormDataQuery, GetUserpermissionsFormDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserpermissionsFormDataQuery, GetUserpermissionsFormDataQueryVariables>(GetUserpermissionsFormDataDocument, options);
+        }
+export function useGetUserpermissionsFormDataSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUserpermissionsFormDataQuery, GetUserpermissionsFormDataQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUserpermissionsFormDataQuery, GetUserpermissionsFormDataQueryVariables>(GetUserpermissionsFormDataDocument, options);
+        }
+export type GetUserpermissionsFormDataQueryHookResult = ReturnType<typeof useGetUserpermissionsFormDataQuery>;
+export type GetUserpermissionsFormDataLazyQueryHookResult = ReturnType<typeof useGetUserpermissionsFormDataLazyQuery>;
+export type GetUserpermissionsFormDataSuspenseQueryHookResult = ReturnType<typeof useGetUserpermissionsFormDataSuspenseQuery>;
+export type GetUserpermissionsFormDataQueryResult = Apollo.QueryResult<GetUserpermissionsFormDataQuery, GetUserpermissionsFormDataQueryVariables>;
 export const GetVendorsDocument = gql`
     query GetVendors {
   allVendors {
@@ -10603,10 +10785,6 @@ export const GetWarehousesDocument = gql`
     WarehouseID
     WarehouseName
     Address
-    CompanCompanyData {
-      CompanyID
-      CompanyName
-    }
   }
 }
     `;

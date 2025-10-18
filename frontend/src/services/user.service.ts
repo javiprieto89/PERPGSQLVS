@@ -3,7 +3,7 @@ import type {
   CreateUserRecordMutation,
   DeleteUserPermissionsMutation,
   DeleteUserRecordMutation,
-  GetAllUseraccessQuery,
+  GetAllUserPermissionsQuery,
   GetAllUsersQuery,
   GetUserByIdQuery,
   UpdateUserPermissionsMutation,
@@ -12,6 +12,7 @@ import type {
   UserPermissionsCreate,
   UserUpdate,
 } from "~/graphql/_generated/graphql";
+import { GetAllUserPermissionsDocument } from "~/graphql/_generated/graphql";
 import { graphqlClient } from "~/graphql/graphql-client";
 import CreateUserPermissionsGQL from "~/graphql/mutations/CreateUserPermissions.graphql";
 import CreateUserRecordGQL from "~/graphql/mutations/CreateUserRecord.graphql";
@@ -19,10 +20,9 @@ import DeleteUserPermissionsGQL from "~/graphql/mutations/DeleteUserPermissions.
 import DeleteUserRecordGQL from "~/graphql/mutations/DeleteUserRecord.graphql";
 import UpdateUserPermissionsGQL from "~/graphql/mutations/UpdateUserPermissions.graphql";
 import UpdateUserRecordGQL from "~/graphql/mutations/UpdateUserRecord.graphql";
-import GetAllUseraccessGQL from "~/graphql/queries/GetAllUseraccess.graphql";
 import GetAllUsersGQL from "~/graphql/queries/GetAllUsers.graphql";
-import GetUseraccessByIdGQL from "~/graphql/queries/GetUseraccessById.graphql";
 import GetUserByIdGQL from "~/graphql/queries/GetUserById.graphql";
+import GetUserpermissionsByIdGQL from "~/graphql/queries/GetUserpermissionsById.graphql";
 
 export const userService = {
   async getAllUsers() {
@@ -98,8 +98,8 @@ export const userService = {
 export const userPermissionsOperations = {
   async getAllUserPermissions() {
     try {
-      const data = await graphqlClient.query<GetAllUseraccessQuery>(
-        GetAllUseraccessGQL
+      const data = await graphqlClient.query<GetAllUserPermissionsQuery>(
+        GetAllUserPermissionsDocument
       );
       return data.allUserpermissions || [];
     } catch (error) {
@@ -116,7 +116,7 @@ export const userPermissionsOperations = {
   ) {
     try {
       const data = await graphqlClient.query<GetUserByIdQuery>(
-        GetUseraccessByIdGQL,
+        GetUserpermissionsByIdGQL,
         {
           userID,
           companyID,

@@ -6,6 +6,7 @@ __pycache__/
 node_modules/
 Errores-terminal.txt
 frontend-rr
+agents
 
 # Allow .env.example but exclude all others
 !.env.example

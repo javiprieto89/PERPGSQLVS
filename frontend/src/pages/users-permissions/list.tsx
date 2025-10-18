@@ -1,5 +1,9 @@
-// frontend/src/pages/RolesUsers.jsx
+// frontend/src/pages/RolesUsers.tsx - Roles and Users Management
+import type { ColumnDef } from "@tanstack/react-table";
+import { Plus, UserCheck } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { DataTable } from "~/components/table/DataTable";
 import {
@@ -10,64 +14,44 @@ import TableFilters from "~/components/TableFilters";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
-import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
-import { useGetAllUseraccessQuery } from "~/graphql/_generated/graphql";
-import { userPermissionsOperations } from "~/services/user.service";
-import { openReactWindow } from "~/utils/openReactWindow";
-import UserAccessForm from "./UserAccessForm";
+import { Button } from "~/components/ui/button";
 
-export default function RolesUsers() {
-  const { data, error, loading, refetch } = useGetAllUseraccessQuery();
-  const [records, setRecords] = useState([]);
+import { useGetAllUserPermissionsQuery } from "~/graphql/_generated/graphql";
+import { userPermissionsOperations } from "~/services/user.service";
+
+type DataInDB = any; // UserPermissionsInDb has type issues, using any temporarily
+
+export function UserPermissions() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { highlight } = location.state || {}; // Destructure with a default empty object for safety
+
+  const { data, error, loading, refetch } = useGetAllUserPermissionsQuery({
+    notifyOnNetworkStatusChange: true,
+  });
+  const [dataState, setDataState] = useState<DataInDB[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const handleFilterChange = (filtered) => {
-    setRecords(filtered);
+  const allData = data?.allUserpermissions || [];
+
+  const handleFilterChange = (filtered: DataInDB[]) => {
+    setDataState(filtered);
   };
 
-  const handleCreate = useCallback(() => {
-    openReactWindow(
-      (popup) => (
-        <UserAccessForm
-          onSave={() => {
-            popup.opener.postMessage("reload-useraccess", "*");
-            popup.close();
-          }}
-          onClose={() => {
-            popup.close();
-            refetch();
-          }}
-        />
-      ),
-      "Nueva Asignación"
-    );
-  }, [refetch]);
+  const handleCreate = useCallback(() => navigate(`form`), [navigate]);
 
   const handleEdit = useCallback(
-    (record) => {
-      openReactWindow(
-        (popup) => (
-          <UserAccessForm
-            record={record}
-            onSave={() => {
-              popup.opener.postMessage("reload-useraccess", "*");
-              popup.close();
-            }}
-            onClose={() => {
-              popup.close();
-              refetch();
-            }}
-          />
-        ),
-        "Editar Asignación"
-      );
+    (row: DataInDB) => {
+      // Create a composite ID for user access records
+      const compositeId = `${row.UserID}-${row.CompanyID}-${row.BranchID}-${row.RoleID}`;
+      navigate(`form/${compositeId}`);
     },
-    [refetch]
+    [navigate]
   );
 
   const handleDelete = useCallback(
-    async (record) => {
+    async (record: DataInDB) => {
       if (!confirm("¿Borrar asignación?")) return;
       try {
         await userPermissionsOperations.delete({
@@ -85,7 +69,7 @@ export default function RolesUsers() {
   );
 
   useEffect(() => {
-    const handler = (e) => {
+    const handler = (e: MessageEvent) => {
       if (e.data === "reload-useraccess") {
         refetch();
       }
@@ -95,12 +79,12 @@ export default function RolesUsers() {
   }, [refetch]);
 
   useEffect(() => {
-    if (data?.allUseraccess) {
-      setRecords(data.allUseraccess);
+    if (allData.length > 0 && dataState.length === 0) {
+      setDataState(allData);
     }
-  }, [data]);
+  }, [allData]);
 
-  const columns = useMemo(
+  const columns = useMemo<ColumnDef<DataInDB>[]>(
     () => [
       {
         header: "ID",
@@ -117,13 +101,13 @@ export default function RolesUsers() {
         header: "Compañía",
         accessorKey: "CompanyID",
         cell: ({ row, getValue }) =>
-          row.original.CompanyData?.Name || getValue(),
+          row.original.CompanyData?.CompanyName || getValue(),
       },
       {
         header: "Sucursal",
         accessorKey: "BranchID",
         cell: ({ row, getValue }) =>
-          row.original.BranchData?.Name || getValue(),
+          row.original.BranchData?.BranchName || getValue(),
       },
       {
         header: "Rol",
@@ -148,11 +132,15 @@ export default function RolesUsers() {
     [handleDelete, handleEdit]
   );
 
+  const defaultColumnVisibility = {
+    id: false,
+  };
+
   return (
-    <section className="section">
+    <>
       <AdminTopBar title="Roles y Usuarios" quickAccessHidden>
         <div className="ml-auto flex gap-2">
-          {data && data.allUseraccess.length > 0 && (
+          {allData.length > 0 && (
             <>
               <ShowFilterButton
                 onClick={() => setShowFilters(!showFilters)}
@@ -161,24 +149,59 @@ export default function RolesUsers() {
             </>
           )}
           <RefreshButton onClick={() => refetch()} loading={loading} />
-          <CreateButton title="Nuevo" onClick={handleCreate} />
+          <Button variant="primary" onClick={handleCreate}>
+            <Plus strokeWidth={3} />
+            <span className="hidden lg:inline">Nueva Asignación</span>
+          </Button>
         </div>
       </AdminTopBar>
       <div className="m-x-auto space-y-4 p-4">
+        {/* Filtros */}
         {showFilters && (
           <div className="mb-6">
             <TableFilters
               modelName="useraccess"
-              data={data.allUseraccess}
+              data={allData}
               onFilterChange={handleFilterChange}
             />
           </div>
         )}
+
+        {/* Error */}
         {error && <ApiErrorMessage error={error} />}
+
         {loading && <AlertLoading />}
+
+        {/* Estado vacío */}
+        {!error && !loading && dataState.length === 0 && (
+          <div className="bg-card border rounded-2xl text-center py-12">
+            <UserCheck size="48" className="m-auto" />
+            <h3 className="mt-2 text-sm font-medium">No hay asignaciones de roles</h3>
+            <p className="mt-1 text-sm">Comienza creando tu primera asignación de rol.</p>
+            <div className="mt-6">
+              <Button variant="primary" onClick={handleCreate}>
+                <UserCheck /> Crear Primera Asignación
+              </Button>
+            </div>
+          </div>
+        )}
+
         {loading && <AdminTableLoading />}
-        {records.length > 0 && <DataTable columns={columns} data={records} />}
+
+        {/* Lista de asignaciones */}
+        {!loading && dataState.length > 0 && (
+          <>
+            <DataTable
+              id="rolesusers"
+              defaultColumnVisibility={defaultColumnVisibility}
+              columns={columns}
+              data={dataState || []}
+              highlightValue={highlight}
+              highlightKey="UserID"
+            />
+          </>
+        )}
       </div>
-    </section>
+    </>
   );
 }

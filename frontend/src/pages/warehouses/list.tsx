@@ -75,19 +75,19 @@ export default function Warehouses() {
     () => [
       {
         header: "ID",
-        id: "id",
+        id: "Id",
         accessorKey: "WarehouseID",
         className: "first w-3",
       },
       {
         header: "Nombre",
-        id: "nombre",
+        id: "Nombre",
         accessorKey: "WarehouseName",
       },
       {
-        header: "Sucursal",
-        id: "sucursal",
-        accessorKey: "BranchData.BranchName",
+        header: "Dirección",
+        id: "Direccion",
+        accessorKey: "Address",
       },
       {
         header: "",

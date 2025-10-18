@@ -1,9 +1,16 @@
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
 import {
+  CreatePricelistDocument,
+  CreatePricelistItemDocument,
+  DeletePricelistDocument,
+  DeletePricelistItemDocument,
+  GetAllPricelistItemsDocument,
+  GetPricelistByIdDocument,
   GetPriceListFormDataDocument,
+  GetPriceListsDocument,
+  UpdatePricelistDocument,
+  UpdatePricelistItemDocument,
   type CreatePricelistMutation,
   type DeletePricelistItemMutation,
   type DeletePricelistMutation,
@@ -20,7 +27,7 @@ import {
 export const pricelistOperations = {
   async getAllPriceLists() {
     const data = await graphqlClient.query<GetPriceListsQuery>(
-      QUERIES.GET_PRICE_LISTS
+      GetPriceListsDocument
     );
     return data.allPricelists || [];
   },
@@ -32,14 +39,14 @@ export const pricelistOperations = {
   },
   async getPriceListById(id: string) {
     const data = await graphqlClient.query<GetPricelistByIdQuery>(
-      QUERIES.GET_PRICELIST_BY_ID,
+      GetPricelistByIdDocument,
       { id }
     );
     return data.pricelistsById;
   },
   async createPriceList(input: PriceListsCreate) {
     const data = await graphqlClient.mutation<CreatePricelistMutation>(
-      MUTATIONS.CREATE_PRICELIST,
+      CreatePricelistDocument,
       {
         input,
       }
@@ -48,7 +55,7 @@ export const pricelistOperations = {
   },
   async updatePricelist(id: string, input: PriceListsUpdate) {
     const data = await graphqlClient.mutation<PriceListsUpdate>(
-      MUTATIONS.UPDATE_PRICELIST,
+      UpdatePricelistDocument,
       {
         pricelistID: id,
         input,
@@ -58,7 +65,7 @@ export const pricelistOperations = {
   },
   async deletePricelist(id: string) {
     const data = await graphqlClient.mutation<DeletePricelistMutation>(
-      MUTATIONS.DELETE_PRICELIST,
+      DeletePricelistDocument,
       {
         pricelistID: id,
       }
@@ -70,7 +77,7 @@ export const pricelistOperations = {
 export const pricelistItemOperations = {
   async getAllPricelistItems() {
     const data = await graphqlClient.query<GetAllPricelistItemsQuery>(
-      QUERIES.GET_ALL_PRICELIST_ITEMS
+      GetAllPricelistItemsDocument
     );
     return data.allPricelistitems || [];
   },
@@ -87,14 +94,14 @@ export const pricelistItemOperations = {
       vars.itemID = Number(itemID);
     }
     const data = await graphqlClient.query<GetAllPricelistItemsQuery>(
-      QUERIES.GET_PRICELIST_ITEMS_FILTERED,
+      GetAllPricelistItemsDocument,
       vars
     );
     return data.allPricelistitems || [];
   },
   async createPricelistItem(input: PriceListItemsCreate) {
     const data = await graphqlClient.mutation<PriceListItemsCreate>(
-      MUTATIONS.CREATE_PRICELIST_ITEM,
+      CreatePricelistItemDocument,
       {
         input,
       }
@@ -107,7 +114,7 @@ export const pricelistItemOperations = {
     input: PriceListItemsUpdate
   ) {
     const data = await graphqlClient.mutation<PriceListItemsUpdate>(
-      MUTATIONS.UPDATE_PRICELIST_ITEM,
+      UpdatePricelistItemDocument,
       {
         pricelistID: priceListID,
         itemID,
@@ -118,7 +125,7 @@ export const pricelistItemOperations = {
   },
   async deletePricelistItem(priceListID: string, itemID: string) {
     const data = await graphqlClient.mutation<DeletePricelistItemMutation>(
-      MUTATIONS.DELETE_PRICELIST_ITEM,
+      DeletePricelistItemDocument,
       {
         pricelistID: priceListID,
         itemID,

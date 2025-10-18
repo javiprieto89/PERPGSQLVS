@@ -13,6 +13,7 @@ import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
+import { CarDetails } from "~/features/car/CarDetails";
 import { useGetAllCarsQuery, type CarsInDb } from "~/graphql/_generated/graphql";
 import { carOperations } from "~/services/car.service";
 
@@ -87,12 +88,17 @@ export default function Cars() {
       {
         header: "Marca",
         id: "marca",
-        accessorKey: "BrandData.BrandName",
+        accessorKey: "CarBrandData.CrarBrandName",
       },
       {
         header: "Modelo",
         id: "modelo",
-        accessorKey: "ModelData.ModelName",
+        accessorKey: "CarModelData.CarModelName",
+      },
+      {
+        header: "Año",
+        id: "año",
+        accessorKey: "Year",
       },
       {
         header: "Cliente",
@@ -151,6 +157,8 @@ export default function Cars() {
             data={dataState}
             highlightValue={highlight}
             highlightKey="CarID"
+            getRowCanExpand={() => true}
+            renderSubComponent={({ row }) => <CarDetails car={row.original} />}
           />
         )}
         {loading && <AdminTableLoading />}

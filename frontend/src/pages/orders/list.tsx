@@ -1,30 +1,26 @@
 // src/pages/Orders.tsx
-// TODO: useGetOrderMassiveQuery needs to be refined
 import type { ColumnDef } from "@tanstack/react-table";
+import { Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import AdvancedFilter from "~/components/filter/AdvancedFilter";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { DataTable } from "~/components/table/DataTable";
 import {
   AdminTableLoading,
   TableActionButton,
 } from "~/components/table/TableExtraComponents";
-import TableFilters from "~/components/TableFilters";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
+import { Button } from "~/components/ui/button";
 import { useGetAllOrdersQuery, type OrdersInDb } from "~/graphql/_generated/graphql";
 import { orderOperations } from "~/services/order.service";
 
 type DataInDB = OrdersInDb;
 
-export default function Orders() {
-  console.warn(
-    "TODO: useGetAllOrdersQuery needs to be refined: Vendor needs to be displayed in Vendedor cell"
-  );
+export function OrdersList() {
   const location = useLocation();
   const navigate = useNavigate();
   const { highlight } = location.state || {};
@@ -34,10 +30,6 @@ export default function Orders() {
   });
   const [orders, setOrders] = useState<DataInDB[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-
-  const vendors = useMemo(() => data?.allVendors || [], [data?.allVendors]);
-
-  console.log("vendors", vendors);
 
   const handleFilterChange = (filteredClients: DataInDB[]) => {
     setOrders(filteredClients);
@@ -76,9 +68,7 @@ export default function Orders() {
   }, [refetch]);
 
   useEffect(() => {
-    console.log("useEffect data");
     if (data?.allOrders) {
-      console.log("Y CLAAARO");
       setOrders(data.allOrders as DataInDB[]);
     }
   }, [data]);
@@ -96,13 +86,13 @@ export default function Orders() {
         accessorKey: "ClientData.FirstName",
         id: "Client",
         cell: ({ getValue, row }) => {
-          return `${getValue()} ${row.original.ClientData.LastName || ""}`;
+          return `${getValue()} ${row.original.ClientData?.LastName || ""}`;
         },
       },
       {
         header: "Total",
         accessorKey: "Total",
-        cell: ({ getValue }) => (getValue() || 0).toFixed(2),
+        cell: ({ getValue }) => Number(getValue() || 0).toFixed(2),
       },
       {
         header: "Condición",
@@ -114,23 +104,19 @@ export default function Orders() {
         accessorKey: "UserData.FullName",
         id: "User",
         cell: ({ getValue, row }) => {
-          return getValue() || row.original.UserData.Nickname || "";
+          return getValue() || row.original.UserData?.Nickname || "";
         },
       },
       {
         header: "Fecha",
         accessorKey: "OrderDate",
         id: "Date",
-        cell: ({ getValue }) => getValue()?.slice(0, 10),
+        cell: ({ getValue }) => String(getValue())?.slice(0, 10),
       },
       {
         header: "Vendedor",
         accessorKey: "VendorData.VendorName",
         id: "Vendor",
-        cell: ({ getValue }) => {
-          // TODO: VendorID o VendorName debería venir en orders query
-          return getValue();
-        },
       },
       {
         header: "",
@@ -146,7 +132,7 @@ export default function Orders() {
         ),
       },
     ],
-    [handleDelete, handleEdit, vendors]
+    [handleDelete, handleEdit]
   );
 
   return (
@@ -175,16 +161,17 @@ export default function Orders() {
         <div className="m-x-auto space-y-4 p-4">
           {showFilters && (
             <div className="my-6 gap-2">
-              <TableFilters
+              Work in progres...
+              {/* <TableFilters
                 modelName="orders"
                 data={data?.allOrders || []}
                 onFilterChange={handleFilterChange}
-              />
-              <AdvancedFilter
+              /> */}
+              {/* <AdvancedFilter
                 modelName="orders"
                 data={data?.allOrders || []}
                 onFilterChange={handleFilterChange}
-              />
+              /> */}
             </div>
           )}
           {error && <ApiErrorMessage error={error} />}

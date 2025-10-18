@@ -29,7 +29,7 @@ export default function SaleConditions() {
   const [dataState, setDataState] = useState<DataInDB[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const allData = data?.allSaleConditions || [];
+  const allData = data?.allSaleconditions || [];
 
   const handleFilterChange = (filtered: DataInDB[]) => {
     setDataState(filtered);

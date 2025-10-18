@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
-  GetAllDocumentsDocument,
+  GetAllCommercialDocumentsDocument,
   useCreateDocumentMutation,
-  useGetDocumentByIdQuery,
+  useGetCommercialDocumentByIdQuery,
   useUpdateDocumentMutation,
   type CommercialDocumentsCreate,
 } from "~/graphql/_generated/graphql";
@@ -30,7 +30,7 @@ export function useDocumentForm({ id }: UseDocumentFormOptions = {}) {
     data,
     error: queryError,
     loading: queryLoading,
-  } = useGetDocumentByIdQuery({
+  } = useGetCommercialDocumentByIdQuery({
     variables: { id: id! },
     skip: !id,
     fetchPolicy: "no-cache",
@@ -39,7 +39,7 @@ export function useDocumentForm({ id }: UseDocumentFormOptions = {}) {
   const refetchConfig = {
     refetchQueries: [
       {
-        query: GetAllDocumentsDocument,
+        query: GetAllCommercialDocumentsDocument,
         variables: {
           companyID: Number(AuthHelper.getSelectedAccess()?.CompanyID),
         },
@@ -100,9 +100,7 @@ export function useDocumentForm({ id }: UseDocumentFormOptions = {}) {
           highlight: highlight,
         },
       });
-      toast.message(
-        isEditing ? "Actualizado con éxito" : "Creado con éxito"
-      );
+      toast.message(isEditing ? "Actualizado con éxito" : "Creado con éxito");
     } catch (error) {
       console.error("Error saving document:", error);
       toast.error("Contacte al administrador del sistema");

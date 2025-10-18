@@ -29,7 +29,7 @@ export default function CreditCards() {
   const [dataState, setDataState] = useState<DataInDB[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const allData = data?.allCreditCards || [];
+  const allData = data?.allCreditcards || [];
 
   const handleFilterChange = (filtered: DataInDB[]) => {
     setDataState(filtered);
@@ -46,7 +46,7 @@ export default function CreditCards() {
     async (id: number) => {
       if (!confirm("¿Borrar registro?")) return;
       try {
-        await creditCardOperations.deleteCreditCard(String(id));
+        await creditCardOperations.deleteCreditCard(id);
         refetch();
       } catch (err) {
         alert("Error al borrar: " + (err as Error).message);
@@ -87,7 +87,7 @@ export default function CreditCards() {
       {
         header: "Grupo",
         id: "grupo",
-        accessorKey: "GroupData.GroupName",
+        accessorKey: "CreditCardGroupData.GroupName",
       },
       {
         header: "",

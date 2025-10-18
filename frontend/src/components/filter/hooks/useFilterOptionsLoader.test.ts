@@ -9,7 +9,7 @@ vi.mock("~/graphql/graphqlClient", () => ({
   },
 }));
 
-import { graphqlClient } from "~/graphql/graphqlClient";
+import { graphqlClient } from "~/graphql/graphql-client";
 import { useFilterOptionsLoader } from "./useFilterOptionsLoader";
 
 describe("useFilterOptionsLoader", () => {

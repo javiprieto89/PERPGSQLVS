@@ -1,6 +1,7 @@
 ﻿// frontend/src/components/TableFilters.jsx
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { graphqlClient } from "~/graphql/graphql-client";
+import { loadOptionsAsync } from "./filter/utils";
 
 const TEXT_OPERATORS = [
   { value: "all", label: "Todos" },
@@ -109,47 +110,12 @@ export default function TableFilters({ modelName, data, onFilterChange }) {
 
   // 2. Cargar opciones para campos de tipo select
   useEffect(() => {
-    console.log("EFFECT 1");
-    async function loadOptions() {
-      console.log("EFFECT 1 dentro");
-      const selectFields = filterFields.filter((f) => f.type === "select");
-      if (selectFields.length === 0) return;
-
-      const newOptions = {};
-
-      for (const field of selectFields) {
-        if (field.relationModel) {
-          try {
-            // Para modelos dependientes, no cargar inicialmente
-            if (field.dependsOn) {
-              newOptions[field.field] = [];
-            } else {
-              const queryName = getQueryName(field.relationModel);
-              const nameField = getNameField(field.relationModel);
-
-              // Construir la query dinámicamente basada en el modelo
-              let query;
-              if (field.relationModel === "Client") {
-                query = `{ ${queryName} { ${field.relationModel}ID FirstName LastName } }`;
-              } else {
-                query = `{ ${queryName} { ${field.relationModel}ID ${nameField} } }`;
-              }
-
-              const res = await graphqlClient.query(query);
-              console.log("res", JSON.stringify(res));
-              newOptions[field.field] = res[queryName] || [];
-            }
-          } catch (err) {
-            console.error(`Error cargando opciones para ${field.field}:`, err);
-            newOptions[field.field] = [];
-          }
-        }
-      }
-      setOptions(newOptions);
+    async function wrapperLoadOptions() {
+      const result = await loadOptionsAsync({ filterFields });
+      setOptions(result);
     }
-
     if (filterFields.length > 0) {
-      loadOptions();
+      wrapperLoadOptions();
     }
   }, [filterFields]);
 
