@@ -1,5 +1,6 @@
 query GetRelations(
   $Branch: Boolean = false
+  $Car: Boolean = false
   $Company: Boolean = false
   $Country: Boolean = false
   $CreditCard: Boolean = false
@@ -7,40 +8,46 @@ query GetRelations(
   $Pricelist: Boolean = false
   $Province: Boolean = false
   $Vendor: Boolean = false
+  $Warehouse: Boolean = false
 ) {
   Branch: allBranches @include(if: $Branch) {
-    BranchID
-    CompanyID
-    BranchName
+    id: BranchID
+    name: BranchName
+  }
+  Car: allCars @include(if: $Car) {
+    id: CompanyID
+    Name: LicensePlate
   }
   Company: allCompany @include(if: $Company) {
-    CompanyID
-    CompanyName
+    id: CompanyID
+    name: CompanyName
   }
   Country: allCountries @include(if: $Country) {
-    CountryID
-    CountryName
+    id: CountryID
+    name: CountryName
   }
   CreditCard: allCreditcards @include(if: $CreditCard) {
-    CreditCardID
-    CreditCardGroupID
-    CardName
+    id: CreditCardID
+    name: CardName
   }
   DocType: sysIdentityDocTypes @include(if: $DocType) {
-    DocTypeID
-    DocTypeName
+    id: DocTypeID
+    name: DocTypeName
   }
   PriceList: allPricelists @include(if: $Pricelist) {
-    PriceListID
-    PriceListName
+    id: PriceListID
+    name: PriceListName
   }
   Province: allProvinces @include(if: $Province) {
-    ProvinceID
-    CountryID
-    ProvinceName
+    id: ProvinceID
+    name: ProvinceName
   }
   Vendor: allVendors @include(if: $Vendor) {
-    VendorID
-    VendorName
+    id: VendorID
+    name: VendorName
+  }
+  Warehouse: allWarehouses @include(if: $Warehouse) {
+    id: WarehouseID
+    name: WarehouseName
   }
 }

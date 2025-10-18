@@ -1,0 +1,11 @@
+query GetAllOrderDetails {
+  allOrderdetails {
+    CompanyID
+    OrderDetailID
+    OrderID
+    LineDescription
+    ItemData {
+      ItemDescription
+    }
+  }
+}

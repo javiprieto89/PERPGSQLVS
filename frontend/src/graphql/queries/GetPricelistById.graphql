@@ -4,5 +4,7 @@ query GetPricelistById($id: Int!, $companyId: Int!) {
     PriceListName
     PriceListDescription
     IsActive
+    CompanyID
+    CreatedDate
   }
 }

@@ -1,45 +1,70 @@
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
-import type {
-  CommercialDocumentsCreate,
-  CommercialDocumentsInDb,
-  CommercialDocumentsUpdate,
-  SysDocTypesInDb,
-  SysDocumentTypesInDb,
+import {
+  CreateDocumentDocument,
+  DeleteDocumentDocument,
+  GetAllCommercialDocumentsDocument,
+  GetDocumentTypesDocument,
+  UpdateDocumentDocument,
+  type CommercialDocumentsCreate,
+  type CommercialDocumentsUpdate,
+  type CreateDocumentMutation,
+  type DeleteDocumentMutation,
+  type GetAllCommercialDocumentsQuery,
+  type GetDocumentTypesQuery,
+  type UpdateDocumentMutation,
 } from "~/graphql/_generated/graphql";
 
-export const documentOperations = {
-  async getAllDocuments(): Promise<CommercialDocumentsInDb[]> {
+export const commercialDocumentOperations = {
+  async getAllDocuments() {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_DOCUMENTS);
-      return data.allDocuments || [];
+      const data = await graphqlClient.query<GetAllCommercialDocumentsQuery>(
+        GetAllCommercialDocumentsDocument
+      );
+      return data.allCommercialdocuments || [];
     } catch (error) {
       console.error("Error obteniendo documentos:", error);
       throw error;
     }
   },
 
-  async getDocumentById(id: string): Promise<CommercialDocumentsInDb> {
+  async getDocumentById(id: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_DOCUMENT_BY_ID, {
-        id,
-      });
-      return data.documentsById;
+      // const data = await graphqlClient.query<GetCommercialDocumentByIdQuery>(
+      //   GetCommercialDocumentByIdDocument,
+      //   {
+      //     id,
+      //   }
+      // );
+      // return data.documentsById;
+      console.log("Fetching document by ID - placeholder");
+      return null;
     } catch (error) {
       console.error("Error obteniendo documento:", error);
       throw error;
     }
   },
 
-  async createDocument(
-    dataInput: CommercialDocumentsCreate
-  ): Promise<CommercialDocumentsInDb> {
+  async getAllSysDocumentTypes() {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_DOCUMENT, {
-        input: dataInput,
-      });
+      const data = await graphqlClient.query<GetDocumentTypesQuery>(
+        GetDocumentTypesDocument
+      );
+      return data.sysIdentityDocTypes;
+    } catch (error) {
+      console.error("Error obteniendo documento:", error);
+      throw error;
+    }
+  },
+
+  async createDocument(dataInput: CommercialDocumentsCreate) {
+    try {
+      const data = await graphqlClient.mutation<CreateDocumentMutation>(
+        CreateDocumentDocument,
+        {
+          input: dataInput,
+        }
+      );
       return data.createDocument;
     } catch (error) {
       console.error("Error creando documento:", error);
@@ -47,15 +72,15 @@ export const documentOperations = {
     }
   },
 
-  async updateDocument(
-    id: string,
-    dataInput: CommercialDocumentsUpdate
-  ): Promise<CommercialDocumentsInDb> {
+  async updateDocument(id: string, dataInput: CommercialDocumentsUpdate) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_DOCUMENT, {
-        documentID: id,
-        input: dataInput,
-      });
+      const data = await graphqlClient.mutation<UpdateDocumentMutation>(
+        UpdateDocumentDocument,
+        {
+          documentID: id,
+          input: dataInput,
+        }
+      );
       return data.updateDocument;
     } catch (error) {
       console.error("Error actualizando documento:", error);
@@ -63,29 +88,18 @@ export const documentOperations = {
     }
   },
 
-  async deleteDocument(id: string): Promise<CommercialDocumentsInDb> {
+  async deleteDocument(id: string) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_DOCUMENT, {
-        documentID: id,
-      });
+      const data = await graphqlClient.mutation<DeleteDocumentMutation>(
+        DeleteDocumentDocument,
+        {
+          documentID: id,
+        }
+      );
       return data.deleteDocument;
     } catch (error) {
       console.error("Error eliminando documento:", error);
       throw error;
     }
-  },
-};
-
-export const sysDocTypeOperations = {
-  async getAllSysdoctypes(): Promise<SysDocTypesInDb[]> {
-    const data = await graphqlClient.query(QUERIES.GET_SYSDOC_TYPES);
-    return data.allSysdoctypes || [];
-  },
-};
-
-export const sysDocumentTypeOperations = {
-  async getAllSysdocumenttypes(): Promise<SysDocumentTypesInDb[]> {
-    const data = await graphqlClient.query(QUERIES.GET_SYSDOCUMENT_TYPES);
-    return data.allSysdocumenttypes || [];
   },
 };

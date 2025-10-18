@@ -1,5 +1,5 @@
 import { ApolloProvider } from "@apollo/client";
-import apolloClient from "~/lib/apollo";
+import { apolloClient } from "~/lib/apollo";
 import { PriceListForm } from "~/pages/pricelists/form";
 
 export default function PriceListCreateLab() {

@@ -11,13 +11,13 @@ import {
   TableActionButton,
   TableIsActiveCell,
 } from "~/components/table/TableExtraComponents";
-import TableFilters from "~/components/TableFilters";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 
 import { useLocation, useNavigate } from "react-router";
+import AdvancedFilter from "~/components/filter/AdvancedFilter";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { ClientDetails } from "~/features/client/ClientDetails";
 import { clientOperations } from "~/services/client.service";
@@ -141,12 +141,10 @@ export function Clients() {
       <AdminTopBar title="Clientes" quickAccessHidden>
         <div className="ml-auto flex gap-2">
           {allData.length > 0 && (
-            <>
-              <ShowFilterButton
-                onClick={() => setShowFilters(!showFilters)}
-                showFilters={showFilters}
-              />
-            </>
+            <ShowFilterButton
+              onClick={() => setShowFilters(!showFilters)}
+              showFilters={showFilters}
+            />
           )}
           <RefreshButton onClick={() => refetch()} loading={loading} />
           <Button variant="primary" onClick={handleCreate}>
@@ -159,9 +157,9 @@ export function Clients() {
         {/* Filtros */}
         {showFilters && (
           <div className="mb-6">
-            <TableFilters
+            <AdvancedFilter
               modelName="clients"
-              data={allData}
+              data={data?.allClients || []}
               onFilterChange={handleFilterChange}
             />
           </div>

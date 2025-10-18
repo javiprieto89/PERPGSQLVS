@@ -1051,7 +1051,7 @@ export const QUERIES = {
 
     // DOCUMENTOS
     GET_ALL_DOCUMENTS: `
-        query GetAllDocuments {
+        query GetAllCommercialDocuments {
             allDocuments {
                 DocumentID
                 CompanyID

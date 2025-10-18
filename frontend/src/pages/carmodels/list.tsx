@@ -18,7 +18,7 @@ import { carModelOperations } from "~/services/car.service";
 
 type DataInDB = CarModelsInDb;
 
-export default function CarModels() {
+export function CarModelsList() {
   const location = useLocation();
   const navigate = useNavigate();
   const { highlight } = location.state || {};
@@ -29,7 +29,7 @@ export default function CarModels() {
   const [dataState, setDataState] = useState<DataInDB[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const allData = data?.allCarModels || [];
+  const allData = data?.allCarmodels || [];
 
   const handleFilterChange = (filtered: DataInDB[]) => {
     setDataState(filtered);
@@ -38,7 +38,7 @@ export default function CarModels() {
   const handleCreate = useCallback(() => navigate(`form`), [navigate]);
 
   const handleEdit = useCallback(
-    (row: DataInDB) => navigate(`form/${row.ModelID}`),
+    (row: DataInDB) => navigate(`form/${row.CarModelID}`),
     [navigate]
   );
 
@@ -76,18 +76,23 @@ export default function CarModels() {
       {
         header: "ID",
         id: "id",
-        accessorKey: "ModelID",
+        accessorKey: "CarModelID",
         className: "first w-3",
       },
       {
-        header: "Nombre",
-        id: "nombre",
-        accessorKey: "ModelName",
+        header: "Modelo",
+        id: "modelo",
+        accessorKey: "CarModelName",
       },
       {
         header: "Marca",
         id: "marca",
-        accessorKey: "BrandData.BrandName",
+        accessorKey: "CarBrandData.CarBrandName",
+      },
+      {
+        header: "Empresa",
+        id: "empresa",
+        accessorKey: "CompanyData.CompanyName",
       },
       {
         header: "",
@@ -97,7 +102,7 @@ export default function CarModels() {
         cell: ({ row }) => (
           <TableActionButton
             row={row}
-            onDelete={() => handleDelete(row.original.ModelID)}
+            onDelete={() => handleDelete(row.original.CarModelID)}
             onEdit={() => handleEdit(row.original)}
           />
         ),
@@ -140,7 +145,7 @@ export default function CarModels() {
             columns={columns}
             data={dataState}
             highlightValue={highlight}
-            highlightKey="ModelID"
+            highlightKey="CarModelID"
           />
         )}
         {loading && <AdminTableLoading />}

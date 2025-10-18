@@ -1,0 +1,6 @@
+query GetFiscalDocumentType($DocumentTypeID: Int!) {
+  sysFiscalDocType(documentTypeId: $DocumentTypeID) {
+    DocumentTypeID
+    Name
+  }
+}

@@ -3,7 +3,7 @@ import type {
   CommercialDocumentsCreate,
   CommercialDocumentsInDb,
   CommercialDocumentsUpdate,
-  GetDocumentByIdQuery,
+  GetCommercialDocumentByIdQuery,
 } from "~/graphql/_generated/graphql";
 
 export const formSchema = z.object({
@@ -69,7 +69,9 @@ export const documentHelpers = {
     };
   },
 
-  prepareDataFormSchema(data?: GetDocumentByIdQuery): FormSchema | undefined {
+  prepareDataFormSchema(
+    data?: GetCommercialDocumentByIdQuery
+  ): FormSchema | undefined {
     if (!data?.commercialdocumentsById) return undefined;
 
     // TODO the type CommercialDocumentsInDb is hardcoded, need to review with backend team

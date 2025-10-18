@@ -1,6 +1,6 @@
 mutation CreateCreditCardGroup($input: CreditCardGroupsCreate!) {
-            createCreditcardgroup(data: $input) {
-                CreditCardGroupID
-                GroupName
-            }
-        }
+  createCreditcardgroup(data: $input) {
+    CreditCardGroupID
+    GroupName
+  }
+}

@@ -1,50 +1,51 @@
-﻿import { graphqlClient } from "~/graphql/graphql-client";
+﻿import { gql } from "@apollo/client";
+import { graphqlClient } from "~/graphql/graphql-client";
 
 // Queries de AFIP
 const AFIP_QUERIES = {
-  ULTIMO_COMPROBANTE: `
-        query UltimoComprobante($ptoVta: Int!, $cbteTipo: Int!) {
-            ultimoComprobante(ptoVta: $ptoVta, cbteTipo: $cbteTipo)
-        }
-    `,
+  ULTIMO_COMPROBANTE: gql`
+    query UltimoComprobante($ptoVta: Int!, $cbteTipo: Int!) {
+      ultimoComprobante(ptoVta: $ptoVta, cbteTipo: $cbteTipo)
+    }
+  `,
 
-  INFORMACION_COMPROBANTE: `
-        query InformacionComprobante($data: VoucherRequest!) {
-            informacionComprobante(data: $data) {
-                raw
-            }
-        }
-    `,
+  INFORMACION_COMPROBANTE: gql`
+    query InformacionComprobante($data: VoucherRequest!) {
+      informacionComprobante(data: $data) {
+        raw
+      }
+    }
+  `,
 
-  INFORMACION_RAPIDA_COMPROBANTE: `
-        query InformacionRapidaComprobante($data: VoucherRequestBasic!) {
-            informacionRapidaComprobante(data: $data) {
-                raw
-            }
-        }
-    `,
+  INFORMACION_RAPIDA_COMPROBANTE: gql`
+    query InformacionRapidaComprobante($data: VoucherRequestBasic!) {
+      informacionRapidaComprobante(data: $data) {
+        raw
+      }
+    }
+  `,
 
-  TEST_CONNECTION: `
-        query TestAfipConnection {
-            testAfipConnection {
-                success
-                message
-                details
-            }
-        }
-    `,
+  TEST_CONNECTION: gql`
+    query TestAfipConnection {
+      testAfipConnection {
+        success
+        message
+        details
+      }
+    }
+  `,
 
-  GET_TEST_DATA: `
-        query GetTestVoucherData {
-            getTestVoucherData
-        }
-    `,
+  GET_TEST_DATA: gql`
+    query GetTestVoucherData {
+      getTestVoucherData
+    }
+  `,
 
-  GET_ALTERNATIVE_TEST_DATA: `
-        query GetAlternativeTestData {
-            getAlternativeTestData
-        }
-    `,
+  GET_ALTERNATIVE_TEST_DATA: gql`
+    query GetAlternativeTestData {
+      getAlternativeTestData
+    }
+  `,
 };
 
 export const afipOperations = {

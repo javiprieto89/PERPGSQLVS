@@ -1,36 +1,180 @@
 import { graphqlClient } from "~/graphql/graphql-client";
-import { MUTATIONS } from "~/graphql/mutations/mutations.js";
-import { QUERIES } from "~/graphql/queries/queries.js";
 
-import type {
-  CarsInDb,
-  ClientsInDb,
-  DiscountsInDb,
-  OrdersCreate,
-  OrdersInDb,
-  OrdersUpdate,
-  PriceListsInDb,
-  SaleConditionsInDb,
-  ServiceTypesInDb,
-  SysOrderStatusInDb,
-  TempOrderDetailsCreate,
-  TempOrderDetailsInDb,
-  TempOrderDetailsUpdate,
-  WarehousesInDb,
+import {
+  CreateOrderDocument,
+  DeleteOrderDocument,
+  GetAllOrderDetailsDocument,
+  GetAllOrdersDocument,
+  GetOrderByIdDocument,
+  UpdateOrderDocument,
+  type CreateOrderMutation,
+  type DeleteOrderMutation,
+  type GetAllOrderDetailsQuery,
+  type GetAllOrdersQuery,
+  type GetOrderByIdQuery,
+  type OrdersCreate,
+  type OrdersUpdate,
+  type UpdateOrderMutation,
 } from "~/graphql/_generated/graphql";
+import { orderHelpers } from "~/utils/helpers";
 
+// Import other service operations
+import { carOperations } from "./car.service";
+import { clientOperations } from "./client.service";
+import { discountOperations } from "./discount.service";
+import { pricelistOperations } from "./price-list.service";
+import { saleConditionOperations } from "./sale.service";
+import { serviceTypeOperations } from "./service-type.service";
+import { warehouseOperations } from "./warehouse.service";
+
+// ===== UTILITY FUNCTIONS =====
+
+/**
+ * Sanitize and prepare order payload for GraphQL mutations
+ * - Removes undefined/null values
+ * - Converts types appropriately
+ * - Trims strings
+ * - Only includes allowed fields
+ *
+ * @param data - Raw order data (Create or Update)
+ * @returns Sanitized payload ready for GraphQL
+ */
+function sanitizeOrderPayload<T extends OrdersCreate | OrdersUpdate>(
+  data: T
+): Partial<T> {
+  const allowedFields: (keyof OrdersCreate | keyof OrdersUpdate)[] = [
+    "CompanyID",
+    "BranchID",
+    "OrderDate",
+    "ClientID",
+    "CarID",
+    "IsService",
+    "ServiceTypeID",
+    "Mileage",
+    "NextServiceMileage",
+    "Notes",
+    "SaleConditionID",
+    "DiscountID",
+    "Subtotal",
+    "Total",
+    "TotalTaxAmount",
+    "UserID",
+    "DocumentID",
+    "OrderStatusID",
+    "PriceListID",
+    "WarehouseID",
+    "Items", // For create operations
+  ];
+
+  const payload: Partial<T> = {};
+
+  for (const field of allowedFields) {
+    const value = data[field as keyof T];
+
+    // Skip undefined values
+    if (value === undefined) continue;
+
+    // Handle each field type appropriately
+    switch (field) {
+      // Integer fields
+      case "CompanyID":
+      case "BranchID":
+      case "ClientID":
+      case "CarID":
+      case "ServiceTypeID":
+      case "Mileage":
+      case "NextServiceMileage":
+      case "SaleConditionID":
+      case "DiscountID":
+      case "UserID":
+      case "DocumentID":
+      case "OrderStatusID":
+      case "PriceListID":
+      case "WarehouseID":
+        if (value !== null) {
+          payload[field as keyof T] = (
+            typeof value === "string" ? parseInt(value, 10) : Number(value)
+          ) as T[keyof T];
+        } else {
+          payload[field as keyof T] = null as T[keyof T];
+        }
+        break;
+
+      // Float fields
+      case "Subtotal":
+      case "Total":
+      case "TotalTaxAmount":
+        if (value !== null) {
+          payload[field as keyof T] = (
+            typeof value === "string" ? parseFloat(value) : Number(value)
+          ) as T[keyof T];
+        } else {
+          payload[field as keyof T] = null as T[keyof T];
+        }
+        break;
+
+      // Date field
+      case "OrderDate":
+        if (value !== null) {
+          payload[field as keyof T] = (
+            value instanceof Date ? value : new Date(value as string)
+          ) as T[keyof T];
+        } else {
+          payload[field as keyof T] = null as T[keyof T];
+        }
+        break;
+
+      // Boolean field
+      case "IsService":
+        payload[field as keyof T] = Boolean(value) as T[keyof T];
+        break;
+
+      // String field (Notes)
+      case "Notes":
+        if (value !== null && typeof value === "string") {
+          const trimmed = value.trim();
+          payload[field as keyof T] = (trimmed || null) as T[keyof T];
+        } else {
+          payload[field as keyof T] = null as T[keyof T];
+        }
+        break;
+
+      // Array field (Items for create)
+      case "Items":
+        payload[field as keyof T] = (
+          Array.isArray(value) ? value : []
+        ) as T[keyof T];
+        break;
+
+      default:
+        payload[field as keyof T] = value as T[keyof T];
+    }
+  }
+
+  return payload;
+}
+
+// ===== ORDER STATUS OPERATIONS =====
 export const sysOrderStatusOperations = {
-  async getAllSysorderstatus(): Promise<SysOrderStatusInDb[]> {
-    const data = await graphqlClient.query(QUERIES.GET_ALL_SYSORDERSTATUS);
-    return data.allSysorderstatus || [];
+  // allOrderdetails / getAllSysorderstatus
+  async getAllSysorderstatus() {
+    const data = await graphqlClient.query<GetAllOrderDetailsQuery>(
+      GetAllOrderDetailsDocument
+    );
+    console.log(
+      "sysOrderStatusOperations.getAllSysorderstatus is not yet implemented."
+    );
+    return data.allOrderdetails || [];
   },
 };
 
 // ===== FUNCIONES DE ÓRDENES - NUEVAS Y COMPLETAS =====
 export const orderOperations = {
-  async getAllOrders(): Promise<OrdersInDb[]> {
+  async getAllOrders() {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ALL_ORDERS);
+      const data = await graphqlClient.query<GetAllOrdersQuery>(
+        GetAllOrdersDocument
+      );
       return data.allOrders || [];
     } catch (error) {
       console.error("Error obteniendo órdenes:", error);
@@ -38,9 +182,12 @@ export const orderOperations = {
     }
   },
 
-  async getOrderById(id: string): Promise<OrdersInDb> {
+  async getOrderById(id: string) {
     try {
-      const data = await graphqlClient.query(QUERIES.GET_ORDER_BY_ID, { id });
+      const data = await graphqlClient.query<GetOrderByIdQuery>(
+        GetOrderByIdDocument,
+        { id }
+      );
       return data.ordersById;
     } catch (error) {
       console.error("Error obteniendo orden:", error);
@@ -48,20 +195,23 @@ export const orderOperations = {
     }
   },
 
-  async createOrder(orderData: OrdersCreate): Promise<OrdersInDb> {
+  async createOrder(orderData: OrdersCreate) {
     try {
-      // Validar datos requeridos
+      // Validate required data
       const errors = orderHelpers.validateOrderData(orderData);
       if (errors.length > 0) {
         throw new Error(`Errores de validación: ${errors.join(", ")}`);
       }
 
-      // Preparar datos
-      const preparedData = orderHelpers.prepareOrderData(orderData);
+      // Sanitize and prepare data
+      const sanitizedData = sanitizeOrderPayload(orderData);
 
-      const data = await graphqlClient.mutation(MUTATIONS.CREATE_ORDER, {
-        input: preparedData,
-      });
+      const data = await graphqlClient.mutation<CreateOrderMutation>(
+        CreateOrderDocument,
+        {
+          input: sanitizedData,
+        }
+      );
 
       return data.createOrder;
     } catch (error) {
@@ -70,54 +220,24 @@ export const orderOperations = {
     }
   },
 
-  async updateOrder(id: string, orderData: OrdersUpdate): Promise<OrdersInDb> {
+  async updateOrder(id: string, orderData: OrdersUpdate) {
     try {
-      // Preparar datos para actualización (solo campos no nulos)
-      const preparedData = {};
+      // Sanitize and prepare data for update
+      const sanitizedData = sanitizeOrderPayload(orderData);
 
-      if (orderData.CompanyID)
-        preparedData.CompanyID = parseInt(orderData.CompanyID);
-      if (orderData.BranchID)
-        preparedData.BranchID = parseInt(orderData.BranchID);
-      if (orderData.Date_) preparedData.Date_ = new Date(orderData.Date_);
-      if (orderData.ClientID)
-        preparedData.ClientID = parseInt(orderData.ClientID);
-      if (orderData.CarID) preparedData.CarID = parseInt(orderData.CarID);
-      if (orderData.IsService !== undefined)
-        preparedData.IsService = Boolean(orderData.IsService);
-      if (orderData.ServiceTypeID)
-        preparedData.ServiceTypeID = parseInt(orderData.ServiceTypeID);
-      if (orderData.Mileage) preparedData.Mileage = parseInt(orderData.Mileage);
-      if (orderData.NextServiceMileage)
-        preparedData.NextServiceMileage = parseInt(
-          orderData.NextServiceMileage
-        );
-      if (orderData.Notes !== undefined)
-        preparedData.Notes = orderData.Notes?.trim() || null;
-      if (orderData.SaleConditionID)
-        preparedData.SaleConditionID = parseInt(orderData.SaleConditionID);
-      if (orderData.DiscountID)
-        preparedData.DiscountID = parseInt(orderData.DiscountID);
-      if (orderData.Subtotal !== undefined)
-        preparedData.Subtotal = parseFloat(orderData.Subtotal);
-      if (orderData.Total !== undefined)
-        preparedData.Total = parseFloat(orderData.Total);
-      if (orderData.VAT !== undefined)
-        preparedData.VAT = parseFloat(orderData.VAT);
-      if (orderData.UserID) preparedData.UserID = parseInt(orderData.UserID);
-      if (orderData.DocumentID)
-        preparedData.DocumentID = parseInt(orderData.DocumentID);
-      if (orderData.OrderStatusID)
-        preparedData.OrderStatusID = parseInt(orderData.OrderStatusID);
-      if (orderData.PriceListID)
-        preparedData.PriceListID = parseInt(orderData.PriceListID);
-      if (orderData.WarehouseID)
-        preparedData.WarehouseID = parseInt(orderData.WarehouseID);
+      // Optional: validate before sending
+      const errors = orderHelpers.validateOrderData(sanitizedData);
+      if (errors.length > 0) {
+        console.warn(`Order update validation warnings: ${errors.join(", ")}`);
+      }
 
-      const data = await graphqlClient.mutation(MUTATIONS.UPDATE_ORDER, {
-        orderID: id,
-        input: preparedData,
-      });
+      const data = await graphqlClient.mutation<UpdateOrderMutation>(
+        UpdateOrderDocument,
+        {
+          orderID: id,
+          input: sanitizedData,
+        }
+      );
 
       return data.updateOrder;
     } catch (error) {
@@ -126,11 +246,14 @@ export const orderOperations = {
     }
   },
 
-  async deleteOrder(id: string): Promise<OrdersInDb> {
+  async deleteOrder(id: string) {
     try {
-      const data = await graphqlClient.mutation(MUTATIONS.DELETE_ORDER, {
-        orderID: id,
-      });
+      const data = await graphqlClient.mutation<DeleteOrderMutation>(
+        DeleteOrderDocument,
+        {
+          orderID: id,
+        }
+      );
 
       return data.deleteOrder;
     } catch (error) {
@@ -140,16 +263,7 @@ export const orderOperations = {
   },
 
   // Función auxiliar para obtener datos del formulario de órdenes
-  async getOrderFormData(): Promise<{
-    clients: ClientsInDb[];
-    cars: CarsInDb[];
-    saleConditions: SaleConditionsInDb[];
-    discounts: DiscountsInDb[];
-    priceLists: PriceListsInDb[];
-    warehouses: WarehousesInDb[];
-    serviceTypes: ServiceTypesInDb[];
-    orderStatus: SysOrderStatusInDb[];
-  }> {
+  async getOrderFormData() {
     try {
       const [
         clients,
@@ -165,7 +279,7 @@ export const orderOperations = {
         carOperations.getAllCars(),
         saleConditionOperations.getAllSaleConditions(),
         discountOperations.getAllDiscounts(),
-        pricelistOperations.getAllPricelists(),
+        pricelistOperations.getAllPriceLists(),
         warehouseOperations.getAllWarehouses(),
         serviceTypeOperations.getAllServicetypes(),
         sysOrderStatusOperations.getAllSysorderstatus(),
@@ -190,15 +304,15 @@ export const orderOperations = {
 
 // ===== FUNCIONES PARA ITEMS TEMPORALES =====
 export const tempOrderOperations = {
-  async createTempItem(
-    data: TempOrderDetailsCreate
-  ): Promise<TempOrderDetailsInDb> {
+  async createTempItem(data: []): Promise<null> {
     try {
-      const result = await graphqlClient.mutation(
-        MUTATIONS.CREATE_TEMPORDERDETAIL,
-        { input: data }
-      );
-      return result.createTemporderdetail;
+      // const result = await graphqlClient.mutation<CreateTempOrderDetailMutation>(
+      //   MUTATIONS.CREATE_TEMPORDERDETAIL,
+      //   { input: data }
+      // );
+      // return result.createTemporderdetail;
+      console.log("tempOrderOperations.createTempItem is not yet implemented.");
+      return null;
     } catch (error) {
       console.error("Error creando item temporal:", error);
       throw error;
@@ -208,14 +322,15 @@ export const tempOrderOperations = {
   async updateTempItem(
     sessionID: string,
     itemID: string,
-    data: TempOrderDetailsUpdate
-  ): Promise<TempOrderDetailsInDb> {
+    data: { [key: string]: any }
+  ): Promise<void> {
     try {
-      const result = await graphqlClient.mutation(
-        MUTATIONS.UPDATE_TEMPORDERDETAIL,
-        { sessionID, itemID, input: data }
-      );
-      return result.updateTemporderdetail;
+      // const result = await graphqlClient.mutation(
+      //   MUTATIONS.UPOrderDateTEMPORDERDETAIL,
+      //   { sessionID, itemID, input: data }
+      // );
+      // return result.updateTemporderdetail;
+      console.log("tempOrderOperations.updateTempItem is not yet implemented.");
     } catch (error) {
       console.error("Error actualizando item temporal:", error);
       throw error;
@@ -224,11 +339,13 @@ export const tempOrderOperations = {
 
   async deleteTempItem(sessionID: string, itemID: string): Promise<boolean> {
     try {
-      await graphqlClient.mutation(MUTATIONS.DELETE_TEMPORDERDETAIL, {
-        sessionID,
-        itemID,
-      });
-      return true;
+      // await graphqlClient.mutation(MUTATIONS.DELETE_TEMPORDERDETAIL, {
+      //   sessionID,
+      //   itemID,
+      // });
+      // return true;
+      console.log("tempOrderOperations.deleteTempItem is not yet implemented.");
+      return false;
     } catch (error) {
       console.error("Error eliminando item temporal:", error);
       throw error;
@@ -240,12 +357,16 @@ export const tempOrderOperations = {
     useKeepAlive: boolean = false
   ): Promise<boolean> {
     try {
-      await graphqlClient.mutation(
-        MUTATIONS.CLEAR_TEMP_SESSION,
-        { sessionID },
-        useKeepAlive ? { keepalive: true } : {}
+      // await graphqlClient.mutation(
+      //   MUTATIONS.CLEAR_TEMP_SESSION,
+      //   { sessionID },
+      //   useKeepAlive ? { keepalive: true } : {}
+      // );
+      // return true;
+      console.log(
+        "tempOrderOperations.clearTempSession is not yet implemented."
       );
-      return true;
+      return false;
     } catch (error) {
       console.error("Error limpiando sesión temporal:", error);
       throw error;
@@ -257,39 +378,49 @@ export const tempOrderOperations = {
     userID: string,
     companyID: string,
     branchID: string
-  ): Promise<any> {
+  ): Promise<void> {
     try {
-      const result = await graphqlClient.mutation(
-        MUTATIONS.LOAD_ORDER_FOR_EDITING,
-        { orderID, userID, companyID, branchID }
+      // const result = await graphqlClient.mutation<LoadOrderForEditingMutation>(
+      //   MUTATIONS.LOAD_ORDER_FOR_EDITING,
+      //   { orderID, userID, companyID, branchID }
+      // );
+      // return result.loadOrderForEditing;
+      console.log(
+        "tempOrderOperations.loadOrderForEditing is not yet implemented."
       );
-      return result.loadOrderForEditing;
+      return;
     } catch (error) {
       console.error("Error cargando orden para edición:", error);
       throw error;
     }
   },
 
-  async getTempItems(sessionID: string): Promise<TempOrderDetailsInDb[]> {
+  async getTempItems(sessionID: string): Promise<void> {
     try {
-      const result = await graphqlClient.query(
-        MUTATIONS.GET_TEMP_ITEMS_BY_SESSION,
-        { sessionID }
-      );
-      return result.temporderdetailsBySession || [];
+      // const result = await graphqlClient.query(
+      //   MUTATIONS.GET_TEMP_ITEMS_BY_SESSION,
+      //   { sessionID }
+      // );
+      // return result.temporderdetailsBySession || [];
+      console.log("tempOrderOperations.getTempItems is not yet implemented.");
+      return;
     } catch (error) {
       console.error("Error obteniendo items temporales:", error);
       throw error;
     }
   },
 
-  async getTempItemsByOrder(orderID: string): Promise<TempOrderDetailsInDb[]> {
+  async getTempItemsByOrder(orderID: string): Promise<void> {
     try {
-      const result = await graphqlClient.query(
-        MUTATIONS.GET_TEMP_ITEMS_BY_ORDER,
-        { orderID }
+      // const result = await graphqlClient.query(
+      //   MUTATIONS.GET_TEMP_ITEMS_BY_ORDER,
+      //   { orderID }
+      // );
+      // return result.temporderdetailsByOrder || [];
+      console.log(
+        "tempOrderOperations.getTempItemsByOrder is not yet implemented."
       );
-      return result.temporderdetailsByOrder || [];
+      return;
     } catch (error) {
       console.error("Error obteniendo items temporales:", error);
       throw error;

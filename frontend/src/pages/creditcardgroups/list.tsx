@@ -29,7 +29,7 @@ export default function CreditCardGroups() {
   const [dataState, setDataState] = useState<DataInDB[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const allData = data?.allCreditCardGroups || [];
+  const allData = data?.allCreditcardgroups || [];
 
   const handleFilterChange = (filtered: DataInDB[]) => {
     setDataState(filtered);
@@ -38,7 +38,7 @@ export default function CreditCardGroups() {
   const handleCreate = useCallback(() => navigate(`form`), [navigate]);
 
   const handleEdit = useCallback(
-    (row: DataInDB) => navigate(`form/${row.GroupID}`),
+    (row: DataInDB) => navigate(`form/${row.CreditCardGroupID}`),
     [navigate]
   );
 
@@ -46,7 +46,7 @@ export default function CreditCardGroups() {
     async (id: number) => {
       if (!confirm("¿Borrar registro?")) return;
       try {
-        await creditCardGroupOperations.deleteCreditCardGroup(String(id));
+        await creditCardGroupOperations.deleteCreditCardGroup(id);
         refetch();
       } catch (err) {
         alert("Error al borrar: " + (err as Error).message);
@@ -76,7 +76,7 @@ export default function CreditCardGroups() {
       {
         header: "ID",
         id: "id",
-        accessorKey: "GroupID",
+        accessorKey: "CreditCardGroupID",
         className: "first w-3",
       },
       {
@@ -88,11 +88,11 @@ export default function CreditCardGroups() {
         header: "",
         id: "actions",
         enableHiding: false,
-        accessorKey: "GroupID",
+        accessorKey: "CreditCardGroupID",
         cell: ({ row }) => (
           <TableActionButton
             row={row}
-            onDelete={() => handleDelete(row.original.GroupID)}
+            onDelete={() => handleDelete(row.original.CreditCardGroupID)}
             onEdit={() => handleEdit(row.original)}
           />
         ),
@@ -135,7 +135,7 @@ export default function CreditCardGroups() {
             columns={columns}
             data={dataState}
             highlightValue={highlight}
-            highlightKey="GroupID"
+            highlightKey="CreditCardGroupID"
           />
         )}
         {loading && <AdminTableLoading />}

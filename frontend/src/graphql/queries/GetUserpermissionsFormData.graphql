@@ -1,0 +1,21 @@
+query GetUserpermissionsFormData($companyID: Int!) {
+  allUsers {
+    UserID
+    Nickname
+    FullName
+    IsActive
+  }
+  allCompany {
+    CompanyID
+    CompanyName
+  }
+  allRoles {
+    RoleID
+    RoleName
+  }
+  branchesByCompany(companyID: $companyID) {
+    BranchID
+    CompanyID
+    BranchName
+  }
+}

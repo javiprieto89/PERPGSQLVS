@@ -1,7 +1,7 @@
 import { ApolloProvider } from "@apollo/client";
 import AdvancedFilter from "~/components/filter/AdvancedFilter";
 import allClientsMock from "~/graphql/mockups/getAllClientsExtended.json";
-import apolloClient from "~/lib/apollo";
+import { apolloClient } from "~/lib/apollo";
 
 export default function UiPage() {
   return (

@@ -102,7 +102,7 @@ export function Orderform({
         discountId: String(initialOrder.DiscountID || ""),
         subtotal: Number(initialOrder.Subtotal || 0),
         total: Number(initialOrder.Total || 0),
-        vat: Number(initialOrder.VAT || 0),
+        vat: Number(initialOrder.TotalTaxAmount || 0),
         userId: String(initialOrder.UserID || ""),
         documentID: String(initialOrder.DocumentID || ""),
         orderStatusId: String(initialOrder.OrderStatusID || ""),
@@ -480,7 +480,7 @@ export function Orderform({
       DiscountID: parseInt(finalFormData.discountId),
       Subtotal: parseFloat(finalFormData.subtotal),
       Total: parseFloat(finalFormData.total),
-      VAT: parseFloat(finalFormData.vat),
+      TotalTaxAmount: parseFloat(finalFormData.vat),
       UserID: parseInt(finalFormData.userId),
       DocumentID: finalFormData.documentID
         ? parseInt(finalFormData.documentID)

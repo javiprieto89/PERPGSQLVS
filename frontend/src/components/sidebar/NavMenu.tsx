@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Fragment, useContext } from "react";
 
-import { openReactWindow } from "~/utils/openReactWindow";
+import { useExternalWindowForm } from "~/hooks/useExternalWindowForm";
 
 import { DrawerContext } from "~/components/ui/drawer/Drawer";
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuLink, SidebarMenuSub, SidebarMenuSubItem, useSidebar } from "~/components/ui/sidebar";
@@ -26,17 +26,24 @@ import { CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsi
 import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
+import { Orderform } from "~/pages/orders/form";
 import PriceListItemsPage from "~/pages/pricelistitems/form";
 import { Collapsible } from "../ui/collapsible";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { SidebarHelper } from "./sidebarHelper";
 
-const openPopup = (Component: React.ComponentType<any>, title: string, width = 1000, height = 700) => {
-  openReactWindow(
-    (popup) => <Component onClose={popup.close} windowRef={popup} />,
-    title,
-    { width, height }
-  );
+// Hook para crear ventanas externas - se usará dentro del componente
+const useNavMenuWindows = () => {
+  const { openComponentWindow } = useExternalWindowForm();
+
+  const openPopup = (Component: React.ComponentType<any>, title: string) => {
+    return openComponentWindow(
+      <Component />,
+      { title, maxWidth: "6xl" }
+    );
+  };
+
+  return { openPopup };
 };
 
 type RightButton = {
@@ -62,120 +69,7 @@ type SideMenu = {
   rightButton?: RightButton;
 }
 
-const sections: SideMenu[] = [
-  {
-    // navMain: [],
-    key: "mainNav",
-    title: null,
-    items: [
-      { title: "Dashboard", url: "dashboard", icon: Home },
-      { title: "Clientes", url: "/clients", icon: IconUsers },
-      { title: "Proveedores", url: "/suppliers", icon: Ship },
-      {
-        title: "Productos",
-        icon: Tag,
-        url: "/items",
-        items: [
-          {
-            title: "Ítems", url: "/items",
-            rightButton: {
-              title: "Cargar Stock",
-              icon: Plus,
-              url: "/stock/form",
-            }
-          },
-          {
-            title: "Cargar Stock",
-            action: () => openPopup(StockEntry, "Ingreso de Stock", 1000, 700),
-          },
-          { title: "Historial de stock (N/A)", url: "/stockhistory" },
-          { title: "Categorías", url: "/items/categories" },
-          { title: "Subcategorías", url: "/items/subcategories" },
-          { title: "Marcas", url: "/brands" },
-          { title: "Depósitos", url: "/warehouses" },
-          { title: "Listas de precios", url: "/pricelists" },
-          { title: "Listas de precios-Items", url: "/pricelistitems" },
-          {
-            title: "Asignar precios a ítems",
-            action: () =>
-              openPopup(PriceListItemsPage, "Asignar precios", 1000, 700),
-          },
-        ],
-      },
-      {
-        title: "Autos",
-        url: "/cars",
-        icon: Car,
-        items: [
-          { title: "Lista de Autos", url: "/cars" },
-          { title: "Marcas de autos", url: "/carbrands" },
-          { title: "Modelos de autos", url: "/carmodels" },
-        ],
-      },
-      {
-        title: "Pedidos",
-        url: "/orders",
-        icon: PackageCheck,
-        items: [
-          { title: "Listar pedidos", url: "/orders" },
-          {
-            title: "Cargar pedido",
-            action: () => openPopup(OrderCreate, "Cargar Pedido", 1000, 700),
-          },
-          { title: "Historial", url: "/orderhistory" },
-        ],
-      }
-    ],
-  },
-  {
-    key: "consulting",
-    title: "Consultas",
-    items: [
-      {
-        title: "Factura electrónica",
-        icon: IconFileDescription,
-        url: "/fe-last",
-        items: [
-          { title: "Último comprobante", url: "/fe-last" },
-          { title: "Constatación comprobante", url: "/fe-info" },
-          { title: "Información comprobante", url: "/fe-less-info" },
-        ],
-      },
-    ],
-  },
-  {
-    key: "configuration",
-    title: "Configuración",
-    items: [
-      { title: "Sucursales", url: "/branches", icon: MapPin },
-      { title: "Empresa", url: "/companydata", icon: Building },
-      {
-        title: "Usuarios",
-        url: "/users",
-        icon: Users,
-        items: [
-          { title: "Usuarios", url: "/users", icon: Users },
-          { title: "Roles", url: "/roles", icon: IconUserHexagon },
-          { title: "Roles y Usuarios", url: "/rolesusers" },
-        ],
-      },
-      {
-        title: "Ventas",
-        url: "/documents",
-        icon: IconShoppingCartCog,
-        items: [
-          { title: "Grupos Tarjetas", url: "/creditcardgroups" },
-          { title: "Tarjetas", url: "/creditcards" },
-          { title: "Descuentos", url: "/discounts" },
-          { title: "Vendedores", url: "/vendors" },
-          { title: "Tipos de servicio", url: "/servicetypes" },
-          { title: "Condiciones", url: "/saleconditions" },
-          { title: "Documentos", url: "/documents" },
-        ],
-      },
-    ],
-  },
-];
+// Definición de sections movida dentro del componente NavMenu para acceder al hook
 
 function Item(item: SideNav) {
   const { close } = useContext(DrawerContext);
@@ -326,6 +220,122 @@ function SidebarSubmenu({ items, parentKey }: { items: SideNav[] | undefined; pa
 }
 
 export function NavMenu() {
+  const { openPopup } = useNavMenuWindows();
+
+  // Mover sections aquí para acceder a openPopup
+  const sections: SideMenu[] = [
+    {
+      key: "mainNav",
+      title: null,
+      items: [
+        { title: "Dashboard", url: "dashboard", icon: Home },
+        { title: "Clientes", url: "/clients", icon: IconUsers },
+        { title: "Proveedores", url: "/suppliers", icon: Ship },
+        {
+          title: "Productos",
+          icon: Tag,
+          url: "/items",
+          items: [
+            {
+              title: "Ítems", url: "/items",
+              rightButton: {
+                title: "Cargar Stock",
+                icon: Plus,
+                url: "/stock/form",
+              }
+            },
+            {
+              title: "Cargar Stock",
+              action: () => openPopup(StockEntry, "Ingreso de Stock"),
+            },
+            { title: "Historial de stock (N/A)", url: "/stockhistory" },
+            { title: "Categorías", url: "/items/categories" },
+            { title: "Subcategorías", url: "/items/subcategories" },
+            { title: "Marcas", url: "/brands" },
+            { title: "Depósitos", url: "/warehouses" },
+            { title: "Listas de precios", url: "/pricelists" },
+            { title: "Listas de precios-Items", url: "/pricelistitems" },
+            {
+              title: "Asignar precios a ítems",
+              action: () => openPopup(PriceListItemsPage, "Asignar precios"),
+            },
+          ],
+        },
+        {
+          title: "Autos",
+          url: "/cars",
+          icon: Car,
+          items: [
+            { title: "Lista de Autos", url: "/cars" },
+            { title: "Marcas de autos", url: "/carbrands" },
+            { title: "Modelos de autos", url: "/carmodels" },
+          ],
+        },
+        {
+          title: "Pedidos",
+          url: "/orders",
+          icon: PackageCheck,
+          items: [
+            { title: "Listar pedidos", url: "/orders" },
+            {
+              title: "Cargar pedido",
+              action: () => openPopup(Orderform, "Cargar Pedido"),
+            },
+            { title: "Historial", url: "/orderhistory" },
+          ],
+        }
+      ],
+    },
+    {
+      key: "consulting",
+      title: "Consultas",
+      items: [
+        {
+          title: "Factura electrónica",
+          icon: IconFileDescription,
+          url: "/fe-last",
+          items: [
+            { title: "Último comprobante", url: "/fe-last" },
+            { title: "Constatación comprobante", url: "/fe-info" },
+            { title: "Información comprobante", url: "/fe-less-info" },
+          ],
+        },
+      ],
+    },
+    {
+      key: "configuration",
+      title: "Configuración",
+      items: [
+        { title: "Sucursales", url: "/branches", icon: MapPin },
+        { title: "Empresa", url: "/companies", icon: Building },
+        {
+          title: "Usuarios",
+          url: "/users",
+          icon: Users,
+          items: [
+            { title: "Usuarios", url: "/users", icon: Users },
+            { title: "Roles", url: "/roles", icon: IconUserHexagon },
+            { title: "Roles y Usuarios", url: "/users/permissions" },
+          ],
+        },
+        {
+          title: "Ventas",
+          url: "/documents",
+          icon: IconShoppingCartCog,
+          items: [
+            { title: "Grupos Tarjetas", url: "/creditcardgroups" },
+            { title: "Tarjetas", url: "/creditcards" },
+            { title: "Descuentos", url: "/discounts" },
+            { title: "Vendedores", url: "/vendors" },
+            { title: "Tipos de servicio", url: "/servicetypes" },
+            { title: "Condiciones", url: "/saleconditions" },
+            { title: "Documentos", url: "/documents" },
+          ],
+        },
+      ],
+    },
+  ];
+
   if (sections.length === 0) return null;
 
   return sections.map((section) => {
@@ -344,5 +354,5 @@ export function NavMenu() {
         </SidebarGroupContent>
       </SidebarGroup>
     );
-  })
+  });
 }

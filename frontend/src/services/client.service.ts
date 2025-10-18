@@ -9,6 +9,7 @@ import {
   UpdateClientDocument,
   type CreateClientMutation,
   type DeleteClientMutation,
+  type GetAllClientsQuery,
   type GetClientByIdQuery,
   type GetClientFormDataQuery,
   type GetClientsByBranchQuery,
@@ -18,7 +19,6 @@ import {
   type VendorsInDb,
 } from "~/graphql/_generated/graphql";
 import { graphqlClient } from "~/graphql/graphql-client";
-import { type GetAllClientsQuery } from "./../graphql/_generated/graphql";
 
 import { clientHelpers } from "~/features/client/clientHelpers";
 import GetClientFormDataGQL from "~/graphql/queries/GetClientFormData.graphql";

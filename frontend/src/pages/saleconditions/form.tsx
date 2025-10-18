@@ -1,172 +1,222 @@
+// Sale Condition Form - Modernized with React Hook Form + Zod
+import { DevTool } from "@hookform/devtools";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { creditCardOperations } from "~/services/credit-card.service";
-import { saleConditionOperations } from "~/services/sale.service";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { z } from "zod";
 
-export function SaleConditionForm({
-  onClose = () => { },
-  onSave = () => { },
-  saleCondition: initialSC = null,
-}) {
-  const [name, setName] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [surcharge, setSurcharge] = useState(0);
-  const [creditCardID, setCreditCardID] = useState("");
-  const [cards, setCards] = useState([]);
-  const [isActive, setIsActive] = useState(true);
+// Components
+import { FormBlock } from "~/components/form/FormBlock";
+import { FormBreadcrumb } from "~/components/form/FormBreadcrumb";
+import { Input } from "~/components/form/Input";
+import { Submit } from "~/components/form/InputSubmit";
+import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+
+
+// GraphQL
+import {
+  useCreateSaleConditionMutation,
+  useGetAllCreditCardsQuery,
+  useGetAllSaleConditionsQuery,
+  useUpdateSaleConditionMutation
+} from "~/graphql/_generated/graphql";
+
+const BASE_ROUTE = "/saleconditions";
+
+// Form Schema
+const formSchema = z.object({
+  Name: z.string().min(1, "El nombre es requerido"),
+  DueDate: z.string().min(1, "La fecha de vencimiento es requerida"),
+  Surcharge: z.number().min(0, "El recargo debe ser mayor o igual a 0"),
+  CreditCardID: z.number().min(1, "La tarjeta de crédito es requerida"),
+  IsActive: z.boolean().optional(),
+});
+
+type FormSchema = z.infer<typeof formSchema>;
+
+export function SaleConditionForm() {
+  const params = useParams();
+  const navigate = useNavigate();
+  const id = params.id ? Number(params.id) : undefined;
+  const isEditing = Boolean(id);
+
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      Name: "",
+      DueDate: "",
+      Surcharge: 0,
+      CreditCardID: 0,
+      IsActive: true,
+    },
+  });
+
   const [loading, setLoading] = useState(false);
-  const [loadingForm, setLoadingForm] = useState(true);
-  const [error, setError] = useState(null);
-  const [isEdit, setIsEdit] = useState(false);
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const data = await creditCardOperations.getAllCards();
-        setCards(data);
-      } finally {
-        setLoadingForm(false);
-      }
-    };
-    load();
-  }, []);
+  // GraphQL Hooks
+  const { data: creditCardsData } = useGetAllCreditCardsQuery();
+  const creditCards = creditCardsData?.allCreditcards || [];
+  const { refetch } = useGetAllSaleConditionsQuery();
+  const [createSaleCondition] = useCreateSaleConditionMutation();
+  const [updateSaleCondition] = useUpdateSaleConditionMutation();
 
+  // TODO: Load sale condition data for editing mode
   useEffect(() => {
-    if (initialSC) {
-      setIsEdit(true);
-      setName(initialSC.Name || "");
-      setDueDate(initialSC.DueDate || "");
-      setSurcharge(initialSC.Surcharge || 0);
-      setIsActive(initialSC.IsActive !== false);
-      setCreditCardID(initialSC.CreditCardID ? initialSC.CreditCardID : "");
+    if (isEditing && id) {
+      console.log("Editing mode for sale condition ID:", id);
     }
-  }, [initialSC]);
+  }, [id, isEditing]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (formData: FormSchema) => {
     setLoading(true);
-    setError(null);
     try {
-      let result;
-      if (isEdit) {
-        result = await saleConditionOperations.updateSaleCondition(
-          initialSC.SaleConditionID,
-          {
-            Name: name,
-            DueDate: dueDate,
-            Surcharge: parseFloat(surcharge),
-            IsActive: isActive,
-            CreditCardID: creditCardID,
-          }
-        );
-      } else {
-        result = await saleConditionOperations.createSaleCondition({
-          Name: name,
-          DueDate: dueDate,
-          Surcharge: parseFloat(surcharge),
-          IsActive: isActive,
-          CreditCardID: creditCardID,
+      if (isEditing && id) {
+        await updateSaleCondition({
+          variables: {
+            saleConditionID: id,
+            input: {
+              Name: formData.Name,
+              DueDate: formData.DueDate,
+              Surcharge: formData.Surcharge,
+              CreditCardID: formData.CreditCardID,
+              IsActive: formData.IsActive,
+            },
+          },
         });
+        toast.success("Condición de venta actualizada correctamente");
+      } else {
+        await createSaleCondition({
+          variables: {
+            input: {
+              Name: formData.Name,
+              DueDate: formData.DueDate,
+              Surcharge: formData.Surcharge,
+              CreditCardID: formData.CreditCardID,
+              IsActive: formData.IsActive ?? true,
+            },
+          },
+        });
+        toast.success("Condición de venta creada correctamente");
       }
-      onSave && onSave(result);
-      onClose && onClose();
+
+      await refetch();
+      navigate(BASE_ROUTE, { state: { highlight: id } });
     } catch (err) {
-      console.error("Error guardando condición:", err);
-      setError(err.message);
+      console.error("Error:", err);
+      toast.error(isEditing ? "Error al actualizar condición" : "Error al crear condición");
     } finally {
       setLoading(false);
     }
   };
-  if (loadingForm) {
-    return <div className="p-6">Cargando...</div>;
-  }
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">
-        {isEdit ? "Editar Condición" : "Nueva Condición"}
-      </h2>
-      {error && <div className="text-destructive mb-2">{error}</div>}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Nombre</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full border  p-2 rounded"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Vencimiento</label>
-          <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className="w-full border  p-2 rounded"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Tarjeta de Crédito
-          </label>
-          <select
-            value={creditCardID}
-            onChange={(e) =>
-              setCreditCardID(
-                e.target.value === "" ? "" : parseInt(e.target.value)
-              )
-            }
-            className="w-full border  p-2 rounded"
-          >
-            <option value="">Seleccione</option>
-            {cards.map((card) => (
-              <option key={card.CreditCardID} value={card.CreditCardID}>
-                {card.CardName}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Recargo</label>
-          <input
-            type="number"
-            value={surcharge}
-            onChange={(e) => setSurcharge(e.target.value)}
-            className="w-full border  p-2 rounded"
-            step="0.01"
-          />
-        </div>
-        <div>
-          <label className="inline-flex items-center mt-2">
-            <input
-              type="checkbox"
-              className="mr-2"
-              checked={isActive}
-              onChange={(e) => setIsActive(e.target.checked)}
-            />
-            <span>Condición activa</span>
-          </label>
-        </div>
-        <div className="flex justify-end space-x-4 pt-4 border-t">
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={loading}
-            className="px-4 py-2 border  rounded hover: disabled:opacity-50"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            disabled={loading || !name.trim() || !dueDate}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary disabled:opacity-50"
-          >
-            {loading ? "Guardando..." : "Guardar"}
-          </button>
-        </div>
-      </form>
-    </div>
+    <>
+      {import.meta.env.DEV && <DevTool control={form.control} />}
+      <AdminTopBar>
+        <FormBreadcrumb isEditing={isEditing}>
+          <Link to={BASE_ROUTE}>Condiciones de Venta</Link>
+        </FormBreadcrumb>
+      </AdminTopBar>
+      <div className="p-6">
+        <h2 className="text-xl font-bold mb-4">
+          {isEditing ? "Editar Condición de Venta" : "Nueva Condición de Venta"}
+        </h2>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 md:max-w-[700px] lg:max-w-[800px]">
+            <FormBlock>
+              <Input
+                {...form.register("Name")}
+                label="Nombre *"
+                type="text"
+                placeholder="Ingrese el nombre de la condición"
+                error={form.formState.errors.Name?.message}
+                required
+              />
+            </FormBlock>
+
+            <FormBlock>
+              <Input
+                {...form.register("DueDate")}
+                label="Fecha de Vencimiento *"
+                type="date"
+                error={form.formState.errors.DueDate?.message}
+                required
+              />
+            </FormBlock>
+
+            <FormBlock>
+              <FormField
+                control={form.control}
+                name="CreditCardID"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tarjeta de Crédito *</FormLabel>
+                    <Select onValueChange={(value) => field.onChange(Number(value))} value={field.value?.toString()}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccione una tarjeta" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {creditCards.map((card) => (
+                          <SelectItem key={card.CreditCardID} value={card.CreditCardID.toString()}>
+                            {card.CardName}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </FormBlock>
+
+            <FormBlock>
+              <Input
+                {...form.register("Surcharge", { valueAsNumber: true })}
+                label="Recargo"
+                type="number"
+                step="0.01"
+                placeholder="0.00"
+                error={form.formState.errors.Surcharge?.message}
+              />
+            </FormBlock>
+
+            <FormBlock>
+              <FormField
+                control={form.control}
+                name="IsActive"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Condición Activa</FormLabel>
+                    </div>
+                    <FormControl>
+                      <input
+                        type="checkbox"
+                        checked={field.value}
+                        onChange={field.onChange}
+                        className="ml-2"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </FormBlock>
+
+            <FormBlock className="p-4 space-x-2 flex justify-between bg-card">
+              <Link className="mt-auto" to={BASE_ROUTE}>Cancelar</Link>
+              <Submit type="submit" disabled={loading} isSubmitting={loading}>
+                Guardar
+              </Submit>
+            </FormBlock>
+          </form>
+        </Form>
+      </div>
+    </>
   );
 }

@@ -15,7 +15,7 @@ export type RelationKey = keyof Relations;
 export type RenderInputsBaseProps = {
   id?: string;
   name: string;
-  // label?: string;
+  label?: string;
   placeholder?: string;
   value?: string;
   disabled?: boolean;

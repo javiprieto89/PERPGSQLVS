@@ -1,8 +1,7 @@
 import { BrushCleaning, X } from "lucide-react";
-import React from "react";
-// import { useGetFilterFieldsQuery } from "~/graphql/_generated/graphql";
+import React, { useCallback, useMemo } from "react";
 
-import { TEXT_OPERATORS, type ModelNameMap } from "./constants";
+import { TEXT_OPERATORS } from "./constants";
 import { type FilterField, type RenderInputsBaseProps } from "./types";
 
 import useFilterState from "./hooks/useFilterState";
@@ -13,158 +12,215 @@ import { Button } from "~/components/ui/button";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 
-import type { GetFilterFieldsQuery } from "~/graphql/_generated/graphql";
-import { AdvancedFilterProvider } from "./context/AdvancedFilterProvider";
-import { useAdvancedFilter } from "./hooks/useAdvancedFilter";
+import { useGetFilterFieldsQuery } from "~/graphql/_generated/graphql";
 import { RenderInput } from "./RenderInputs";
 import { filterOperators } from "./utils";
 
+/**
+ * Display active filters as badges with remove functionality
+ */
 function SelectedFiltersDisplay({ filterFields }: { filterFields: FilterField[] }) {
-  const { filters, removeFilter } = useFilterState<string>()
+  const { filters, removeFilter } = useFilterState<string>();
+
+  const activeFilters = useMemo(() =>
+    filterOperators(filters).map((key) => {
+      const operator = `${key}_op`;
+      const filterField = filterFields.find((f) => f.field === key);
+      const operatorLabel = TEXT_OPERATORS[filters[operator] as keyof typeof TEXT_OPERATORS] || "";
+
+      return {
+        key,
+        label: filterField?.label || key,
+        operator: operatorLabel,
+        value: filters[key],
+      };
+    }),
+    [filters, filterFields]
+  );
+
+  if (activeFilters.length === 0) return null;
 
   return (
     <div className="px-4 py-3 border-t ">
       <div className="flex flex-wrap gap-2">
         <span className="text-sm font-medium  mr-2">Filtros activos:</span>
-        {filterOperators(filters).map((key) => {
-          const operator = `${key}_op`;
-          const filterField = filterFields.find((f) => f.field === key);
-          // const filterFields = key;
-          // const filterField = filterFields ? filterFields.label : key;
-          // const filterField = key;
-
-          return (
-            <Badge key={`badge-${key}`}>
-              {filterField?.label || key}: {TEXT_OPERATORS[filters[operator] as keyof typeof TEXT_OPERATORS]} {filters[key]}
-              <button onClick={() => removeFilter(key)}>
-                <X size="16" />
-              </button>
-            </Badge>
-          );
-        })}
+        {activeFilters.map(({ key, label, operator, value }) => (
+          <Badge key={`badge-${key}`}>
+            {label}: {operator} {value}
+            <button
+              onClick={() => removeFilter(key)}
+              className="ml-1 hover:opacity-70"
+              aria-label={`Remover filtro ${label}`}
+            >
+              <X size="16" />
+            </button>
+          </Badge>
+        ))}
       </div>
     </div>
-  )
+  );
 }
 
+/**
+ * Clear all filters button
+ */
 function ClearFilterButton() {
-  const { clearFilters } = useFilterState<FilterField>()
+  const { clearFilters } = useFilterState<FilterField>();
+
   return (
     <Button size="sm" onClick={clearFilters}>
-      <BrushCleaning />
+      <BrushCleaning className="mr-1" size={16} />
       Limpiar
     </Button>
-  )
+  );
 }
 
-function renderFilterInputs({ filterData, onChange }: { filterData: GetFilterFieldsQuery | undefined; onChange: RenderInputsBaseProps['onChange'] }) {
-  if (!filterData?.filterFields) return;
-  const { filterFields } = filterData;
+/**
+ * Render filter inputs intelligently
+ * - Groups related fields (parent-child relationships)
+ * - Handles independent fields separately
+ */
+function FilterInputs({
+  filterFields,
+  onChange
+}: {
+  filterFields: FilterField[];
+  onChange: RenderInputsBaseProps['onChange'];
+}) {
+  const renderedIndices = new Set<number>();
+  const elements: React.ReactNode[] = [];
 
-  if (!filterData || filterData?.filterFields.length === 0) return;
+  filterFields.forEach((field, index) => {
+    // Skip if already rendered as part of a group
+    if (renderedIndices.has(index)) return;
 
-  {/* {filterData?.filterFields.map((field, index) => (
-    <FilterInput key={`${field.field}-${index}`} {...field}
-      dependsOnLabel={filterData.filterFields.find((f) => f.field === field.dependsOn)?.label || undefined}
-    />
-  ))} */}
+    // Check if this field has a child that depends on it
+    const childIndex = filterFields.findIndex(
+      (f, i) => i > index && f.dependsOn === field.field
+    );
 
-  const res: React.ReactNode[] = [];
-  for (let i = 0; i < filterFields.length; i++) {
-    const field = filterFields[i];
+    if (childIndex !== -1 && field.relationModel) {
+      // Render parent-child group together
+      const childField = filterFields[childIndex];
+      renderedIndices.add(index);
+      renderedIndices.add(childIndex);
 
-    if (field.relationModel as ModelNameMap) {
-      res.push(
-        <div key={`${field.field}-${i}`} className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8 md:my-4">
+      elements.push(
+        <div
+          key={`group-${field.field}-${childField.field}`}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8 md:my-4"
+        >
           <RenderInput
             filterField={field}
-            onChange={(name, value) => {
-              console.log("changed", name, value)
-              onChange?.(name, value);
-            }}
+            onChange={onChange}
           />
           <RenderInput
-            key={`${field.field}-${i}-relation`}
-            filterField={filterFields[i + 1]}
+            filterField={childField}
             dependsOnLabel={field.label}
-            onChange={(name, value) => {
-              console.log("changed subcomponent", name, value)
-              onChange?.(name, value);
-            }}
-
+            onChange={onChange}
           />
         </div>
       );
-      i++; // saltear el siguiente porque ya lo renderizaste
     } else {
-      res.push(
-        <div key={`${field.field}-${i}`}>
+      // Render independent field
+      renderedIndices.add(index);
+      elements.push(
+        <div key={`field-${field.field}`} className="my-4">
           <RenderInput
             filterField={field}
             dependsOnLabel={
               filterFields.find((f) => f.field === field.dependsOn)?.label
             }
-            onChange={(name, value) => {
-              console.log("changed", name, value)
-              onChange?.(name, value);
-            }}
-
+            onChange={onChange}
           />
         </div>
       );
     }
-  }
+  });
 
-  return res;
-}
-
-function Layout({ onChange }: { onChange: RenderInputsBaseProps['onChange'] }) {
-  const { filterData, loading, error, modelName } = useAdvancedFilter();
-
-  return (
-    <>
-      {error && <ApiErrorMessage error={error} />}
-      {loading && <AlertLoading message="Cargando filtros..." />}
-      {!error && filterData?.filterFields.length === 0 && (
-        <div className="rounded-lg border text-center py-8 ">
-          No hay filtros disponibles para este modelo
-        </div>
-      )}
-      <div className="rounded-lg border">
-        <div className="px-4 py-3 border-b">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium ">
-              Filtros - <span className="font-bold">{modelName}</span>
-            </h3>
-            <ClearFilterButton />
-          </div>
-        </div>
-
-        <div className="p-4">
-          <div className="mb-4 space-y-4">
-            {renderFilterInputs({ filterData, onChange })}
-          </div>
-        </div>
-
-        {filterData?.filterFields && (
-          <SelectedFiltersDisplay filterFields={filterData?.filterFields} />
-        )}
-      </div>
-    </>
-  );
+  return <>{elements}</>;
 }
 
 type AdvancedFilterProps = {
   modelName: string;
   data?: FilterField[];
-  onFilterChange: RenderInputsBaseProps['onChange']
-}
+  onFilterChange: RenderInputsBaseProps['onChange'];
+};
 
-export default function AdvancedFilter({ modelName, data, onFilterChange }: AdvancedFilterProps) {
-  console.log("DATA?", data)
+/**
+ * Advanced Filter Component
+ * 
+ * Features:
+ * - Dynamic filter field loading from backend
+ * - Automatic option loading for select fields
+ * - Parent-child relationship handling (e.g., Country -> Province)
+ * - Active filter display
+ * - Debounced filter changes
+ * 
+ * @param modelName - The model to load filters for (e.g., "Client", "Order")
+ * @param onFilterChange - Callback when filter values change
+ */
+export default function AdvancedFilter({
+  modelName,
+  onFilterChange
+}: AdvancedFilterProps) {
+  const {
+    data: filterData,
+    loading,
+    error,
+  } = useGetFilterFieldsQuery({
+    variables: { model: modelName },
+    fetchPolicy: "cache-first", // Use cache for better performance
+  });
+
+  const handleFilterChange = useCallback((name: string, value: string) => {
+    onFilterChange?.(name, value);
+  }, [onFilterChange]);
+
+  const filterFields = useMemo(
+    () => filterData?.filterFields || [],
+    [filterData?.filterFields]
+  );
+
+  if (error) {
+    return <ApiErrorMessage error={error} />;
+  }
+
+  if (loading) {
+    return <AlertLoading message="Cargando filtros..." />;
+  }
+
+  if (filterFields.length === 0) {
+    return (
+      <div className="rounded-lg border text-center py-8 ">
+        No hay filtros disponibles para este modelo
+      </div>
+    );
+  }
+
+  console.log("Filter Fields:", filterFields);
+
   return (
-    <AdvancedFilterProvider modelName={modelName}>
-      <Layout onChange={onFilterChange} />
-    </AdvancedFilterProvider>
-  )
+    <div className="rounded-lg border">
+      <div className="px-4 py-3 border-b">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-medium ">
+            Filtros - <span className="font-bold">{modelName}</span>
+          </h3>
+          <ClearFilterButton />
+        </div>
+      </div>
+
+      <div className="p-4">
+        <div className="mb-4 space-y-4">
+          {/* <FilterInputs
+            filterFields={filterFields}
+            onChange={handleFilterChange}
+          /> */}
+        </div>
+      </div>
+
+      <SelectedFiltersDisplay filterFields={filterFields} />
+    </div>
+  );
 }

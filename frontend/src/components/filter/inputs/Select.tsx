@@ -1,59 +1,103 @@
+import { useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 
-import type { GetRelationsQuery } from "~/graphql/_generated/graphql";
 import { cn } from "~/lib/utils";
 import { type ModelNameMap } from "../constants";
-import { useAdvancedFilter } from "../hooks/useAdvancedFilter";
-// import useFilterState from "../hooks/useFilterState";
+import useFilterState from "../hooks/useFilterState";
+import { useFilterOptionsLoader } from "../hooks/useFilterOptionsLoader";
 import type { FilterField, RenderInputsBaseProps } from "../types";
-import { getNameField } from "../utils";
+import { formatClientName, getNameField } from "../utils";
 
 type FilterTypeSelectProps = RenderInputsBaseProps & {
   filterField: FilterField;
 }
 
+/**
+ * Intelligent Select input that automatically loads options based on filterField configuration.
+ * 
+ * Features:
+ * - Automatic option loading via useFilterOptionsLoader
+ * - Support for dependent fields (loads when parent value changes)
+ * - Proper display name formatting (handles Client names, etc.)
+ * - Loading states and error handling
+ */
 export function InputSelect({ name, value, placeholder, onChange, disabled, className, filterField }: FilterTypeSelectProps) {
-  const { loading, relationData } = useAdvancedFilter();
-  console.log("ENTRO", { relationData, relationModel: filterField.relationModel });
-  if (!relationData || !filterField.relationModel) return;
+  const { filters } = useFilterState<string>();
 
-  const options: GetRelationsQuery[keyof GetRelationsQuery] = relationData[filterField.relationModel as keyof GetRelationsQuery] ?? [];
+  // Get parent value for dependent fields
+  const parentValue = useMemo(() => {
+    if (!filterField?.dependsOn) return undefined;
+    return filters[filterField.dependsOn];
+  }, [filterField?.dependsOn, filters]);
 
-  console.log("options", options)
+  // Load options dynamically
+  const { loading, options, error } = useFilterOptionsLoader<Record<string, unknown>>(
+    filterField,
+    parentValue
+  );
+
+  // Memoize formatted options for performance
+  const formattedOptions = useMemo(() => {
+    if (!filterField?.relationModel || !options?.length) return [];
+
+    return options.map((option) => {
+      const idField = `${filterField.relationModel}ID`;
+      const id = option[idField] as string | number;
+
+      let displayName: string;
+      
+      // Special handling for Client model
+      if (filterField.relationModel === "Client") {
+        displayName = formatClientName(option as Record<string, string>);
+      } else {
+        const nameField = getNameField(filterField.relationModel as ModelNameMap);
+        displayName = (option[nameField] as string) || `${filterField.relationModel} ${id}`;
+      }
+
+      return {
+        id,
+        label: displayName,
+        value: String(id),
+      };
+    });
+  }, [filterField?.relationModel, options]);
+
+  if (!filterField?.relationModel) {
+    console.warn(`InputSelect: No relationModel defined for field ${name}`);
+    return null;
+  }
+
+  if (error) {
+    console.error(`InputSelect: Error loading options for ${name}:`, error);
+  }
+
+  const isDisabled = loading || !!disabled || (!!filterField.dependsOn && !parentValue);
 
   return (
-    <>
-      <Select
-        name={name}
-        value={value}
-        onValueChange={(value) => onChange?.(name, value)}
-        disabled={loading || disabled}
-      >
-        <SelectTrigger className={cn("w-full", className)}>
-          <SelectValue placeholder={loading ? "Cargando..." : placeholder || filterField?.label} />
-        </SelectTrigger>
-        <SelectContent>
-          {options?.length > 0 && options.map((option) => {
-            // Manejar diferentes tipos de modelos
-            // let displayName;
-            // if (filterField?.relationModel === "Client") {
-            //   displayName = formatClientName(option);
-            // } else {
-            //   const nameField = filterField?.relationModel ? nameFieldMap[filterField?.relationModel as NameFieldMap] : "Name";
-            //   displayName =
-            //     filterField.Name || `${filterField?.relationModel} ${id}`;
-            // }
-            const nameField = getNameField(filterField?.relationModel as ModelNameMap);
-            const label = option[nameField];
-            return (
-              <SelectItem key={label} value={label}>
-                {label}
-              </SelectItem>
-            );
-          })}
-        </SelectContent>
-      </Select>
-    </>
+    <Select
+      name={name}
+      value={value}
+      onValueChange={(value) => onChange?.(name, value)}
+      disabled={isDisabled}
+    >
+      <SelectTrigger className={cn("w-full", className)}>
+        <SelectValue 
+          placeholder={
+            loading ? "Cargando..." :
+            filterField.dependsOn && !parentValue ? "Seleccione primero el campo padre" :
+            placeholder || filterField.label
+          } 
+        />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="">Todos</SelectItem>
+        {formattedOptions.map((option) => (
+          <SelectItem key={option.id} value={option.value}>
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }
 

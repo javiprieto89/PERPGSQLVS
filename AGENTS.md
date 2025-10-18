@@ -1,8 +1,55 @@
 ﻿# AGENTS.md - Sistema ERP Lubricentro
 
-## 📋 Descripción General
+## � Nueva Ubicación de Documentación
 
-Este documento describe todos los agentes, procesos automatizados y componentes del sistema ERP para lubricentros desarrollado con **Starlette + Strawberry GraphQL + SQLAlchemy** (backend) y **React + Vite** (frontend).
+> **⚠️ IMPORTANTE:** La documentación de agentes se ha movido a `/agents/`
+
+Toda la documentación detallada de agentes, migraciones y referencias ahora se encuentra en:
+
+**`/agents/`** - Carpeta principal de documentación
+
+### 📋 Archivos Principales:
+
+- **[/agents/AGENTS_CONFIG.md](/agents/AGENTS_CONFIG.md)** - Configuración y guías de uso
+- **[/agents/FORM_MIGRATION_STATUS.md](/agents/FORM_MIGRATION_STATUS.md)** - Estado de migraciones de formularios
+- **[/agents/MIGRATION_STATUS.md](/agents/MIGRATION_STATUS.md)** - Estado general del proyecto
+- **[/agents/FINAL_ARCHITECTURE.md](/agents/FINAL_ARCHITECTURE.md)** - Arquitectura objetivo
+
+### 🔍 Referencias Rápidas:
+
+- **[/agents/TANSTACK_QUERY_PATTERNS.md](/agents/TANSTACK_QUERY_PATTERNS.md)** - Patrones TanStack Query
+- **[/agents/ZOD_QUICK_REFERENCE.md](/agents/ZOD_QUICK_REFERENCE.md)** - Referencia Zod
+- **[/agents/AUTH_MIDDLEWARE_QUICK_REF.md](/agents/AUTH_MIDDLEWARE_QUICK_REF.md)** - Auth Middleware
+- **[/agents/ORDER_SERVICE_QUICK_REF.md](/agents/ORDER_SERVICE_QUICK_REF.md)** - Order Service
+
+### 📊 Seguimiento de Progreso:
+
+- **[/agents/FORM_MIGRATION_STATUS.md](/agents/FORM_MIGRATION_STATUS.md)** - Formularios modernizados
+- **[/agents/MODAL_MIGRATION.md](/agents/MODAL_MIGRATION.md)** - Migración de modales
+- **[/agents/APOLLO_IMPROVEMENTS.md](/agents/APOLLO_IMPROVEMENTS.md)** - Mejoras Apollo Client
+
+---
+
+## 🚀 Acceso Rápido
+
+Para trabajar con la documentación de agentes:
+
+```bash
+# Ir a la carpeta de agentes
+cd /agents/
+
+# Consultar estado de formularios
+cat FORM_MIGRATION_STATUS.md
+
+# Editar configuración
+vim AGENTS_CONFIG.md
+```
+
+---
+
+## 📋 Descripción General (Resumen)
+
+Sistema ERP para lubricentros desarrollado con **Starlette + Strawberry GraphQL + SQLAlchemy** (backend) y **React + Vite** (frontend).
 
 ## 🏗️ Arquitectura del Sistema
 
@@ -22,10 +69,11 @@ ERP Lubricentro
 ## 🤖 Agentes y Middlewares del Sistema
 
 ### 1. **RateLimitMiddleware** (Agente de Control de Tráfico)
+
 - **Ubicación**: `main.py`
 - **Función**: Protege la API contra ataques de fuerza bruta y sobrecarga
 - **Configuración**: 100 peticiones por minuto por IP
-- **Comportamiento**: 
+- **Comportamiento**:
   - Rastrea timestamps de peticiones por IP
   - Limpia automáticamente registros antiguos (>1 minuto)
   - Retorna HTTP 429 si se excede el límite
@@ -37,6 +85,7 @@ CLEANUP_WINDOW = 60  # segundos
 ```
 
 ### 2. **ProcessTimeMiddleware** (Agente de Monitoreo)
+
 - **Ubicación**: `main.py`
 - **Función**: Monitorea performance y tiempo de respuesta
 - **Características**:
@@ -46,6 +95,7 @@ CLEANUP_WINDOW = 60  # segundos
   - Logging diferenciado por status code
 
 ### 3. **GraphQLContextMiddleware** (Agente de Autenticación)
+
 - **Ubicación**: `main.py`
 - **Función**: Gestiona contexto de usuario y autenticación JWT
 - **Responsabilidades**:
@@ -54,6 +104,7 @@ CLEANUP_WINDOW = 60  # segundos
   - Rastrea tiempo de inicio de peticiones
 
 ### 4. **CachedResolvers** (Agente de Cache)
+
 - **Ubicación**: `app/graphql/resolvers/cached_resolvers.py`
 - **Función**: Optimiza consultas frecuentes con sistema de cache
 - **Beneficios**:
@@ -64,6 +115,7 @@ CLEANUP_WINDOW = 60  # segundos
 ## 📊 Módulos del ERP
 
 ### **Gestión de Inventario**
+
 - **Items**: Productos y servicios del lubricentro
 - **ItemCategories**: Categorización de productos
 - **ItemSubcategories**: Subcategorización detallada
@@ -72,12 +124,14 @@ CLEANUP_WINDOW = 60  # segundos
 - **TempStockEntries**: Entradas temporales de stock
 
 ### **Gestión de Precios**
+
 - **PriceLists**: Listas de precios por cliente/categoria
 - **PriceListItems**: Items específicos en listas de precios
 - **ItemPriceHistory**: Historial de cambios de precios
 - **Discounts**: Sistema de descuentos
 
 ### **Gestión de Órdenes y Ventas**
+
 - **Orders**: Órdenes de venta principales
 - **OrderDetails**: Detalles de items en órdenes
 - **OrderHistory**: Historial de cambios en órdenes
@@ -86,6 +140,7 @@ CLEANUP_WINDOW = 60  # segundos
 - **OrderStatus**: Estados de las órdenes
 
 ### **Gestión de Clientes y Proveedores**
+
 - **Clients**: Base de datos de clientes
 - **Suppliers**: Gestión de proveedores
 - **Vendors**: Vendedores externos
@@ -94,6 +149,7 @@ CLEANUP_WINDOW = 60  # segundos
 - **CarModels**: Modelos específicos
 
 ### **Gestión Administrativa**
+
 - **Users**: Usuarios del sistema
 - **Roles**: Roles y permisos
 - **UserAccess**: Control de acceso
@@ -103,6 +159,7 @@ CLEANUP_WINDOW = 60  # segundos
 - **Warehouses**: Almacenes
 
 ### **Gestión Financiera**
+
 - **Transactions**: Transacciones financieras
 - **TransactionTypes**: Tipos de transacciones
 - **AccountBalances**: Balances de cuentas
@@ -110,6 +167,7 @@ CLEANUP_WINDOW = 60  # segundos
 - **CreditCardGroups**: Grupos de tarjetas
 
 ### **Configuración del Sistema**
+
 - **CompanyData**: Datos de la empresa
 - **Countries**: Países
 - **Provinces**: Provincias/Estados
@@ -120,21 +178,25 @@ CLEANUP_WINDOW = 60  # segundos
 ## 🔧 Herramientas de Utilidad
 
 ### **Cache System** (`app/utils/cache.py`)
+
 - Sistema de cache en memoria para optimización
 - Invalidación automática de cache
 - Configuración por tipo de dato
 
 ### **Pagination** (`app/utils/pagination.py`)
+
 - Paginación inteligente para grandes datasets
 - Optimización de consultas SQL
 - Soporte para filtros y ordenamiento
 
 ### **Generic Filters** (`app/utils/generic_filters.py`)
+
 - Sistema de filtros reutilizable
 - Construcción dinámica de queries
 - Soporte para múltiples tipos de datos
 
 ### **Item Helpers** (`app/utils/item_helpers.py`)
+
 - Funciones auxiliares para manejo de productos
 - Cálculos de stock y precios
 - Validaciones de negocio
@@ -142,6 +204,7 @@ CLEANUP_WINDOW = 60  # segundos
 ## 🚀 Endpoints Principales
 
 ### **REST Endpoints**
+
 ```
 GET  /                 - Información general de la API
 GET  /health          - Health check del sistema
@@ -150,6 +213,7 @@ POST /graphql/        - Endpoint principal GraphQL
 ```
 
 ### **GraphQL Schema**
+
 - **Queries**: Consultas de datos (todos los módulos)
 - **Mutations**: Operaciones de escritura (CRUD completo)
 - **Tipos**: Definiciones de tipos GraphQL para cada entidad
@@ -157,6 +221,7 @@ POST /graphql/        - Endpoint principal GraphQL
 ## 📈 Monitoreo y Métricas
 
 ### **Métricas Disponibles** (`/metrics`)
+
 ```json
 {
   "active_connections": "número de IPs activas",
@@ -165,6 +230,7 @@ POST /graphql/        - Endpoint principal GraphQL
 ```
 
 ### **Health Check** (`/health`)
+
 ```json
 {
   "status": "healthy",
@@ -177,16 +243,19 @@ POST /graphql/        - Endpoint principal GraphQL
 ## 🔐 Seguridad
 
 ### **Autenticación JWT**
+
 - Tokens de acceso con expiración
 - Validación en cada petición GraphQL
 - Información de usuario en contexto
 
 ### **Control de Acceso**
+
 - Sistema de roles y permisos
 - Log de actividad de usuarios
 - Control de acceso granular por módulo
 
 ### **Rate Limiting**
+
 - Protección contra abuso
 - Límites por IP
 - Configuración flexible
@@ -194,12 +263,14 @@ POST /graphql/        - Endpoint principal GraphQL
 ## 🗄️ Base de Datos
 
 ### **Configuración**
+
 - **Motor**: SQL Server
 - **ORM**: SQLAlchemy 2.0
 - **Driver**: pyodbc
 - **Pool de conexiones**: Configurado automáticamente
 
 ### **Migraciones**
+
 - Auto-creación de tablas en desarrollo
 - Control de versiones de schema
 - Backup automático recomendado
@@ -207,16 +278,19 @@ POST /graphql/        - Endpoint principal GraphQL
 ## 🔄 Procesos Automatizados
 
 ### **1. Limpieza de Rate Limiting**
+
 - **Frecuencia**: Cada petición
 - **Función**: Elimina registros antiguos de rate limiting
 - **Beneficio**: Mantiene memoria baja
 
 ### **2. Cache Invalidation**
+
 - **Trigger**: Mutaciones que modifican datos
 - **Función**: Invalida cache relacionado
 - **Beneficio**: Consistencia de datos
 
 ### **3. Activity Logging**
+
 - **Trigger**: Todas las acciones de usuario
 - **Función**: Registra actividad para auditoría
 - **Beneficio**: Trazabilidad completa
@@ -224,6 +298,7 @@ POST /graphql/        - Endpoint principal GraphQL
 ## 🛠️ Configuración de Desarrollo
 
 ### **Variables de Entorno**
+
 ```bash
 DATABASE_URL=mssql+pyodbc://USER:PASSWORD@HOST/DB?driver=ODBC+Driver+17+for+SQL+Server
 ENVIRONMENT=development
@@ -231,15 +306,18 @@ JWT_SECRET_KEY=your-secret-key
 ```
 
 ### **Compatibilidad Multiplataforma**
+
 El sistema soporta automáticamente ambos entornos:
+
 - **Windows**: Utiliza `winloop` para mejor performance
-- **Linux/Unix**: Utiliza `uvloop` para mejor performance  
+- **Linux/Unix**: Utiliza `uvloop` para mejor performance
 - **Docker**: Utiliza `uvloop` en contenedores Linux
 - **Fallback**: `asyncio` por defecto si no están disponibles
 
 ### **Comandos de Desarrollo**
 
 #### **Desarrollo en Windows**
+
 ```bash
 # Opción 1: Script automático (recomendado)
 python start_dev_windows.py
@@ -249,12 +327,14 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 #### **Desarrollo en Linux/Mac**
+
 ```bash
 # uvicorn directo
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
 #### **Desarrollo con Docker**
+
 ```bash
 # Levantar todo el stack
 docker compose up --build
@@ -264,6 +344,7 @@ docker compose up --build backend
 ```
 
 #### **Frontend (ambas plataformas)**
+
 ```bash
 npm run dev
 npm run lint
@@ -284,11 +365,13 @@ app/graphql/
 ## 🔍 Debugging y Logs
 
 ### **Logs del Sistema**
+
 - **Nivel**: INFO por defecto
 - **Incluye**: Peticiones HTTP, tiempos de respuesta, errores
 - **Formato**: Timestamp + Nivel + Mensaje
 
 ### **GraphQL Introspection**
+
 - Habilitado en desarrollo
 - Documentación automática del schema
 - Playground disponible en `/graphql/`
@@ -296,12 +379,14 @@ app/graphql/
 ## 🚀 Deployment
 
 ### **Producción**
+
 - Cambiar `ENVIRONMENT` a `production`
 - Configurar variables de entorno seguras
 - Habilitar HTTPS
 - Configurar proxy reverso (nginx recomendado)
 
 ### **Escalabilidad**
+
 - Soporte para múltiples workers
 - Cache Redis recomendado para producción
 - Balanceador de carga para alta disponibilidad
@@ -309,6 +394,7 @@ app/graphql/
 ## 📞 Soporte
 
 Para dudas sobre la implementación de agentes o procesos automatizados, consultar:
+
 - Documentación GraphQL: `/graphql/` (modo desarrollo)
 - Logs del sistema: Revisar salida de uvicorn
 - Métricas: Endpoint `/metrics`

@@ -1,0 +1,31 @@
+query GetAllCommercialDocuments {
+  allCommercialdocuments {
+    DocumentTypeID
+    BranchID
+    AffectsStock
+    CompanyID
+    CurrencyID
+    DocumentDescription
+    DocumentID
+    DocumentNumber
+    FromDate
+    IsActive
+    IsElectronic
+    IsFiscal
+    IsManual
+    IsQuotation
+    IsTest
+    MaxItems
+    PointOfSale
+    ShouldAccount
+  }
+  allCompany {
+    CompanyID
+    CompanyName
+  }
+  allBranches {
+    BranchID
+    CompanyID
+    BranchName
+  }
+}

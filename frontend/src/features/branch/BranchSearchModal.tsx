@@ -9,7 +9,7 @@ interface BranchSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelect: (branch: BranchesInDb) => void;
-  companyID?: string | null;
+  companyID?: number | null;
 }
 
 export default function BranchSearchModal({

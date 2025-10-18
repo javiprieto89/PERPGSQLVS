@@ -72,7 +72,11 @@ export function openReactWindow(
  */
 export function openNewWindow(
   url: string,
-  options: { width: number; height: number } = { width: 500, height: 500 }
+  options: { width?: number; height?: number; title?: string } = {
+    width: 500,
+    height: 500,
+    title: "Nueva Ventana",
+  }
 ) {
   const width = options.width || 1000;
   const height = options.height || 700;
@@ -83,6 +87,11 @@ export function openNewWindow(
     "_blank",
     `width=${width},height=${height},left=200,top=200`
   );
+
+  // 2) Personalizo el título
+  if (windowContext) {
+    windowContext.document.title = options.title || "Nueva Ventana";
+  }
 
   if (!windowContext) {
     toast("Could not open the url", {

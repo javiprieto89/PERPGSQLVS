@@ -1,5 +1,7 @@
-// frontend/src/pages/CompanyData.jsx
+// frontend/src/pages/CompanyData.tsx - Company List Page
+import type { ColumnDef } from "@tanstack/react-table";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ShowFilterButton } from "~/components/filter/ShowFilterButton";
 import { DataTable } from "~/components/table/DataTable";
 import {
@@ -14,13 +16,11 @@ import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
-import { useGetAllCompaniesQuery } from "~/graphql/_generated/graphql";
-import { CompanyForm } from "~/pages/company/form";
+import { useGetAllCompaniesQuery, type CompanyInDb } from "~/graphql/_generated/graphql";
 import { companyOperations } from "~/services/company.service";
-import { openReactWindow } from "~/utils/openReactWindow";
 
 //  {company: Record<String, string>; onEdit: () => void; onDelete: () => void}
-function CompanyDetail({ company, onEdit, onDelete }) {
+function CompanyDetail({ company, onEdit, onDelete }: { company: CompanyInDb; onEdit: () => void; onDelete: () => void }) {
   return (
     <div key={company.CompanyID} className=" rounded shadow p-4">
       {company.Logo && (
@@ -30,7 +30,7 @@ function CompanyDetail({ company, onEdit, onDelete }) {
           className="h-16 mb-2 object-contain"
         />
       )}
-      <h3 className="text-lg font-semibold mb-1">{company.Name}</h3>
+      <h3 className="text-lg font-semibold mb-1">{company.CompanyName}</h3>
       <p className="text-sm mb-1">{company.Address}</p>
       {company.CUIT && <p className="text-sm mb-1">CUIT: {company.CUIT}</p>}
       {company.Grossincome && (
@@ -51,60 +51,27 @@ function CompanyDetail({ company, onEdit, onDelete }) {
   );
 }
 
-export default function CompanyData() {
+type DataInDB = CompanyInDb
+
+export function CompanyList() {
+  const navigate = useNavigate();
   const { data, error, loading, refetch } = useGetAllCompaniesQuery({
     notifyOnNetworkStatusChange: true,
   });
-  const [companies, setCompanies] = useState([]);
+  const [companies, setCompanies] = useState<any[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    const handler = (e) => {
-      if (e.data === "reload-companies") {
-        refetch();
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, [refetch]);
-
   const handleCreate = () => {
-    openReactWindow(
-      (popup) => (
-        <CompanyForm
-          onSave={() => {
-            popup.opener.postMessage("reload-companies", "*");
-            popup.close();
-          }}
-          onClose={() => popup.close()}
-        />
-      ),
-      "Nueva Empresa"
-    );
+    navigate("/companies/form");
   };
 
-  const handleFilterChange = (filtered) => setCompanies(filtered);
+  const handleFilterChange = (filtered: any) => setCompanies(filtered);
 
   const handleEdit = useCallback(
-    (c) => {
-      openReactWindow(
-        (popup) => (
-          <CompanyForm
-            company={c}
-            onSave={() => {
-              popup.opener.postMessage("reload-companies", "*");
-              popup.close();
-            }}
-            onClose={() => {
-              popup.close();
-              refetch();
-            }}
-          />
-        ),
-        "Editar Empresa"
-      );
+    (company: any) => {
+      navigate(`/companies/form/${company.CompanyID}`);
     },
-    [refetch]
+    [navigate]
   );
 
   const handleDelete = useCallback(
@@ -126,7 +93,7 @@ export default function CompanyData() {
     }
   }, [data]);
 
-  const columns = useMemo(
+  const columns = useMemo<ColumnDef<DataInDB>[]>(
     () => [
       {
         header: "ID",
@@ -147,6 +114,7 @@ export default function CompanyData() {
       },
       {
         header: "Empresa",
+        id: "Empresa",
         accessorKey: "CompanyName",
       },
       {
@@ -156,7 +124,7 @@ export default function CompanyData() {
       {
         header: "Inicio",
         accessorKey: "Startdate",
-        cell: ({ getValue }) => (getValue() || "").slice(0, 10),
+        cell: ({ getValue }) => (getValue<string>() || "").slice(0, 10),
       },
       {
         header: "Estado",
@@ -171,7 +139,7 @@ export default function CompanyData() {
         cell: ({ row, getValue }) => (
           <TableActionButton
             row={row}
-            onDelete={() => handleDelete(getValue())}
+            onDelete={() => handleDelete(getValue<string>())}
             onEdit={() => handleEdit(row.original)}
           />
         ),
@@ -200,7 +168,7 @@ export default function CompanyData() {
         {showFilters && (
           <TableFilters
             modelName="companydata"
-            data={data.allCompany || []}
+            data={data?.allCompany || []}
             onFilterChange={handleFilterChange}
           />
         )}
@@ -208,6 +176,7 @@ export default function CompanyData() {
         {loading && <AlertLoading />}
         {companies.length > 0 && (
           <DataTable
+            id="companies"
             getRowCanExpand={() => true}
             columns={columns}
             data={companies}
@@ -215,7 +184,7 @@ export default function CompanyData() {
               <CompanyDetail
                 company={row.original}
                 onEdit={() => handleEdit(row.original)}
-                onDelete={() => handleDelete(row.CompanyID)}
+                onDelete={() => handleDelete(row.original.CompanyID)}
               />
             )}
           />

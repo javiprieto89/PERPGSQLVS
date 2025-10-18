@@ -1,7 +1,7 @@
 import { atom, useAtom } from "jotai";
 import { PanelLeft } from "lucide-react";
+import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
-import { Button } from "../button";
 
 interface SidebarCollapsibleProps extends React.PropsWithChildren {
   className: string;

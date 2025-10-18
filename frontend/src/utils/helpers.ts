@@ -21,7 +21,10 @@ export const orderHelpers = {
       errors.push("Subtotal es requerido");
     if (orderData.Total === undefined || orderData.Total === null)
       errors.push("Total es requerido");
-    if (orderData.VAT === undefined || orderData.VAT === null)
+    if (
+      orderData.TotalTaxAmount === undefined ||
+      orderData.TotalTaxAmount === null
+    )
       errors.push("IVA es requerido");
     if (!orderData.UserID) errors.push("Usuario es requerido");
     if (!orderData.DocumentID) errors.push("ID de documento es requerido");
@@ -34,7 +37,7 @@ export const orderHelpers = {
       errors.push("El subtotal no puede ser negativo");
     if (orderData.Total && orderData.Total < 0)
       errors.push("El total no puede ser negativo");
-    if (orderData.VAT && orderData.VAT < 0)
+    if (orderData.TotalTaxAmount && orderData.TotalTaxAmount < 0)
       errors.push("El IVA no puede ser negativo");
     if (orderData.Mileage && orderData.Mileage < 0)
       errors.push("El kilometraje no puede ser negativo");
@@ -71,7 +74,7 @@ export const orderHelpers = {
       DiscountID: parseInt(formData.DiscountID),
       Subtotal: parseFloat(formData.Subtotal),
       Total: parseFloat(formData.Total),
-      VAT: parseFloat(formData.VAT),
+      TotalTaxAmount: parseFloat(formData.TotalTaxAmount),
       UserID: parseInt(formData.UserID),
       DocumentID: parseInt(formData.DocumentID),
       PriceListID: parseInt(formData.PriceListID),
