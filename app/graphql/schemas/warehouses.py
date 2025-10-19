@@ -25,4 +25,4 @@ class WarehousesInDB:
     WarehouseID: int
     WarehouseName: str
     Address: Optional[str] = None
-    CompanCompanyData: Optional[CompanyInDB] = None
+    CompanyData: Optional[CompanyInDB] = None
