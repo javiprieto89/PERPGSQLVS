@@ -1,11 +1,14 @@
 // frontend/src/components/ItemSearchModal.tsx
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { X } from "lucide-react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
+import { useQuery } from "@apollo/client";
+import { Input as FormInput } from "~/components/form/Input";
+import { Select as FormSelect } from "~/components/form/Select";
+import { Button } from "~/components/ui/button";
 import {
   Table,
   TableBody,
@@ -14,9 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { Button } from "~/components/ui/button";
-import { Input as FormInput } from "~/components/form/Input";
-import { Select as FormSelect } from "~/components/form/Select";
+import type {
+  GetAllItemsQuery
+} from "~/graphql/_generated/graphql";
 import { brandOperations } from "~/services/brand.service";
 import {
   itemCategoryOperations,
@@ -25,13 +28,6 @@ import {
 } from "~/services/item.service";
 import { supplierOperations } from "~/services/supplier.service";
 import type { MatchType } from "./filter/constants";
-import type {
-  GetAllItemsQuery,
-  BrandsInDb,
-  ItemCategoriesInDb,
-  ItemSubcategoriesInDb,
-  SuppliersInDb,
-} from "~/graphql/_generated/graphql";
 
 const defaultMatchType: MatchType = "contains";
 
@@ -101,7 +97,7 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }: ItemS
   const categoryId = watch("category_id");
 
   // TanStack Query for all filter data (fetched together for better performance)
-  const { data, isLoading } = useQuery({
+  const { data, loading } = useQuery({
     queryKey: ["itemSearchModal", "filterData"],
     queryFn: async () => {
       const [items, brands, categories, suppliers] = await Promise.all([
@@ -262,8 +258,8 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }: ItemS
       brandName: item.BrandData?.BrandName,
       categoryName: item.CategoryData?.CategoryName,
       subcategoryName: undefined,
-      supplierName: item.SupplierData 
-        ? `${item.SupplierData.FirstName} ${item.SupplierData.LastName || ""}`.trim() 
+      supplierName: item.SupplierData
+        ? `${item.SupplierData.FirstName} ${item.SupplierData.LastName || ""}`.trim()
         : undefined,
       oem: item.OEM,
     };
@@ -447,13 +443,13 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }: ItemS
 
           {/* Search Button */}
           <div className="lg:col-start-3 flex items-end">
-            <Button 
-              type="button" 
-              onClick={applyFilters} 
-              disabled={isLoading} 
+            <Button
+              type="button"
+              onClick={applyFilters}
+              disabled={loading}
               className="w-full"
             >
-              {isLoading ? "Buscando..." : "Buscar"}
+              {loading ? "Buscando..." : "Buscar"}
             </Button>
           </div>
         </form>
@@ -486,7 +482,7 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }: ItemS
                     <TableCell>{item.CategoryData?.CategoryName || "-"}</TableCell>
                     <TableCell>-</TableCell>
                     <TableCell>
-                      {item.SupplierData 
+                      {item.SupplierData
                         ? `${item.SupplierData.FirstName} ${item.SupplierData.LastName || ""}`.trim()
                         : "-"
                       }
@@ -508,7 +504,7 @@ export default function ItemSearchModal({ isOpen, onClose, onItemSelect }: ItemS
                     colSpan={8}
                     className="px-4 py-10 text-center text-sm text-foreground/80"
                   >
-                    {isLoading
+                    {loading
                       ? "Cargando resultados..."
                       : "No se encontraron ítems con los filtros aplicados."}
                   </TableCell>
