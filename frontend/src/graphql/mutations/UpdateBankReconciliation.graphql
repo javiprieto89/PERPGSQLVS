@@ -1,0 +1,14 @@
+mutation UpdateBankReconciliation(
+  $reconciliationID: Int!
+  $input: BankReconciliationUpdate!
+) {
+  updateBankreconciliation(reconciliationID: $reconciliationID, input: $input) {
+    ReconciliationID
+    CompanyID
+    BankAccountID
+    StatementDate
+    ClosingBalance
+    CreatedAt
+    Notes
+  }
+}

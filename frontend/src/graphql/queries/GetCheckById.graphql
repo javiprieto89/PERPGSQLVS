@@ -1,0 +1,15 @@
+query GetCheckById($checkID: Int!, $companyID: Int) {
+  checkById(checkID: $checkID, companyID: $companyID) {
+    CheckID
+    CompanyID
+    Number
+    CurrencyID
+    Amount
+    IssueDate
+    DueDate
+    BankID
+    DrawerName
+    HolderName
+    CheckStatusID
+  }
+}

@@ -1,0 +1,22 @@
+query GetRmaById($companyID: Int!, $branchID: Int!, $rmaID: Int!) {
+  rmaById(companyID: $companyID, branchID: $branchID, rmaID: $rmaID) {
+    CompanyID
+    BranchID
+    RmaID
+    RmaDate
+    RmaTypeID
+    ClientID
+    SupplierID
+    RelatedOrderID
+    RelatedPIID
+    WarehouseID
+    UserID
+    PriceListID
+    DocumentID
+    StatusID
+    Notes
+    Subtotal
+    VatAmount
+    Total
+  }
+}
