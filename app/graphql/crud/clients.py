@@ -23,7 +23,7 @@ def get_clients(db: Session):
 
 
 def get_clients_by_company(db: Session, company_id: int):
-    """Retrieve clients filtered by CompanyID"""
+    """Devuelve los clientes filtrados por CompanyID"""
     return (
         db.query(Clients)
         .options(
@@ -41,7 +41,7 @@ def get_clients_by_company(db: Session, company_id: int):
 
 
 def get_clients_by_branch(db: Session, company_id: int, branch_id: int | None = None):
-    """Retrieve clients filtered by CompanyID and optionally BranchID"""
+    """Devuelve los clientes filtrados por CompanyID y opcionalmente BranchID"""
     query = (
         db.query(Clients)
         .options(
@@ -106,7 +106,7 @@ def delete_clients(db: Session, clientid: int):
             Orders.ClientID == clientid).first() is not None
         if has_orders:
             raise ValueError(
-                "Client has associated orders and cannot be deleted")
+                "El cliente no puede ser eliminado porque tiene órdenes asociadas.")
         db.delete(obj)
         db.commit()
     return obj

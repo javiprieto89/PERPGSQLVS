@@ -44,7 +44,7 @@ def update_saleconditions(
 def delete_saleconditions(db: Session, saleconditionid: int):
     obj = get_saleconditions_by_id(db, saleconditionid)
     if obj:
-        # Prevent deletion if there are orders depending on this sale condition
+        # Previene la eliminación si hay órdenes que dependen de esta condición de venta
         linked = (
             db.query(Orders)
             .filter(Orders.SaleConditionID == saleconditionid)
@@ -53,9 +53,8 @@ def delete_saleconditions(db: Session, saleconditionid: int):
         )
         if linked:
             raise ValueError(
-                "Cannot delete sale condition because there are orders referencing it"
+                "No se puede eliminar la condición de venta porque tiene órdenes asociadas."
             )
         db.delete(obj)
         db.commit()
     return obj
-

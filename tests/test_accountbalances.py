@@ -1,42 +1,96 @@
-from datetime import datetime, timezone
-import pytest
-from app.graphql.crud.accountbalances import create_accountbalances, get_accountbalances, update_accountbalances, delete_accountbalances
-from app.graphql.schemas.accountbalances import AccountBalancesCreate, AccountBalancesUpdate
-from app.models.company import Company
-from app.models.branches import Branches
+from sqlalchemy import text
+
+from app.graphql.crud.accountbalances import (
+    delete_accountbalances,
+    get_accountbalances,
+    get_accountbalances_by_id,
+    update_accountbalances,
+)
+from app.graphql.schemas.accountbalances import AccountBalancesUpdate
+from tests.interactive import run_entity_flow, safe_db_call
 
 
-def test_create_get_update_delete_accountbalances(db_session):
-    # Crear
-    company = db_session.query(Company).first()
-    if not company:
-        company = Company(CompanyName="TestCo", Address="Addr", CUIT="123",
-                          GrossIncome="GI", StartDate=datetime.now(timezone.utc).date(), Logo=b"-")
-        db_session.add(company)
+def _execute_accountbalances_operation(
+    db_session,
+    company_id: int,
+    branch_id: int,
+    supplier_id: int,
+    client_id: int,
+    operation: str,
+):
+    def _insert_balance(amount: float):
+        result = db_session.execute(
+            text(
+                """
+                INSERT INTO AccountBalances (CompanyID, BranchID, SupplierID, ClientID, Balance)
+                OUTPUT INSERTED.AccountID
+                VALUES (:company_id, :branch_id, :supplier_id, :client_id, :balance)
+                """
+            ),
+            {
+                "company_id": company_id,
+                "branch_id": branch_id,
+                "supplier_id": supplier_id,
+                "client_id": client_id,
+                "balance": amount,
+            },
+        )
+        account_id = result.scalar()
         db_session.commit()
-        db_session.refresh(company)
-    branch = db_session.query(Branches).filter(
-        Branches.CompanyID == company.CompanyID).first()
-    if not branch:
-        branch = Branches(CompanyID=company.CompanyID,
-                          BranchName="Main", Address="Addr", Phone="000", Logo=b"-")
-        db_session.add(branch)
-        db_session.commit()
-        db_session.refresh(branch)
+        return account_id
 
-    data = AccountBalancesCreate(
-        CompanyID=company.CompanyID, BranchID=branch.BranchID, Balance=100.0)
-    obj = create_accountbalances(db_session, data)
-    assert obj.Balance == 100.0
-    # Obtener
-    all_objs = get_accountbalances(db_session)
-    assert any(o.AccountID == obj.AccountID for o in all_objs)
-    # Actualizar
-    update = AccountBalancesUpdate(Balance=200.0)
-    updated = update_accountbalances(db_session, obj.AccountID, update)
-    assert updated.Balance == 200.0
-    # Eliminar
-    deleted = delete_accountbalances(db_session, obj.AccountID)
-    assert deleted.AccountID == obj.AccountID
-    assert all(o.AccountID !=
-               obj.AccountID for o in get_accountbalances(db_session))
+    def _logic():
+        if operation == "insert":
+            account_id = _insert_balance(100.0)
+            return "ok", {"account_id": account_id}
+
+        if operation == "read":
+            account_id = _insert_balance(200.0)
+            fetched = get_accountbalances_by_id(db_session, account_id)
+            if not fetched:
+                return "error", "accountbalances_read_not_found"
+            return "ok", {"account_id": fetched.AccountID}
+
+        if operation == "read_all":
+            _insert_balance(300.0)
+            results = get_accountbalances(db_session)
+            if not results:
+                return "error", "accountbalances_read_all_empty"
+            return "ok", {"count": len(results)}
+
+        if operation == "update":
+            account_id = _insert_balance(400.0)
+            updated = update_accountbalances(
+                db_session,
+                account_id,
+                AccountBalancesUpdate(Balance=450.0),
+            )
+            if not updated or float(updated.Balance) != 450.0:
+                return "error", "accountbalances_update_failed"
+            return "ok", {"account_id": updated.AccountID}
+
+        if operation == "delete":
+            account_id = _insert_balance(500.0)
+            delete_accountbalances(db_session, account_id)
+            remaining = {b.AccountID for b in get_accountbalances(db_session)}
+            if account_id in remaining:
+                return "error", "accountbalances_delete_failed"
+            return "ok", {"account_id": account_id}
+
+        return "error", f"operacion_no_soportada:{operation}"
+
+    return safe_db_call(db_session, _logic)
+
+
+def test_accountbalances_flow(db_session, seeded_dependencies, order_base_dependencies):
+    company_id = seeded_dependencies["CompanyID"]
+    supplier_id = seeded_dependencies["SupplierID"]
+    client_id = order_base_dependencies["ClientID"]
+    run_entity_flow(
+        "accountbalances",
+        "insert",
+        lambda op: _execute_accountbalances_operation(
+            db_session, company_id, seeded_dependencies["BranchID"], supplier_id, client_id, op
+        ),
+        valid_ops={"insert", "read", "read_all", "update", "delete"},
+    )

@@ -27,7 +27,7 @@ def create_company(db: Session, data: CompanyCreate):
     if data_dict.get("Logo"):
         data_dict["Logo"] = _decode_logo(data_dict["Logo"])
 
-    # Map GraphQL field names to SQLAlchemy attribute names
+    # Mapea los nombres de los campos de GraphQL a los nombres de los atributos de SQLAlchemy
     field_map = {"Grossincome": "GrossIncome", "Startdate": "StartDate"}
     for src, dest in field_map.items():
         if src in data_dict:

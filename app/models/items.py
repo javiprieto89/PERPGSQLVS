@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from app.models.temporderdetails import TempOrderDetails
     from app.models.orderhistorydetails import OrderHistoryDetails
 
-from sqlalchemy import Integer, Unicode, Boolean, Date, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, Index, text
+from sqlalchemy import Integer, Unicode, UnicodeText, Boolean, Date, Identity, PrimaryKeyConstraint, ForeignKeyConstraint, Index, text
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 from app.db import Base
 
@@ -57,7 +57,7 @@ class Items(Base):
     BrandID: Mapped[int] = mapped_column(Integer)
     ItemCode: Mapped[str] = mapped_column(Unicode(50, 'Modern_Spanish_CI_AS'))
     ItemDescription: Mapped[str] = mapped_column(
-        Unicode(200, 'Modern_Spanish_CI_AS'))
+        UnicodeText(collation='Modern_Spanish_CI_AS'))
     ItemCategoryID: Mapped[int] = mapped_column(Integer)
     ItemSubcategoryID: Mapped[int] = mapped_column(Integer)
     SupplierID: Mapped[int] = mapped_column(Integer)

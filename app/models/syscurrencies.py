@@ -2,7 +2,7 @@
 # app/models/syscurrencies.py
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, TYPE_CHECKING, List
 
 from sqlalchemy import (
     Boolean,
@@ -14,9 +14,13 @@ from sqlalchemy import (
     Unicode,
     text,
 )
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
+
+if TYPE_CHECKING:
+    from .bankaccounts import BankAccounts
+    from .checks import Checks
 
 
 class SysCurrencies(Base):
@@ -56,4 +60,11 @@ class SysCurrencies(Base):
     Name: Mapped[str] = mapped_column(
         String(50, "Modern_Spanish_CI_AS"),
         nullable=False,
+    )
+
+    BankAccounts: Mapped[List["BankAccounts"]] = relationship(
+        "BankAccounts", back_populates="sysCurrencies"
+    )
+    Checks: Mapped[List["Checks"]] = relationship(
+        "Checks", back_populates="sysCurrencies"
     )

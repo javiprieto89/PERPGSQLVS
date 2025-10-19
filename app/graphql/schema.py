@@ -1,6 +1,7 @@
 # app/graphql/schema.py - VERSIÓN FINAL SIN ERRORES
 
 import strawberry
+from strawberry.types import Info
 from typing import List, Optional
 from sqlalchemy import func, and_
 from sqlalchemy.orm import joinedload
@@ -20,6 +21,7 @@ from app.graphql.resolvers.carmodels import CarmodelsQuery
 from app.graphql.resolvers.sysidentitydoctypes import SysIdentityDocTypesQuery
 from app.graphql.resolvers.sysfiscaldoctypes import SysFiscalDocTypesQuery
 from app.graphql.resolvers.cars import CarsQuery
+from app.graphql.resolvers.checks import ChecksQuery
 from app.graphql.resolvers.clients import ClientsQuery
 from app.graphql.resolvers.company import CompanyQuery
 from app.graphql.resolvers.countries import CountriesQuery
@@ -66,6 +68,7 @@ from app.graphql.mutations.items import ItemsMutations
 from app.graphql.mutations.saleconditions import SaleConditionsMutations
 from app.graphql.mutations.creditcardgroups import CreditCardGroupsMutations
 from app.graphql.mutations.creditcards import CreditCardsMutations
+from app.graphql.mutations.checks import ChecksMutations
 from app.graphql.mutations.discounts import DiscountsMutations
 from app.graphql.mutations.carmodels import CarModelsMutations
 from app.graphql.mutations.cars import CarsMutations
@@ -90,7 +93,7 @@ from app.graphql.mutations.vendors import VendorsMutations
 from app.graphql.mutations.userpermissions import UserPermissionsMutation
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
-from app.graphql.resolvers.auth import AuthQuery
+from app.graphql.resolvers.auth import AuthQuery, authMutation
 
 # Importar schemas para los tipos de datos
 from app.graphql.schemas.items import ItemsInDB, ItemSearchResult
@@ -328,6 +331,7 @@ class Query(
     CarbrandsQuery,
     CarmodelsQuery,
     CarsQuery,
+    ChecksQuery,
     ClientsQuery,
     CompanyQuery,
     CountriesQuery,
@@ -436,6 +440,7 @@ class Mutation(
     SaleConditionsMutations,
     CreditCardGroupsMutations,
     CreditCardsMutations,
+    ChecksMutations,
     DiscountsMutations,
 
     VendorsMutations,
@@ -464,39 +469,9 @@ class Mutation(
 
     # ========== MUTACIONES DE AUTENTICACIÓN ==========
     @strawberry.mutation
-    def login(self, input: LoginInput) -> LoginResponse:
+    def login(self, info: Info, input: LoginInput) -> LoginResponse:
         """Login de usuario"""
-        from app.db import get_db
-
-        db_gen = get_db()
-        db = next(db_gen)
-        try:
-            # Autenticar usuario
-            user = authenticate_user(db, input.nickname, input.password)
-
-            if not user:
-                return LoginResponse(
-                    success=False,
-                    message="Credenciales inválidas",
-                    token=None,
-                    user=None,
-                )
-
-            token = create_user_token(user)
-
-            # Obtener información del usuario
-            user_info = get_userinfo_from_token(token)
-
-            return LoginResponse(
-                success=True, message="Login exitoso", token=token, user=user_info
-            )
-
-        except Exception as e:
-            return LoginResponse(
-                success=False, message=f"Error interno: {str(e)}", token=None, user=None
-            )
-        finally:
-            db_gen.close()
+        return authMutation.login(info, input)
 
     @strawberry.mutation
     def create_user(self, input: UserCreateInput) -> AuthResponse:

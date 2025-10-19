@@ -1,73 +1,164 @@
-import pytest
 from sqlalchemy import text
-from app.graphql.crud.itemtaxes import (
-    create_itemtaxes,
-    get_itemtaxes,
-    update_itemtaxes,
-    delete_itemtaxes,
-)
-from app.graphql.schemas.itemtaxes import ItemTaxesCreate, ItemTaxesUpdate
+
+from app.graphql.crud.itemtaxes import create_itemtaxes, get_itemtaxes
+from app.graphql.crud.taxes import create_taxes
+from app.graphql.schemas.itemtaxes import ItemTaxesCreate
+from app.graphql.schemas.taxes import TaxesCreate
+from tests.interactive import run_entity_flow, safe_db_call, unique_code
 
 
-@pytest.mark.usefixtures("tenant_ids")
-def test_create_get_update_delete_itemtaxes(db_session, tenant_ids):
-    company_id, branch_id = tenant_ids
+def _create_tax(db_session, deps, tax_name: str, percent: float):
+    payload = TaxesCreate(
+        CompanyID=deps["CompanyID"],
+        CountryID=deps["CountryID"],
+        ProvinceID=deps["ProvinceID"],
+        TaxName=tax_name,
+        TaxPercent=percent,
+        IsActive=True,
+    )
+    setattr(payload, "BranchID", deps["BranchID"])
+    tax = create_taxes(db_session, payload)
+    return tax.TaxID
 
-    # Asegurar Item existente similar a test_pricelistitems (simplificado: crear mínimos si faltan)
-    def scalar_or_insert(select_sql, insert_sql):
-        val = db_session.execute(text(select_sql)).scalar()
-        if not val:
-            val = db_session.execute(text(insert_sql)).scalar()
-        return val
 
-    brand_id = scalar_or_insert(
-        f"SELECT TOP 1 BrandID FROM Brands WHERE CompanyID={company_id}",
-        f"INSERT INTO Brands (CompanyID, BrandName, IsActive) OUTPUT INSERTED.BrandID VALUES ({company_id}, 'MarcaTX', 1)"
-    )
-    cat_id = scalar_or_insert(
-        f"SELECT TOP 1 ItemCategoryID FROM ItemCategories WHERE CompanyID={company_id}",
-        f"INSERT INTO ItemCategories (CompanyID, ItemCategoryName, IsActive) OUTPUT INSERTED.ItemCategoryID VALUES ({company_id}, 'CatTX', 1)"
-    )
-    subcat_id = scalar_or_insert(
-        f"SELECT TOP 1 ItemSubcategoryID FROM ItemSubcategories WHERE CompanyID={company_id}",
-        f"INSERT INTO ItemSubcategories (CompanyID, ItemSubcategoryName, ItemCategoryID, IsActive) OUTPUT INSERTED.ItemSubcategoryID VALUES ({company_id}, 'SubCatTX', {cat_id}, 1)"
-    )
-    supplier_id = scalar_or_insert(
-        f"SELECT TOP 1 SupplierID FROM Suppliers WHERE CompanyID={company_id}",
-        f"INSERT INTO Suppliers (CompanyID, FirstName, IsActive) OUTPUT INSERTED.SupplierID VALUES ({company_id}, 'ProvTX', 1)"
-    )
-    warehouse_id = scalar_or_insert(
-        f"SELECT TOP 1 WarehouseID FROM Warehouses WHERE CompanyID={company_id}",
-        f"INSERT INTO Warehouses (CompanyID, WarehouseName, Address) OUTPUT INSERTED.WarehouseID VALUES ({company_id}, 'DepoTX', 'Addr')"
-    )
-    item_id = scalar_or_insert(
-        f"SELECT TOP 1 ItemID FROM Items WHERE CompanyID={company_id}",
-        f"INSERT INTO Items (CompanyID, BranchID, BrandID, Code, Description, ItemCategoryID, ItemSubcategoryID, SupplierID, ControlStock, ReplenishmentStock, IsOffer, OEM, LastModified, WarehouseID, IsActive) OUTPUT INSERTED.ItemID VALUES ({company_id}, {branch_id}, {brand_id}, 'CODET', 'DESCT', {cat_id}, {subcat_id}, {supplier_id}, 0, 0, 0, NULL, GETDATE(), {warehouse_id}, 1)"
+def _build_item_tax_input(deps, item_id: int, tax_id: int) -> ItemTaxesCreate:
+    return ItemTaxesCreate(
+        CompanyID=deps["CompanyID"],
+        BranchID=deps["BranchID"],
+        ItemID=item_id,
+        TaxID=tax_id,
     )
 
-    # Asegurar Tax (depende de Taxes table multi-tenant)
-    tax_id = scalar_or_insert(
-        f"SELECT TOP 1 TaxID FROM Taxes WHERE CompanyID={company_id} AND BranchID={branch_id}",
-        f"INSERT INTO Taxes (CompanyID, BranchID, TaxName, TaxPercent, IsActive) OUTPUT INSERTED.TaxID VALUES ({company_id}, {branch_id}, 'IVA Test', 21.00, 1)"
+
+def _update_item_tax_raw(db_session, deps, item_id: int, old_tax_id: int, new_tax_id: int):
+    db_session.execute(
+        text(
+            """
+            UPDATE ItemTaxes
+            SET TaxID = :new_tax_id
+            WHERE CompanyID = :company_id
+              AND BranchID = :branch_id
+              AND ItemID = :item_id
+              AND TaxID = :old_tax_id
+            """
+        ),
+        {
+            "company_id": deps["CompanyID"],
+            "branch_id": deps["BranchID"],
+            "item_id": item_id,
+            "old_tax_id": old_tax_id,
+            "new_tax_id": new_tax_id,
+        },
     )
     db_session.commit()
 
-    data = ItemTaxesCreate(CompanyID=company_id,
-                           BranchID=branch_id, ItemID=item_id, TaxID=tax_id)
-    obj = create_itemtaxes(db_session, data)
-    assert obj and obj.ItemID == item_id and obj.TaxID == tax_id
 
-    all_objs = get_itemtaxes(db_session)
-    assert any(o.CompanyID == company_id and o.BranchID ==
-               branch_id and o.ItemID == item_id and o.TaxID == tax_id for o in all_objs)
+def _delete_item_tax_raw(db_session, deps, item_id: int, tax_id: int):
+    db_session.execute(
+        text(
+            """
+            DELETE FROM ItemTaxes
+            WHERE CompanyID = :company_id
+              AND BranchID = :branch_id
+              AND ItemID = :item_id
+              AND TaxID = :tax_id
+            """
+        ),
+        {
+            "company_id": deps["CompanyID"],
+            "branch_id": deps["BranchID"],
+            "item_id": item_id,
+            "tax_id": tax_id,
+        },
+    )
+    db_session.commit()
 
-    update = ItemTaxesUpdate()  # no cambio
-    updated = update_itemtaxes(
-        db_session, company_id, branch_id, item_id, tax_id, update)
-    assert updated and updated.ItemID == item_id
 
-    deleted = delete_itemtaxes(
-        db_session, company_id, branch_id, item_id, tax_id)
-    assert deleted and deleted.ItemID == item_id and deleted.TaxID == tax_id
-    assert all(not (o.CompanyID == company_id and o.BranchID == branch_id and o.ItemID ==
-               item_id and o.TaxID == tax_id) for o in get_itemtaxes(db_session))
+def _exists_entry(entries, deps, item_id: int, tax_id: int):
+    for entry in entries:
+        if (
+            getattr(entry, "CompanyID", None) == deps["CompanyID"]
+            and getattr(entry, "BranchID", None) == deps["BranchID"]
+            and getattr(entry, "ItemID", None) == item_id
+            and getattr(entry, "TaxID", None) == tax_id
+        ):
+            return True
+    return False
+
+
+def _execute_itemtaxes_operation(db_session, deps, item_id: int, operation: str):
+    def _logic():
+        if operation == "insert":
+            tax_id = _create_tax(db_session, deps, unique_code("Tax"), 21.0)
+            create_itemtaxes(
+                db_session,
+                _build_item_tax_input(deps, item_id, tax_id),
+            )
+            return "ok", {"tax_id": tax_id}
+
+        if operation == "read":
+            tax_id = _create_tax(db_session, deps, unique_code("TaxR"), 10.0)
+            create_itemtaxes(
+                db_session,
+                _build_item_tax_input(deps, item_id, tax_id),
+            )
+            entries = get_itemtaxes(db_session)
+            if not _exists_entry(entries, deps, item_id, tax_id):
+                return "error", "itemtaxes_read_not_found"
+            return "ok", {"tax_id": tax_id}
+
+        if operation == "read_all":
+            tax_id = _create_tax(db_session, deps, unique_code("TaxA"), 12.5)
+            create_itemtaxes(
+                db_session,
+                _build_item_tax_input(deps, item_id, tax_id),
+            )
+            results = get_itemtaxes(db_session)
+            if not results:
+                return "error", "itemtaxes_read_all_empty"
+            return "ok", {"count": len(results)}
+
+        if operation == "update":
+            initial_tax_id = _create_tax(db_session, deps, unique_code("TaxU"), 15.0)
+            create_itemtaxes(
+                db_session,
+                _build_item_tax_input(deps, item_id, initial_tax_id),
+            )
+            new_tax_id = _create_tax(db_session, deps, unique_code("TaxU2"), 18.0)
+            _update_item_tax_raw(db_session, deps, item_id, initial_tax_id, new_tax_id)
+            entries = get_itemtaxes(db_session)
+            if not _exists_entry(entries, deps, item_id, new_tax_id):
+                return "error", "itemtaxes_update_failed"
+            return "ok", {"tax_id": new_tax_id}
+
+        if operation == "delete":
+            tax_id = _create_tax(db_session, deps, unique_code("TaxD"), 5.0)
+            create_itemtaxes(
+                db_session,
+                _build_item_tax_input(deps, item_id, tax_id),
+            )
+            _delete_item_tax_raw(db_session, deps, item_id, tax_id)
+            entries = get_itemtaxes(db_session)
+            if _exists_entry(entries, deps, item_id, tax_id):
+                return "error", "itemtaxes_delete_failed"
+            return "ok", {"tax_id": tax_id}
+
+        return "error", f"operacion_no_soportada:{operation}"
+
+    return safe_db_call(db_session, _logic)
+
+
+def test_itemtaxes_flow(db_session, seeded_dependencies, order_base_dependencies):
+    deps = {
+        "CompanyID": seeded_dependencies["CompanyID"],
+        "BranchID": seeded_dependencies["BranchID"],
+        "CountryID": order_base_dependencies["CountryID"],
+        "ProvinceID": order_base_dependencies["ProvinceID"],
+    }
+    item_id = seeded_dependencies["ItemID"]
+    run_entity_flow(
+        "itemtaxes",
+        "insert",
+        lambda op: _execute_itemtaxes_operation(db_session, deps, item_id, op),
+        valid_ops={"insert", "read", "read_all", "update", "delete"},
+    )

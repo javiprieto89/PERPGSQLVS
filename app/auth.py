@@ -1,11 +1,13 @@
 # app/auth.py - VERSIÓN COMPLETA
 from datetime import datetime, timezone, timedelta
+import secrets
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 import bcrypt
 
 from app.db import get_db
 from app.models.users import Users
+from app.models.sessions import Sessions
 from app.graphql.schemas.auth import UserInfo, UserPermissionsInfo
 
 from app.config import settings
@@ -19,10 +21,160 @@ class AuthenticationError(Exception):
     pass
 
 
+def _now_utc() -> datetime:
+    """Obtener timestamp actual en UTC."""
+    return datetime.now(timezone.utc)
+
+
+def generate_refresh_token(length: int | None = None) -> str:
+    """Genera un token de refresh aleatorio y seguro."""
+    size = max(32, length or settings.REFRESH_TOKEN_BYTES)
+    return secrets.token_urlsafe(size)
+
+
+def calculate_refresh_expiration(reference: datetime | None = None) -> datetime:
+    """Calcula el próximo sábado a las 00:00 (UTC) relativo al timestamp dado."""
+    now = (reference or _now_utc()).astimezone(timezone.utc)
+    midnight_today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    days_until_saturday = (5 - now.weekday()) % 7
+    expiration = midnight_today + timedelta(days=days_until_saturday)
+    if expiration <= now:
+        expiration += timedelta(days=7)
+    return expiration
+
+
+def get_primary_permission_ids(user: Users) -> tuple[int, int, int]:
+    """Obtiene CompanyID/BranchID/RoleID principal para el usuario."""
+    try:
+        permissions = getattr(user, "userPermissions", None) or []
+        if permissions:
+            primary = permissions[0]
+            return (primary.CompanyID, primary.BranchID, primary.RoleID)
+    except Exception:
+        logger.debug("No se pudieron obtener userPermissions para %s", getattr(user, "Nickname", "unknown"))
+    return (1, 1, 1)
+
+
+def _ensure_utc(dt: datetime | None) -> datetime | None:
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
+def create_session_record(
+    db: Session,
+    user: Users,
+    refresh_token: str,
+    expires_at: datetime,
+    *,
+    algorithm: str | None = None,
+    client_ip: str | None = None,
+    client_host: str | None = None,
+    request_host: str | None = None,
+    user_agent: str | None = None,
+) -> Sessions:
+    """Crea un registro de sesión persistente (refresh token)."""
+    normalized_ua = (user_agent or "").strip()
+    if not normalized_ua:
+        identifier = client_host or client_ip or "unknown"
+        normalized_ua = f"unknown::{identifier}"
+
+    existing_session = (
+        db.query(Sessions)
+        .filter(
+            Sessions.UserID == user.UserID,
+            Sessions.IsRevoked == False,  # BIT column; use = 0
+            Sessions.UserAgent == normalized_ua,
+            Sessions.ExpiresAt > _now_utc(),
+        )
+        .order_by(Sessions.SessionID.desc())
+        .first()
+    )
+
+    if existing_session:
+        existing_session.Token = refresh_token
+        existing_session.Algorithm = algorithm
+        existing_session.ExpiresAt = expires_at
+        existing_session.LastSeenAt = _now_utc()
+        existing_session.ClientIP = client_ip
+        existing_session.ClientHost = client_host
+        existing_session.RequestHost = request_host
+        existing_session.UserAgent = normalized_ua
+        session = existing_session
+    else:
+        session = Sessions(
+            UserID=user.UserID,
+            Token=refresh_token,
+            Algorithm=algorithm,
+            ExpiresAt=expires_at,
+            ClientIP=client_ip,
+            ClientHost=client_host,
+            RequestHost=request_host,
+            UserAgent=normalized_ua,
+        )
+        db.add(session)
+
+    db.commit()
+    db.refresh(session)
+    return session
+
+
+def get_active_session_by_token(db: Session, token: str) -> Sessions | None:
+    """Obtiene una sesión activa a partir del refresh token bruto."""
+    now = _now_utc()
+    return (
+        db.query(Sessions)
+        .filter(
+            Sessions.Token == token,
+            Sessions.IsRevoked == False,
+            Sessions.ExpiresAt > now,
+        )
+        .first()
+    )
+
+
+def list_sessions_for_user(
+    db: Session,
+    current_user: Users,
+    include_all: bool = False,
+) -> list[Sessions]:
+    """Lista sesiones activas e históricas para el usuario actual o todos si es admin total."""
+    query = db.query(Sessions)
+    if not include_all:
+        query = query.filter(Sessions.UserID == current_user.UserID)
+    return query.order_by(Sessions.CreatedAt.desc()).all()
+
+
+def revoke_session(
+    db: Session,
+    session: Sessions,
+    *,
+    revoked_by_user_id: int | None = None,
+    reason: str | None = None,
+) -> Sessions:
+    """Revoca una sesión (soft delete)."""
+    if session.IsRevoked:
+        return session
+
+    now = _now_utc()
+    session.IsRevoked = True
+    created_at = _ensure_utc(session.CreatedAt) or now
+    effective_revoked_at = now if now > created_at else created_at
+    session.RevokedAt = effective_revoked_at
+    session.RevokeReason = reason
+    session.RevokedByUserID = revoked_by_user_id
+    db.add(session)
+    db.commit()
+    db.refresh(session)
+    return session
+
+
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     """Crear token JWT de acceso"""
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + (
+    expire = _now_utc() + (
         expires_delta or timedelta(
             minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
@@ -170,6 +322,7 @@ def get_userinfo_from_token(token: str) -> UserInfo | None:
             Nickname=user_dict['Nickname'],
             FullName=user_dict['FullName'],
             IsActive=user_dict['IsActive'],
+            IsFullAdmin=user_dict.get('IsFullAdmin', False),
             UserPermissions=user_permissions_list
         )
     except AuthenticationError as exc:
@@ -187,20 +340,25 @@ def create_user_token(
     company_id: int | None = None,
     branch_id: int | None = None,
     role_id: int | None = None,
+    session_id: int | None = None,
 ) -> str:
     """Crear token JWT; company/branch son opcionales y se agregan si se proveen"""
-    user_dict = user.__dict__
-    token_data = {"sub": user_dict['Nickname']}
+    nickname = getattr(user, "Nickname")
+    token_data = {"sub": nickname}
+
+    perm_company, perm_branch, perm_role = get_primary_permission_ids(user)
 
     if company_id is None:
-        company_id = 1
+        company_id = perm_company
     token_data["CompanyID"] = company_id
     if branch_id is None:
-        branch_id = 1
+        branch_id = perm_branch
     token_data["BranchID"] = branch_id
     if role_id is None:
-        role_id = 1
+        role_id = perm_role
     token_data["RoleID"] = role_id
+    if session_id is not None:
+        token_data["SessionID"] = session_id
     return create_access_token(token_data)
 
 # Funciones de utilidad para manejo de usuarios

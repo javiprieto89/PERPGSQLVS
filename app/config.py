@@ -1,95 +1,98 @@
-# app/config.py
-# import os
-# from pydantic_settings import BaseSettings
-# from dotenv import load_dotenv
+from __future__ import annotations
 
-# load_dotenv()  # Carga variables desde un .env si existe
-
-
-# class Settings(BaseSettings):
-#     SECRET_KEY: str = os.getenv("SECRET_KEY", "lvCExuRie_iGmnAcbsyvMODcNWbPuFOmTmHGo77t4rE")
-#     ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
-#     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
-#         os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 300)
-#     )
-
-
-# settings = Settings()
-#------------------------------------
-# app/config.py
 import os
-from typing import List, Optional
-from pydantic_settings import BaseSettings
+from typing import List
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
-class Settings(BaseSettings):
-    # Base de datos
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL", 
-        "mssql+pyodbc://sa:Ladeda78@127.0.0.1/LubricentroDB2?driver=ODBC+Driver+17+for+SQL+Server"
-    )
-    
-    # JWT
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "changeme-in-production")
-    ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "300"))
-    
-    # CORS
-    ALLOWED_ORIGINS: List[str] = os.getenv("ALLOWED_ORIGINS", "*").split(",")
-    
-    # Cache
-    CACHE_TTL_STATIC: int = int(os.getenv("CACHE_TTL_STATIC", "3600"))  # 1 hora
-    CACHE_TTL_DYNAMIC: int = int(os.getenv("CACHE_TTL_DYNAMIC", "300"))  # 5 minutos
-    CACHE_TTL_USER: int = int(os.getenv("CACHE_TTL_USER", "600"))  # 10 minutos
-    
-    # Rate limiting
-    RATE_LIMIT_REQUESTS: int = int(os.getenv("RATE_LIMIT_REQUESTS", "100"))
-    RATE_LIMIT_WINDOW: int = int(os.getenv("RATE_LIMIT_WINDOW", "60"))  # segundos
-    
-    # Paginaci�n
-    DEFAULT_PAGE_SIZE: int = int(os.getenv("DEFAULT_PAGE_SIZE", "25"))
-    MAX_PAGE_SIZE: int = int(os.getenv("MAX_PAGE_SIZE", "100"))
-    
-    # Logs
-    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
-    LOG_FORMAT: str = os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    
-    # Entorno
-    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
-    DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
-    
-    # Compresi�n
-    GZIP_MINIMUM_SIZE: int = int(os.getenv("GZIP_MINIMUM_SIZE", "1000"))
-    
-    # M�tricas
-    ENABLE_METRICS: bool = os.getenv("ENABLE_METRICS", "True").lower() == "true"
-    ENABLE_DETAILED_LOGGING: bool = os.getenv("ENABLE_DETAILED_LOGGING", "True").lower() == "true"
+TRUE_VALUES = {"1", "true", "yes", "on"}
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+
+def _require_env(name: str) -> str:
+    value = os.getenv(name)
+    if value is None:
+        raise RuntimeError(f"Environment variable '{name}' is required")
+    return value
+
+
+def _env_int(name: str) -> int:
+    return int(_require_env(name))
+
+
+def _env_bool(name: str) -> bool:
+    return _require_env(name).strip().lower() in TRUE_VALUES
+
+
+def _env_list(name: str) -> List[str]:
+    raw = _require_env(name)
+    if raw.strip() == "*":
+        return ["*"]
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
+class Settings:
+    def __init__(self) -> None:
+        # Base de datos
+        self.DATABASE_URL: str = _require_env("DATABASE_URL")
+        self.SQLALCHEMY_DATABASE_URL: str = os.getenv(
+            "SQLALCHEMY_DATABASE_URL", self.DATABASE_URL
+        )
+
+        # JWT
+        self.SECRET_KEY: str = _require_env("SECRET_KEY")
+        self.ALGORITHM: str = _require_env("ALGORITHM")
+        self.ACCESS_TOKEN_EXPIRE_MINUTES: int = _env_int("ACCESS_TOKEN_EXPIRE_MINUTES")
+        self.REFRESH_TOKEN_BYTES: int = _env_int("REFRESH_TOKEN_BYTES")
+
+        # CORS
+        self.ALLOWED_ORIGINS: List[str] = _env_list("ALLOWED_ORIGINS")
+
+        # Cache
+        self.CACHE_TTL_STATIC: int = _env_int("CACHE_TTL_STATIC")
+        self.CACHE_TTL_DYNAMIC: int = _env_int("CACHE_TTL_DYNAMIC")
+        self.CACHE_TTL_USER: int = _env_int("CACHE_TTL_USER")
+
+        # Rate limiting
+        self.RATE_LIMIT_REQUESTS: int = _env_int("RATE_LIMIT_REQUESTS")
+        self.RATE_LIMIT_WINDOW: int = _env_int("RATE_LIMIT_WINDOW")
+
+        # Paginación
+        self.DEFAULT_PAGE_SIZE: int = _env_int("DEFAULT_PAGE_SIZE")
+        self.MAX_PAGE_SIZE: int = _env_int("MAX_PAGE_SIZE")
+
+        # Logs
+        self.LOG_LEVEL: str = _require_env("LOG_LEVEL")
+        self.LOG_FORMAT: str = _require_env("LOG_FORMAT")
+
+        # Entorno
+        self.ENVIRONMENT: str = _require_env("ENVIRONMENT")
+        self.DEBUG: bool = _env_bool("DEBUG")
+
+        # Compresión
+        self.GZIP_MINIMUM_SIZE: int = _env_int("GZIP_MINIMUM_SIZE")
+
+        # Métricas
+        self.ENABLE_METRICS: bool = _env_bool("ENABLE_METRICS")
+        self.ENABLE_DETAILED_LOGGING: bool = _env_bool("ENABLE_DETAILED_LOGGING")
+
+        self._apply_environment_overrides()
+
+    def _apply_environment_overrides(self) -> None:
+        if self.ENVIRONMENT.lower() in {"prod", "production"}:
+            self.DEBUG = False
+            self.LOG_LEVEL = "WARNING"
+            self.CACHE_TTL_STATIC = 7200
+            self.RATE_LIMIT_REQUESTS = 50
+        elif self.ENVIRONMENT.lower() in {"test", "testing"}:
+            self.CACHE_TTL_STATIC = 60
+            self.CACHE_TTL_DYNAMIC = 30
+            self.ACCESS_TOKEN_EXPIRE_MINUTES = 60
+        elif self.ENVIRONMENT.lower() in {"dev", "development"}:
+            self.DEBUG = True
+            self.LOG_LEVEL = "DEBUG"
+            self.ENABLE_DETAILED_LOGGING = True
+
 
 settings = Settings()
-
-# Configuraci�n espec�fica por entorno
-if settings.ENVIRONMENT == "production":
-    # Configuraci�n de producci�n
-    settings.DEBUG = False
-    settings.LOG_LEVEL = "WARNING"
-    settings.CACHE_TTL_STATIC = 7200  # 2 horas
-    settings.RATE_LIMIT_REQUESTS = 50  # M�s restrictivo
-    
-elif settings.ENVIRONMENT == "testing":
-    # Configuraci�n de testing
-    settings.CACHE_TTL_STATIC = 60  # Cache corto para tests
-    settings.CACHE_TTL_DYNAMIC = 30
-    settings.ACCESS_TOKEN_EXPIRE_MINUTES = 60
-    
-elif settings.ENVIRONMENT == "development":
-    # Configuraci�n de desarrollo
-    settings.DEBUG = True
-    settings.LOG_LEVEL = "DEBUG"
-    settings.ENABLE_DETAILED_LOGGING = True
-    

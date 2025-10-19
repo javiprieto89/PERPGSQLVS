@@ -6,57 +6,121 @@ from app.graphql.schemas.auth import (
     PasswordChangeInput, AuthResponse, UserInfo
 )
 from app.auth import (
-    authenticate_user, create_user_token, get_userinfo_from_token,
-    create_user, update_user_password, get_user_by_id
+    authenticate_user,
+    create_user_token,
+    get_userinfo_from_token,
+    create_user,
+    update_user_password,
+    get_user_by_id,
+    generate_refresh_token,
+    calculate_refresh_expiration,
+    create_session_record,
+    get_primary_permission_ids,
 )
 from app.db import get_db
-from app.utils import list_to_schema, obj_to_schema
 from strawberry.types import Info
+from app.config import settings
+
+
+import logging
+
+from app.utils import list_to_schema, obj_to_schema
+
+logger = logging.getLogger(__name__)
+logger.info("Loading AuthMutation from %s", __file__)
 
 @strawberry.type
 class AuthMutation:
     """Mutaciones de autenticación"""
     
     @strawberry.mutation
-    def login(self, input: LoginInput) -> LoginResponse:
+    def login(self, info: Info, input: LoginInput) -> LoginResponse:
         """Login de usuario"""
         db_gen = get_db()
         db = next(db_gen)
         try:
             # Autenticar usuario
             user = authenticate_user(db, input.nickname, input.password)
-            
+
             if not user:
                 return LoginResponse(
                     success=False,
                     message="Credenciales inválidas",
                     token=None,
-                    user=None
+                    refreshToken=None,
+                    refreshExpiresAt=None,
+                    sessionId=None,
+                    user=None,
                 )
-            
-            # Crear token
-            token = create_user_token(user)
-            
-            # Obtener información del usuario
+
+            refresh_token = generate_refresh_token()
+            refresh_expires_at = calculate_refresh_expiration()
+
+            request = getattr(info.context, "request", None)
+            client_ip = None
+            client_host = None
+            request_host = None
+            user_agent = None
+
+            if request is not None:
+                client_ip = getattr(request.client, "host", None)
+                client_host = request.headers.get("x-forwarded-for") or client_ip
+                request_host = getattr(request.url, "hostname", None)
+                user_agent = request.headers.get("user-agent")
+
+            company_id, branch_id, role_id = get_primary_permission_ids(user)
+
+            session = create_session_record(
+                db,
+                user,
+                refresh_token,
+                refresh_expires_at,
+                algorithm=settings.ALGORITHM,
+                client_ip=client_ip,
+                client_host=client_host,
+                request_host=request_host,
+                user_agent=user_agent,
+            )
+
+            token = create_user_token(
+                user,
+                company_id=company_id,
+                branch_id=branch_id,
+                role_id=role_id,
+                session_id=session.SessionID,
+            )
             user_info = get_userinfo_from_token(token)
-            
+
+            logger.info(
+                "Login session created: session_id=%s refresh_prefix=%s ua=%s",
+                session.SessionID,
+                refresh_token[:8],
+                session.UserAgent,
+            )
             return LoginResponse(
                 success=True,
                 message="Login exitoso",
                 token=token,
-                user=user_info
+                refreshToken=refresh_token,
+                refreshExpiresAt=session.ExpiresAt,
+                sessionId=session.SessionID,
+                user=user_info,
             )
-            
+
         except Exception as e:
+            db.rollback()
             return LoginResponse(
                 success=False,
                 message=f"Error interno: {str(e)}",
                 token=None,
-                user=None
+                refreshToken=None,
+                refreshExpiresAt=None,
+                sessionId=None,
+                user=None,
             )
         finally:
             db_gen.close()
-    
+
     @strawberry.mutation
     def create_user(self, input: UserCreateInput) -> AuthResponse:
         """Crear nuevo usuario"""

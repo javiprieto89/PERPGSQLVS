@@ -1,5 +1,6 @@
 ﻿# app/graphql/schemas/auth.py
 import strawberry
+from datetime import datetime
 from typing import List, Optional
 
 
@@ -22,6 +23,7 @@ class UserInfo:
     Nickname: str
     FullName: Optional[str] = None  # Cambiado de Fullname a FullName
     IsActive: bool
+    IsFullAdmin: bool
     UserPermissions: List[UserPermissionsInfo]
 
 
@@ -38,6 +40,9 @@ class LoginResponse:
     success: bool
     message: str
     token: Optional[str] = None
+    refreshToken: Optional[str] = None
+    refreshExpiresAt: Optional[datetime] = None
+    sessionId: Optional[int] = None
     user: Optional[UserInfo] = None
 
 

@@ -1,22 +1,98 @@
-from datetime import datetime, timezone
-import pytest
-from app.graphql.crud.carbrands import create_carbrands, get_carbrands, update_carbrands, delete_carbrands
+from app.graphql.crud.carbrands import (
+    create_carbrands,
+    delete_carbrands,
+    get_carbrands_by_company,
+    get_carbrands_by_id,
+    update_carbrands,
+)
 from app.graphql.schemas.carbrands import CarBrandsCreate, CarBrandsUpdate
+from tests.interactive import run_entity_flow, unique_code
 
 
-def test_create_get_update_delete_carbrands(db_session):
-    # Crear
-    data = CarBrandsCreate(Name="CarBrand Test")
-    obj = create_carbrands(db_session, data)
-    assert obj.Name == "CarBrand Test"
-    # Obtener
-    all_objs = get_carbrands(db_session)
-    assert any(o.CarBrandID == obj.CarBrandID for o in all_objs)
-    # Actualizar
-    update = CarBrandsUpdate(Name="CarBrand Modificada")
-    updated = update_carbrands(db_session, obj.CarBrandID, update)
-    assert updated.Name == "CarBrand Modificada"
-    # Eliminar
-    deleted = delete_carbrands(db_session, obj.CarBrandID)
-    assert deleted.CarBrandID == obj.CarBrandID
-    assert all(o.CarBrandID != obj.CarBrandID for o in get_carbrands(db_session))
+def _execute_carbrands_operation(db_session, company_id: int, operation: str):
+    try:
+        if operation == "insert":
+            brand = create_carbrands(
+                db_session,
+                CarBrandsCreate(
+                    CompanyID=company_id,
+                    CarBrandName=unique_code("Brand"),
+                ),
+            )
+            return "ok", {"car_brand_id": brand.CarBrandID}
+
+        if operation == "read":
+            brand = create_carbrands(
+                db_session,
+                CarBrandsCreate(
+                    CompanyID=company_id,
+                    CarBrandName=unique_code("BrandR"),
+                ),
+            )
+            fetched = get_carbrands_by_id(db_session, company_id, brand.CarBrandID)
+            if not fetched:
+                return "error", "carbrands_read_not_found"
+            return "ok", {"car_brand_id": fetched.CarBrandID}
+
+        if operation == "read_all":
+            create_carbrands(
+                db_session,
+                CarBrandsCreate(
+                    CompanyID=company_id,
+                    CarBrandName=unique_code("BrandA"),
+                ),
+            )
+            results = get_carbrands_by_company(db_session, company_id)
+            if not results:
+                return "error", "carbrands_read_all_empty"
+            return "ok", {"count": len(results)}
+
+        if operation == "update":
+            brand = create_carbrands(
+                db_session,
+                CarBrandsCreate(
+                    CompanyID=company_id,
+                    CarBrandName=unique_code("BrandU"),
+                ),
+            )
+            new_name = unique_code("BrandU2")
+            updated = update_carbrands(
+                db_session,
+                company_id,
+                brand.CarBrandID,
+                CarBrandsUpdate(CarBrandName=new_name),
+            )
+            if not updated or updated.CarBrandName != new_name:
+                return "error", "carbrands_update_failed"
+            return "ok", {"car_brand_id": updated.CarBrandID}
+
+        if operation == "delete":
+            brand = create_carbrands(
+                db_session,
+                CarBrandsCreate(
+                    CompanyID=company_id,
+                    CarBrandName=unique_code("BrandD"),
+                ),
+            )
+            delete_carbrands(db_session, company_id, brand.CarBrandID)
+            remaining = {
+                b.CarBrandID for b in get_carbrands_by_company(db_session, company_id)
+            }
+            if brand.CarBrandID in remaining:
+                return "error", "carbrands_delete_failed"
+            return "ok", {"car_brand_id": brand.CarBrandID}
+
+        return "error", f"operacion_no_soportada:{operation}"
+    except Exception as exc:  # pragma: no cover - defensive
+        db_session.rollback()
+        return "error", f"{type(exc).__name__}:{exc}"
+
+
+def test_carbrands_flow(db_session, tenant_ids):
+    company_id, _ = tenant_ids
+    run_entity_flow(
+        "carbrands",
+        "insert",
+        lambda op: _execute_carbrands_operation(db_session, company_id, op),
+        valid_ops={"insert", "read", "read_all", "update", "delete"},
+    )

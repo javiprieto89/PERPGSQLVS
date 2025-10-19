@@ -1,87 +1,111 @@
 from datetime import date
-import pytest
-from app.graphql.crud.items import create_items, get_items, update_items, delete_items
+
+from app.graphql.crud.items import (
+    create_items,
+    delete_items,
+    get_items,
+    get_items_by_id,
+    update_items,
+)
 from app.graphql.schemas.items import ItemsCreate, ItemsUpdate
-from app.models.brands import Brands
-from app.models.itemcategories import ItemCategories
-from app.models.itemsubcategories import ItemSubcategories
-from app.models.suppliers import Suppliers
-from app.models.warehouses import Warehouses
+from tests.interactive import run_entity_flow, safe_db_call, unique_code
 
 
-@pytest.mark.usefixtures("tenant_ids")
-def test_create_get_update_delete_items(db_session, tenant_ids):
-    company_id, branch_id = tenant_ids
-
-    # Crear dependencias mínimas requeridas
-    brand = db_session.query(Brands).filter(
-        Brands.CompanyID == company_id).first()
-    if not brand:
-        brand = Brands(CompanyID=company_id, BrandName="BrandTest")
-        db_session.add(brand)
-        db_session.commit()
-        db_session.refresh(brand)
-    cat = db_session.query(ItemCategories).filter(
-        ItemCategories.CompanyID == company_id).first()
-    if not cat:
-        cat = ItemCategories(CompanyID=company_id, ItemCategoryName="CatTest")
-        db_session.add(cat)
-        db_session.commit()
-        db_session.refresh(cat)
-    sub = db_session.query(ItemSubcategories).filter(
-        ItemSubcategories.CompanyID == company_id).first()
-    if not sub:
-        sub = ItemSubcategories(
-            CompanyID=company_id, ItemCategoryID=cat.ItemCategoryID, ItemSubcategoryName="SubTest")
-        db_session.add(sub)
-        db_session.commit()
-        db_session.refresh(sub)
-    supplier = db_session.query(Suppliers).filter(
-        Suppliers.CompanyID == company_id).first()
-    if not supplier:
-        supplier = Suppliers(CompanyID=company_id, SupplierName="SuppTest")
-        db_session.add(supplier)
-        db_session.commit()
-        db_session.refresh(supplier)
-    wh = db_session.query(Warehouses).filter(
-        Warehouses.CompanyID == company_id).first()
-    if not wh:
-        wh = Warehouses(CompanyID=company_id,
-                        BranchID=branch_id, WarehouseName="Main WH")
-        db_session.add(wh)
-        db_session.commit()
-        db_session.refresh(wh)
-
-    data = ItemsCreate(
-        CompanyID=company_id,
-        BranchID=branch_id,
-        BrandID=brand.BrandID,
-        ItemCode="ITEM001",
-        ItemDescription="Item Test",
-        ItemCategoryID=cat.ItemCategoryID,
-        ItemSubcategoryID=sub.ItemSubcategoryID,
-        SupplierID=supplier.SupplierID,
+def _build_item_input(deps, code: str, description: str) -> ItemsCreate:
+    return ItemsCreate(
+        CompanyID=deps["CompanyID"],
+        BranchID=deps["BranchID"],
+        BrandID=deps["BrandID"],
+        ItemCode=code,
+        ItemDescription=description,
+        ItemCategoryID=deps["ItemCategoryID"],
+        ItemSubcategoryID=deps["ItemSubcategoryID"],
+        SupplierID=deps["SupplierID"],
         ControlStock=True,
-        ReplenishmentStock=0,
+        ReplenishmentStock=10,
         IsOffer=False,
         OEM=None,
-        LastModified=None,
-        WarehouseID=wh.WarehouseID,
+        LastModified=date.today(),
+        WarehouseID=deps["WarehouseID"],
         IsActive=True,
     )
-    obj = create_items(db_session, data)
-    assert obj.ItemCode == "ITEM001"
 
-    # Obtener
-    all_objs = get_items(db_session)
-    assert any(o.ItemID == obj.ItemID for o in all_objs)
 
-    # Actualizar
-    update = ItemsUpdate(ItemDescription="Item Modificado")
-    updated = update_items(db_session, obj.CompanyID, obj.ItemID, update)
-    assert updated is not None and updated.ItemDescription == "Item Modificado"
+def _execute_items_operation(db_session, deps, operation: str):
+    def _logic():
+        if operation == "insert":
+            item = create_items(
+                db_session,
+                _build_item_input(deps, unique_code("ITM"), "Item insert test"),
+            )
+            return "ok", {"item_id": item.ItemID}
 
-    # Eliminar
-    deleted = delete_items(db_session, obj.CompanyID, obj.ItemID)
-    assert deleted is not None and deleted.ItemID == obj.ItemID
-    assert all(o.ItemID != obj.ItemID for o in get_items(db_session))
+        if operation == "read":
+            item = create_items(
+                db_session,
+                _build_item_input(deps, unique_code("ITMR"), "Item read test"),
+            )
+            fetched = get_items_by_id(db_session, deps["CompanyID"], item.ItemID)
+            if not fetched:
+                return "error", "items_read_not_found"
+            return "ok", {"item_id": fetched.ItemID}
+
+        if operation == "read_all":
+            create_items(
+                db_session,
+                _build_item_input(deps, unique_code("ITMA"), "Item read all test"),
+            )
+            results = get_items(db_session)
+            if not results:
+                return "error", "items_read_all_empty"
+            return "ok", {"count": len(results)}
+
+        if operation == "update":
+            item = create_items(
+                db_session,
+                _build_item_input(deps, unique_code("ITMU"), "Item update test"),
+            )
+            new_description = "Item actualizado"
+            update_items(
+                db_session,
+                deps["CompanyID"],
+                item.ItemID,
+                ItemsUpdate(ItemDescription=new_description),
+            )
+            refreshed = get_items_by_id(db_session, deps["CompanyID"], item.ItemID)
+            if not refreshed or refreshed.ItemDescription != new_description:
+                return "error", "items_update_failed"
+            return "ok", {"item_id": item.ItemID}
+
+        if operation == "delete":
+            item = create_items(
+                db_session,
+                _build_item_input(deps, unique_code("ITMD"), "Item delete test"),
+            )
+            delete_items(db_session, deps["CompanyID"], item.ItemID)
+            remaining = {i.ItemID for i in get_items(db_session)}
+            if item.ItemID in remaining:
+                return "error", "items_delete_failed"
+            return "ok", {"item_id": item.ItemID}
+
+        return "error", f"operacion_no_soportada:{operation}"
+
+    return safe_db_call(db_session, _logic)
+
+
+def test_items_flow(db_session, seeded_dependencies):
+    deps = {
+        "CompanyID": seeded_dependencies["CompanyID"],
+        "BranchID": seeded_dependencies["BranchID"],
+        "BrandID": seeded_dependencies["BrandID"],
+        "ItemCategoryID": seeded_dependencies["ItemCategoryID"],
+        "ItemSubcategoryID": seeded_dependencies["ItemSubcategoryID"],
+        "SupplierID": seeded_dependencies["SupplierID"],
+        "WarehouseID": seeded_dependencies["WarehouseID"],
+    }
+    run_entity_flow(
+        "items",
+        "insert",
+        lambda op: _execute_items_operation(db_session, deps, op),
+        valid_ops={"insert", "read", "read_all", "update", "delete"},
+    )

@@ -2,6 +2,10 @@
 
 # Importar explícitamente TODOS los modelos para que SQLAlchemy registre todas las clases
 from .accountbalances import *
+from .banks import *
+from .bankaccounts import *
+from .bankreconciliations import *
+from .banktransactions import *
 from .branches import *
 from .brands import *
 from .carbrands import *
@@ -40,6 +44,9 @@ from .temporderdetails import *
 from .tempstockhistorydetails import *
 from .cashboxes import *
 from .cashboxmovements import *
+from .checks import *
+from .checkstatuses import *
+from .checkmovements import *
 from .transactions import *
 from .systransactiontypes import *
 from .taxes import *
@@ -54,10 +61,15 @@ from .useractivitylog import *
 from .users import *
 from .vendors import *
 from .warehouses import *
+from .sessions import *
 
 # Opcional: para poder usar "from app.models import *"
 __all__ = [
     "accountbalances",
+    "banks",
+    "bankaccounts",
+    "bankreconciliations",
+    "banktransactions",
     "branches",
     "brands",
     "carbrands",
@@ -96,6 +108,9 @@ __all__ = [
     "tempstockhistorydetails",
     "cashboxes",
     "cashboxmovements",
+    "checks",
+    "checkstatuses",
+    "checkmovements",
     "transactions",
     "systransactiontypes",
     "taxes",
@@ -110,4 +125,5 @@ __all__ = [
     "users",
     "vendors",
     "warehouses",
+    "sessions",
 ]

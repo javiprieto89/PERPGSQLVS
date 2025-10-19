@@ -18,10 +18,10 @@ class ItemsCreate:
     BrandID: int
     ItemCode: str
     ItemDescription: str
-    ItemCategoryID: int  # Corregido nombre del campo
-    ItemSubcategoryID: int  # Corregido nombre del campo
+    ItemCategoryID: int
+    ItemSubcategoryID: int
     SupplierID: int
-    ControlStock: bool  # Corregido nombre del campo
+    ControlStock: bool
     ReplenishmentStock: int
     IsOffer: bool
     OEM: Optional[str] = None
@@ -57,15 +57,13 @@ class ItemsInDB:
     BrandID: int
     ItemCode: str
     ItemDescription: str
-    ItemCategoryID: int  # Corregido nombre del campo
-    ItemSubcategoryID: int  # Corregido nombre del campo
+    ItemCategoryID: int
+    ItemSubcategoryID: int
     SupplierID: int
-    # Corregido nombre del campo (era CcontrolStock en el modelo)
     ControlStock: bool
     ReplenishmentStock: int
     IsOffer: bool
     OEM: Optional[str]
-    # Corregido nombre del campo (era lastModified)
     LastModified: Optional[date]
     WarehouseID: int
     IsActive: bool

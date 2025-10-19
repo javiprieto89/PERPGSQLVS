@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from .cashboxes import CashBoxes
     from .cashboxmovements import CashBoxMovements
     from .rmas import RMAs
+    from .sessions import Sessions
 
 from typing import List
 
@@ -40,6 +41,11 @@ class Users(Base):
     FullName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
     Password: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
     IsActive: Mapped[bool] = mapped_column(Boolean, server_default=text('((1))'))
+    IsFullAdmin: Mapped[bool] = mapped_column(
+        Boolean,
+        server_default=text('((0))'),
+        nullable=False,
+    )
 
     # Relaciones
     userActivityLog: Mapped[List['UserActivityLog']] = relationship(
@@ -78,4 +84,10 @@ class Users(Base):
         'RMAs',
         back_populates='users_',
         overlaps='branches_,rmas'
+    )
+    sessions: Mapped[List['Sessions']] = relationship(
+        'Sessions',
+        back_populates='user',
+        cascade='all, delete-orphan',
+        foreign_keys='Sessions.UserID',
     )

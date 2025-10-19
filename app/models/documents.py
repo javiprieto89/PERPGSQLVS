@@ -19,6 +19,7 @@ from sqlalchemy.orm import Mapped, relationship, foreign, mapped_column
 # from .documenttypes import DocumentTypes
 from app.db import Base
 
+
 class Documents(Base):
     __tablename__ = 'CommercialDocuments'
     __table_args__ = (
@@ -32,19 +33,22 @@ class Documents(Base):
                              'DocumentID', name='PK_CommercialDocuments')
     )
 
-    DocumentID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1))
+    DocumentID: Mapped[int] = mapped_column(
+        Integer, Identity(start=1, increment=1))
     CompanyID: Mapped[int] = mapped_column(Integer)
     BranchID: Mapped[int] = mapped_column(Integer)
     DocumentTypeID: Mapped[int] = mapped_column(Integer)
     CurrencyID: Mapped[int] = mapped_column(Integer)
-    DocumentDescription: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    DocumentDescription: Mapped[str] = mapped_column(
+        Unicode(100, 'Modern_Spanish_CI_AS'))
     DocumentNumber: Mapped[int] = mapped_column(Integer)
     PointOfSale: Mapped[int] = mapped_column(Integer)
     IsFiscal: Mapped[bool] = mapped_column(Boolean)
     IsElectronic: Mapped[bool] = mapped_column(Boolean)
     IsManual: Mapped[bool] = mapped_column(Boolean)
     IsQuotation: Mapped[bool] = mapped_column(Boolean)
-    IsActive: Mapped[bool] = mapped_column(Boolean, server_default=text('((1))'))
+    IsActive: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('((1))'))
     IsTest: Mapped[bool] = mapped_column(Boolean, server_default=text('((0))'))
     MaxItems: Mapped[int] = mapped_column(Integer)
     ShouldAccount: Mapped[bool] = mapped_column(Boolean)
@@ -72,4 +76,3 @@ class Documents(Base):
         foreign_keys='Documents.DocumentTypeID',
         viewonly=True
     )
-    # Not exposing sys types in GraphQL, but keep relationship for ORM
