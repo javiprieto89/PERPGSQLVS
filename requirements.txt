@@ -2,7 +2,6 @@ afip.py==1.1.2
 aiohappyeyeballs==2.6.1
 aiohttp==3.13.0
 aiosignal==1.4.0
-alembic==1.17.1
 annotated-types==0.7.0
 anyio==4.9.0
 argon2-cffi==23.1.0
