@@ -106,19 +106,11 @@ from app.graphql.schemas.auth import (
     LoginResponse,
     UserCreateInput,
     PasswordChangeInput,
+    PasswordUpgradeInput,
     AuthResponse,
 )
 
 # Importar funciones de autenticación
-from app.auth import (
-    authenticate_user,
-    create_user_token,
-    get_userinfo_from_token,
-    create_user,
-    update_user_password,
-    get_user_by_id,
-)
-
 # Intentar importar utilidades de filtros
 try:
     from app.utils.filter_schemas import FILTER_SCHEMAS
@@ -476,82 +468,17 @@ class Mutation(
     @strawberry.mutation
     def create_user(self, input: UserCreateInput) -> AuthResponse:
         """Crear nuevo usuario"""
-        from app.db import get_db
-        from app.auth import get_user_by_nickname
-
-        db_gen = get_db()
-        db = next(db_gen)
-        try:
-            # Verificar si el usuario ya existe
-            existing_user = get_user_by_nickname(db, input.nickname)
-
-            if existing_user:
-                return AuthResponse(success=False, message="El usuario ya existe")
-
-            # Crear usuario
-            new_user = create_user(
-                db=db,
-                nickname=input.nickname,
-                fullname=input.fullname,
-                password=input.password,
-                is_active=input.is_active,
-            )
-
-            new_user_dict = new_user.__dict__
-            return AuthResponse(
-                success=True,
-                message=f"Usuario {new_user_dict['Nickname']} creado exitosamente",
-            )
-
-        except Exception as e:
-            return AuthResponse(
-                success=False, message=f"Error creando usuario: {str(e)}"
-            )
-        finally:
-            db_gen.close()
+        return authMutation.create_user(input)
 
     @strawberry.mutation
     def change_password(self, input: PasswordChangeInput) -> AuthResponse:
         """Cambiar contraseña de usuario"""
-        from app.db import get_db
+        return authMutation.change_password(input)
 
-        db_gen = get_db()
-        db = next(db_gen)
-        try:
-            # Verificar usuario actual
-            user = get_user_by_id(db, input.user_id)
-            if not user:
-                return AuthResponse(success=False, message="Usuario no encontrado")
-
-            user_dict = user.__dict__
-            # Verificar contraseña actual
-            authenticated_user = authenticate_user(
-                db, user_dict["Nickname"], input.current_password
-            )
-            if not authenticated_user:
-                return AuthResponse(
-                    success=False, message="Contraseña actual incorrecta"
-                )
-
-            # Actualizar contraseña
-            success = update_user_password(
-                db, input.user_id, input.new_password)
-
-            if success:
-                return AuthResponse(
-                    success=True, message="Contraseña actualizada exitosamente"
-                )
-            else:
-                return AuthResponse(
-                    success=False, message="Error actualizando contraseña"
-                )
-
-        except Exception as e:
-            return AuthResponse(
-                success=False, message=f"Error cambiando contraseña: {str(e)}"
-            )
-        finally:
-            db_gen.close()
+    @strawberry.mutation
+    def upgrade_password(self, input: PasswordUpgradeInput) -> AuthResponse:
+        """Actualiza contraseñas utilizando un token válido."""
+        return authMutation.upgrade_password(input)
 
     # ========== MUTACIONES AVANZADAS ==========
     @strawberry.mutation

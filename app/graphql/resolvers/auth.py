@@ -2,8 +2,13 @@
 import strawberry
 from typing import Optional
 from app.graphql.schemas.auth import (
-    LoginInput, LoginResponse, UserCreateInput, 
-    PasswordChangeInput, AuthResponse, UserInfo
+    LoginInput,
+    LoginResponse,
+    UserCreateInput,
+    PasswordChangeInput,
+    PasswordUpgradeInput,
+    AuthResponse,
+    UserInfo,
 )
 from app.auth import (
     authenticate_user,
@@ -12,10 +17,15 @@ from app.auth import (
     create_user,
     update_user_password,
     get_user_by_id,
+    get_user_by_nickname,
     generate_refresh_token,
     calculate_refresh_expiration,
     create_session_record,
     get_primary_permission_ids,
+    decode_token,
+    password_requires_change,
+    classify_user_password,
+    AuthenticationError,
 )
 from app.db import get_db
 from strawberry.types import Info
@@ -39,19 +49,41 @@ class AuthMutation:
         db_gen = get_db()
         db = next(db_gen)
         try:
-            # Autenticar usuario
-            user = authenticate_user(db, input.nickname, input.password)
+            auth_result = authenticate_user(db, input.nickname, input.password)
 
-            if not user:
+            if not auth_result:
                 return LoginResponse(
                     success=False,
                     message="Credenciales inválidas",
+                    requiresPasswordChange=False,
+                    passwordChangeReason=None,
                     token=None,
                     refreshToken=None,
                     refreshExpiresAt=None,
                     sessionId=None,
                     user=None,
                 )
+
+            user = auth_result.user
+            requires_password_change = auth_result.requires_password_change
+            password_change_reason = None
+
+            if requires_password_change:
+                password_change_reason = (
+                    "La contraseña está guardada en texto plano. Debe actualizarse inmediatamente."
+                )
+                logger.warning(
+                    "Usuario %s con contraseña en texto plano: requiere actualización inmediata",
+                    getattr(user, "Nickname", "<desconocido>"),
+                )
+
+            if auth_result.should_rehash and not requires_password_change:
+                rehash_success = update_user_password(db, user.UserID, input.password)
+                if not rehash_success:
+                    logger.warning(
+                        "No se pudo actualizar el hash legacy para el usuario %s",
+                        getattr(user, "Nickname", "<desconocido>"),
+                    )
 
             refresh_token = generate_refresh_token()
             refresh_expires_at = calculate_refresh_expiration()
@@ -99,7 +131,9 @@ class AuthMutation:
             )
             return LoginResponse(
                 success=True,
-                message="Login exitoso",
+                message="Actualiza la contraseña" if requires_password_change else "Login exitoso",
+                requiresPasswordChange=requires_password_change,
+                passwordChangeReason=password_change_reason,
                 token=token,
                 refreshToken=refresh_token,
                 refreshExpiresAt=session.ExpiresAt,
@@ -112,6 +146,8 @@ class AuthMutation:
             return LoginResponse(
                 success=False,
                 message=f"Error interno: {str(e)}",
+                requiresPasswordChange=False,
+                passwordChangeReason=None,
                 token=None,
                 refreshToken=None,
                 refreshExpiresAt=None,
@@ -128,7 +164,6 @@ class AuthMutation:
         db = next(db_gen)
         try:
             # Verificar si el usuario ya existe
-            from app.auth import get_user_by_nickname
             existing_user = get_user_by_nickname(db, input.nickname)
             
             if existing_user:
@@ -176,8 +211,8 @@ class AuthMutation:
             
             user_dict = user.__dict__
             # Verificar contraseña actual
-            authenticated_user = authenticate_user(db, user_dict['Nickname'], input.current_password)
-            if not authenticated_user:
+            auth_result = authenticate_user(db, user_dict['Nickname'], input.current_password)
+            if not auth_result:
                 return AuthResponse(
                     success=False,
                     message="Contraseña actual incorrecta"
@@ -201,6 +236,85 @@ class AuthMutation:
             return AuthResponse(
                 success=False,
                 message=f"Error cambiando contraseña: {str(e)}"
+            )
+        finally:
+            db_gen.close()
+
+    @strawberry.mutation
+    def upgrade_password(self, input: PasswordUpgradeInput) -> AuthResponse:
+        """Actualiza la contraseña usando un token válido cuando está en texto plano."""
+        db_gen = get_db()
+        db = next(db_gen)
+        try:
+            if not input.new_password or not input.new_password.strip():
+                return AuthResponse(
+                    success=False,
+                    message="La nueva contraseña no puede estar vacía",
+                )
+
+            try:
+                claims = decode_token(input.token)
+            except AuthenticationError as exc:
+                return AuthResponse(
+                    success=False,
+                    message=f"Token inválido: {exc}",
+                )
+
+            nickname_from_token = claims.get("sub")
+            if not isinstance(nickname_from_token, str):
+                return AuthResponse(
+                    success=False,
+                    message="Token inválido: sujeto ausente",
+                )
+
+            if nickname_from_token != input.nickname:
+                return AuthResponse(
+                    success=False,
+                    message="El token no pertenece al usuario indicado",
+                )
+
+            user = get_user_by_nickname(db, input.nickname)
+            if not user:
+                return AuthResponse(
+                    success=False,
+                    message="Usuario no encontrado",
+                )
+
+            if not getattr(user, "IsActive", False):
+                return AuthResponse(
+                    success=False,
+                    message="El usuario está inactivo",
+                )
+
+            if not password_requires_change(user):
+                estado = classify_user_password(user)
+                if estado == "argon2":
+                    return AuthResponse(
+                        success=False,
+                        message="La contraseña ya está protegida. Usa changePassword.",
+                    )
+                if estado == "bcrypt":
+                    return AuthResponse(
+                        success=False,
+                        message="El usuario tiene un hash legacy. Inicia sesión nuevamente para actualizarlo.",
+                    )
+
+            success = update_user_password(db, user.UserID, input.new_password)
+            if success:
+                return AuthResponse(
+                    success=True,
+                    message="Contraseña actualizada y cifrada correctamente",
+                )
+
+            return AuthResponse(
+                success=False,
+                message="No se pudo actualizar la contraseña",
+            )
+        except Exception as exc:
+            logger.exception("Error en upgrade_password para %s", input.nickname)
+            return AuthResponse(
+                success=False,
+                message=f"Error actualizando contraseña: {exc}",
             )
         finally:
             db_gen.close()

@@ -52,7 +52,7 @@ class Documents(Base):
     IsTest: Mapped[bool] = mapped_column(Boolean, server_default=text('((0))'))
     MaxItems: Mapped[int] = mapped_column(Integer)
     ShouldAccount: Mapped[bool] = mapped_column(Boolean)
-    MovesStock: Mapped[bool] = mapped_column('AffectsStock', Boolean)
+    AffectsStock: Mapped[bool] = mapped_column(Boolean)
     FromDate: Mapped[datetime.date] = mapped_column(Date)
 
     # Relaciones

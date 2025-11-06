@@ -1,6 +1,8 @@
 # app/graphql/schemas/documents.py
 import strawberry
 from typing import Optional
+from app.graphql.schemas.company import CompanyInDB
+from app.graphql.schemas.branches import BranchesInDB
 
 
 @strawberry.input
@@ -65,3 +67,5 @@ class CommercialDocumentsInDB:
     ShouldAccount: bool
     AffectsStock: bool
     FromDate: Optional[str] = None
+    CompanyData: Optional[CompanyInDB] = None
+    BranchData: Optional[BranchesInDB] = None

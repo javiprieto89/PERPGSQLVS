@@ -39,6 +39,8 @@ class LoginResponse:
     """Respuesta del login"""
     success: bool
     message: str
+    requiresPasswordChange: bool = False
+    passwordChangeReason: Optional[str] = None
     token: Optional[str] = None
     refreshToken: Optional[str] = None
     refreshExpiresAt: Optional[datetime] = None
@@ -60,6 +62,14 @@ class PasswordChangeInput:
     """Input para cambiar contraseña"""
     user_id: int
     current_password: str
+    new_password: str
+
+
+@strawberry.input
+class PasswordUpgradeInput:
+    """Input para actualizar contraseña con un token ya emitido."""
+    nickname: str
+    token: str
     new_password: str
 
 

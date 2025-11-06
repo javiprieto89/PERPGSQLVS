@@ -2,8 +2,11 @@ afip.py==1.1.2
 aiohappyeyeballs==2.6.1
 aiohttp==3.13.0
 aiosignal==1.4.0
+alembic==1.17.1
 annotated-types==0.7.0
 anyio==4.9.0
+argon2-cffi==23.1.0
+argon2-cffi-bindings==25.1.0
 attrs==25.4.0
 bcrypt==4.3.0
 black==25.1.0
@@ -23,6 +26,8 @@ h11==0.16.0
 idna==3.10
 inflect==7.5.0
 iniconfig==2.1.0
+Mako==1.3.10
+MarkupSafe==3.0.3
 maxminddb==2.8.2
 more-itertools==10.7.0
 multidict==6.7.0

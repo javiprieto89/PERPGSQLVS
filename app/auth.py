@@ -1,9 +1,12 @@
 # app/auth.py - VERSIÓN COMPLETA
 from datetime import datetime, timezone, timedelta
 import secrets
+from dataclasses import dataclass
+from typing import Literal
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 import bcrypt
+from argon2 import PasswordHasher, exceptions as argon2_exceptions
 
 from app.db import get_db
 from app.models.users import Users
@@ -14,6 +17,65 @@ from app.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
+
+argon2_hasher = PasswordHasher()
+ARGON2_PREFIX = "$argon2"
+BCRYPT_PREFIXES = ("$2a$", "$2b$", "$2y$")
+
+
+@dataclass
+class AuthenticationResult:
+    """Resultado detallado de autenticación."""
+
+    user: Users
+    password_state: Literal["argon2", "bcrypt", "plaintext"]
+    requires_password_change: bool = False
+    should_rehash: bool = False
+
+
+def _is_argon2_hash(value: str | bytes) -> bool:
+    """Detecta si el valor corresponde a un hash Argon2."""
+    if isinstance(value, bytes):
+        try:
+            value = value.decode("utf-8")
+        except UnicodeDecodeError:
+            return False
+    return value.startswith(ARGON2_PREFIX)
+
+
+def _is_bcrypt_hash(value: str | bytes) -> bool:
+    """Detecta si el valor corresponde a un hash bcrypt."""
+    if isinstance(value, bytes):
+        try:
+            value = value.decode("utf-8")
+        except UnicodeDecodeError:
+            return False
+    return value.startswith(BCRYPT_PREFIXES)
+
+
+def classify_user_password(user: Users) -> Literal["argon2", "bcrypt", "plaintext", "unknown"]:
+    """Clasifica cómo está almacenada la contraseña del usuario."""
+    stored_password = getattr(user, "Password", None)
+    if stored_password is None:
+        return "unknown"
+    if isinstance(stored_password, bytes):
+        try:
+            stored_password = stored_password.decode("utf-8")
+        except UnicodeDecodeError:
+            return "unknown"
+    stored_password = str(stored_password)
+    if not stored_password:
+        return "unknown"
+    if _is_argon2_hash(stored_password):
+        return "argon2"
+    if _is_bcrypt_hash(stored_password):
+        return "bcrypt"
+    return "plaintext"
+
+
+def password_requires_change(user: Users) -> bool:
+    """Indica si el usuario necesita actualizar su contraseña."""
+    return classify_user_password(user) == "plaintext"
 
 
 class AuthenticationError(Exception):
@@ -81,24 +143,32 @@ def create_session_record(
         identifier = client_host or client_ip or "unknown"
         normalized_ua = f"unknown::{identifier}"
 
+    normalized_ip = (client_ip or "").strip() or None
+
+    filters = [
+        Sessions.UserID == user.UserID,
+        Sessions.IsRevoked == False,  # BIT column; use = 0
+        Sessions.UserAgent == normalized_ua,
+    ]
+    if normalized_ip is None:
+        filters.append(Sessions.ClientIP.is_(None))
+    else:
+        filters.append(Sessions.ClientIP == normalized_ip)
+
     existing_session = (
         db.query(Sessions)
-        .filter(
-            Sessions.UserID == user.UserID,
-            Sessions.IsRevoked == False,  # BIT column; use = 0
-            Sessions.UserAgent == normalized_ua,
-            Sessions.ExpiresAt > _now_utc(),
-        )
+        .filter(*filters)
         .order_by(Sessions.SessionID.desc())
         .first()
     )
 
     if existing_session:
+        now_utc = _now_utc()
         existing_session.Token = refresh_token
         existing_session.Algorithm = algorithm
         existing_session.ExpiresAt = expires_at
-        existing_session.LastSeenAt = _now_utc()
-        existing_session.ClientIP = client_ip
+        existing_session.LastSeenAt = now_utc
+        existing_session.ClientIP = normalized_ip
         existing_session.ClientHost = client_host
         existing_session.RequestHost = request_host
         existing_session.UserAgent = normalized_ua
@@ -109,7 +179,7 @@ def create_session_record(
             Token=refresh_token,
             Algorithm=algorithm,
             ExpiresAt=expires_at,
-            ClientIP=client_ip,
+            ClientIP=normalized_ip,
             ClientHost=client_host,
             RequestHost=request_host,
             UserAgent=normalized_ua,
@@ -182,69 +252,90 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
-def verify_password(plain_password: str | bytes, hashed_password: str | bytes) -> bool:
-    """Verificar contraseña usando bcrypt
-
-    Args:
-        plain_password: Contraseña en texto plano (str o bytes)
-        hashed_password: Contraseña hasheada (str o bytes)
-
-    Returns:
-        bool: True si la contraseña es válida, False en caso contrario
-    """
+def _verify_bcrypt_password(plain_password: str | bytes, hashed_password: str | bytes) -> bool:
+    """Verifica contraseñas legacy generadas con bcrypt."""
     try:
-        # Convertir a bytes si son strings
         if isinstance(plain_password, str):
-            plain_password = plain_password.encode('utf-8')
+            plain_password = plain_password.encode("utf-8")
         if isinstance(hashed_password, str):
-            hashed_password = hashed_password.encode('utf-8')
-
+            hashed_password = hashed_password.encode("utf-8")
         return bcrypt.checkpw(plain_password, hashed_password)
     except Exception:
+        logger.exception("Error verificando contraseña legacy con bcrypt")
         return False
 
 
 def hash_password(password: str) -> str:
-    """Hash de contraseña usando bcrypt"""
-    password_bytes = password.encode('utf-8')
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password_bytes, salt)
-    return hashed.decode('utf-8')
+    """Genera un hash Argon2id a partir de la contraseña dada."""
+    return argon2_hasher.hash(password)
 
 
-def authenticate_user(db: Session, nickname: str, password: str) -> Users | None:
+def authenticate_user(db: Session, nickname: str, password: str) -> AuthenticationResult | None:
     """
-    Autenticar usuario con nickname y contraseña
-    Retorna el usuario si las credenciales son válidas, None si no
+    Autentica un usuario y clasifica cómo está almacenada la contraseña.
+
+    Retorna AuthenticationResult si las credenciales son válidas; None en caso contrario.
     """
     try:
-        # Buscar usuario por nickname
         user = db.query(Users).filter(Users.Nickname == nickname).first()
-
         if not user:
             return None
 
         user_dict = user.__dict__
-
-        # Verificar que el usuario esté activo
-        if not user_dict['IsActive']:
+        if not user_dict["IsActive"]:
             return None
 
-        # Verificar contraseña
-        stored_password = user_dict['Password']
+        stored_password = user_dict.get("Password")
+        if stored_password is None:
+            return None
+        if isinstance(stored_password, bytes):
+            try:
+                stored_password = stored_password.decode("utf-8")
+            except UnicodeDecodeError:
+                logger.warning("Password almacenada no es UTF-8 para %s", nickname)
+                return None
+
+        stored_password = str(stored_password)
         if not stored_password:
             return None
 
-        # Para desarrollo: permitir contraseñas en texto plano temporalmente
-        # En producción, todas las contraseñas deben estar hasheadas
-        if stored_password.startswith("$2b"):
-            # Contraseña hasheada con bcrypt
-            if verify_password(password, stored_password):
-                return user
-        else:
-            # Contraseña en texto plano (para desarrollo)
-            if password == stored_password:
-                return user
+        # Contraseñas hasheadas con Argon2id (nuevo esquema)
+        if _is_argon2_hash(stored_password):
+            try:
+                argon2_hasher.verify(stored_password, password)
+            except argon2_exceptions.VerifyMismatchError:
+                return None
+            except argon2_exceptions.VerificationError:
+                logger.exception("Error verificando hash Argon2 para %s", nickname)
+                return None
+
+            needs_rehash = argon2_hasher.check_needs_rehash(stored_password)
+            return AuthenticationResult(
+                user=user,
+                password_state="argon2",
+                requires_password_change=False,
+                should_rehash=needs_rehash,
+            )
+
+        # Contraseñas legacy con bcrypt
+        if _is_bcrypt_hash(stored_password):
+            if _verify_bcrypt_password(password, stored_password):
+                return AuthenticationResult(
+                    user=user,
+                    password_state="bcrypt",
+                    requires_password_change=False,
+                    should_rehash=True,
+                )
+            return None
+
+        # Fallback: contraseña almacenada en texto plano
+        if password == stored_password:
+            return AuthenticationResult(
+                user=user,
+                password_state="plaintext",
+                requires_password_change=True,
+                should_rehash=False,
+            )
 
         return None
 
