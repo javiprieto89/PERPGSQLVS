@@ -1,0 +1,15 @@
+query GetAllChecks {
+  allChecks {
+    CheckID
+    CompanyID
+    Number
+    CurrencyID
+    Amount
+    IssueDate
+    DueDate
+    BankID
+    DrawerName
+    HolderName
+    CheckStatusID
+  }
+}

@@ -1051,7 +1051,7 @@ export const QUERIES = {
 
     // DOCUMENTOS
     GET_ALL_DOCUMENTS: `
-        query GetAllCommercialDocuments {
+        query GetAllDocuments {
             allDocuments {
                 DocumentID
                 CompanyID
@@ -1162,6 +1162,375 @@ export const QUERIES = {
                 MovementType
                 Description
                 UserID
+                Notes
+            }
+        }
+    `,
+
+    // BANCOS
+    GET_ALL_BANKS: `
+        query GetAllBanks {
+            allBanks {
+                BankID
+                Name
+                IsActive
+            }
+        }
+    `,
+    GET_BANK_BY_ID: `
+        query GetBankById($bankID: Int!) {
+            bankById(bankID: $bankID) {
+                BankID
+                Name
+                IsActive
+            }
+        }
+    `,
+
+    // CUENTAS BANCARIAS
+    GET_ALL_BANK_ACCOUNTS: `
+        query GetAllBankAccounts {
+            allBankaccounts {
+                BankAccountID
+                CompanyID
+                BankID
+                AccountNumber
+                CurrencyID
+                Alias
+                IsActive
+            }
+        }
+    `,
+    GET_BANK_ACCOUNTS_BY_COMPANY: `
+        query GetBankAccountsByCompany($companyID: Int!) {
+            bankaccountsByCompany(companyID: $companyID) {
+                BankAccountID
+                CompanyID
+                BankID
+                AccountNumber
+                CurrencyID
+                Alias
+                IsActive
+            }
+        }
+    `,
+    GET_BANK_ACCOUNT_BY_ID: `
+        query GetBankAccountById($bankAccountID: Int!, $companyID: Int) {
+            bankaccountById(
+                bankAccountID: $bankAccountID
+                companyID: $companyID
+            ) {
+                BankAccountID
+                CompanyID
+                BankID
+                AccountNumber
+                CurrencyID
+                Alias
+                IsActive
+            }
+        }
+    `,
+
+    // CHEQUES
+    GET_ALL_CHECKS: `
+        query GetAllChecks {
+            allChecks {
+                CheckID
+                CompanyID
+                Number
+                CurrencyID
+                Amount
+                IssueDate
+                DueDate
+                BankID
+                DrawerName
+                HolderName
+                CheckStatusID
+            }
+        }
+    `,
+    GET_CHECKS_BY_COMPANY: `
+        query GetChecksByCompany($companyID: Int!) {
+            checksByCompany(companyID: $companyID) {
+                CheckID
+                CompanyID
+                Number
+                CurrencyID
+                Amount
+                IssueDate
+                DueDate
+                BankID
+                DrawerName
+                HolderName
+                CheckStatusID
+            }
+        }
+    `,
+    GET_CHECK_BY_ID: `
+        query GetCheckById($checkID: Int!, $companyID: Int) {
+            checkById(checkID: $checkID, companyID: $companyID) {
+                CheckID
+                CompanyID
+                Number
+                CurrencyID
+                Amount
+                IssueDate
+                DueDate
+                BankID
+                DrawerName
+                HolderName
+                CheckStatusID
+            }
+        }
+    `,
+
+    // MOVIMIENTOS DE CHEQUES
+    GET_ALL_CHECK_MOVEMENTS: `
+        query GetAllCheckMovements {
+            allCheckmovements {
+                CheckMovementID
+                CompanyID
+                CheckID
+                EventDate
+                EventType
+                BankAccountID
+                BranchID
+                TransactionID
+                Notes
+            }
+        }
+    `,
+    GET_CHECK_MOVEMENTS_BY_COMPANY: `
+        query GetCheckMovementsByCompany($companyID: Int!) {
+            checkmovementsByCompany(companyID: $companyID) {
+                CheckMovementID
+                CompanyID
+                CheckID
+                EventDate
+                EventType
+                BankAccountID
+                BranchID
+                TransactionID
+                Notes
+            }
+        }
+    `,
+    GET_CHECK_MOVEMENTS_BY_CHECK: `
+        query GetCheckMovementsByCheck($checkID: Int!, $companyID: Int) {
+            checkmovementsByCheck(checkID: $checkID, companyID: $companyID) {
+                CheckMovementID
+                CompanyID
+                CheckID
+                EventDate
+                EventType
+                BankAccountID
+                BranchID
+                TransactionID
+                Notes
+            }
+        }
+    `,
+    GET_CHECK_MOVEMENT_BY_ID: `
+        query GetCheckMovementById($checkMovementID: Int!, $companyID: Int) {
+            checkmovementById(
+                checkMovementID: $checkMovementID
+                companyID: $companyID
+            ) {
+                CheckMovementID
+                CompanyID
+                CheckID
+                EventDate
+                EventType
+                BankAccountID
+                BranchID
+                TransactionID
+                Notes
+            }
+        }
+    `,
+
+    // CONCILIACIONES BANCARIAS
+    GET_ALL_BANK_RECONCILIATIONS: `
+        query GetAllBankReconciliations {
+            allBankreconciliations {
+                ReconciliationID
+                CompanyID
+                BankAccountID
+                StatementDate
+                ClosingBalance
+                CreatedAt
+                Notes
+            }
+        }
+    `,
+    GET_BANK_RECONCILIATIONS_BY_ACCOUNT: `
+        query GetBankReconciliationsByAccount($bankAccountID: Int!, $companyID: Int) {
+            bankreconciliationsByAccount(
+                bankAccountID: $bankAccountID
+                companyID: $companyID
+            ) {
+                ReconciliationID
+                CompanyID
+                BankAccountID
+                StatementDate
+                ClosingBalance
+                CreatedAt
+                Notes
+            }
+        }
+    `,
+    GET_BANK_RECONCILIATION_BY_ID: `
+        query GetBankReconciliationById($reconciliationID: Int!, $companyID: Int) {
+            bankreconciliationById(
+                reconciliationID: $reconciliationID
+                companyID: $companyID
+            ) {
+                ReconciliationID
+                CompanyID
+                BankAccountID
+                StatementDate
+                ClosingBalance
+                CreatedAt
+                Notes
+            }
+        }
+    `,
+
+    // RMA
+    GET_ALL_RMAS: `
+        query GetAllRmas($filter: RMAFilter) {
+            allRmas(filter: $filter) {
+                CompanyID
+                BranchID
+                RmaID
+                RmaDate
+                RmaTypeID
+                ClientID
+                SupplierID
+                RelatedOrderID
+                RelatedPIID
+                WarehouseID
+                UserID
+                PriceListID
+                DocumentID
+                StatusID
+                Notes
+                Subtotal
+                VatAmount
+                Total
+            }
+        }
+    `,
+    GET_RMA_BY_ID: `
+        query GetRmaById($companyID: Int!, $branchID: Int!, $rmaID: Int!) {
+            rmaById(companyID: $companyID, branchID: $branchID, rmaID: $rmaID) {
+                CompanyID
+                BranchID
+                RmaID
+                RmaDate
+                RmaTypeID
+                ClientID
+                SupplierID
+                RelatedOrderID
+                RelatedPIID
+                WarehouseID
+                UserID
+                PriceListID
+                DocumentID
+                StatusID
+                Notes
+                Subtotal
+                VatAmount
+                Total
+            }
+        }
+    `,
+
+    // DETALLES DE RMA
+    GET_ALL_RMA_DETAILS: `
+        query GetAllRmaDetails($filter: RMADetailFilter) {
+            allRmaDetails(filter: $filter) {
+                CompanyID
+                BranchID
+                RmaID
+                RmaDetailID
+                ItemID
+                WarehouseID
+                Quantity
+                UnitPrice
+                LineDescription
+                LastModified
+            }
+        }
+    `,
+    GET_RMA_DETAIL_BY_ID: `
+        query GetRmaDetailById(
+            $companyID: Int!
+            $branchID: Int!
+            $rmaID: Int!
+            $rmaDetailID: Int!
+        ) {
+            rmaDetailById(
+                companyID: $companyID
+                branchID: $branchID
+                rmaID: $rmaID
+                rmaDetailID: $rmaDetailID
+            ) {
+                CompanyID
+                BranchID
+                RmaID
+                RmaDetailID
+                ItemID
+                WarehouseID
+                Quantity
+                UnitPrice
+                LineDescription
+                LastModified
+            }
+        }
+    `,
+
+    // DETALLES DE ÓRDENES DE COMPRA
+    GET_PURCHASE_INVOICE_DETAILS: `
+        query GetPurchaseInvoiceDetails($companyID: Int, $branchID: Int, $purchaseInvoiceID: Int) {
+            allPurchaseinvoicedetails(
+                companyID: $companyID
+                branchID: $branchID
+                purchaseInvoiceID: $purchaseInvoiceID
+            ) {
+                CompanyID
+                BranchID
+                PurchaseInvoiceID
+                PurchaseInvoiceDetailID
+                ItemID
+                WarehouseID
+                Quantity
+                UnitPrice
+                Notes
+            }
+        }
+    `,
+    GET_PURCHASE_INVOICE_DETAIL_BY_ID: `
+        query GetPurchaseInvoiceDetailById(
+            $companyID: Int!
+            $branchID: Int!
+            $purchaseInvoiceID: Int!
+            $purchaseInvoiceDetailID: Int!
+        ) {
+            purchaseinvoicedetailById(
+                companyID: $companyID
+                branchID: $branchID
+                purchaseInvoiceID: $purchaseInvoiceID
+                purchaseInvoiceDetailID: $purchaseInvoiceDetailID
+            ) {
+                CompanyID
+                BranchID
+                PurchaseInvoiceID
+                PurchaseInvoiceDetailID
+                ItemID
+                WarehouseID
+                Quantity
+                UnitPrice
                 Notes
             }
         }

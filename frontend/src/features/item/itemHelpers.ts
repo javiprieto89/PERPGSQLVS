@@ -5,7 +5,7 @@ import type {
   ItemsInDb,
   ItemsUpdate,
 } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 
 type Data = ItemsInDb;
 type Mutation = ItemsUpdate | ItemsCreate;
@@ -48,12 +48,12 @@ export const itemHelpers = {
     return {
       BranchID:
         Number(formData.BranchID) ||
-        Number(AuthHelper.getSelectedAccess()?.BranchID) ||
+        Number(AuthStorage.getSelectedAccess()?.BranchID) ||
         1,
       BrandID: Number(formData.BrandID),
       CompanyID:
         Number(formData.CompanyID) ||
-        Number(AuthHelper.getSelectedAccess()?.CompanyID),
+        Number(AuthStorage.getSelectedAccess()?.CompanyID),
       ControlStock: formData.ControlStock,
       IsActive: formData.IsActive,
       IsOffer: Boolean(formData.IsOffer),

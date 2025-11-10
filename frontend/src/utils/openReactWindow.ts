@@ -6,19 +6,25 @@ import { toast } from "sonner";
  * Abre una ventana nueva y monta allí un componente React.
  * @param {() => React.ReactNode} ComponentFn – función que devuelve tu componente
  * @param {string} title – título de la ventana
- * @param {{ width?: number, height?: number }} options
+ * @param {{ width?: number, height?: number, url?: string }} options
  */
 export function openReactWindow(
   ComponentFn: (popup: Window) => React.ReactNode,
   title = "Ventana",
-  options: { width: number; height: number } = { width: 500, height: 500 }
+  options: { width: number; height: number; url?: string } = {
+    width: 500,
+    height: 500,
+  }
 ) {
   const width = options.width || 1000;
   const height = options.height || 700;
 
-  // 1) Abro ventana en blanco
+  // Generar URL si no se proporciona una
+  const windowUrl = options.url || `${document.location.href}/form`;
+
+  // 1) Abro ventana con la URL especificada
   const newWindow = window.open(
-    "", // <-- vacío
+    windowUrl,
     "_blank",
     `width=${width},height=${height},left=200,top=200`
   );

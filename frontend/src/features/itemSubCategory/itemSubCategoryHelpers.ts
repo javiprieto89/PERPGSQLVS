@@ -4,7 +4,7 @@ import type {
   ItemSubcategoriesInDb,
   ItemSubcategoriesUpdate,
 } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 
 export const formSchema = z.object({
   SubcategoryName: z
@@ -29,7 +29,7 @@ export const itemCategoryHelpers = {
   },
 
   prepareToInsert: (data: FormSchema): ItemSubcategoriesCreate => {
-    const companyID = Number(AuthHelper.getSelectedAccess()?.CompanyID);
+    const companyID = Number(AuthStorage.getSelectedAccess()?.CompanyID);
 
     return {
       SubcategoryName: data.SubcategoryName.trim(),
@@ -39,7 +39,7 @@ export const itemCategoryHelpers = {
   },
 
   prepareToUpdate: (data: FormSchema): ItemSubcategoriesUpdate => {
-    const companyID = Number(AuthHelper.getSelectedAccess()?.CompanyID);
+    const companyID = Number(AuthStorage.getSelectedAccess()?.CompanyID);
 
     return {
       SubcategoryName: data.SubcategoryName.trim(),

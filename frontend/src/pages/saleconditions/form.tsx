@@ -121,12 +121,12 @@ export function SaleConditionForm() {
           <Link to={BASE_ROUTE}>Condiciones de Venta</Link>
         </FormBreadcrumb>
       </AdminTopBar>
-      <div className="p-6">
+      <div className="container p-6 md:max-w-[700px] lg:max-w-[800px]">
         <h2 className="text-xl font-bold mb-4">
           {isEditing ? "Editar Condición de Venta" : "Nueva Condición de Venta"}
         </h2>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 md:max-w-[700px] lg:max-w-[800px]">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <FormBlock>
               <Input
                 {...form.register("Name")}
@@ -153,7 +153,7 @@ export function SaleConditionForm() {
                 control={form.control}
                 name="CreditCardID"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="space-y-2">
                     <FormLabel>Tarjeta de Crédito *</FormLabel>
                     <Select onValueChange={(value) => field.onChange(Number(value))} value={field.value?.toString()}>
                       <FormControl>

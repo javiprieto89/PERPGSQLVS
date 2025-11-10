@@ -1,0 +1,3 @@
+mutation DeleteRma($companyID: Int!, $branchID: Int!, $rmaID: Int!) {
+  deleteRma(companyID: $companyID, branchID: $branchID, rmaID: $rmaID)
+}

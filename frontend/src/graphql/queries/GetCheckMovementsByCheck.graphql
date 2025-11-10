@@ -1,0 +1,13 @@
+query GetCheckMovementsByCheck($checkID: Int!, $companyID: Int) {
+  checkmovementsByCheck(checkID: $checkID, companyID: $companyID) {
+    CheckMovementID
+    CompanyID
+    CheckID
+    EventDate
+    EventType
+    BankAccountID
+    BranchID
+    TransactionID
+    Notes
+  }
+}

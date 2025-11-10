@@ -15,7 +15,7 @@ import { CreateButton } from "~/components/ui-admin/CreateButton";
 import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { useGetBranchesByCompanyQuery, type BranchesInDb } from "~/graphql/_generated/graphql";
 import { branchOperations } from "~/services/branch.service";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 
 type DataInDB = BranchesInDb;
 
@@ -29,7 +29,7 @@ export default function Branches() {
   // });
   const { data, error, loading, refetch } = useGetBranchesByCompanyQuery({
     variables: {
-      companyID: Number(AuthHelper.getSelectedAccess()?.CompanyID)
+      companyID: Number(AuthStorage.getSelectedAccess()?.CompanyID)
     },
     fetchPolicy: "network-only",
     notifyOnNetworkStatusChange: true,

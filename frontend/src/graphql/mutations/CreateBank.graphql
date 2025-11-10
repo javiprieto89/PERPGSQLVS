@@ -1,0 +1,7 @@
+mutation CreateBank($input: BankCreate!) {
+  createBank(input: $input) {
+    BankID
+    Name
+    IsActive
+  }
+}

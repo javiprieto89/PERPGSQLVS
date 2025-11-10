@@ -1,9 +1,9 @@
+import { graphqlClient } from "~/graphql/graphql-client";
+import CreateRoleGQL from "~/graphql/mutations/CreateRole.graphql";
+import DeleteRoleGQL from "~/graphql/mutations/DeleteRole.graphql";
+import UpdateRoleGQL from "~/graphql/mutations/UpdateRole.graphql";
 import GetAllRolesGQL from "~/graphql/queries/GetAllRoles.graphql";
 import GetRoleByIdGQL from "~/graphql/queries/GetRoleById.graphql";
-import CreateRoleGQL from "~/graphql/mutations/CreateRole.graphql";
-import UpdateRoleGQL from "~/graphql/mutations/UpdateRole.graphql";
-import DeleteRoleGQL from "~/graphql/mutations/DeleteRole.graphql";
-import { graphqlClient } from "~/graphql/graphql-client";
 
 import type {
   RolesCreate,

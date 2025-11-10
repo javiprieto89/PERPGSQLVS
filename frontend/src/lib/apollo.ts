@@ -73,6 +73,7 @@ const errorLink = onError(
             }
           })
           .catch((error) => {
+            console.log("[Apollo Client] Error refreshing token:", error);
             observer.error(error);
           });
       });
@@ -83,5 +84,5 @@ const errorLink = onError(
 export const apolloClient = new ApolloClient({
   link: from([errorLink, authLink, httpLink]),
   cache: new InMemoryCache(),
-  connectToDevTools: import.meta.env.PROD !== true,
+  devtools: { enabled: true },
 });

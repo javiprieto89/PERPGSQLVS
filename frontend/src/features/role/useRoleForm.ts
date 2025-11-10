@@ -80,7 +80,9 @@ export function useRoleForm({ id, initialData }: UseRoleFormOptions = {}) {
     isEditing,
     isLoading,
     isSaving: form.formState.isSubmitting,
-    errors: form.formState.errors,
+    errors: {
+      query: queryError,
+    },
     queryError,
   };
 }

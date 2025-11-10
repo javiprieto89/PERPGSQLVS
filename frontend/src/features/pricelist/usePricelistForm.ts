@@ -10,8 +10,12 @@ import {
   useUpdatePricelistMutation,
   type PriceListsCreate,
 } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
-import { pricelistHelpers, formSchema, type FormSchema } from "./pricelistHelpers";
+import { AuthStorage } from "~/utils/auth.storage";
+import {
+  formSchema,
+  pricelistHelpers,
+  type FormSchema,
+} from "./pricelistHelpers";
 
 export const BASE_ROUTE = "/pricelists";
 
@@ -21,7 +25,7 @@ interface UsePricelistFormOptions {
 
 /**
  * Custom hook for managing pricelist form state and operations
- * 
+ *
  * Features:
  * - Handles both create and edit modes
  * - Integrates with react-hook-form and Zod validation
@@ -29,7 +33,7 @@ interface UsePricelistFormOptions {
  * - Automatic refetching after mutations
  * - Toast notifications for success/error
  * - Navigation after successful submission
- * 
+ *
  * @param options - Configuration options
  * @param options.id - PriceListID for edit mode, undefined for create mode
  * @returns Form state and handlers
@@ -43,11 +47,11 @@ export function usePricelistForm({ id }: UsePricelistFormOptions = {}) {
     error: queryError,
     loading: queryLoading,
   } = useGetPricelistByIdQuery({
-    variables: { 
+    variables: {
       id: id!,
-      companyId: Number(AuthHelper.getSelectedAccess()?.CompanyID) || 0,
+      companyId: Number(AuthStorage.getSelectedAccess()?.CompanyID) || 0,
     },
-    skip: !id || !AuthHelper.getSelectedAccess()?.CompanyID,
+    skip: !id || !AuthStorage.getSelectedAccess()?.CompanyID,
     fetchPolicy: "no-cache",
   });
 
@@ -57,7 +61,7 @@ export function usePricelistForm({ id }: UsePricelistFormOptions = {}) {
       {
         query: GetPriceListsDocument,
         variables: {
-          companyId: Number(AuthHelper.getSelectedAccess()?.CompanyID),
+          companyId: Number(AuthStorage.getSelectedAccess()?.CompanyID),
         },
       },
     ],
@@ -80,7 +84,7 @@ export function usePricelistForm({ id }: UsePricelistFormOptions = {}) {
     resolver: zodResolver(formSchema),
     mode: "onBlur",
     defaultValues: {
-      CompanyID: String(AuthHelper.getSelectedAccess()?.CompanyID || ""),
+      CompanyID: String(AuthStorage.getSelectedAccess()?.CompanyID || ""),
       PriceListName: "",
       PriceListDescription: "",
       IsActive: true,
@@ -90,7 +94,7 @@ export function usePricelistForm({ id }: UsePricelistFormOptions = {}) {
   // Load data into form when editing
   useEffect(() => {
     if (!data?.pricelistsById) return;
-    
+
     const formData = pricelistHelpers.prepareDataFormSchema(data);
     if (formData) {
       form.reset(formData, {
@@ -110,7 +114,7 @@ export function usePricelistForm({ id }: UsePricelistFormOptions = {}) {
   async function handleSubmit(formData: FormSchema) {
     try {
       let highlightId: number | null = null;
-      
+
       if (isEditing && id) {
         // Update existing pricelist
         const { PriceListID, ...rest } = formData;
@@ -140,13 +144,15 @@ export function usePricelistForm({ id }: UsePricelistFormOptions = {}) {
 
       // Show success toast
       toast.success(
-        isEditing 
-          ? "Lista de precios actualizada con éxito" 
+        isEditing
+          ? "Lista de precios actualizada con éxito"
           : "Lista de precios creada con éxito"
       );
     } catch (error) {
       console.error("Error saving pricelist:", error);
-      toast.error("Error al guardar la lista de precios. Contacte al administrador del sistema");
+      toast.error(
+        "Error al guardar la lista de precios. Contacte al administrador del sistema"
+      );
     }
   }
 

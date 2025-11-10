@@ -3,9 +3,7 @@
  * Shared authentication middleware utilities
  * Used by Apollo Client, TanStack Query, and GraphQL Client
  */
-
-import { refreshToken } from "~/utils/api-fetch";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 import { Referrer } from "~/utils/referrer.session";
 
 // Track if we're currently refreshing the token to avoid multiple simultaneous refresh attempts
@@ -35,22 +33,26 @@ export async function handleAuthError(source = "Client"): Promise<boolean> {
     console.warn(`[${source}] Unauthenticated, attempting to refresh token...`);
   }
 
-  refreshPromise = refreshToken()
+  refreshPromise = fetchRefreshToken()
     .then((success) => {
-      if (success) {
-        if (import.meta.env.DEV) {
-          console.log(`[${source}] Token refreshed successfully`);
-        }
-        return true;
-      } else {
-        if (import.meta.env.DEV) {
-          console.error(`[${source}] Token refresh failed`);
-        }
-        return false;
+      if (import.meta.env.DEV) {
+        console.log(`[${source}] Success? ${success}`);
       }
+
+      if (!success) {
+        throw new Error("Token refresh failed");
+      }
+
+      if (import.meta.env.DEV) {
+        console.log(`[${source}] Token refreshed successfully`);
+      }
+
+      return true;
     })
     .catch((error) => {
-      console.error(`[${source}] Exception during token refresh:`, error);
+      if (import.meta.env.DEV) {
+        console.error(`[${source}] Token refresh failed`, error);
+      }
       return false;
     })
     .finally(() => {
@@ -59,85 +61,6 @@ export async function handleAuthError(source = "Client"): Promise<boolean> {
     });
 
   return refreshPromise;
-}
-
-/**
- * Check if an error is an authentication error (401 or UNAUTHENTICATED)
- * Works with HTTP responses, GraphQL errors, and generic errors
- */
-export function isAuthError(error: unknown, response?: Response): boolean {
-  if (!error) return false;
-
-  // Check HTTP response status
-  if (response && response.status === 401) {
-    return true;
-  }
-
-  // Check if error has status property (HTTP error objects)
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "status" in error &&
-    error.status === 401
-  ) {
-    return true;
-  }
-
-  // Check error message
-  if (error instanceof Error) {
-    const message = error.message.toLowerCase();
-    if (
-      message.includes("unauthenticated") ||
-      message.includes("unauthorized") ||
-      message.includes("401") ||
-      message.includes("not authenticated")
-    ) {
-      return true;
-    }
-  }
-
-  // Check for GraphQL error extensions
-  if (
-    typeof error === "object" &&
-    error !== null &&
-    "extensions" in error &&
-    error.extensions &&
-    typeof error.extensions === "object" &&
-    "code" in error.extensions &&
-    error.extensions.code === "UNAUTHENTICATED"
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-/**
- * Check if GraphQL response contains authentication errors
- */
-export function hasAuthErrors(result: {
-  errors?: Array<{
-    message: string;
-    extensions?: { code?: string };
-  }>;
-}): boolean {
-  if (!result.errors || result.errors.length === 0) {
-    return false;
-  }
-
-  return result.errors.some((err) => {
-    // Check extension code
-    if (err.extensions?.code === "UNAUTHENTICATED") {
-      return true;
-    }
-    // Check message
-    const message = err.message.toLowerCase();
-    return (
-      message.includes("unauthenticated") ||
-      message.includes("unauthorized") ||
-      message.includes("not authenticated")
-    );
-  });
 }
 
 /**
@@ -151,67 +74,140 @@ export function hasGraphQLAuthErrors(
     return false;
   }
 
-  return errors.some((err) => err.extensions?.code === "UNAUTHENTICATED");
-}
-
-/**
- * Get the current authentication token
- * Wrapper around AuthHelper for consistency
- */
-export function getAuthToken(): string | null {
-  return AuthHelper.getToken();
+  return errors.some((err) => {
+    const errorCode = err.extensions?.code?.toLocaleLowerCase();
+    return (
+      errorCode?.includes("unauthenticated") ||
+      errorCode?.includes("unauthorized") ||
+      errorCode?.includes("not authenticated")
+    );
+  });
 }
 
 /**
  * Get authorization header with Bearer token
  */
 export function getAuthHeader(): { Authorization: string } | {} {
-  const token = getAuthToken();
+  const token = AuthStorage.getToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-/**
- * Check if user is authenticated
- */
-export function isAuthenticated(): boolean {
-  return AuthHelper.isAuthenticated();
-}
+export const fetchApi = async <T = unknown>(
+  url: string,
+  options: RequestInit = {}
+): Promise<T> => {
+  const token = AuthStorage.getToken();
 
-/**
- * Development mode logging helper
- */
-export function devLog(source: string, message: string, data?: unknown): void {
-  if (import.meta.env.DEV) {
-    if (data !== undefined) {
-      console.log(`[${source}] ${message}`, data);
-    } else {
-      console.log(`[${source}] ${message}`);
-    }
-  }
-}
+  const headers: HeadersInit = {
+    ...(options.headers || {}),
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
 
-/**
- * Development mode warning helper
- */
-export function devWarn(source: string, message: string, data?: unknown): void {
-  if (import.meta.env.DEV) {
-    if (data !== undefined) {
-      console.warn(`[${source}] ${message}`, data);
-    } else {
-      console.warn(`[${source}] ${message}`);
+  if (
+    typeof options.body === "object" &&
+    options.body !== null &&
+    !(options.body instanceof FormData)
+  ) {
+    if (!(headers as Record<string, string>)["Content-Type"]) {
+      (headers as Record<string, string>)["Content-Type"] = "application/json";
     }
+    options.body = JSON.stringify(options.body);
   }
-}
 
-/**
- * Development mode error helper
- */
-export function devError(source: string, message: string, data?: unknown): void {
-  if (import.meta.env.DEV) {
-    if (data !== undefined) {
-      console.error(`[${source}] ${message}`, data);
-    } else {
-      console.error(`[${source}] ${message}`);
+  try {
+    const response = await fetch(`${import.meta.env.VITE_GRAPHQL_API}${url}`, {
+      ...options,
+      headers,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.detail || `HTTP ${response.status}: ${response.statusText}`
+      );
     }
+
+    return await response.json();
+  } catch (err) {
+    console.error("Error en apiFetch:", err);
+    throw err;
   }
-}
+};
+
+export const fetchRefreshToken = async (): Promise<boolean> => {
+  if (import.meta.env.DEV) {
+    console.log("[RefreshToken] Starting refresh...", {
+      method: "POST",
+      credentials: "include",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AuthStorage.getRefreshToken()}`,
+      },
+      body: JSON.stringify({
+        refreshToken: AuthStorage.getRefreshToken(),
+      }),
+    });
+  }
+
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}auth/refresh`,
+      {
+        method: "POST",
+        credentials: "include",
+        mode: "cors",
+        body: JSON.stringify({
+          refreshToken: AuthStorage.getRefreshToken(),
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${AuthStorage.getRefreshToken()}`,
+        },
+      }
+    );
+
+    if (import.meta.env.DEV) {
+      console.log(`[RefreshToken] response`, response);
+    }
+
+    // If server returns 401, token is invalid and cannot be refreshed
+    if (response.status === 401) {
+      throw new Error("Token invalid or expired (401)");
+    }
+
+    // For other non-OK responses, log and fail
+    if (!response.ok) {
+      throw new Error(`Failed - Status: ${response.status}`);
+    }
+
+    // Parse response body
+    let data;
+    data = await response.json();
+
+    if (import.meta.env.DEV) {
+      console.log(`[RefreshToken] data`, data);
+    }
+
+    // Validate response structure
+    if (!data.success || !data.token || !data.refreshToken) {
+      throw new Error("Invalid response structure");
+    }
+
+    // Success - update tokens
+    AuthStorage.setToken(data.token);
+    AuthStorage.setRefreshToken(data.refreshToken);
+
+    if (import.meta.env.DEV) {
+      console.log("[RefreshToken] Success - tokens updated");
+    }
+
+    return true;
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.error("[RefreshToken] Exception during refresh:", error);
+    }
+    AuthStorage.logout();
+    return false;
+  }
+};

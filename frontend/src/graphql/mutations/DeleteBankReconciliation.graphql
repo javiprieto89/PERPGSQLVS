@@ -1,0 +1,3 @@
+mutation DeleteBankReconciliation($reconciliationID: Int!) {
+  deleteBankreconciliation(reconciliationID: $reconciliationID)
+}

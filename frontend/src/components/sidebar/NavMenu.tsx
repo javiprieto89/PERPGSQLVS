@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { Fragment, useContext } from "react";
 
-import { useExternalWindowForm } from "~/hooks/useExternalWindowForm";
 
 import { DrawerContext } from "~/components/ui/drawer/Drawer";
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuLink, SidebarMenuSub, SidebarMenuSubItem, useSidebar } from "~/components/ui/sidebar";
@@ -28,23 +27,27 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { Orderform } from "~/pages/orders/form";
 import PriceListItemsPage from "~/pages/pricelistitems/form";
+import { openReactWindow } from "~/utils/openReactWindow";
 import { Collapsible } from "../ui/collapsible";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { SidebarHelper } from "./sidebarHelper";
 
 // Hook para crear ventanas externas - se usará dentro del componente
-const useNavMenuWindows = () => {
-  const { openComponentWindow } = useExternalWindowForm();
-
-  const openPopup = (Component: React.ComponentType<any>, title: string) => {
-    return openComponentWindow(
-      <Component />,
-      { title, maxWidth: "6xl" }
-    );
-  };
-
-  return { openPopup };
+const openPopup = (Component: React.ComponentType<any>, title: string) => {
+  openReactWindow(
+    (popup) => <Component onClose={popup.close} windowRef={popup} />,
+    title
+  );
 };
+
+const openPopup2 = (url: string, title: string) => {
+  window.open(
+    url,
+    "_blank",
+    `width=${1000},height=${800},left=200,top=200`
+  );
+};
+
 
 type RightButton = {
   icon?: Icon | React.FunctionComponent<LucideProps>
@@ -220,7 +223,67 @@ function SidebarSubmenu({ items, parentKey }: { items: SideNav[] | undefined; pa
 }
 
 export function NavMenu() {
-  const { openPopup } = useNavMenuWindows();
+  const extraNavItems: SideMenu[] = [{
+    key: "finance",
+    title: "Finanzas",
+    items: [
+      { title: "Bancos", url: "/banks" },
+      { title: "Cuentas bancarias", url: "/bankaccounts" },
+      { title: "Cheques", url: "/checks" },
+      { title: "Movimientos de cheques", url: "/checkmovements" },
+      { title: "Conciliaciones bancarias", url: "/bankreconciliations" }
+    ],
+  },
+  {
+    key: "rma",
+    title: "RMA",
+    items: [
+      { title: "RMA", url: "/rma" },
+      { title: "Detalles RMA", url: "/rmadetails" }
+    ],
+  },
+  {
+    key: "purchases",
+    title: "Compras",
+    items: [
+      { title: "Detalles ordenes de compra", url: "/purchaseinvoicedetails" }
+    ],
+  },];
+
+  const quickActions: SideNav[] = [
+    {
+      title: "Nuevo cliente", url: "/clients/form",
+      rightButton: {
+        title: "Nuevo cliente",
+        icon: Plus,
+        action: () => openPopup2("/clients/form", "Nuevo Cliente"),
+      }
+    },
+    {
+      title: "Nuevo proveedor", url: "/suppliers/form",
+      rightButton: {
+        title: "Nuevo proveedor",
+        icon: Plus,
+        action: () => openPopup2("/suppliers/form", "Nuevo Proveedor"),
+      }
+    },
+    {
+      title: "Nueva sucursal", url: "/branches/form",
+      rightButton: {
+        title: "Nueva sucursal",
+        icon: Plus,
+        action: () => openPopup2("/branches/form", "Nueva Sucursal"),
+      }
+    },
+    {
+      title: "Nuevo pedido", url: "/orders/form",
+      rightButton: {
+        title: "Nuevo pedido",
+        icon: Plus,
+        action: () => openPopup2("/orders/form", "Nuevo Pedido"),
+      }
+    },
+  ];
 
   // Mover sections aquí para acceder a openPopup
   const sections: SideMenu[] = [
@@ -287,8 +350,8 @@ export function NavMenu() {
       ],
     },
     {
-      key: "consulting",
-      title: "Consultas",
+      key: "invoices",
+      title: "Facturas",
       items: [
         {
           title: "Factura electrónica",
@@ -298,6 +361,7 @@ export function NavMenu() {
             { title: "Último comprobante", url: "/fe-last" },
             { title: "Constatación comprobante", url: "/fe-info" },
             { title: "Información comprobante", url: "/fe-less-info" },
+            { title: "Tipos de comprobante", url: "#" },
           ],
         },
       ],
@@ -323,17 +387,23 @@ export function NavMenu() {
           url: "/documents",
           icon: IconShoppingCartCog,
           items: [
-            { title: "Grupos Tarjetas", url: "/creditcardgroups" },
+            { title: "Grupos de Tarjetas", url: "/creditcardgroups" },
             { title: "Tarjetas", url: "/creditcards" },
             { title: "Descuentos", url: "/discounts" },
             { title: "Vendedores", url: "/vendors" },
             { title: "Tipos de servicio", url: "/servicetypes" },
-            { title: "Condiciones", url: "/saleconditions" },
-            { title: "Documentos", url: "/documents" },
+            { title: "Condiciones de venta", url: "/saleconditions" },
+            { title: "Documentos Comerciales", url: "/documents" },
           ],
         },
       ],
     },
+    {
+      key: "quick-actions",
+      title: "Crear",
+      items: quickActions,
+    },
+    ...extraNavItems
   ];
 
   if (sections.length === 0) return null;

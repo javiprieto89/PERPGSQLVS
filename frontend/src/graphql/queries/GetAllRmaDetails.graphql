@@ -1,0 +1,14 @@
+query GetAllRmaDetails($filter: RmaDetailFilter) {
+  allRmaDetails(filter: $filter) {
+    CompanyID
+    BranchID
+    RmaID
+    RmaDetailID
+    ItemID
+    WarehouseID
+    Quantity
+    UnitPrice
+    LineDescription
+    LastModified
+  }
+}

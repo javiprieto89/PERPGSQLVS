@@ -1,0 +1,13 @@
+mutation CreateCheckMovement($input: CheckMovementCreate!) {
+  createCheckmovement(input: $input) {
+    CheckMovementID
+    CompanyID
+    CheckID
+    EventDate
+    EventType
+    BankAccountID
+    BranchID
+    TransactionID
+    Notes
+  }
+}

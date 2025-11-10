@@ -1,0 +1,13 @@
+mutation CreatePurchaseInvoiceDetail($input: PurchaseInvoiceDetailCreate!) {
+  createPurchaseinvoicedetail(input: $input) {
+    CompanyID
+    BranchID
+    PurchaseInvoiceID
+    PurchaseInvoiceDetailID
+    ItemID
+    WarehouseID
+    Quantity
+    UnitPrice
+    Notes
+  }
+}

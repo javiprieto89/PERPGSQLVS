@@ -1,0 +1,32 @@
+mutation UpdateRma(
+  $companyID: Int!
+  $branchID: Int!
+  $rmaID: Int!
+  $input: RmaUpdate!
+) {
+  updateRma(
+    companyID: $companyID
+    branchID: $branchID
+    rmaID: $rmaID
+    input: $input
+  ) {
+    CompanyID
+    BranchID
+    RmaID
+    RmaDate
+    RmaTypeID
+    ClientID
+    SupplierID
+    RelatedOrderID
+    RelatedPIID
+    WarehouseID
+    UserID
+    PriceListID
+    DocumentID
+    StatusID
+    Notes
+    Subtotal
+    VatAmount
+    Total
+  }
+}

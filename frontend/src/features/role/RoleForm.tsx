@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { Fieldset } from "~/components/form/Fieldset";
 import { FormBlock } from "~/components/form/FormBlock";
 import { FormBreadcrumb } from "~/components/form/FormBreadcrumb";
-import { FormSkeleton } from "~/components/form/FormSkeleton";
+import { FormState } from "~/components/form/FormState";
 import { Input } from "~/components/form/Input";
 import { Submit } from "~/components/form/InputSubmit";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
@@ -59,10 +59,6 @@ export function RoleForm({
     }
   };
 
-  if (isLoading) {
-    return <FormSkeleton />;
-  }
-
   const formTitle = title || (isEditing ? "Editar Rol" : "Nuevo Rol");
 
   return (
@@ -77,8 +73,8 @@ export function RoleForm({
         </AdminTopBar>
       )}
 
-      <div className="container p-6">
-        <div className="flex justify-between items-center gap-2 mb-6 md:max-w-[700px] lg:max-w-[800px]">
+      <div className="container p-6 md:max-w-[700px] lg:max-w-[800px]">
+        <div className="flex justify-between items-center gap-2 mb-6">
           <h2 className="font-xl font-bold">
             {formTitle}
           </h2>
@@ -92,41 +88,44 @@ export function RoleForm({
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormBlock>
-              <Fieldset>
-                <FormField
-                  control={form.control}
-                  name="RoleName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        Nombre del Rol <span className="text-red-500">*</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Ingrese el nombre del rol"
-                          {...field}
-                          autoFocus
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </Fieldset>
-            </FormBlock>
-
-            <Fieldset className="items-center">
-              <FormBlock className="p-4 space-x-2 flex justify-between bg-card">
-                <Link className="mt-auto" to={BASE_ROUTE} onClick={handleCancel}>
-                  Cancelar
-                </Link>
-                <Submit type="submit" disabled={isLoading || isSaving} isSubmitting={isSaving}>
-                  {isEditing ? "Actualizar Rol" : "Crear Rol"}
-                </Submit>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 md:max-w-[700px] lg:max-w-[800px]">
+            <FormState errors={[errors.query]} loading={isLoading} />
+            <div className={isLoading ? "opacity-50 pointer-events-none" : ""}>
+              <FormBlock>
+                <Fieldset>
+                  <FormField
+                    control={form.control}
+                    name="RoleName"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel>
+                          Nombre del Rol <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Ingrese el nombre del rol"
+                            {...field}
+                            autoFocus
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </Fieldset>
               </FormBlock>
-            </Fieldset>
+
+              <Fieldset className="items-center">
+                <FormBlock className="p-4 space-x-2 flex justify-between bg-card">
+                  <Link className="mt-auto" to={BASE_ROUTE} onClick={handleCancel}>
+                    Cancelar
+                  </Link>
+                  <Submit type="submit" disabled={isLoading || isSaving} isSubmitting={isSaving}>
+                    {isEditing ? "Actualizar Rol" : "Crear Rol"}
+                  </Submit>
+                </FormBlock>
+              </Fieldset>
+            </div>
           </form>
         </Form>
       </div>

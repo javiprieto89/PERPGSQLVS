@@ -1,0 +1,11 @@
+query GetAllBankAccounts {
+  allBankaccounts {
+    BankAccountID
+    CompanyID
+    BankID
+    AccountNumber
+    CurrencyID
+    Alias
+    IsActive
+  }
+}

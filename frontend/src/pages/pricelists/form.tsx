@@ -177,7 +177,7 @@ export function PriceListForm() {
                       control={form.control}
                       name="PriceListDescription"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="space-y-2">
                           <FormControl>
                             <Textarea
                               placeholder="Descripción detallada de la lista de precios (opcional)"

@@ -1,0 +1,19 @@
+mutation UpdateBankAccount(
+  $bankAccountID: Int!
+  $input: BankAccountsUpdate!
+  $companyID: Int
+) {
+  updateBankaccount(
+    bankAccountID: $bankAccountID
+    input: $input
+    companyID: $companyID
+  ) {
+    BankAccountID
+    CompanyID
+    BankID
+    AccountNumber
+    CurrencyID
+    Alias
+    IsActive
+  }
+}

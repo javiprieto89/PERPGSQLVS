@@ -24,7 +24,7 @@ import {
   useGetAllCarBrandsQuery,
   useGetCarBrandByIdQuery,
 } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 
 const BASE_ROUTE = "/carbrands";
 
@@ -47,8 +47,8 @@ export function CarBrandForm() {
     error: queryError,
     loading: queryLoading,
   } = useGetCarBrandByIdQuery({
-    variables: { id: id!, companyId: AuthHelper.getSelectedAccess()?.CompanyID as number },
-    skip: !id || !AuthHelper.getSelectedAccess()?.CompanyID,
+    variables: { id: id!, companyId: AuthStorage.getSelectedAccess()?.CompanyID as number },
+    skip: !id || !AuthStorage.getSelectedAccess()?.CompanyID,
     fetchPolicy: "no-cache",
   });
 
@@ -90,7 +90,7 @@ export function CarBrandForm() {
     {
       refetchQueries: [
         { query: GetAllCarBrandsDocument },
-        { query: GetCarBrandByIdDocument, variables: { id: id!, companyId: AuthHelper.getSelectedAccess()?.CompanyID as number } },
+        { query: GetCarBrandByIdDocument, variables: { id: id!, companyId: AuthStorage.getSelectedAccess()?.CompanyID as number } },
       ],
       awaitRefetchQueries: true,
       onCompleted: () => {
@@ -127,7 +127,7 @@ export function CarBrandForm() {
   async function handleSubmit(formData: FormSchema) {
     const payload: CarBrandsCreate = {
       CarBrandName: formData.Name,
-      CompanyID: formData.CompanyID ?? AuthHelper.getSelectedAccess()?.CompanyID as number,
+      CompanyID: formData.CompanyID ?? AuthStorage.getSelectedAccess()?.CompanyID as number,
     };
 
     if (isEditing && id) {
@@ -135,7 +135,7 @@ export function CarBrandForm() {
         variables: {
           carBrandID: Number(id),
           input: payload,
-          companyId: AuthHelper.getSelectedAccess()?.CompanyID as number,
+          companyId: AuthStorage.getSelectedAccess()?.CompanyID as number,
         },
       });
     } else {

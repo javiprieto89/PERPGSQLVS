@@ -1,15 +1,20 @@
 // frontend/src/features/car/CarForm.tsx
-import { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router";
 
+import { Checkbox } from "~/components/form/Checkbox";
+import { Input } from "~/components/form/Input";
+import { Select } from "~/components/form/Select";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { AlertLoading } from "~/components/ui-admin/AlertLoading";
 import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Button } from "~/components/ui/button";
+import { Form } from "~/components/ui/form";
 import CarBrandSearchModal from "~/features/carbrand/CarBrandSearchModal";
 import CarModelSearchModal from "~/features/carmodel/CarModelSearchModal";
 import ClientSearchModal from "~/features/client/ClientSearchModal";
-import { carOperations } from "~/services/car.service";
+import { useGetCarFormDataQuery } from "~/graphql/_generated/graphql";
+import { useCarForm } from "./useCarForm";
 
 interface CarFormProps {
   initialData?: any;
@@ -28,187 +33,37 @@ export function CarForm({
 }: CarFormProps) {
   const navigate = useNavigate();
   const params = useParams();
-  const location = useLocation();
-
-  // Si no se proporciona initialData, intentar cargar desde params y service
   const carId = params.id;
-  const isEdit = Boolean(carId || initialData);
-  const formTitle = title || (isEdit ? "Editar Vehículo" : "Nuevo Vehículo");
 
-  const [car, setCar] = useState({
-    companyID: "",
-    carBrandID: "",
-    carModelID: "",
-    clientID: "",
-    licensePlate: "",
-    year: "",
-    lastServiceMileage: "",
-    isDebtor: false,
-    discountID: "",
+  const { form, handleSubmit, isEditing, loading, loadingData, error } = useCarForm({
+    id: carId,
+    initialData,
+    onSave,
+    onCancel,
   });
 
-  const [formData, setFormData] = useState<any>({
-    companies: [],
-    carBrands: [],
-    carModels: [],
-    clients: [],
-    discounts: [],
-  });
+  const { data: formData, loading: formDataLoading } = useGetCarFormDataQuery();
 
-  const [loading, setLoading] = useState(false);
-  const [loadingForm, setLoadingForm] = useState(true);
-  const [error, setError] = useState("");
+  const formTitle = title || (isEditing ? "Editar Vehículo" : "Nuevo Vehículo");
 
   const [showBrandModal, setShowBrandModal] = useState(false);
   const [showModelModal, setShowModelModal] = useState(false);
   const [showClientModal, setShowClientModal] = useState(false);
 
-  const loadFormData = useCallback(async () => {
-    try {
-      setLoadingForm(true);
-      const data = await carOperations.getCarFormData();
-      setFormData(data);
-    } catch (err) {
-      console.error("Error cargando datos del formulario:", err);
-      setError("Error cargando los datos del formulario: " + (err as Error).message);
-    } finally {
-      setLoadingForm(false);
-    }
-  }, []);
-
-  const loadCarData = useCallback(async () => {
-    if (!carId) return;
-
-    try {
-      setLoadingForm(true);
-      const carData = await carOperations.getCarById(carId);
-      if (carData) {
-        setCar({
-          companyID: (carData as any).CompanyID?.toString() || "",
-          carBrandID: (carData as any).CarBrandID?.toString() || "",
-          carModelID: carData.CarModelID?.toString() || "",
-          clientID: carData.ClientID?.toString() || "",
-          licensePlate: carData.LicensePlate || "",
-          year: carData.Year?.toString() || "",
-          lastServiceMileage: carData.LastServiceMileage?.toString() || "",
-          isDebtor: carData.IsDebtor || false,
-          discountID: carData.DiscountID?.toString() || "",
-        });
-      }
-    } catch (err) {
-      console.error("Error cargando datos del vehículo:", err);
-      setError("Error cargando los datos del vehículo: " + (err as Error).message);
-    } finally {
-      setLoadingForm(false);
-    }
-  }, [carId]);
-
-  useEffect(() => {
-    loadFormData();
-  }, [loadFormData]);
-
-  useEffect(() => {
-    if (carId) {
-      loadCarData();
-    }
-  }, [loadCarData, carId]);
-
-  useEffect(() => {
-    if (initialData) {
-      setCar({
-        companyID: initialData.CompanyID || "",
-        carBrandID: initialData.CarBrandID || "",
-        carModelID: initialData.CarModelID || "",
-        clientID: initialData.ClientID || "",
-        licensePlate: initialData.LicensePlate || "",
-        year: initialData.Year || "",
-        lastServiceMileage: initialData.LastServiceMileage || "",
-        isDebtor: initialData.IsDebtor || false,
-        discountID: initialData.DiscountID || "",
-      });
-    }
-  }, [initialData]);
-
   // Filtrar marcas por compañía seleccionada
-  const availableBrands = formData.carBrands.filter(
-    (b: any) =>
-      !car.companyID ||
-      b.CompanyID == null ||
-      b.CompanyID === parseInt(car.companyID)
-  );
+  const companyID = form.watch("companyID");
+  const carBrandID = form.watch("carBrandID");
+
+  const availableBrands = companyID ? formData?.carBrands.filter(
+    (b: any) => b.CompanyID === companyID
+  ) : [];
 
   // Actualizar modelos disponibles cuando cambia la marca
-  const availableModels = formData.carModels.filter(
-    (m: any) => m.CarBrandID === parseInt(car.carBrandID)
-  );
+  const availableModels = formData?.carModels ? formData?.carModels.filter(
+    (m: any) => m.CarBrandID === parseInt(carBrandID)
+  ) : [];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
 
-    let processed: any = type === "checkbox" ? checked : value;
-    if (
-      name.includes("ID") ||
-      name === "year" ||
-      name === "lastServiceMileage"
-    ) {
-      processed = value === "" ? "" : parseInt(value);
-    }
-
-    setCar((prev) => {
-      const updated = { ...prev, [name]: processed };
-      if (name === "companyID") {
-        updated.carBrandID = "";
-        updated.carModelID = "";
-      } else if (name === "carBrandID") {
-        updated.carModelID = "";
-      }
-      return updated;
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const carData = {
-        ...(car.companyID && { CompanyID: parseInt(car.companyID as string) }),
-        CarModelID: parseInt(car.carModelID as string),
-        ClientID: parseInt(car.clientID as string),
-        LicensePlate: car.licensePlate,
-        Year: car.year ? parseInt(car.year as string) : null,
-        LastServiceMileage: car.lastServiceMileage
-          ? parseInt(car.lastServiceMileage as string)
-          : null,
-        IsDebtor: car.isDebtor,
-        DiscountID: parseInt(car.discountID as string),
-      };
-
-      let result;
-      if (isEdit) {
-        const id = carId || (initialData && initialData.CarID);
-        result = await carOperations.updateCar(id, carData as any);
-      } else {
-        result = await carOperations.createCar(carData as any);
-      }
-
-      if (onSave) {
-        onSave(result);
-      } else {
-        // Default behavior: navigate back to list
-        navigate("/cars", {
-          state: { highlight: result?.CarID },
-          replace: true
-        });
-      }
-    } catch (error) {
-      setError((error as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleCancel = () => {
     if (onCancel) {
@@ -221,34 +76,25 @@ export function CarForm({
 
   // Función para manejar la selección de cliente desde el modal
   const handleClientSelect = (client: any) => {
-    setCar((prev) => ({
-      ...prev,
-      clientID: client.ClientID || client.clientID,
-    }));
+    form.setValue("clientID", client.ClientID || client.clientID);
     setShowClientModal(false);
   };
 
   // Función para manejar la selección de marca desde el modal
   const handleBrandSelect = (brand: any) => {
-    setCar((prev) => ({
-      ...prev,
-      carBrandID: brand.CarBrandID,
-      carModelID: "", // Reset model when brand changes
-    }));
+    form.setValue("carBrandID", brand.CarBrandID);
+    form.setValue("carModelID", ""); // Reset model when brand changes
     setShowBrandModal(false);
   };
 
   // Función para manejar la selección de modelo desde el modal
   const handleModelSelect = (model: any) => {
-    setCar((prev) => ({
-      ...prev,
-      carModelID: model.CarModelID,
-      carBrandID: model.CarBrandID,
-    }));
+    form.setValue("carModelID", model.CarModelID);
+    form.setValue("carBrandID", model.CarBrandID);
     setShowModelModal(false);
   };
 
-  if (loadingForm) {
+  if (loadingData) {
     return (
       <>
         {showTopBar && (
@@ -262,292 +108,246 @@ export function CarForm({
   }
 
   const formContent = (
-    <div className="p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto">
       {!showTopBar && (
         <h2 className="text-2xl font-bold mb-4">{formTitle}</h2>
       )}
 
       {error && <ApiErrorMessage error={{ message: error }} />}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Compañía */}
-        <div>
-          <label
-            htmlFor="companyID"
-            className="block text-sm font-medium mb-1"
-          >
-            Compañía
-          </label>
-          <select
-            id="companyID"
-            name="companyID"
-            value={car.companyID}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          >
-            <option value="">Seleccione</option>
-            {formData.companies.map((c: any) => (
-              <option key={c.CompanyID} value={c.CompanyID}>
-                {c.Name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Marca */}
-        <div>
-          <label
-            htmlFor="carBrandID"
-            className="block text-sm font-medium mb-1"
-          >
-            Marca
-          </label>
-          <div className="flex items-center space-x-2">
-            <select
-              id="carBrandID"
-              name="carBrandID"
-              value={car.carBrandID}
-              onChange={handleChange}
-              className="flex-1 border p-2 rounded"
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          {/* Compañía */}
+          <div>
+            <Select
+              {...form.register("companyID")}
+              className="w-full"
               required
+              label="Compañía"
+              error={form.formState.errors.companyID?.message}
             >
               <option value="">Seleccione</option>
-              {availableBrands.map((b: any) => (
-                <option key={b.CarBrandID} value={b.CarBrandID}>
-                  {b.Name}
+              {formData?.companies.map((c: any) => (
+                <option key={c.CompanyID} value={c.CompanyID}>
+                  {c.CompanyName}
                 </option>
               ))}
-            </select>
-            <button
-              type="button"
-              onClick={() => setShowBrandModal(true)}
-              className="text-foreground/80 hover:text-foreground"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
+            </Select>
           </div>
-        </div>
 
-        {/* Modelo */}
-        <div>
-          <label
-            htmlFor="carModelID"
-            className="block text-sm font-medium mb-1"
-          >
-            Modelo
-          </label>
-          <div className="flex items-center space-x-2">
-            <select
-              id="carModelID"
-              name="carModelID"
-              value={car.carModelID}
-              onChange={handleChange}
-              className="flex-1 border p-2 rounded"
+          {/* Marca */}
+          <div>
+            <label
+              htmlFor="carBrandID"
+              className="block text-sm font-medium mb-1"
+            >
+              Marca
+            </label>
+            <div className="flex items-center space-x-2">
+              <Select
+                {...form.register("carBrandID")}
+                className="flex-1"
+                required
+                error={form.formState.errors.carBrandID?.message}
+              >
+                <option value="">Seleccione</option>
+                {availableBrands?.map((b: any) => (
+                  <option key={b.CarBrandID} value={b.CarBrandID}>
+                    {b.BrandName}
+                  </option>
+                ))}
+              </Select>
+              <button
+                type="button"
+                onClick={() => setShowBrandModal(true)}
+                className="text-foreground/80 hover:text-foreground"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Modelo */}
+          <div>
+            <label
+              htmlFor="carModelID"
+              className="block text-sm font-medium mb-1"
+            >
+              Modelo
+            </label>
+            <div className="flex items-center space-x-2">
+              <Select
+                {...form.register("carModelID")}
+                className="flex-1"
+                required
+                disabled={!carBrandID}
+                error={form.formState.errors.carModelID?.message}
+              >
+                <option value="">Seleccione</option>
+                {availableModels?.map((m: any) => (
+                  <option key={m.CarModelID} value={m.CarModelID}>
+                    {m.ModeloName}
+                  </option>
+                ))}
+              </Select>
+              <button
+                type="button"
+                onClick={() => setShowModelModal(true)}
+                className="text-foreground/80 hover:text-foreground"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Cliente */}
+          <div>
+            <label
+              htmlFor="clientID"
+              className="block text-sm font-medium mb-1"
+            >
+              Cliente
+            </label>
+            <div className="flex items-center space-x-2">
+              <Select
+                {...form.register("clientID")}
+                className="flex-1"
+                required
+                error={form.formState.errors.clientID?.message}
+              >
+                <option value="">Seleccione</option>
+                {formData?.clients.map((c: any) => (
+                  <option key={c.ClientID} value={c.ClientID}>
+                    {c.FirstName} {c.LastName}
+                  </option>
+                ))}
+              </Select>
+              <button
+                type="button"
+                onClick={() => setShowClientModal(true)}
+                className="text-foreground/80 hover:text-foreground"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Patente */}
+          <div>
+            <Input
+              {...form.register("licensePlate")}
+              type="text"
+              label="Patente"
               required
-              disabled={!car.carBrandID}
-            >
-              <option value="">Seleccione</option>
-              {availableModels.map((m: any) => (
-                <option key={m.CarModelID} value={m.CarModelID}>
-                  {m.Model}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              onClick={() => setShowModelModal(true)}
-              className="text-foreground/80 hover:text-foreground"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Cliente */}
-        <div>
-          <label
-            htmlFor="clientID"
-            className="block text-sm font-medium mb-1"
-          >
-            Cliente
-          </label>
-          <div className="flex items-center space-x-2">
-            <select
-              id="clientID"
-              name="clientID"
-              value={car.clientID}
-              onChange={handleChange}
-              className="flex-1 border p-2 rounded"
-              required
-            >
-              <option value="">Seleccione</option>
-              {formData.clients.map((c: any) => (
-                <option key={c.ClientID} value={c.ClientID}>
-                  {c.FirstName} {c.LastName}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              onClick={() => setShowClientModal(true)}
-              className="text-foreground/80 hover:text-foreground"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Patente */}
-        <div>
-          <label
-            htmlFor="licensePlate"
-            className="block text-sm font-medium mb-1"
-          >
-            Patente
-          </label>
-          <input
-            id="licensePlate"
-            type="text"
-            name="licensePlate"
-            value={car.licensePlate}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          />
-        </div>
-
-        {/* Año */}
-        <div>
-          <label htmlFor="year" className="block text-sm font-medium mb-1">
-            Año
-          </label>
-          <input
-            id="year"
-            type="number"
-            name="year"
-            value={car.year}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        {/* Kilometraje último servicio */}
-        <div>
-          <label
-            htmlFor="lastServiceMileage"
-            className="block text-sm font-medium mb-1"
-          >
-            Kilometraje último servicio
-          </label>
-          <input
-            id="lastServiceMileage"
-            type="number"
-            name="lastServiceMileage"
-            value={car.lastServiceMileage}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-
-        {/* Deudor */}
-        <div>
-          <label className="inline-flex items-center">
-            <input
-              type="checkbox"
-              name="isDebtor"
-              checked={car.isDebtor}
-              onChange={handleChange}
-              className="mr-2"
+              error={form.formState.errors.licensePlate?.message}
             />
-            <span>Deudor</span>
-          </label>
-        </div>
+          </div>
 
-        {/* Descuento */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Descuento</label>
-          <select
-            name="discountID"
-            value={car.discountID}
-            onChange={handleChange}
-            className="w-full border p-2 rounded"
-            required
-          >
-            <option value="">Seleccione</option>
-            {formData.discounts.map((d: any) => (
-              <option key={d.DiscountID} value={d.DiscountID}>
-                {d.DiscountName}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Año */}
+          <div>
+            <Input
+              {...form.register("year")}
+              type="number"
+              label="Año"
+            />
+          </div>
 
-        {/* Botones */}
-        <div className="flex justify-end space-x-4 pt-4 border-t">
-          <Button
-            type="button"
-            onClick={handleCancel}
-            disabled={loading}
-            variant="outline"
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            disabled={
-              loading ||
-              !car.licensePlate ||
-              !car.carBrandID ||
-              !car.carModelID ||
-              !car.clientID ||
-              !car.discountID
-            }
-            variant="primary"
-          >
-            {loading ? "Guardando..." : "Guardar"}
-          </Button>
-        </div>
-      </form>
+          {/* Kilometraje último servicio */}
+          <div>
+            <Input
+              {...form.register("lastServiceMileage")}
+              type="number"
+              label="Kilometraje último servicio"
+            />
+          </div>
+
+          {/* Deudor */}
+          <div>
+            <Checkbox
+              {...form.register("isDebtor")}
+              label="Deudor"
+            />
+          </div>
+
+          {/* Descuento */}
+          <div>
+            <Select
+              {...form.register("discountID")}
+              label="Descuento"
+              required
+              error={form.formState.errors.discountID?.message}
+            >
+              <option value="">Seleccione</option>
+              {formData?.discounts.map((d: any) => (
+                <option key={d.DiscountID} value={d.DiscountID}>
+                  {d.DiscountName}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          {/* Botones */}
+          <div className="flex justify-end space-x-4 pt-4 border-t">
+            <Button
+              type="button"
+              onClick={handleCancel}
+              disabled={loading}
+              variant="outline"
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={
+                loading ||
+                !form.formState.isValid
+              }
+              variant="primary"
+            >
+              {loading ? "Guardando..." : "Guardar"}
+            </Button>
+          </div>
+        </form>
+      </Form>
 
       {/* Modales */}
       {showBrandModal && (
@@ -563,7 +363,7 @@ export function CarForm({
           isOpen={true}
           onClose={() => setShowModelModal(false)}
           onModelSelect={handleModelSelect}
-          selectedCarBrandID={car.carBrandID ? parseInt(car.carBrandID as string) : null}
+          selectedCarBrandID={carBrandID ? parseInt(carBrandID as string) : null}
         />
       )}
 

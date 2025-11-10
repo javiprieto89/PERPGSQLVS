@@ -1,0 +1,22 @@
+mutation CreateRma($input: RmaCreate!) {
+  createRma(input: $input) {
+    CompanyID
+    BranchID
+    RmaID
+    RmaDate
+    RmaTypeID
+    ClientID
+    SupplierID
+    RelatedOrderID
+    RelatedPIID
+    WarehouseID
+    UserID
+    PriceListID
+    DocumentID
+    StatusID
+    Notes
+    Subtotal
+    VatAmount
+    Total
+  }
+}

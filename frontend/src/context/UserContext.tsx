@@ -4,7 +4,7 @@ import { atom, useAtom } from 'jotai';
 import { createContext, useEffect, type PropsWithChildren } from "react";
 import { useNavigate } from "react-router";
 import { useLoginMutation, type UserInfo, type UserPermissionsInfo } from '~/graphql/_generated/graphql';
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 import { Referrer } from "~/utils/referrer.session";
 
 export type AuthContextProps = {
@@ -25,52 +25,63 @@ export type AuthContextProps = {
 
 const UserContext = createContext<AuthContextProps | undefined>(undefined);
 
-const userDataAtom = atom(AuthHelper.getUserData());
-const selectedAccessAtom = atom(AuthHelper.getSelectedAccess());
-const userAccessesAtom = atom(AuthHelper.getPermissions());
+const userDataAtom = atom(AuthStorage.getUserData());
+const selectedAccessAtom = atom(AuthStorage.getSelectedAccess());
+const userAccessesAtom = atom(AuthStorage.getPermissions());
 
-AuthHelper.debugAuthState()
+AuthStorage.debugAuthState()
 
 export function UserProvider({ children }: PropsWithChildren) {
   const navigate = useNavigate();
 
-  const [mutate, { data, loading, error }] = useLoginMutation();
+  const [mutate, { data, loading, error: errorMutation }] = useLoginMutation();
   const [userData, setUserData] = useAtom(userDataAtom);
   const [selectedAccess, setSelectedAccess] = useAtom(selectedAccessAtom);
   const [userPermissions, setUserPermissions] = useAtom(userAccessesAtom);
 
+  const user = data?.login?.user;
+
   console.log("RESPONSE data", data);
 
-  const user = data?.login?.user;
   const success = data?.login?.success || false;
   const message = data?.login?.message;
   const loginError = !success && message ? new Error(message) : undefined
 
   const login = async (nickname: string, password: string) => {
-    await mutate({ variables: { input: { nickname, password } } });
+    const { data } = await mutate({ variables: { input: { nickname, password } } });
+    AuthStorage.setToken(data?.login.token);
+    AuthStorage.setRefreshToken(data?.login.refreshToken);
+
+    if (data?.login?.user) {
+      AuthStorage.setUserData(data?.login?.user);
+      AuthStorage.setAccesses(data?.login?.user.UserPermissions);
+      AuthStorage.setSelectedAccess(data?.login?.user.UserPermissions[0]);
+    }
+
+    await navigate(Referrer.getOnce());
   };
 
   const isAuthenticated = () => {
-    return !!AuthHelper.isAuthenticated() || !!userData;
+    return !!AuthStorage.hasToken() || !!userData;
   };
 
   const checkAuth = () => {
-    if (!AuthHelper.isAuthenticated() || !!userData) {
+    if (!AuthStorage.hasToken() || !!userData) {
       if (Referrer.get() === null) Referrer.set(window.location.pathname);
       navigate("/login");
     }
   }
 
   const logout = async () => {
-    AuthHelper.logout();
+    AuthStorage.logout();
     navigate("/login");
   };
 
   // Manejar cambio de acceso
   const changeSelectedAccess = (detail: UserPermissionsInfo) => {
-    console.log("LOG--changeSelectedAccess", detail);
+    console.log("changeSelectedAccess...", detail);
     // event.detail
-    AuthHelper.setSelectedAccess(detail);
+    AuthStorage.setSelectedAccess(detail);
     setSelectedAccess(detail);
     // setUserAccesses(detail);
   };
@@ -87,7 +98,7 @@ export function UserProvider({ children }: PropsWithChildren) {
 
   const getAccessData = () => {
     try {
-      return AuthHelper.getPermissions() || [];
+      return AuthStorage.getPermissions() || [];
       // const stored = sessionStorage.getItem("access_data");
       // return stored ? JSON.parse(stored) : [];
     } catch (error) {
@@ -98,29 +109,11 @@ export function UserProvider({ children }: PropsWithChildren) {
 
   // Manejar login exitoso
   useEffect(() => {
+    if (!user || typeof window === "undefined") return;
     try {
-      if (!user || typeof window === "undefined") return;
-
-      console.log("UserContext useEffect - user changed:", user);
-      console.log("data?.login:", data?.login);
-
-      // Usar AuthHelper para el login
-      AuthHelper.setToken(data?.login.token);
-      AuthHelper.setRefreshToken(data?.login.refreshToken);
-      AuthHelper.setUserData(user);
       setUserData(user || null);
-
-      // Guardar los accesos y el seleccionado
-      if (user?.UserPermissions && user.UserPermissions.length > 0) {
-        console.log("ENTRO?//");
-        AuthHelper.setAccesses(user.UserPermissions);
-        setUserPermissions(user.UserPermissions);
-
-        console.log("LOG--useEffect", user.UserPermissions[0]);
-        // Seleccionar el primer acceso por defecto
-        AuthHelper.setSelectedAccess(user.UserPermissions[0]);
-        setSelectedAccess(user.UserPermissions[0]);
-      }
+      setUserPermissions(user?.UserPermissions);
+      setSelectedAccess(user.UserPermissions[0]);
     } catch (e) {
       console.error("UserProvider effect error:", e instanceof Error ? e.message : String(e));
     }
@@ -139,7 +132,7 @@ export function UserProvider({ children }: PropsWithChildren) {
     isAuthenticated,
     changeSelectedAccess,
     userAccesses: userPermissions,
-    error: error || loginError
+    error: errorMutation ? new Error("Ha ocurrido un error al intentar iniciar sesión") : loginError
   };
 
   return (

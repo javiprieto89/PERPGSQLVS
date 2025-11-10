@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { tempStockOperations } from "~/services/stock.service";
 
 import { useGetStockEntryFormDataQuery } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 import { stockHelpers } from "./stockHelpers";
 import type {
   Branch,
@@ -23,7 +23,7 @@ interface UseStockEntryOptions {
 export const BASE_ROUTE = "/";
 
 export function useStockEntry({ onClose }: UseStockEntryOptions = {}) {
-  const userAccess = AuthHelper.getSelectedAccess();
+  const userAccess = AuthStorage.getSelectedAccess();
   const [sessionId] = useState(() => crypto.randomUUID());
   const { data, error, loading, refetch } = useGetStockEntryFormDataQuery();
   const warehouses = data?.warehouses || [];

@@ -10,8 +10,11 @@ import {
   useUpdateItemCategoryMutation,
   type ItemCategoriesCreate,
 } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
-import { formSchema, itemCategoryHelpers, type FormSchema } from "./itemCategoryHelpers";
+import {
+  formSchema,
+  itemCategoryHelpers,
+  type FormSchema,
+} from "./itemCategoryHelpers";
 
 export const BASE_ROUTE = "/items/categories";
 
@@ -84,7 +87,9 @@ export function useItemCategoryForm({ id }: UseFormOptions = {}) {
       } else {
         const result = await createMutation({
           variables: {
-            input: itemCategoryHelpers.prepareToInsert(data) as ItemCategoriesCreate,
+            input: itemCategoryHelpers.prepareToInsert(
+              data
+            ) as ItemCategoriesCreate,
           },
         });
         highlight = result.data?.createItemcategory.ItemCategoryID;
@@ -95,7 +100,11 @@ export function useItemCategoryForm({ id }: UseFormOptions = {}) {
           highlight: highlight,
         },
       });
-      toast.message(isEditing ? "Categoría actualizada con éxito" : "Categoría creada con éxito");
+      toast.message(
+        isEditing
+          ? "Categoría actualizada con éxito"
+          : "Categoría creada con éxito"
+      );
     } catch (error) {
       console.error("Error saving item category:", error);
       toast.error("Contacte al administrador del sistema");

@@ -1,0 +1,3 @@
+mutation DeleteCheck($checkID: Int!, $companyID: Int) {
+  deleteCheck(checkID: $checkID, companyID: $companyID)
+}
