@@ -1,0 +1,11 @@
+mutation CreateBankReconciliation($input: BankReconciliationCreate!) {
+  createBankreconciliation(input: $input) {
+    ReconciliationID
+    CompanyID
+    BankAccountID
+    StatementDate
+    ClosingBalance
+    CreatedAt
+    Notes
+  }
+}

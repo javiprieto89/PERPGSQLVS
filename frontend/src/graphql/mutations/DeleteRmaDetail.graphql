@@ -1,0 +1,13 @@
+mutation DeleteRmaDetail(
+  $companyID: Int!
+  $branchID: Int!
+  $rmaID: Int!
+  $rmaDetailID: Int!
+) {
+  deleteRmaDetail(
+    companyID: $companyID
+    branchID: $branchID
+    rmaID: $rmaID
+    rmaDetailID: $rmaDetailID
+  )
+}

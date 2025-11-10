@@ -1,5 +1,5 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import { Plus, UserRoundPlus, Users } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useGetAllClientsQuery, type ClientsInDb } from "~/graphql/_generated/graphql";
@@ -17,7 +17,6 @@ import { RefreshButton } from "~/components/ui-admin/RefreshButton";
 import { Button } from "~/components/ui/button";
 
 import { useLocation, useNavigate } from "react-router";
-import AdvancedFilter from "~/components/filter/AdvancedFilter";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
 import { ClientDetails } from "~/features/client/ClientDetails";
 import { clientOperations } from "~/services/client.service";
@@ -157,11 +156,11 @@ export function Clients() {
         {/* Filtros */}
         {showFilters && (
           <div className="mb-6">
-            <AdvancedFilter
+            {/* <AdvancedFilter
               modelName="clients"
               data={data?.allClients || []}
               onFilterChange={handleFilterChange}
-            />
+            /> */}
           </div>
         )}
 
@@ -178,7 +177,7 @@ export function Clients() {
             <p className="mt-1 text-sm ">Comienza creando tu primer cliente.</p>
             <div className="mt-6">
               <Button variant="primary" onClick={handleCreate}>
-                <UserRoundPlus /> Crear Primer Cliente
+                Crear Primer Cliente
               </Button>
             </div>
           </div>

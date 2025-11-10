@@ -1,0 +1,16 @@
+mutation UpdateCheckMovement(
+  $checkMovementID: Int!
+  $input: CheckMovementUpdate!
+) {
+  updateCheckmovement(checkMovementID: $checkMovementID, input: $input) {
+    CheckMovementID
+    CompanyID
+    CheckID
+    EventDate
+    EventType
+    BankAccountID
+    BranchID
+    TransactionID
+    Notes
+  }
+}

@@ -1,0 +1,15 @@
+mutation UpdateCheck($checkID: Int!, $input: CheckUpdate!, $companyID: Int) {
+  updateCheck(checkID: $checkID, input: $input, companyID: $companyID) {
+    CheckID
+    CompanyID
+    Number
+    CurrencyID
+    Amount
+    IssueDate
+    DueDate
+    BankID
+    DrawerName
+    HolderName
+    CheckStatusID
+  }
+}

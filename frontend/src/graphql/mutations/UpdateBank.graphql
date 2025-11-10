@@ -1,0 +1,7 @@
+mutation UpdateBank($bankID: Int!, $input: BankUpdate!) {
+  updateBank(bankID: $bankID, input: $input) {
+    BankID
+    Name
+    IsActive
+  }
+}

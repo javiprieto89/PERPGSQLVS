@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
   GetBranchesByCompanyDocument,
@@ -9,19 +8,22 @@ import {
   useGetBranchByIdQuery,
   useUpdateBranchMutation,
   type BranchesCreate,
+  type CreateBranchMutation,
+  type UpdateBranchMutation,
 } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 import { branchHelpers, formSchema, type FormSchema } from "./branchHelpers";
 
 export const BASE_ROUTE = "/branches";
 
 interface UseClientFormOptions {
   id?: number; // ClientID
+  onSave?: (
+    result: UpdateBranchMutation | CreateBranchMutation | null | undefined
+  ) => void;
 }
 
-export function useBranchForm({ id }: UseClientFormOptions = {}) {
-  const navigate = useNavigate();
-
+export function useBranchForm({ id, onSave }: UseClientFormOptions = {}) {
   const {
     data,
     error: queryError,
@@ -37,7 +39,7 @@ export function useBranchForm({ id }: UseClientFormOptions = {}) {
       {
         query: GetBranchesByCompanyDocument,
         variables: {
-          companyID: Number(AuthHelper.getSelectedAccess()?.CompanyID),
+          companyID: Number(AuthStorage.getSelectedAccess()?.CompanyID),
         },
       },
     ],
@@ -70,39 +72,35 @@ export function useBranchForm({ id }: UseClientFormOptions = {}) {
 
   async function handleSubmit(data: FormSchema) {
     try {
-      let highlight = null;
+      let result = null;
       if (isEditing) {
         const { BranchID, ...rest } = data;
-        await updateMutation({
+        result = await updateMutation({
           variables: {
             branchID: Number(BranchID),
             input: branchHelpers.prepareToInsert(rest),
           },
         });
-        highlight = BranchID;
       } else {
-        const result = await createMutation({
+        result = await createMutation({
           variables: {
             input: branchHelpers.prepareToInsert(data) as BranchesCreate,
           },
         });
-        highlight = result.data?.createBranch.BranchID;
       }
 
-      navigate(BASE_ROUTE, {
-        state: {
-          highlight: highlight,
-        },
-      });
       toast.message(isEditing ? "Actualizado con éxito" : "Creado con éxito");
+
+      onSave?.(result.data);
     } catch (error) {
-      console.error("Error saving client:", error);
-      toast.error("Contacte al administrador del sistema");
+      if (import.meta.env.DEV) {
+        console.error("Error saving client:", error);
+      }
+      toast.error("Ha ocurrido un error al guardar la sucursal");
     }
   }
 
   return {
-    navigate,
     form,
     handleSubmit,
     data: client,

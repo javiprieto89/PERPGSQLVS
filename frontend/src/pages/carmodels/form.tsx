@@ -123,7 +123,7 @@ export function CarModelForm() {
                 control={form.control}
                 name="CarBrandID"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="space-y-2">
                     <FormLabel>Marca de Auto *</FormLabel>
                     <Select
                       onValueChange={(value) => field.onChange(Number(value))}

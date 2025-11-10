@@ -22,7 +22,7 @@ import { ApiErrorMessage } from "~/components/ui-admin/ApiErrorMessage";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 
 const dashboardStatsInit = {
   totalClients: 0,
@@ -45,7 +45,7 @@ export default function Dashboard() {
   // Cargar acceso seleccionado del sessionStorage
   useEffect(() => {
     try {
-      const selectedAccess = AuthHelper.getSelectedAccess();
+      const selectedAccess = AuthStorage.getSelectedAccess();
       if (!data || !selectedAccess) return;
       const stats = dashboardHelpers.processDashboardData(data, selectedAccess?.CompanyID);
       console.log("Estadísticas procesadas:", stats);

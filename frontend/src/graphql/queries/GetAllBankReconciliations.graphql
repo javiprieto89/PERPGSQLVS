@@ -1,0 +1,11 @@
+query GetAllBankReconciliations {
+  allBankreconciliations {
+    ReconciliationID
+    CompanyID
+    BankAccountID
+    StatementDate
+    ClosingBalance
+    CreatedAt
+    Notes
+  }
+}

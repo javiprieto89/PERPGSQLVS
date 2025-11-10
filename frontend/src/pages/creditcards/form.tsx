@@ -11,10 +11,10 @@ import { FormBreadcrumb } from "~/components/form/FormBreadcrumb";
 import { Input } from "~/components/form/Input";
 import { Submit } from "~/components/form/InputSubmit";
 import { AdminTopBar } from "~/components/ui-admin/AdminTopBar";
-import { Form, FormField, FormItem, FormLabel, FormControl } from "~/components/ui/form";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Label } from "~/components/ui/label";
-import { useGetAllCreditCardsQuery, useGetAllCreditCardGroupsQuery } from "~/graphql/_generated/graphql";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { useGetAllCreditCardGroupsQuery, useGetAllCreditCardsQuery } from "~/graphql/_generated/graphql";
 import { creditCardOperations } from "~/services/credit-card.service";
 
 const BASE_ROUTE = "/creditcards";
@@ -121,7 +121,7 @@ export function CreditCardForm() {
                 name="CreditCardGroupID"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="space-y-2">
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}

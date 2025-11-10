@@ -1,0 +1,14 @@
+query GetBankReconciliationById($reconciliationID: Int!, $companyID: Int) {
+  bankreconciliationById(
+    reconciliationID: $reconciliationID
+    companyID: $companyID
+  ) {
+    ReconciliationID
+    CompanyID
+    BankAccountID
+    StatementDate
+    ClosingBalance
+    CreatedAt
+    Notes
+  }
+}

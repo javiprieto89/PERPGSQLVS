@@ -1,10 +1,9 @@
-﻿// utils/authHelper.js
-import type {
+﻿import type {
   UserInfo,
   UserPermissionsInfo,
 } from "~/graphql/_generated/graphql";
 
-export class AuthHelper {
+export class AuthStorage {
   static TOKEN_KEY = "token";
   static USER_KEY = "user_data";
   static SELECTED_ACCESS_KEY = "selected_access";
@@ -105,11 +104,13 @@ export class AuthHelper {
   }
 
   // Obtener datos del usuario
-  // TODO: verificar que tipo de estructura TS tiene getUserData
   static getUserData() {
-    const userData = sessionStorage.getItem(this.USER_KEY);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(userData));
+    const userData = localStorage.getItem(this.USER_KEY);
     return userData ? (JSON.parse(userData) as UserInfo) : null;
+  }
+
+  static deleteUserData() {
+    localStorage.removeItem(this.USER_KEY);
   }
 
   // Establecer acceso seleccionado
@@ -117,11 +118,9 @@ export class AuthHelper {
     try {
       if (!access) throw new Error("Intentando establecer un acceso nulo");
 
-      // sessionStorage.setItem(this.SELECTED_ACCESS_KEY, JSON.stringify(access));
       localStorage.setItem(this.SELECTED_ACCESS_KEY, JSON.stringify(access));
 
       // Disparar evento personalizado para que otros componentes se actualicen
-      console.log("Acceso seleccionado establecido:", access);
       window.dispatchEvent(
         new CustomEvent("accessChanged", {
           detail: access,
@@ -132,8 +131,8 @@ export class AuthHelper {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error("Error en setSelectedAccess:", message);
-      if (sessionStorage.getItem(this.SELECTED_ACCESS_KEY))
-        sessionStorage.removeItem(this.SELECTED_ACCESS_KEY);
+      if (localStorage.getItem(this.SELECTED_ACCESS_KEY))
+        localStorage.removeItem(this.SELECTED_ACCESS_KEY);
 
       return false;
     }
@@ -142,7 +141,6 @@ export class AuthHelper {
   // Obtener acceso seleccionado - CORREGIDO
   static getSelectedAccess(): UserPermissionsInfo | null {
     try {
-      // const selectedAccess = sessionStorage.getItem(this.SELECTED_ACCESS_KEY);
       const selectedAccess = localStorage.getItem(this.SELECTED_ACCESS_KEY);
       if (!selectedAccess) throw new Error("Not found");
       return JSON.parse(selectedAccess) as UserPermissionsInfo;
@@ -159,8 +157,7 @@ export class AuthHelper {
     }
   }
 
-  static removeSelectedAccess() {
-    sessionStorage.removeItem(this.SELECTED_ACCESS_KEY);
+  static deleteSelectedAccess() {
     localStorage.removeItem(this.SELECTED_ACCESS_KEY);
   }
 
@@ -168,7 +165,6 @@ export class AuthHelper {
     try {
       if (!accesses) throw new Error("Intentando establecer un acceso nulo");
       // Guardar accesos del usuario
-      // sessionStorage.setItem(this.ACCESS_KEY, JSON.stringify(accesses || []));
       localStorage.setItem(this.ACCESS_KEY, JSON.stringify(accesses || []));
       return true;
     } catch (error: unknown) {
@@ -180,7 +176,6 @@ export class AuthHelper {
 
   // Obtener accesos del usuario
   static getPermissions() {
-    // const accessData = sessionStorage.getItem(this.ACCESS_KEY);
     const accessData = localStorage.getItem(this.ACCESS_KEY);
     if (accessData) {
       // Asegurar que todos los accesos estén normalizados
@@ -190,12 +185,12 @@ export class AuthHelper {
   }
 
   // Obtener accesos del usuario
-  static removeAccesses() {
+  static deleteAccesses() {
     localStorage.removeItem(this.ACCESS_KEY);
   }
 
   // Verificar si el usuario está autenticado
-  static isAuthenticated() {
+  static hasToken() {
     return !!this.getToken();
   }
 
@@ -282,14 +277,11 @@ export class AuthHelper {
   }
 
   static logout() {
-    sessionStorage.removeItem(this.TOKEN_KEY);
-    sessionStorage.removeItem(this.USER_KEY);
-    sessionStorage.removeItem(this.ACCESS_KEY);
-    sessionStorage.removeItem(this.SELECTED_ACCESS_KEY);
-    sessionStorage.removeItem(this.REFRESH_TOKEN);
+    this.deleteUserData();
+    this.deleteRefreshToken();
+    this.deleteAccesses();
+    this.deleteSelectedAccess();
     this.deleteToken();
-    // Limpiar todo el sessionStorage
-    // sessionStorage.clear();
   }
 
   // Método para debugging - NUEVO

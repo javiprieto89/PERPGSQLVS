@@ -10,7 +10,7 @@ import {
   useUpdateItemMutation,
   type ItemsCreate,
 } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 import { formSchema, itemHelpers, type FormSchema } from "./itemHelpers";
 
 export const BASE_ROUTE = "/items";
@@ -29,7 +29,7 @@ export function useItemForm({ id }: UseFormOptions = {}) {
   } = useGetItemByIdQuery({
     variables: {
       id: id!,
-      companyId: Number(AuthHelper.getSelectedAccess()?.CompanyID),
+      companyId: Number(AuthStorage.getSelectedAccess()?.CompanyID),
     },
     skip: !id,
     fetchPolicy: "no-cache",
@@ -40,7 +40,7 @@ export function useItemForm({ id }: UseFormOptions = {}) {
       {
         query: GetAllItemsDocument,
         variables: {
-          companyID: Number(AuthHelper.getSelectedAccess()?.CompanyID),
+          companyID: Number(AuthStorage.getSelectedAccess()?.CompanyID),
         },
       },
     ],
@@ -78,7 +78,7 @@ export function useItemForm({ id }: UseFormOptions = {}) {
         await updateMutation({
           variables: {
             itemID: id,
-            companyId: Number(AuthHelper.getSelectedAccess()?.CompanyID),
+            companyId: Number(AuthStorage.getSelectedAccess()?.CompanyID),
             input: itemHelpers.prepareToInsert(data),
           },
         });

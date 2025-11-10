@@ -1,0 +1,11 @@
+query GetBankAccountById($bankAccountID: Int!, $companyID: Int) {
+  bankaccountById(bankAccountID: $bankAccountID, companyID: $companyID) {
+    BankAccountID
+    CompanyID
+    BankID
+    AccountNumber
+    CurrencyID
+    Alias
+    IsActive
+  }
+}
