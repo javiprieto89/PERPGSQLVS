@@ -1,0 +1,22 @@
+query GetAllRmas($filter: RMAFilter) {
+  allRmas(filter: $filter) {
+    CompanyID
+    BranchID
+    RmaID
+    RmaDate
+    RmaTypeID
+    ClientID
+    SupplierID
+    RelatedOrderID
+    RelatedPIID
+    WarehouseID
+    UserID
+    PriceListID
+    DocumentID
+    StatusID
+    Notes
+    Subtotal
+    VatAmount
+    Total
+  }
+}

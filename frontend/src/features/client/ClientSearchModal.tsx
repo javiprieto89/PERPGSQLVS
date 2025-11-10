@@ -1,6 +1,6 @@
 // frontend/src/features/client/ClientSearchModal.tsx
-import { useState } from "react";
 import { X } from "lucide-react";
+import { useState } from "react";
 import TableFilters from "~/components/TableFilters";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -12,10 +12,10 @@ interface ClientSearchModalProps {
   onClientSelect: (client: ClientsInDb) => void;
 }
 
-export default function ClientSearchModal({ 
-  isOpen, 
-  onClose, 
-  onClientSelect 
+export default function ClientSearchModal({
+  isOpen,
+  onClose,
+  onClientSelect
 }: ClientSearchModalProps) {
   const [filteredClients, setFilteredClients] = useState<ClientsInDb[]>([]);
   const [query, setQuery] = useState("");
@@ -69,7 +69,7 @@ export default function ClientSearchModal({
           <Button
             type="button"
             onClick={() => setShowFilters(!showFilters)}
-            variant={showFilters ? "default" : "secondary"}
+            variant={showFilters ? undefined : "secondary"}
           >
             {showFilters ? "Ocultar Filtros" : "Mostrar Filtros"}
           </Button>
@@ -143,7 +143,6 @@ export default function ClientSearchModal({
                         <Button
                           onClick={() => onClientSelect(client)}
                           size="sm"
-                          variant="default"
                         >
                           Seleccionar
                         </Button>

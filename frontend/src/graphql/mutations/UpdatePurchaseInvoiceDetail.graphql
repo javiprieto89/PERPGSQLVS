@@ -1,0 +1,25 @@
+mutation UpdatePurchaseInvoiceDetail(
+  $companyID: Int!
+  $branchID: Int!
+  $purchaseInvoiceID: Int!
+  $purchaseInvoiceDetailID: Int!
+  $input: PurchaseInvoiceDetailUpdate!
+) {
+  updatePurchaseinvoicedetail(
+    companyID: $companyID
+    branchID: $branchID
+    purchaseInvoiceID: $purchaseInvoiceID
+    purchaseInvoiceDetailID: $purchaseInvoiceDetailID
+    input: $input
+  ) {
+    CompanyID
+    BranchID
+    PurchaseInvoiceID
+    PurchaseInvoiceDetailID
+    ItemID
+    WarehouseID
+    Quantity
+    UnitPrice
+    Notes
+  }
+}

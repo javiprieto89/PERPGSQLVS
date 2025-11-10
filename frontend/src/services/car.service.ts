@@ -45,7 +45,7 @@ import type {
   UpdateCarModelMutation,
   UpdateCarMutation,
 } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 
 export const carBrandOperations = {
   async getAllCarBrands(): Promise<CarBrandsInDb[]> {
@@ -66,7 +66,7 @@ export const carBrandOperations = {
       const data = await graphqlClient.query<GetCarBrandByIdQuery>(
         GetCarBrandByIdGQL,
         {
-          companyId: AuthHelper.getSelectedAccess()?.CompanyID as number,
+          companyId: AuthStorage.getSelectedAccess()?.CompanyID as number,
           id,
         }
       );
@@ -112,7 +112,7 @@ export const carBrandOperations = {
       const data = await graphqlClient.mutation<UpdateCarBrandMutation>(
         UpdateCarBrandGQL,
         {
-          companyId: AuthHelper.getSelectedAccess()?.CompanyID as number,
+          companyId: AuthStorage.getSelectedAccess()?.CompanyID as number,
           carBrandID: Number(id),
           input: carBrandData,
         }
@@ -271,13 +271,7 @@ export const carOperations = {
       const data = await graphqlClient.query<GetCarFormDataQuery>(
         GetCarFormDataGQL
       );
-      return {
-        companies: data.companies || [],
-        carBrands: data.carBrands || [],
-        carModels: data.carModels || [],
-        clients: data.clients || [],
-        discounts: data.discounts || [],
-      };
+      return data;
     } catch (error) {
       console.error("Error obteniendo datos del formulario de autos:", error);
       throw error;

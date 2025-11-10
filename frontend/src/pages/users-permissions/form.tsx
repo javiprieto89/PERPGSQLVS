@@ -11,7 +11,7 @@ import CompanySearchModal from "~/features/company/CompanySearchModal";
 import RoleSearchModal from "~/features/role/RoleSearchModal";
 import { useGetUserpermissionsFormDataQuery } from "~/graphql/_generated/graphql";
 import { userPermissionsOperations } from "~/services/user.service";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 
 interface UserPermissionsFormProps {
   onSave?: (result: any) => void;
@@ -35,9 +35,9 @@ export function UserPermissionsForm({
   const { data: formData, loading: queryLoading, error: queryError } = useGetUserpermissionsFormDataQuery({
     fetchPolicy: "network-only",
     variables: {
-      companyID: AuthHelper.getSelectedAccess()?.CompanyID || 0,
+      companyID: AuthStorage.getSelectedAccess()?.CompanyID || 0,
     },
-    skip: !AuthHelper.getSelectedAccess()?.CompanyID,
+    skip: !AuthStorage.getSelectedAccess()?.CompanyID,
   });
 
   // State for form fields

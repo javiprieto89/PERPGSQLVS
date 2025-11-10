@@ -8,7 +8,7 @@ import { ExternalWindowProvider } from "./context/ExternalWindowContext";
 import { UserProvider } from "./context/UserContext";
 import { useTabSession } from "./hooks/useTabSession";
 import { AdminLayout } from "./layout/Layout";
-import { AuthHelper } from "./utils/authHelper";
+import { AuthStorage } from "./utils/auth.storage";
 import { Referrer } from "./utils/referrer.session";
 
 import { CompanyForm } from "./features/company/CompanyForm";
@@ -17,7 +17,13 @@ import { UserAccessForm } from "./features/useraccess/UserAccessForm";
 import FeInfo from "./pages/afip/FeInfo";
 import FeLastVoucher from "./pages/afip/FeLastVoucher";
 import FeLessInfo from "./pages/afip/FeLessInfo";
-import { BranchForm } from "./pages/branch/form";
+import { BankAccountForm } from "./pages/bank-account/form";
+import BankAccounts from "./pages/bank-account/list";
+import { BankReconciliationForm } from "./pages/bank-reconciliation/form";
+import BankReconciliations from "./pages/bank-reconciliation/list";
+import { BankForm } from "./pages/bank/form";
+import Banks from "./pages/bank/list";
+import { BranchFormPage } from "./pages/branch/form";
 import Branches from "./pages/branch/list";
 import { BrandForm } from "./pages/brands/form";
 import Brands from "./pages/brands/list";
@@ -27,6 +33,9 @@ import { CarModelForm } from "./pages/carmodels/form";
 import { CarModelsList } from "./pages/carmodels/list";
 import { CarForm } from "./pages/cars/form";
 import Cars from "./pages/cars/list";
+import CheckMovements from "./pages/check-movement/list";
+import CheckForm from "./pages/check/form";
+import Checks from "./pages/check/list";
 import { ClientsForm } from "./pages/clients/form";
 import { Clients } from "./pages/clients/list";
 import { DocumentForm } from "./pages/commercial-documents/form";
@@ -52,9 +61,16 @@ import LogoutSuccess from "./pages/LogoutSuccess";
 import NotFound from "./pages/NotFound";
 import { Orderform } from "./pages/orders/form";
 import { OrdersList } from "./pages/orders/list";
+import PriceListItemsForm from "./pages/pricelistitems/form";
 import PriceListItems from "./pages/pricelistitems/PriceListItemsBrowser";
 import { PriceListForm } from "./pages/pricelists/form";
 import PriceLists from "./pages/pricelists/list";
+import PurchaseInvoiceDetailForm from "./pages/purchase-invoice-detail/form";
+import PurchaseInvoiceDetailList from "./pages/purchase-invoice-detail/list";
+import RmaDetailForm from "./pages/rma-detail/form";
+import RmaDetailList from "./pages/rma-detail/list";
+import RmaForm from "./pages/rma/form";
+import RmaList from "./pages/rma/list";
 import Roles from "./pages/roles/list";
 import { SaleConditionForm } from "./pages/saleconditions/form";
 import SaleConditions from "./pages/saleconditions/list";
@@ -72,20 +88,20 @@ import { WarehouseForm } from "./pages/warehouses/form";
 import Warehouses from "./pages/warehouses/list";
 
 export function RedirectRoot() {
-  console.log("RedirectRoot", { isAuth: AuthHelper.isAuthenticated(), referrer: Referrer.get() });
+  console.log("RedirectRoot", { isAuth: AuthStorage.hasToken(), referrer: Referrer.get() });
   const referrer = Referrer.get() ? Referrer.getOnce() : "/dashboard";
   return (
     <Navigate
-      to={AuthHelper.isAuthenticated() ? referrer : "/login"}
+      to={AuthStorage.hasToken() ? referrer : "/login"}
       replace
     />
   );
 }
 
 const RequireAuth = ({ children }: PropsWithChildren) => {
-  if (!AuthHelper.isAuthenticated()) {
+  if (!AuthStorage.hasToken()) {
     if (Referrer.get() === null) Referrer.set(window.location.pathname);
-    console.log("RequireAuth", { isAuth: AuthHelper.isAuthenticated(), referrer: Referrer.get() });
+    console.log("RequireAuth", { isAuth: AuthStorage.hasToken(), referrer: Referrer.get(), token: AuthStorage.getToken() });
     return <Navigate to="/login" replace />;
   }
   return children;
@@ -118,13 +134,21 @@ export default function App() {
                   <Dashboard />
                 }
               />
+              <Route path="banks">
+                <Route index element={<Banks />} />
+                <Route path="form/:id?" element={<BankForm />} />
+              </Route>
+              <Route path="bankaccounts">
+                <Route index element={<BankAccounts />} />
+                <Route path="form/:id?" element={<BankAccountForm />} />
+              </Route>
+              <Route path="bankreconciliations">
+                <Route index element={<BankReconciliations />} />
+                <Route path="form/:id?" element={<BankReconciliationForm />} />
+              </Route>
               <Route path="branches">
                 <Route index element={<Branches />} />
-                <Route path="form/:id?" element={<BranchForm />} />
-              </Route>
-              <Route path="clients">
-                <Route index element={<Clients />} />
-                <Route path="form/:id?" element={<ClientsForm />} />
+                <Route path="form/:id?" element={<BranchFormPage />} />
               </Route>
               <Route path="brands">
                 <Route index element={<Brands />} />
@@ -145,6 +169,15 @@ export default function App() {
               <Route path="companies">
                 <Route index element={<CompanyList />} />
                 <Route path="form/:id?" element={<CompanyForm />} />
+              </Route>
+              <Route path="checkmovements" element={<CheckMovements />} />
+              <Route path="checks">
+                <Route index element={<Checks />} />
+                <Route path="form/:id?" element={<CheckForm />} />
+              </Route>
+              <Route path="clients">
+                <Route index element={<Clients />} />
+                <Route path="form/:id?" element={<ClientsForm />} />
               </Route>
               <Route path="creditcardgroups">
                 <Route index element={<CreditCardGroups />} />
@@ -181,10 +214,25 @@ export default function App() {
                 <Route index element={<OrdersList />} />
                 <Route path="form/:id?" element={<Orderform />} />
               </Route>
-              <Route path="pricelistitems" element={<PriceListItems />} />
+              <Route path="pricelistitems">
+                <Route index element={<PriceListItems />} />
+                <Route path="form/:id?" element={<PriceListItemsForm />} />
+              </Route>
               <Route path="pricelists">
                 <Route index element={<PriceLists />} />
                 <Route path="form/:id?" element={<PriceListForm />} />
+              </Route>
+              <Route path="purchaseinvoicedetails">
+                <Route index element={<PurchaseInvoiceDetailList />} />
+                <Route path="form/:id?" element={<PurchaseInvoiceDetailForm />} />
+              </Route>
+              <Route path="rma">
+                <Route index element={<RmaList />} />
+                <Route path="form/:id?" element={<RmaForm />} />
+              </Route>
+              <Route path="rmadetails">
+                <Route index element={<RmaDetailList />} />
+                <Route path="form/:id?" element={<RmaDetailForm />} />
               </Route>
               <Route path="roles">
                 <Route index element={<Roles />} />
@@ -224,8 +272,10 @@ export default function App() {
                 <Route path="form2/:id?" element={<UserAccessForm />} />
               </Route>
             </Route>
-            <Route path="lab/ui" element={<UiPage />} />
-            <Route path="lab/price-list-form" element={<PriceListCreateLab />} />
+            <Route path="labe">
+              <Route path="ui" element={<UiPage />} />
+              <Route path="price-list-form" element={<PriceListCreateLab />} />
+            </Route>
           </Routes>
         </ExternalWindowProvider>
       </UserProvider>

@@ -1,0 +1,3 @@
+mutation DeleteBankAccount($bankAccountID: Int!, $companyID: Int) {
+  deleteBankaccount(bankAccountID: $bankAccountID, companyID: $companyID)
+}

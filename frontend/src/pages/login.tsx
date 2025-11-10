@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "sonner";
 import z from "zod/v4";
 import { passwordSchema } from "~/lib/zod";
-import { Referrer } from "~/utils/referrer.session";
 
 
 import { ErrorMessage } from "~/components/form/ErrorMessage";
@@ -41,13 +40,8 @@ export default function Login() {
     defaultValues,
   });
 
-  const onSuccess = async () => {
-    await navigate(Referrer.getOnce());
-  };
-
   const handleSubmit = async (data: FormSchema) => {
     await login(data.username.trim(), data.password.trim());
-    await navigate(Referrer.getOnce());
   };
 
   const handleForgotPassword = () => {

@@ -1,0 +1,3 @@
+mutation DeleteCheckMovement($checkMovementID: Int!) {
+  deleteCheckmovement(checkMovementID: $checkMovementID)
+}

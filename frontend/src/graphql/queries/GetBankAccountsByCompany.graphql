@@ -1,0 +1,11 @@
+query GetBankAccountsByCompany($companyID: Int!) {
+  bankaccountsByCompany(companyID: $companyID) {
+    BankAccountID
+    CompanyID
+    BankID
+    AccountNumber
+    CurrencyID
+    Alias
+    IsActive
+  }
+}

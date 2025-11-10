@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
   GetAllClientsDocument,
@@ -9,19 +8,22 @@ import {
   useGetClientByIdQuery,
   useUpdateClientMutation,
   type ClientsCreate,
+  type CreateClientMutation,
+  type UpdateClientMutation,
 } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 import { clientHelpers, formSchema, type FormSchema } from "./clientHelpers";
 
 export const BASE_ROUTE = "/clients";
 
 interface UseClientFormOptions {
   id?: number; // ClientID
+  onSave?: (
+    result: UpdateClientMutation | CreateClientMutation | null | undefined
+  ) => void;
 }
 
-export function useClientForm({ id }: UseClientFormOptions = {}) {
-  const navigate = useNavigate();
-
+export function useClientForm({ id, onSave }: UseClientFormOptions = {}) {
   const {
     data,
     error: queryError,
@@ -37,7 +39,7 @@ export function useClientForm({ id }: UseClientFormOptions = {}) {
       {
         query: GetAllClientsDocument,
         variables: {
-          companyID: Number(AuthHelper.getSelectedAccess()?.CompanyID),
+          companyID: Number(AuthStorage.getSelectedAccess()?.CompanyID),
         },
       },
     ],
@@ -71,9 +73,11 @@ export function useClientForm({ id }: UseClientFormOptions = {}) {
   async function handleSubmit(data: FormSchema) {
     try {
       let highlight = null;
+      let result = null;
+
       if (isEditing) {
         const { ClientID, ...rest } = data;
-        await updateClient({
+        result = await updateClient({
           variables: {
             clientID: ClientID,
             input: clientHelpers.prepareData(rest),
@@ -81,7 +85,7 @@ export function useClientForm({ id }: UseClientFormOptions = {}) {
         });
         highlight = ClientID;
       } else {
-        const result = await createClient({
+        result = await createClient({
           variables: {
             input: clientHelpers.prepareData(data) as ClientsCreate,
           },
@@ -89,11 +93,7 @@ export function useClientForm({ id }: UseClientFormOptions = {}) {
         highlight = result.data?.createClient.ClientID;
       }
 
-      navigate(BASE_ROUTE, {
-        state: {
-          highlight: highlight,
-        },
-      });
+      onSave?.(result?.data);
       toast.message(isEditing ? "Actualizado con éxito" : "Creado con éxito");
     } catch (error) {
       console.error("Error saving client:", error);
@@ -102,7 +102,6 @@ export function useClientForm({ id }: UseClientFormOptions = {}) {
   }
 
   return {
-    navigate,
     form,
     handleSubmit,
     data: client,

@@ -41,8 +41,8 @@ export function FormSelect<TFormValues extends FieldValues, TOption extends Reco
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem>
-          <FormLabel className="mb-2">
+        <FormItem className="space-y-2">
+          <FormLabel>
             {label}
             {required && "*"}
           </FormLabel>

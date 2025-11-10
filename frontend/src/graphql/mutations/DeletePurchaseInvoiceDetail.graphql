@@ -1,0 +1,13 @@
+mutation DeletePurchaseInvoiceDetail(
+  $companyID: Int!
+  $branchID: Int!
+  $purchaseInvoiceID: Int!
+  $purchaseInvoiceDetailID: Int!
+) {
+  deletePurchaseinvoicedetail(
+    companyID: $companyID
+    branchID: $branchID
+    purchaseInvoiceID: $purchaseInvoiceID
+    purchaseInvoiceDetailID: $purchaseInvoiceDetailID
+  )
+}
