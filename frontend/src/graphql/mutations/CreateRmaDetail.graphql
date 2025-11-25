@@ -1,0 +1,14 @@
+mutation CreateRmaDetail($input: RmaDetailCreate!) {
+  createRmaDetail(input: $input) {
+    CompanyID
+    BranchID
+    RmaID
+    RmaDetailID
+    ItemID
+    WarehouseID
+    Quantity
+    UnitPrice
+    LineDescription
+    LastModified
+  }
+}

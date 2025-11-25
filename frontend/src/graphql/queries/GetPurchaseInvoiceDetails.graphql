@@ -1,0 +1,21 @@
+query GetPurchaseInvoiceDetails(
+  $companyID: Int
+  $branchID: Int
+  $purchaseInvoiceID: Int
+) {
+  allPurchaseinvoicedetails(
+    companyID: $companyID
+    branchID: $branchID
+    purchaseInvoiceID: $purchaseInvoiceID
+  ) {
+    CompanyID
+    BranchID
+    PurchaseInvoiceID
+    PurchaseInvoiceDetailID
+    ItemID
+    WarehouseID
+    Quantity
+    UnitPrice
+    Notes
+  }
+}

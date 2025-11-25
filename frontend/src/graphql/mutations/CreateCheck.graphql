@@ -1,0 +1,15 @@
+mutation CreateCheck($input: CheckCreate!) {
+  createCheck(input: $input) {
+    CheckID
+    CompanyID
+    Number
+    CurrencyID
+    Amount
+    IssueDate
+    DueDate
+    BankID
+    DrawerName
+    HolderName
+    CheckStatusID
+  }
+}

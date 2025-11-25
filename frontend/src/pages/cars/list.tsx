@@ -88,7 +88,7 @@ export default function Cars() {
       {
         header: "Marca",
         id: "marca",
-        accessorKey: "CarBrandData.CrarBrandName",
+        accessorKey: "CarBrandData.CarBrandName",
       },
       {
         header: "Modelo",

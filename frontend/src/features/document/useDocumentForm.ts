@@ -10,7 +10,7 @@ import {
   useUpdateDocumentMutation,
   type CommercialDocumentsCreate,
 } from "~/graphql/_generated/graphql";
-import { AuthHelper } from "~/utils/authHelper";
+import { AuthStorage } from "~/utils/auth.storage";
 import {
   documentHelpers,
   formSchema,
@@ -41,7 +41,7 @@ export function useDocumentForm({ id }: UseDocumentFormOptions = {}) {
       {
         query: GetAllCommercialDocumentsDocument,
         variables: {
-          companyID: Number(AuthHelper.getSelectedAccess()?.CompanyID),
+          companyID: Number(AuthStorage.getSelectedAccess()?.CompanyID),
         },
       },
     ],
