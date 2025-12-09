@@ -33,6 +33,7 @@ from .sysorderstatus import *
 from .pricelistitems import *
 from .pricelists import *
 from .purchaseinvoices import *
+from .purchaseinvoicedetails import *
 from .provinces import *
 from .roles import *
 from .saleconditions import *
@@ -62,6 +63,8 @@ from .users import *
 from .vendors import *
 from .warehouses import *
 from .sessions import *
+from .checkmovements import *
+from .syscurrencies import *
 
 # Opcional: para poder usar "from app.models import *"
 __all__ = [
@@ -126,4 +129,7 @@ __all__ = [
     "vendors",
     "warehouses",
     "sessions",
+    "checkmovements",
+    "purchaseinvoicedetails",
+    "syscurrencies",
 ]

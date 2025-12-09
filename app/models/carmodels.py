@@ -12,6 +12,7 @@ from sqlalchemy import Integer, Unicode, Identity, PrimaryKeyConstraint, Foreign
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 from app.db import Base
 
+
 class CarModels(Base):
     __tablename__ = 'CarModels'
     __table_args__ = (
@@ -23,8 +24,10 @@ class CarModels(Base):
 
     CompanyID: Mapped[int] = mapped_column(Integer)
     CarBrandID: Mapped[int] = mapped_column(Integer)
-    CarModelID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1))
-    CarModelName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    CarModelID: Mapped[int] = mapped_column(
+        Integer, Identity(start=1, increment=1))
+    CarModelName: Mapped[str] = mapped_column(
+        Unicode(100, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
     carBrand: Mapped['CarBrands'] = relationship(

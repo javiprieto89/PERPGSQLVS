@@ -46,13 +46,11 @@ class PurchaseInvoiceDetails(Base):
     Notes: Mapped[Optional[str]] = mapped_column(
         Unicode(255, 'Modern_Spanish_CI_AS'))
 
-    Branches_: Mapped['Branches'] = relationship(
-        'Branches', back_populates='PurchaseInvoiceDetails')
+    Branches_: Mapped['Branches'] = relationship('Branches')
     PurchaseInvoices_: Mapped['PurchaseInvoices'] = relationship(
-        'PurchaseInvoices', back_populates='PurchaseInvoiceDetails')
-    Items_: Mapped['Items'] = relationship(
-        'Items', back_populates='PurchaseInvoiceDetails')
-    Warehouses_: Mapped['Warehouses'] = relationship(
-        'Warehouses', back_populates='PurchaseInvoiceDetails')
-    Company_: Mapped['Company'] = relationship(
-        'Company', back_populates='PurchaseInvoiceDetails')
+        'PurchaseInvoices', 
+        back_populates='PurchaseInvoiceDetails'
+    )
+    Items_: Mapped['Items'] = relationship('Items')
+    Warehouses_: Mapped['Warehouses'] = relationship('Warehouses')
+    Company_: Mapped['Company'] = relationship('Company')

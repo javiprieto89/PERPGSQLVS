@@ -22,6 +22,7 @@ from app.graphql.resolvers.sysidentitydoctypes import SysIdentityDocTypesQuery
 from app.graphql.resolvers.sysfiscaldoctypes import SysFiscalDocTypesQuery
 from app.graphql.resolvers.cars import CarsQuery
 from app.graphql.resolvers.checks import ChecksQuery
+from app.graphql.resolvers.checkmovements import CheckMovementsQuery
 from app.graphql.resolvers.clients import ClientsQuery
 from app.graphql.resolvers.company import CompanyQuery
 from app.graphql.resolvers.countries import CountriesQuery
@@ -31,6 +32,7 @@ from app.graphql.resolvers.discounts import DiscountsQuery
 from app.graphql.resolvers.documents import CommercialdocumentsQuery
 from app.graphql.resolvers.cashboxes import CashboxesQuery
 from app.graphql.resolvers.cashboxmovements import CashboxmovementsQuery
+from app.graphql.resolvers.filters import FiltersQuery
 from app.graphql.resolvers.itemcategories import ItemcategoriesQuery
 from app.graphql.resolvers.itempricehistories import ItempricehistoriesQuery
 from app.graphql.resolvers.items import ItemsQuery
@@ -58,6 +60,12 @@ from app.graphql.resolvers.vendors import VendorsQuery
 from app.graphql.resolvers.afip import AfipQuery
 from app.graphql.resolvers.rmas import RMAQuery
 from app.graphql.resolvers.rmadetails import RMADetailQuery
+from app.graphql.resolvers.banks import BanksQuery
+from app.graphql.resolvers.bankaccounts import BankAccountsQuery
+from app.graphql.resolvers.syscurrencies import SysCurrenciesQuery
+from app.graphql.resolvers.checkmovements import CheckMovementsQuery
+from app.graphql.resolvers.purchaseinvoices import PurchaseInvoicesQuery
+from app.graphql.resolvers.purchaseinvoicedetails import PurchaseInvoiceDetailsQuery
 from app.graphql.mutations.clients import ClientsMutations
 from app.graphql.mutations.suppliers import SuppliersMutations
 from app.graphql.mutations.brands import BrandsMutations
@@ -91,9 +99,14 @@ from app.graphql.mutations.roles import RolesMutations
 from app.graphql.mutations.users import UsersMutations
 from app.graphql.mutations.vendors import VendorsMutations
 from app.graphql.mutations.userpermissions import UserPermissionsMutation
+from app.graphql.mutations.bankaccounts import BankAccountsMutation
+from app.graphql.mutations.banks import BanksMutation
+from app.graphql.mutations.checkmovements import CheckMovementsMutation
+from app.graphql.mutations.purchaseinvoices import PurchaseInvoicesMutation
+from app.graphql.mutations.purchaseinvoicedetails import PurchaseInvoiceDetailsMutation
 
 # IMPORTANTE: Importar las clases de autenticación correctamente
-from app.graphql.resolvers.auth import AuthQuery, authMutation
+from app.graphql.resolvers.auth import AuthQuery, AuthMutation
 
 # Importar schemas para los tipos de datos
 from app.graphql.schemas.items import ItemsInDB, ItemSearchResult
@@ -111,14 +124,10 @@ from app.graphql.schemas.auth import (
 )
 
 # Importar funciones de autenticación
-# Intentar importar utilidades de filtros
-try:
-    from app.utils.filter_schemas import FILTER_SCHEMAS
-except ImportError:
-    FILTER_SCHEMAS = {}
-
 
 # Tipos adicionales para funcionalidades avanzadas
+
+
 @strawberry.type
 class DashboardStats:
     total_items: int
@@ -153,15 +162,6 @@ class GlobalSearchResult:
     clients: List[ClientsInDB]
     orders: List[OrdersInDB]
     stats: SearchStats
-
-
-@strawberry.type
-class FilterField:
-    field: str
-    label: str
-    type: str
-    relationModel: Optional[str] = None
-    dependsOn: Optional[str] = None
 
 
 @strawberry.type
@@ -367,27 +367,18 @@ class Query(
     RMAQuery,
     RMADetailQuery,
     AfipQuery,
-    AuthQuery,  # AGREGADO: Queries de autenticación
+    AuthQuery,
+    FiltersQuery,
+    BanksQuery,
+    BankAccountsQuery,
+    SysCurrenciesQuery,
+    CheckMovementsQuery,
+    PurchaseInvoicesQuery,
+    PurchaseInvoiceDetailsQuery,
 ):
     """Query principal con todas las consultas disponibles"""
 
     # ========== FUNCIONALIDADES AVANZADAS ==========
-
-    @strawberry.field
-    def filter_fields(self, model: str) -> List[FilterField]:
-        """Obtener campos de filtro para un modelo"""
-        filtros = FILTER_SCHEMAS.get(model, [])
-        return [
-            FilterField(
-                field=f["field"],
-                label=f["label"],
-                type=f["type"],
-                relationModel=f.get("relationModel"),
-                dependsOn=f.get("dependsOn"),
-            )
-            for f in filtros
-        ]
-
     @strawberry.field
     def dashboard_stats(self, info, filters: DashboardFilters) -> DashboardStats:
         """Estadísticas completas del dashboard"""
@@ -456,29 +447,14 @@ class Mutation(
     RolesMutations,
     UsersMutations,
     UserPermissionsMutation,
+    AuthMutation,
+    BanksMutation,
+    BankAccountsMutation,
+    CheckMovementsMutation,
+    PurchaseInvoicesMutation,
+    PurchaseInvoiceDetailsMutation,
 ):
     """Mutaciones principales"""
-
-    # ========== MUTACIONES DE AUTENTICACIÓN ==========
-    @strawberry.mutation
-    def login(self, info: Info, input: LoginInput) -> LoginResponse:
-        """Login de usuario"""
-        return authMutation.login(info, input)
-
-    @strawberry.mutation
-    def create_user(self, input: UserCreateInput) -> AuthResponse:
-        """Crear nuevo usuario"""
-        return authMutation.create_user(input)
-
-    @strawberry.mutation
-    def change_password(self, input: PasswordChangeInput) -> AuthResponse:
-        """Cambiar contraseña de usuario"""
-        return authMutation.change_password(input)
-
-    @strawberry.mutation
-    def upgrade_password(self, input: PasswordUpgradeInput) -> AuthResponse:
-        """Actualiza contraseñas utilizando un token válido."""
-        return authMutation.upgrade_password(input)
 
     # ========== MUTACIONES AVANZADAS ==========
     @strawberry.mutation

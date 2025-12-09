@@ -20,6 +20,7 @@ from sqlalchemy.orm import Mapped, relationship, mapped_column
 
 from app.db import Base
 
+
 class Suppliers(Base):
     __tablename__ = 'Suppliers'
     __table_args__ = (
@@ -32,11 +33,14 @@ class Suppliers(Base):
         PrimaryKeyConstraint('CompanyID', 'SupplierID', name='PK_Suppliers')
     )
 
-    SupplierID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1))
+    SupplierID: Mapped[int] = mapped_column(
+        Integer, Identity(start=1, increment=1))
     CompanyID: Mapped[int] = mapped_column(Integer)
     DocTypeID: Mapped[int] = mapped_column(Integer)
-    FirstName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    IsActive: Mapped[bool] = mapped_column(Boolean, server_default=text('((1))'))
+    FirstName: Mapped[str] = mapped_column(
+        Unicode(100, 'Modern_Spanish_CI_AS'))
+    IsActive: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('((1))'))
     CountryID: Mapped[int] = mapped_column(Integer)
     ProvinceID: Mapped[int] = mapped_column(Integer)
     DocNumber: Mapped[str] = mapped_column(Unicode(50, 'Modern_Spanish_CI_AS'))
@@ -45,7 +49,8 @@ class Suppliers(Base):
     Email: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
     Address: Mapped[str] = mapped_column(Unicode(200, 'Modern_Spanish_CI_AS'))
     City: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    PostalCode: Mapped[str] = mapped_column(Unicode(20, 'Modern_Spanish_CI_AS'))
+    PostalCode: Mapped[str] = mapped_column(
+        Unicode(20, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
     countries_: Mapped['Countries'] = relationship(

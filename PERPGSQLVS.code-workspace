@@ -52,6 +52,8 @@
       "-NoExit",
       "-Command",
       "& 'C:\\Users\\javie\\OneDrive\\_Development\\PERPGSQLVS\\venv\\Scripts\\Activate.ps1'"
-    ]
+    ],
+    "editor.inlineSuggest.suppressSuggestions": true,
+    "chat.tools.todos.showWidget": false
   }
 }

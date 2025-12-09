@@ -11,6 +11,7 @@ from sqlalchemy import Integer, Unicode, Identity, PrimaryKeyConstraint, Foreign
 from sqlalchemy.orm import Mapped, relationship, foreign, mapped_column
 from app.db import Base
 
+
 class CreditCardGroups(Base):
     __tablename__ = 'CreditCardGroups'
     __table_args__ = (
@@ -21,8 +22,10 @@ class CreditCardGroups(Base):
     )
 
     CompanyID: Mapped[int] = mapped_column(Integer, primary_key=True)
-    CreditCardGroupID: Mapped[int] = mapped_column(Integer, Identity( start=1, increment=1), primary_key=True)
-    GroupName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    CreditCardGroupID: Mapped[int] = mapped_column(
+        Integer, Identity(start=1, increment=1), primary_key=True)
+    GroupName: Mapped[str] = mapped_column(
+        Unicode(100, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
     creditCards: Mapped[List['CreditCards']] = relationship(

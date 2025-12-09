@@ -24,6 +24,10 @@ if TYPE_CHECKING:
     from .carmodels import CarModels
     from .creditcards import CreditCards
     from .creditcardgroups import CreditCardGroups
+    from .checkmovements import CheckMovements
+    from .checks import Checks
+    from app.models.banks import Banks
+    from app.models.bankaccounts import BankAccounts
 
 from typing import List
 
@@ -48,58 +52,46 @@ class Company(Base):
 
     # Relaciones
     branches: Mapped[List['Branches']] = relationship(
-        'Branches', back_populates='company_')
+        'Branches', back_populates='company_', viewonly=True)
     documents: Mapped[List['Documents']] = relationship(
-        'Documents',
-        back_populates='company_',
-        primaryjoin='Company.CompanyID == Documents.CompanyID',
-        foreign_keys='Documents.CompanyID',
-        overlaps='documents'
-    )
+        'Documents', back_populates='company_', viewonly=True)
     userPermissions: Mapped[List['UserPermissions']] = relationship(
-        'UserPermissions', back_populates='company_', overlaps='userPermissions'
-    )
+        'UserPermissions', back_populates='company_', viewonly=True)
     items: Mapped[List['Items']] = relationship(
         'Items',
         back_populates='company_',
         primaryjoin='Company.CompanyID == Items.CompanyID',
-        foreign_keys='Items.CompanyID',
-        overlaps='branches,items'
+        foreign_keys='[Items.CompanyID]',
+        viewonly=True
     )
 
     itemstock: Mapped[List['Itemstock']] = relationship(
         'Itemstock',
         back_populates='company_',
         primaryjoin='Company.CompanyID == Itemstock.CompanyID',
-        foreign_keys='Itemstock.CompanyID',
-        overlaps='branches,itemstock'
+        foreign_keys='[Itemstock.CompanyID]',
+        viewonly=True
     )
     orders: Mapped[List['Orders']] = relationship(
-        'Orders', back_populates='company_', overlaps='orders'
-    )
+        'Orders', back_populates='company_', viewonly=True)
     stockHistoryDetails: Mapped[List['StockHistoryDetails']] = relationship(
-        'StockHistoryDetails', back_populates='company_', overlaps='stockHistoryDetails'
-    )
+        'StockHistoryDetails', back_populates='company_', viewonly=True)
 
     StockHistories: Mapped[List['StockHistories']] = relationship(
-        'StockHistories', back_populates='company_', overlaps='stockHistories')
+        'StockHistories', back_populates='company_', viewonly=True)
 
     tempStockHistoryDetails: Mapped[List['TempStockHistoryDetails']] = relationship(
-        'TempStockHistoryDetails', back_populates='company_', overlaps='tempStockHistoryDetails'
-    )
+        'TempStockHistoryDetails', back_populates='company_', viewonly=True)
     orderHistory: Mapped[List['OrderHistory']] = relationship(
-        'OrderHistory', back_populates='company_', overlaps='orderHistory'
-    )
+        'OrderHistory', back_populates='company_', viewonly=True)
     tempOrderDetails: Mapped[List['TempOrderDetails']] = relationship(
-        'TempOrderDetails', back_populates='company_', overlaps='tempOrderDetails'
-    )
+        'TempOrderDetails', back_populates='company_', viewonly=True)
     clients: Mapped[List['Clients']] = relationship(
         'Clients',
         back_populates='company_',
         primaryjoin='Company.CompanyID == Clients.CompanyID',
         foreign_keys='[Clients.CompanyID]',
-        overlaps='branches_,clients'
-    )
+        viewonly=True)
     brands: Mapped[List['Brands']] = relationship(
         'Brands',
         back_populates='company_',
@@ -142,3 +134,13 @@ class Company(Base):
         foreign_keys='[CreditCardGroups.CompanyID]',
         viewonly=True,
     )
+    
+    banks: Mapped[List['Banks']] = relationship(
+        'Banks', back_populates='company_', viewonly=True)
+    bankaccounts: Mapped[List['BankAccounts']] = relationship(
+        'BankAccounts', back_populates='company_', viewonly=True)
+    checks: Mapped[List['Checks']] = relationship(
+        'Checks', back_populates='company_', viewonly=True)
+
+    CheckMovements: Mapped[List['CheckMovements']] = relationship(
+        'CheckMovements', back_populates='Company_', viewonly=True)

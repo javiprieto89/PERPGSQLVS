@@ -29,8 +29,8 @@ class Clients(Base):
                              'Provinces.CountryID', 'Provinces.ProvinceID'], name='FK_Clients_Provinces'),
         ForeignKeyConstraint(['CompanyID', 'VendorID'], [
                              'Vendors.CompanyID', 'Vendors.VendorID'], name='FK_Clients_Vendors'),
-        ForeignKeyConstraint(
-            ['BranchID'], ['Branches.BranchID'], name='FK_Clients_Branches'),
+        ForeignKeyConstraint(['CompanyID', 'BranchID'], [
+                             'Branches.CompanyID', 'Branches.BranchID'], name='FK_Clients_CompanyBranch'),
         PrimaryKeyConstraint('CompanyID', 'ClientID', name='PK_Clients')
     )
 

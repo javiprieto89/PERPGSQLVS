@@ -33,23 +33,29 @@ def obj_to_schema(schema_type: Any, obj: Any):
     # Auxiliares para cuando el dato pedido no es exacto
     # Siempre que use <Entidad>Data esto no se va a usar
     alt_map = {
-        "BranchData": ["branches_"],
+        "BranchData": ["branches_", "Branches_"],
         "RoleData": ["roles_"],
-        "UserData": ["users_"],
-        "WarehouseData": ["warehouses_"],
+        "UserData": ["users_", "Users_"],
+        "WarehouseData": ["warehouses_", "Warehouses_"],
         "SaleConditionData": ["saleConditions_"],
         "DocumentData": ["docTypes_"],
-        "VendorData": ["vendors_"],
-        "ClientData": ["clients_"],
+        "VendorData": ["vendors_", "Vendors_"],
+        "ClientData": ["clients_", "Clients_"],
         "DiscountData": ["discounts_"],
         "PriceListData": ["priceLists_"],
         "OrderStatusData": ["orderStatus_"],
         "CarData": ["cars_"],
         "ServiceTypeData": ["serviceType_"],
-        "CarModelData": ["carModels_"],
+        "CarModelData": ["carModels_", "CarModels_"],
         "CarBrandData": ["carBrand", "carModels_.carBrand"],
         "CreditCardGroupData": ["creditCardGroup_"],
-        "ItemData": ["items_"],
+        "ItemData": ["items_", "Items_"],
+        "BankData": ["Banks_", "banks_"],
+        "CurrencyData": ["sysCurrencies", "SysCurrencies"],
+        "CheckStatusData": ["CheckStatuses_"],
+        "CheckData": ["Checks_"],
+        "BankAccountData": ["BankAccounts_"],
+        "TransactionData": ["Transactions_"],
         "DocTypeData": ["docTypes_"],
         "CountryData": ["countries_"],
         "ProvinceData": ["provinces_"],
@@ -57,7 +63,8 @@ def obj_to_schema(schema_type: Any, obj: Any):
         "CategoryData": ["itemCategories_"],
         "SubcategoryData": ["itemSubcategories_"],
         "SupplierData": ["suppliers_"],
-        "CompanyData": ["company_"],
+        "CompanyData": ["company_", "Company_"],
+        "PurchaseInvoiceDetailsData": ["PurchaseInvoiceDetails"],
     }
     obj_dict = getattr(obj, "__dict__", {})
     for f in fields(schema_type):
@@ -91,7 +98,14 @@ def obj_to_schema(schema_type: Any, obj: Any):
                 if target is not None:
                     value = target
                     break
-        if value is None and f.name.endswith("Data") and dataclasses.is_dataclass(f.type):
+        stripped_type = _strip_optional(f.type)
+        inner_type = stripped_type
+        origin = get_origin(stripped_type)
+        if origin in {list, List, Sequence}:
+            inner_args = get_args(stripped_type)
+            if inner_args:
+                inner_type = _strip_optional(inner_args[0])
+        if value is None and f.name.endswith("Data") and dataclasses.is_dataclass(inner_type):
             base = f.name[:-4]
             candidates = [base, base.lower(), base + '_', base.lower() + '_']
             for cand in candidates:

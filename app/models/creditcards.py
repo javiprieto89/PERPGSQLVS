@@ -16,6 +16,7 @@ from sqlalchemy.orm import Mapped, relationship, foreign, mapped_column
 
 from app.db import Base
 
+
 class CreditCards(Base):
     __tablename__ = 'CreditCards'
     __table_args__ = (
@@ -26,11 +27,14 @@ class CreditCards(Base):
     )
 
     CompanyID: Mapped[int] = mapped_column(Integer, primary_key=True)
-    CreditCardID: Mapped[int] = mapped_column(Integer, Identity( start=1, increment=1), primary_key=True)
+    CreditCardID: Mapped[int] = mapped_column(
+        Integer, Identity(start=1, increment=1), primary_key=True)
     CardName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
     CreditCardGroupID: Mapped[int] = mapped_column(Integer)
-    IsActive: Mapped[bool] = mapped_column(Boolean, server_default=text('((1))'))
-    Surcharge: Mapped[decimal.Decimal] = mapped_column(DECIMAL(18, 4), server_default=text('((0))'))
+    IsActive: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('((1))'))
+    Surcharge: Mapped[decimal.Decimal] = mapped_column(
+        DECIMAL(18, 4), server_default=text('((0))'))
     Installments: Mapped[int] = mapped_column(Integer)
 
     # Relaciones

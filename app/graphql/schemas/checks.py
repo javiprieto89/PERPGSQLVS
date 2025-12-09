@@ -3,6 +3,11 @@ import strawberry
 from typing import Optional
 from datetime import date, datetime
 
+from app.graphql.schemas.company import CompanyInDB
+from app.graphql.schemas.banks import BanksInDB
+from app.graphql.schemas.syscurrencies import SysCurrenciesInDB
+from app.graphql.schemas.checkstatuses import CheckStatusesInDB
+
 
 @strawberry.input
 class ChecksCreate:
@@ -51,3 +56,8 @@ class ChecksInDB:
     DrawerName: Optional[str]
     HolderName: Optional[str]
     CheckStatusID: Optional[int]
+
+    CompanyData: Optional[CompanyInDB] = None
+    BankData: Optional[BanksInDB] = None
+    CurrencyData: Optional[SysCurrenciesInDB] = None
+    CheckStatusData: Optional[CheckStatusesInDB] = None

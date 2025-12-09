@@ -3,7 +3,7 @@
 from __future__ import annotations
 from typing import List, Optional, TYPE_CHECKING
 from sqlalchemy import Integer, Unicode, LargeBinary, ForeignKeyConstraint, PrimaryKeyConstraint, Identity
-from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy.orm import foreign, relationship, Mapped, mapped_column
 from app.db import Base
 
 if TYPE_CHECKING:
@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from .cashboxes import CashBoxes
     from .clients import Clients
     from .rmas import RMAs
+    from .checkmovements import CheckMovements
 
 class Branches(Base):
     __tablename__ = 'Branches'
@@ -76,3 +77,10 @@ class Branches(Base):
     )
     rmas: Mapped[List['RMAs']] = relationship(
         'RMAs', back_populates='branches_')
+    CheckMovements: Mapped[List['CheckMovements']] = relationship(
+        'CheckMovements',
+        back_populates='Branches_',
+        primaryjoin='and_(Branches.CompanyID == foreign(CheckMovements.CompanyID), Branches.BranchID == foreign(CheckMovements.BranchID))',
+        foreign_keys='[CheckMovements.CompanyID, CheckMovements.BranchID]',
+        overlaps='CheckMovements,checkMovements'
+    )

@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from .cashboxmovements import CashBoxMovements
     from .rmas import RMAs
     from .sessions import Sessions
+    from .purchaseinvoices import PurchaseInvoices
 
 from typing import List
 
@@ -30,17 +31,20 @@ from sqlalchemy.orm import Mapped, relationship, mapped_column
 # from .temporderdetails import TempOrderDetails
 from app.db import Base
 
+
 class Users(Base):
     __tablename__ = 'Users'
     __table_args__ = (
         PrimaryKeyConstraint('UserID', name='PK_Users'),
     )
 
-    UserID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1), primary_key=True)
+    UserID: Mapped[int] = mapped_column(
+        Integer, Identity(start=1, increment=1), primary_key=True)
     Nickname: Mapped[str] = mapped_column(Unicode(50, 'Modern_Spanish_CI_AS'))
     FullName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
     Password: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    IsActive: Mapped[bool] = mapped_column(Boolean, server_default=text('((1))'))
+    IsActive: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('((1))'))
     IsFullAdmin: Mapped[bool] = mapped_column(
         Boolean,
         server_default=text('((0))'),
@@ -90,4 +94,9 @@ class Users(Base):
         back_populates='user',
         cascade='all, delete-orphan',
         foreign_keys='Sessions.UserID',
+    )
+    purchaseInvoices: Mapped[List['PurchaseInvoices']] = relationship(
+        'PurchaseInvoices',
+        back_populates='Users_',
+        overlaps='Company_,Branch_,Supplier_,User_,PurchaseInvoiceDetails_'
     )
