@@ -54,7 +54,10 @@ class CheckMovements(Base):
 
     # Relaciones
     Company_: Mapped["Company"] = relationship(
-        "Company", back_populates="CheckMovements")
+        "Company",
+        back_populates="CheckMovements",
+        overlaps="CheckMovements"
+    )
     Checks_: Mapped["Checks"] = relationship(
         "Checks", back_populates="CheckMovements")
     BankAccounts_: Mapped[Optional["BankAccounts"]] = relationship(

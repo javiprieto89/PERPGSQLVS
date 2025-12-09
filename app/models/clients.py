@@ -19,10 +19,12 @@ from sqlalchemy import Integer, Unicode, Boolean, Date, Identity, PrimaryKeyCons
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 from app.db import Base
 
+
 class Clients(Base):
     __tablename__ = 'Clients'
     __table_args__ = (
-        ForeignKeyConstraint(['DocTypeID'], ['sysIdentityDocTypes.DocTypeID'], name='FK_Clients_sysIdentityDocTypes'),
+        ForeignKeyConstraint(['DocTypeID'], [
+                             'sysIdentityDocTypes.DocTypeID'], name='FK_Clients_sysIdentityDocTypes'),
         ForeignKeyConstraint(['CompanyID', 'PriceListID'], [
                              'PriceLists.CompanyID', 'PriceLists.PriceListID'], name='FK_Clients_PriceLists'),
         ForeignKeyConstraint(['CountryID', 'ProvinceID'], [
@@ -35,22 +37,27 @@ class Clients(Base):
     )
 
     CompanyID: Mapped[int] = mapped_column(Integer)
-    ClientID: Mapped[int] = mapped_column(Integer, Identity(start=1, increment=1))
+    ClientID: Mapped[int] = mapped_column(
+        Integer, Identity(start=1, increment=1))
     BranchID: Mapped[int] = mapped_column(Integer, nullable=True)
     DocTypeID: Mapped[int] = mapped_column(Integer)
-    FirstName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    IsActive: Mapped[bool] = mapped_column(Boolean, server_default=text('((1))'))
+    FirstName: Mapped[str] = mapped_column(
+        Unicode(100, 'Modern_Spanish_CI_AS'))
+    IsActive: Mapped[bool] = mapped_column(
+        Boolean, server_default=text('((1))'))
     CountryID: Mapped[int] = mapped_column(Integer)
     ProvinceID: Mapped[int] = mapped_column(Integer)
     PriceListID: Mapped[int] = mapped_column(Integer)
-    VendorID: Mapped[int] = mapped_column(Integer, server_default=text('((1))'))
+    VendorID: Mapped[int] = mapped_column(
+        Integer, server_default=text('((1))'))
     DocNumber: Mapped[str] = mapped_column(Unicode(50, 'Modern_Spanish_CI_AS'))
     LastName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
     Phone: Mapped[str] = mapped_column(Unicode(20, 'Modern_Spanish_CI_AS'))
     Email: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
     Address: Mapped[str] = mapped_column(Unicode(200, 'Modern_Spanish_CI_AS'))
     City: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
-    PostalCode: Mapped[str] = mapped_column(Unicode(20, 'Modern_Spanish_CI_AS'))
+    PostalCode: Mapped[str] = mapped_column(
+        Unicode(20, 'Modern_Spanish_CI_AS'))
 
     # Relaciones
     countries_: Mapped['Countries'] = relationship(

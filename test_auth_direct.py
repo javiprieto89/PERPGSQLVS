@@ -1,8 +1,8 @@
+from app.auth import authenticate_user
+from app.db import SessionLocal
 import sys
 sys.path.insert(0, r'C:\Users\javie\OneDrive\_Development\PERPGSQLVS')
 
-from app.db import SessionLocal
-from app.auth import authenticate_user
 
 db = SessionLocal()
 try:

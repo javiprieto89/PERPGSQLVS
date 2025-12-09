@@ -36,17 +36,21 @@ from sqlalchemy.orm import Mapped, relationship, foreign, mapped_column
 
 from app.db import Base
 
+
 class Company(Base):
     __tablename__ = 'Company'
     __table_args__ = (
         PrimaryKeyConstraint('CompanyID', name='PK_Company'),
     )
 
-    CompanyID: Mapped[int] = mapped_column(Integer, Identity( start=1, increment=1), primary_key=True)
-    CompanyName: Mapped[str] = mapped_column(Unicode(100, 'Modern_Spanish_CI_AS'))
+    CompanyID: Mapped[int] = mapped_column(
+        Integer, Identity(start=1, increment=1), primary_key=True)
+    CompanyName: Mapped[str] = mapped_column(
+        Unicode(100, 'Modern_Spanish_CI_AS'))
     Address: Mapped[str] = mapped_column(Unicode(200, 'Modern_Spanish_CI_AS'))
     CUIT: Mapped[str] = mapped_column(Unicode(20, 'Modern_Spanish_CI_AS'))
-    GrossIncome: Mapped[str] = mapped_column(Unicode(20, 'Modern_Spanish_CI_AS'))
+    GrossIncome: Mapped[str] = mapped_column(
+        Unicode(20, 'Modern_Spanish_CI_AS'))
     StartDate: Mapped[datetime.date] = mapped_column(Date)
     Logo: Mapped[bytes] = mapped_column(LargeBinary)
 
@@ -134,7 +138,7 @@ class Company(Base):
         foreign_keys='[CreditCardGroups.CompanyID]',
         viewonly=True,
     )
-    
+
     banks: Mapped[List['Banks']] = relationship(
         'Banks', back_populates='company_', viewonly=True)
     bankaccounts: Mapped[List['BankAccounts']] = relationship(

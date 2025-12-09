@@ -65,6 +65,8 @@ def obj_to_schema(schema_type: Any, obj: Any):
         "SupplierData": ["suppliers_"],
         "CompanyData": ["company_", "Company_"],
         "PurchaseInvoiceDetailsData": ["PurchaseInvoiceDetails"],
+        "PurchaseInvoiceData": ["PurchaseInvoices_"],
+        "WarehouseData": ["Warehouses_", "warehouses_"],
     }
     obj_dict = getattr(obj, "__dict__", {})
     for f in fields(schema_type):

@@ -56,13 +56,15 @@ class PurchaseInvoices(Base):
         DECIMAL(18, 2), nullable=False)
     IsPaid: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False)
-    PaymentDate: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime, nullable=True)
+    PaymentDate: Mapped[Optional[datetime.datetime]
+                        ] = mapped_column(DateTime, nullable=True)
     Notes: Mapped[Optional[str]] = mapped_column(
         Unicode(255, "Modern_Spanish_CI_AS"))
     # Relaciones ORM
     Company_: Mapped["Company"] = relationship("Company")
     Branches_: Mapped["Branches"] = relationship("Branches")
-    Suppliers_: Mapped["Suppliers"] = relationship("Suppliers")
+    Suppliers_: Mapped["Suppliers"] = relationship(
+        "Suppliers", overlaps="Company_")
     Users_: Mapped["Users"] = relationship("Users")
     PurchaseInvoiceDetails: Mapped[List["PurchaseInvoiceDetails"]] = relationship(
         "PurchaseInvoiceDetails",

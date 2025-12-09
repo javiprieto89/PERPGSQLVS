@@ -59,7 +59,8 @@ class BankReconciliations(Base):
     ConfirmedAt: Mapped[Optional[datetime.datetime]] = mapped_column(DATETIME2)
 
     # Relaciones ORM
-    Company_: Mapped['Company'] = relationship('Company', overlaps='BankReconciliations')
+    Company_: Mapped['Company'] = relationship(
+        'Company', overlaps='BankReconciliations')
     BankAccounts_: Mapped['BankAccounts'] = relationship(
         'BankAccounts',
         back_populates='BankReconciliations'

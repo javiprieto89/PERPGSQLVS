@@ -46,4 +46,7 @@ class PurchaseInvoiceDetailsInDB:
     Notes: Optional[str]
 
     CompanyData: Optional[CompanyInDB] = None
+    BranchData: Optional[strawberry.lazy["app.graphql.schemas.branches.BranchesInDB"]] = None
     ItemData: Optional[ItemsInDB] = None
+    WarehouseData: Optional[strawberry.lazy["app.graphql.schemas.warehouses.WarehousesInDB"]] = None
+    PurchaseInvoiceData: Optional[strawberry.lazy["app.graphql.schemas.purchaseinvoices.PurchaseInvoicesInDB"]] = None
