@@ -1,15 +1,32 @@
 ﻿# app/graphql/crud/cashboxmovements.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.cashboxmovements import CashBoxMovements
 from app.graphql.schemas.cashboxmovements import CashBoxMovementsCreate, CashBoxMovementsUpdate
 
 
 def get_cashboxmovements(db: Session):
-    return db.query(CashBoxMovements).all()
+    return (
+        db.query(CashBoxMovements)
+        .options(
+            joinedload(CashBoxMovements.branches_),
+            joinedload(CashBoxMovements.cashBoxes_),
+            joinedload(CashBoxMovements.users_),
+        )
+        .all()
+    )
 
 
 def get_cashboxmovements_by_id(db: Session, movement_id: int):
-    return db.query(CashBoxMovements).filter(CashBoxMovements.CashBoxMovementID == movement_id).first()
+    return (
+        db.query(CashBoxMovements)
+        .options(
+            joinedload(CashBoxMovements.branches_),
+            joinedload(CashBoxMovements.cashBoxes_),
+            joinedload(CashBoxMovements.users_),
+        )
+        .filter(CashBoxMovements.CashBoxMovementID == movement_id)
+        .first()
+    )
 
 
 def create_cashboxmovements(db: Session, data: CashBoxMovementsCreate):
@@ -37,4 +54,3 @@ def delete_cashboxmovements(db: Session, movement_id: int):
         db.delete(obj)
         db.commit()
     return obj
-

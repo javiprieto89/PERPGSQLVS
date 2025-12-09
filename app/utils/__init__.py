@@ -62,11 +62,17 @@ def obj_to_schema(schema_type: Any, obj: Any):
         "BrandData": ["brands_"],
         "CategoryData": ["itemCategories_"],
         "SubcategoryData": ["itemSubcategories_"],
-        "SupplierData": ["suppliers_"],
+        "SupplierData": ["suppliers_", "Suppliers_"],
         "CompanyData": ["company_", "Company_"],
-        "PurchaseInvoiceDetailsData": ["PurchaseInvoiceDetails"],
-        "PurchaseInvoiceData": ["PurchaseInvoices_"],
+        "PurchaseInvoiceDetailsData": ["PurchaseInvoiceDetails", "purchaseinvoicedetails"],
         "WarehouseData": ["Warehouses_", "warehouses_"],
+        "CashBoxData": ["cashBoxes_", "CashBoxes_"],
+        "OrderHistoryData": ["OrderHistories_", "orderHistories_"],
+        "OrderData": ["Orders_", "orders_"],
+        "CommercialDocumentData": ["CommercialDocuments_", "commercialDocuments_"],
+        "PaymentStatusData": ["PaymentStatus_", "paymentStatus_"],
+        "TransactionTypeData": ["TransactionTypes_", "transactionTypes_"],
+        "RelatedTransactionData": ["RelatedTransactions_", "relatedTransactions_"],
     }
     obj_dict = getattr(obj, "__dict__", {})
     for f in fields(schema_type):
@@ -155,17 +161,18 @@ def obj_to_schema(schema_type: Any, obj: Any):
         if isinstance(value, (bytes, bytearray)) and _expects_str(f.type):
             value = base64.b64encode(value).decode("utf-8")
 
-        # Convert nested dataclasses or lists of dataclasses
+        # Convert nested dataclasses or lists of dataclasses/strawberry types
         target_type = _strip_optional(f.type)
         origin = get_origin(target_type)
 
-        if dataclasses.is_dataclass(target_type) and value is not None:
+        if (dataclasses.is_dataclass(target_type) or hasattr(target_type, '__strawberry_definition__')) and value is not None:
             value = obj_to_schema(target_type, value)
         elif origin in {list, List, Sequence}:
             args = get_args(target_type)
             if args:
                 inner = _strip_optional(args[0])
-                if dataclasses.is_dataclass(inner) and value is not None:
+                # Check if it's a dataclass OR a Strawberry type
+                if (dataclasses.is_dataclass(inner) or hasattr(inner, '__strawberry_definition__')) and value is not None:
                     value = list_to_schema(inner, value)
 
         data[f.name] = value

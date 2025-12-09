@@ -7,6 +7,10 @@ from app.graphql.schemas.company import CompanyInDB
 from app.graphql.schemas.banks import BanksInDB
 from app.graphql.schemas.syscurrencies import SysCurrenciesInDB
 from app.graphql.schemas.checkstatuses import CheckStatusesInDB
+from app.graphql.schemas.bankaccounts import BankAccountsInDB
+from app.graphql.schemas.branches import BranchesInDB
+from app.graphql.schemas.clients import ClientsInDB
+from app.graphql.schemas.suppliers import SuppliersInDB
 
 
 @strawberry.input
@@ -61,3 +65,7 @@ class ChecksInDB:
     BankData: Optional[BanksInDB] = None
     CurrencyData: Optional[SysCurrenciesInDB] = None
     CheckStatusData: Optional[CheckStatusesInDB] = None
+    BankAccountData: Optional[BankAccountsInDB] = None
+    BranchData: Optional[BranchesInDB] = None
+    ClientData: Optional[ClientsInDB] = None
+    SupplierData: Optional[SuppliersInDB] = None

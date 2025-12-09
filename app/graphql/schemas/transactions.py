@@ -3,6 +3,12 @@
 import strawberry
 from typing import Optional
 from datetime import datetime
+from app.graphql.schemas.company import CompanyInDB
+from app.graphql.schemas.branches import BranchesInDB
+from app.graphql.schemas.clients import ClientsInDB
+from app.graphql.schemas.suppliers import SuppliersInDB
+from app.graphql.schemas.saleconditions import SaleConditionsInDB
+from app.graphql.schemas.syscurrencies import SysCurrenciesInDB
 
 
 @strawberry.input
@@ -49,3 +55,10 @@ class TransactionsInDB:
     Taxes: Optional[float]
     Total: Optional[float]
     Notes: Optional[str]
+
+    CompanyData: Optional[CompanyInDB] = None
+    BranchData: Optional[BranchesInDB] = None
+    ClientData: Optional[ClientsInDB] = None
+    SupplierData: Optional[SuppliersInDB] = None
+    SaleConditionData: Optional[SaleConditionsInDB] = None
+    CurrencyData: Optional[SysCurrenciesInDB] = None

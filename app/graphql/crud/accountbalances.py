@@ -1,5 +1,5 @@
 ﻿# accountbalances.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.accountbalances import AccountBalances
 from app.graphql.schemas.accountbalances import (
     AccountBalancesCreate,
@@ -8,12 +8,25 @@ from app.graphql.schemas.accountbalances import (
 
 
 def get_accountbalances(db: Session):
-    return db.query(AccountBalances).all()
+    return (
+        db.query(AccountBalances)
+        .options(
+            joinedload(AccountBalances.clients_),
+            joinedload(AccountBalances.suppliers_),
+        )
+        .all()
+    )
 
 
 def get_accountbalances_by_id(db: Session, accountid: int):
     return (
-        db.query(AccountBalances).filter(AccountBalances.AccountID == accountid).first()
+        db.query(AccountBalances)
+        .options(
+            joinedload(AccountBalances.clients_),
+            joinedload(AccountBalances.suppliers_),
+        )
+        .filter(AccountBalances.AccountID == accountid)
+        .first()
     )
 
 
@@ -42,4 +55,3 @@ def delete_accountbalances(db: Session, accountid: int):
         db.delete(obj)
         db.commit()
     return obj
-

@@ -1,11 +1,14 @@
 # app/graphql/schemas/purchaseinvoicedetail_schema.py - VERSIÓN COMPLETA
 # Resumen: Tipos e inputs GraphQL para PurchaseInvoiceDetail.
 
+from __future__ import annotations
 import strawberry
 from typing import Optional
 from sqlalchemy.orm import Session
 from app.graphql.schemas.company import CompanyInDB
 from app.graphql.schemas.items import ItemsInDB
+from app.graphql.schemas.branches import BranchesInDB
+from app.graphql.schemas.warehouses import WarehousesInDB
 
 
 @strawberry.input
@@ -46,7 +49,6 @@ class PurchaseInvoiceDetailsInDB:
     Notes: Optional[str]
 
     CompanyData: Optional[CompanyInDB] = None
-    BranchData: Optional[strawberry.lazy["app.graphql.schemas.branches.BranchesInDB"]] = None
+    BranchData: Optional[BranchesInDB] = None
     ItemData: Optional[ItemsInDB] = None
-    WarehouseData: Optional[strawberry.lazy["app.graphql.schemas.warehouses.WarehousesInDB"]] = None
-    PurchaseInvoiceData: Optional[strawberry.lazy["app.graphql.schemas.purchaseinvoices.PurchaseInvoicesInDB"]] = None
+    WarehouseData: Optional[WarehousesInDB] = None

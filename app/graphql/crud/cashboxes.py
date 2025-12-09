@@ -1,15 +1,30 @@
 ﻿# app/graphql/crud/cashboxes.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app.models.cashboxes import CashBoxes
 from app.graphql.schemas.cashboxes import CashBoxesCreate, CashBoxesUpdate
 
 
 def get_cashboxes(db: Session):
-    return db.query(CashBoxes).all()
+    return (
+        db.query(CashBoxes)
+        .options(
+            joinedload(CashBoxes.branches_),
+            joinedload(CashBoxes.users_),
+        )
+        .all()
+    )
 
 
 def get_cashboxes_by_id(db: Session, cashbox_id: int):
-    return db.query(CashBoxes).filter(CashBoxes.CashBoxID == cashbox_id).first()
+    return (
+        db.query(CashBoxes)
+        .options(
+            joinedload(CashBoxes.branches_),
+            joinedload(CashBoxes.users_),
+        )
+        .filter(CashBoxes.CashBoxID == cashbox_id)
+        .first()
+    )
 
 
 def create_cashboxes(db: Session, data: CashBoxesCreate):
@@ -37,4 +52,3 @@ def delete_cashboxes(db: Session, cashbox_id: int):
         db.delete(obj)
         db.commit()
     return obj
-

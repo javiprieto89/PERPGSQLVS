@@ -4,6 +4,7 @@
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 from app.models.purchaseinvoices import PurchaseInvoices
+from app.models.purchaseinvoicedetails import PurchaseInvoiceDetails
 import datetime
 
 
@@ -11,12 +12,12 @@ def get_purchaseinvoices(db: Session) -> List[PurchaseInvoices]:
     return (
         db.query(PurchaseInvoices)
         .options(
-            joinedload(PurchaseInvoices.PurchaseInvoiceDetails)
-                .joinedload(PurchaseInvoices.PurchaseInvoiceDetails.property.mapper.class_.Items_),
-            joinedload(PurchaseInvoices.PurchaseInvoiceDetails)
-                .joinedload(PurchaseInvoices.PurchaseInvoiceDetails.property.mapper.class_.Warehouses_),
-            joinedload(PurchaseInvoices.PurchaseInvoiceDetails)
-                .joinedload(PurchaseInvoices.PurchaseInvoiceDetails.property.mapper.class_.Branches_),
+            joinedload(PurchaseInvoices.PurchaseInvoiceDetails).joinedload(
+                PurchaseInvoiceDetails.Items_),
+            joinedload(PurchaseInvoices.PurchaseInvoiceDetails).joinedload(
+                PurchaseInvoiceDetails.Warehouses_),
+            joinedload(PurchaseInvoices.PurchaseInvoiceDetails).joinedload(
+                PurchaseInvoiceDetails.Branches_),
             joinedload(PurchaseInvoices.Company_),
             joinedload(PurchaseInvoices.Branches_),
             joinedload(PurchaseInvoices.Suppliers_),
@@ -30,12 +31,12 @@ def get_purchaseinvoice_by_id(db: Session, company_id: int, branch_id: int, id: 
     return (
         db.query(PurchaseInvoices)
         .options(
-            joinedload(PurchaseInvoices.PurchaseInvoiceDetails)
-                .joinedload(PurchaseInvoices.PurchaseInvoiceDetails.property.mapper.class_.Items_),
-            joinedload(PurchaseInvoices.PurchaseInvoiceDetails)
-                .joinedload(PurchaseInvoices.PurchaseInvoiceDetails.property.mapper.class_.Warehouses_),
-            joinedload(PurchaseInvoices.PurchaseInvoiceDetails)
-                .joinedload(PurchaseInvoices.PurchaseInvoiceDetails.property.mapper.class_.Branches_),
+            joinedload(PurchaseInvoices.PurchaseInvoiceDetails).joinedload(
+                PurchaseInvoiceDetails.Items_),
+            joinedload(PurchaseInvoices.PurchaseInvoiceDetails).joinedload(
+                PurchaseInvoiceDetails.Warehouses_),
+            joinedload(PurchaseInvoices.PurchaseInvoiceDetails).joinedload(
+                PurchaseInvoiceDetails.Branches_),
             joinedload(PurchaseInvoices.Company_),
             joinedload(PurchaseInvoices.Branches_),
             joinedload(PurchaseInvoices.Suppliers_),

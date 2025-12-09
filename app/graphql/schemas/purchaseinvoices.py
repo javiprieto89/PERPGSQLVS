@@ -50,5 +50,3 @@ class PurchaseInvoicesInDB:
     SupplierData: Optional[SuppliersInDB] = None
     UserData: Optional[UsersInDB] = None
     PurchaseInvoiceDetailsData: Optional[List[PurchaseInvoiceDetailsInDB]] = None
-    UserData: Optional[UsersInDB] = None
-    PurchaseInvoiceDetailsData: Optional[List["PurchaseInvoiceDetailsInDB"]] = None

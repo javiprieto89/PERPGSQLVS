@@ -14,6 +14,7 @@ def _base_query(db: Session):
         joinedload(Checks.Banks_),
         joinedload(Checks.CheckStatuses_),
         joinedload(Checks.sysCurrencies),
+        joinedload(Checks.company_),
     )
 
 
@@ -62,7 +63,8 @@ def delete_check(db: Session, check_id: int, company_id: Optional[int] = None):
             is not None
         )
         if has_movements:
-            raise ValueError("Cannot delete check because it has associated movements")
+            raise ValueError(
+                "Cannot delete check because it has associated movements")
 
         db.delete(obj)
         db.commit()

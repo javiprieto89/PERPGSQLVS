@@ -34,7 +34,8 @@ class Transactions(Base):
             ["Branches.CompanyID", "Branches.BranchID"],
             name="FK_Transactions_Branches",
         ),
-        PrimaryKeyConstraint("TransactionID", name="PK__Transact__55433A4BB5EE9535"),
+        PrimaryKeyConstraint(
+            "TransactionID", name="PK__Transact__55433A4BB5EE9535"),
         Index("idx_clientID_Transactions", "ClientID"),
         Index("idx_supplierID", "SupplierID"),
         Index("idx_TransactionDate", "TransactionDate"),
@@ -49,13 +50,34 @@ class Transactions(Base):
         DateTime, server_default=text("(getdate())")
     )
     TransacTypeID: Mapped[int] = mapped_column(Integer)
-    ClientID: Mapped[int] = mapped_column(Integer)
-    SupplierID: Mapped[int] = mapped_column(Integer)
-    OrderID: Mapped[int] = mapped_column(Integer)
-    Subtotal: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 2))
-    Taxes: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 2))
-    Total: Mapped[decimal.Decimal] = mapped_column(DECIMAL(10, 2))
-    Notes: Mapped[str] = mapped_column(Unicode(200, "Modern_Spanish_CI_AS"))
+    Subtotal: Mapped[Optional[decimal.Decimal]] = mapped_column(DECIMAL(10, 2))
+    Taxes: Mapped[Optional[decimal.Decimal]] = mapped_column(DECIMAL(10, 2))
+    Total: Mapped[Optional[decimal.Decimal]] = mapped_column(DECIMAL(10, 2))
+    Notes: Mapped[Optional[str]] = mapped_column(
+        Unicode(200, "Modern_Spanish_CI_AS"))
+    DocumentID: Mapped[int] = mapped_column(Integer)
+    IsCancelled: Mapped[bool] = mapped_column(
+        Integer, server_default=text("0"))
+    IsPending: Mapped[bool] = mapped_column(Integer, server_default=text("0"))
+    IsSystem: Mapped[bool] = mapped_column(Integer, server_default=text("0"))
+    PaymentStatusID: Mapped[int] = mapped_column(Integer)
+    ClientID: Mapped[Optional[int]] = mapped_column(Integer)
+    SupplierID: Mapped[Optional[int]] = mapped_column(Integer)
+    OrderHistoryID: Mapped[Optional[int]] = mapped_column(Integer)
+    PointOfSale: Mapped[Optional[int]] = mapped_column(Integer)
+    DocumentNumber: Mapped[Optional[str]] = mapped_column(
+        Unicode(50, "Modern_Spanish_CI_AS"))
+    DocumentTypeID: Mapped[Optional[int]] = mapped_column(Integer)
+    CurrencyID: Mapped[Optional[int]] = mapped_column(Integer)
+    ExchangeRateUsed: Mapped[Optional[decimal.Decimal]
+                             ] = mapped_column(DECIMAL(18, 6))
+    JournalEntryID: Mapped[Optional[int]] = mapped_column(Integer)
+    TaxDate: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime)
+    DueDate: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime)
+    DiscountAmount: Mapped[Optional[decimal.Decimal]
+                           ] = mapped_column(DECIMAL(18, 2))
+    RelatedTransactionID: Mapped[Optional[int]] = mapped_column(Integer)
+    SaleConditionID: Mapped[Optional[int]] = mapped_column(Integer)
 
     branches_: Mapped[Optional["Branches"]] = relationship(
         "Branches", back_populates="transactions"

@@ -1,22 +1,32 @@
-﻿from sqlalchemy.orm import Session
+﻿from sqlalchemy.orm import Session, joinedload
 from app.models.transactions import Transactions
 from app.graphql.schemas.transactions import TransactionsCreate, TransactionsUpdate
 
 
 def get_transactions(db: Session):
-    return db.query(Transactions).all()
+    return (
+        db.query(Transactions)
+        .options(
+            joinedload(Transactions.branches_),
+        )
+        .all()
+    )
 
 
 def get_transactions_by_id(db: Session, transactionid: int):
     return (
         db.query(Transactions)
-        .filter(Transactions.TransactionID == transactionid)  # CORREGIDO: PascalCase
+        .options(
+            joinedload(Transactions.branches_),
+        )
+        .filter(Transactions.TransactionID == transactionid)
         .first()
     )
 
 
 def create_transactions(db: Session, data: TransactionsCreate):
-    obj = Transactions(**vars(data))  # CORREGIDO: usar vars() como patrón consistente
+    # CORREGIDO: usar vars() como patrón consistente
+    obj = Transactions(**vars(data))
     db.add(obj)
     db.commit()
     db.refresh(obj)

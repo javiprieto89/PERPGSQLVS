@@ -2,6 +2,10 @@
 import strawberry
 from typing import Optional
 from datetime import datetime
+from app.graphql.schemas.company import CompanyInDB
+from app.graphql.schemas.branches import BranchesInDB
+from app.graphql.schemas.users import UsersInDB
+
 
 @strawberry.input
 class CashBoxesCreate:
@@ -11,6 +15,7 @@ class CashBoxesCreate:
     Description: Optional[str] = None
     UserID: Optional[int] = None
     Notes: Optional[str] = None
+
 
 @strawberry.input
 class CashBoxesUpdate:
@@ -23,6 +28,7 @@ class CashBoxesUpdate:
     IsActive: Optional[bool] = None
     CloseDate: Optional[datetime] = None
     CurrentBalance: Optional[float] = None
+
 
 @strawberry.type
 class CashBoxesInDB:
@@ -38,3 +44,7 @@ class CashBoxesInDB:
     CurrentBalance: float
     UserID: Optional[int]
     Notes: Optional[str]
+
+    CompanyData: Optional[CompanyInDB] = None
+    BranchData: Optional[BranchesInDB] = None
+    UserData: Optional[UsersInDB] = None
